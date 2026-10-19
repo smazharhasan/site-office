@@ -6,7 +6,12 @@
   const URL_ = "https://bctdsetigzdamxjduxgb.supabase.co";
   const ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjdGRzZXRpZ3pkYW14amR1eGdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MDA4ODksImV4cCI6MjEwNzk3Njg4OX0.Rn6AuNwHpVnMdYxJKO06qstvTCOBE-JKh1Dk1Sf01Yg";
   const HOME = location.origin + location.pathname.replace(/[^/]*$/, "");
-  const sb = window.supabase.createClient(URL_, ANON, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+  // Inside the Android app the phone app owns the sign-in and pushes fresh tokens (one refresher only).
+  const NATIVE = window.SO_NATIVE && window.SO_NATIVE.access_token ? window.SO_NATIVE : null;
+  const post = m => { try { window.ReactNativeWebView.postMessage(JSON.stringify(m)); } catch (e) {} };
+  const sb = window.supabase.createClient(URL_, ANON, { auth: NATIVE ? { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false } : { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+  const nativeReady = NATIVE ? sb.auth.setSession({ access_token: NATIVE.access_token, refresh_token: NATIVE.refresh_token }).catch(() => null) : Promise.resolve();
+  window.SO_setSession = s => sb.auth.setSession(s).catch(() => null);
   window.SO = { sb, project: null, role: null, user: null, fieldUrl: HOME + "field/" };
 
   const ROLE_MAP = { owner: "owner", owner_supervisor: "ownerSup", builder: "sb", site_supervisor: "siteSup", store_keeper: "siteSup", supplier: "supplier", consultant: "ownerSup" };
@@ -96,7 +101,9 @@
   }
 
   async function start(resolve) {
+    await nativeReady;
     const { data: { session } } = await sb.auth.getSession();
+    if (!session && NATIVE) { post({ type: "signout" }); return; }
     if (!session) return loginScreen(resolve);
     if (/type=recovery/.test(location.hash)) { history.replaceState(null, "", location.pathname); return resetScreen(resolve); }
     const { data: ms, error } = await sb.from("project_members").select("project_id, role, active, projects(id, name, address, site_lat, site_lng)").eq("user_id", session.user.id).eq("active", true);
@@ -109,7 +116,7 @@
     hide(); resolve();
   }
   const ready = new Promise(res => {
-    sb.auth.onAuthStateChange((ev) => { if (ev === "PASSWORD_RECOVERY") resetScreen(() => location.reload()); if (ev === "SIGNED_OUT" && SO.project) location.reload(); });
+    sb.auth.onAuthStateChange((ev) => { if (ev === "PASSWORD_RECOVERY") resetScreen(() => location.reload()); if (ev === "SIGNED_OUT" && SO.project && !NATIVE) location.reload(); });
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => start(res)); else start(res);
   });
 
@@ -191,6 +198,7 @@
   } };
   const downloads = { async save({ filename, data }) {
     let blob = data instanceof Blob ? data : typeof data === "string" && data.startsWith("data:") ? await (await fetch(data)).blob() : new Blob([data]);
+    if (NATIVE) { const b = await blobToB64(blob); post({ type: "download", filename, base64: b.data, mime: blob.type || "application/octet-stream" }); return; }
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename || "download"; document.body.append(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
   } };
   const mcp = { async callTool() {
@@ -215,7 +223,7 @@
   } };
 
   /* ---------- extras: account menu, field app link, staff logins ---------- */
-  window.SO.signOut = async () => { await sb.auth.signOut(); location.reload(); };
+  window.SO.signOut = async () => { if (NATIVE) return post({ type: "signout" }); await sb.auth.signOut(); location.reload(); };
   window.SO.switchProject = () => { ls.set("so.project", ""); location.reload(); };
   window.SO.createLogin = async ({ email, password, full_name, portal }) => {
     const r = await team({ action: "add", email, password, full_name, role: PORTAL_TO_ROLE[portal] || "site_supervisor" }); teamCache = null; return r.user_id;
@@ -235,7 +243,7 @@
     const a = t.dataset.so;
     if (a === "out") return SO.signOut();
     if (a === "switch") return SO.switchProject();
-    if (a === "field") { location.href = SO.fieldUrl; return; }
+    if (a === "field") { if (NATIVE) post({ type: "field" }); else location.href = SO.fieldUrl; return; }
     if (a === "newlogin") {
       const v = id => (document.getElementById(id) || {}).value || ""; const msg = document.getElementById("soLMsg");
       const email = v("soLE").trim(), password = v("soLP"), full_name = v("soLN").trim(), portal = v("soLR");

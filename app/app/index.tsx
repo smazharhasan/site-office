@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Linking, Platform, Pressable, Text, View } from "react-native";
+import { Platform, Pressable, Text, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import { Banner, Button, Card, Screen, useColors } from "../src/components/ui";
 import { SCREENS, useProject } from "../src/lib/project";
@@ -7,6 +7,8 @@ import { deviceKey } from "../src/lib/evidence";
 import { flush, pending } from "../src/lib/queue";
 import { supabase } from "../src/lib/supabase";
 import { getLang, setLang, t } from "../src/lib/i18n";
+
+let officeOpened = false; // the phone app opens the full Site Office once per launch
 
 const TILES: [string, string][] = [["attendance", "Attendance"], ["release", "Release material"], ["receive", "Receive goods"], ["tanker", "Water tanker"], ["count", "Stock count"], ["daily-log", "Daily log"], ["stock", "Stock & consumption"], ["review", "Review & approve"], ["people", "People register"], ["team", "Team & logins"]];
 
@@ -22,6 +24,10 @@ export default function Home() {
     })();
   }, [current]);
 
+  useEffect(() => {
+    if (current && Platform.OS !== "web" && !officeOpened) { officeOpened = true; router.push("/office"); }
+  }, [current]);
+
   if (!current) return (
     <Screen title="Projects">
       {memberships.length ? memberships.map((m) => (
@@ -35,6 +41,13 @@ export default function Home() {
   return (
     <Screen title={current.projects?.name ?? "Site Office"}>
       <Text style={{ color: c.muted }}>{me?.full_name} · {current.role.replace("_", " ")}</Text>
+      <Pressable onPress={() => router.push("/office")}>
+        <View style={{ backgroundColor: c.accent, borderRadius: 12, padding: 16, gap: 4 }}>
+          <Text style={{ color: "#fff", fontSize: 18, fontWeight: "800" }}>{t("Full Site Office")}</Text>
+          <Text style={{ color: "#fff", opacity: 0.9 }}>{t("Dashboard, progress, schedule, payments, budget, procurement, quality, snags, checklists")}</Text>
+        </View>
+      </Pressable>
+      <Text style={{ color: c.muted, fontWeight: "700", marginTop: 4 }}>{t("Field screens (camera & GPS checked)")}</Text>
       {device === "waiting" ? <Banner kind="warn" text="This phone is waiting for the owner's approval." /> : null}
       {device === "unknown" ? <Banner text="This phone will be registered with your first photo, then the owner approves it." /> : null}
       {queued ? <Banner kind="warn" text={`${queued} item(s) waiting to upload`} /> : null}
@@ -45,7 +58,6 @@ export default function Home() {
           </Pressable>
         ))}
       </View>
-      <Button title="Open the full Site Office (dashboard, schedule, payments…)" kind="plain" onPress={() => { if (Platform.OS === "web") window.location.href = "/site-office/"; else Linking.openURL("https://smazharhasan.github.io/site-office/"); }} />
       {queued ? <Button title="Send now" kind="plain" onPress={async () => { const r = await flush(); setQueued(r.left); }} /> : null}
       <Button title={getLang() === "ur" ? "English" : "اردو"} kind="plain" onPress={() => setLang(getLang() === "ur" ? "en" : "ur").then(() => router.replace("/"))} />
       {memberships.length > 1 ? <Button title="Projects" kind="plain" onPress={() => choose("")} /> : null}

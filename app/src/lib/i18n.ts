@@ -11,7 +11,7 @@ const UR: Record<string, string> = {
   "This phone is waiting for the owner's approval.": "یہ فون مالک کی منظوری کا منتظر ہے۔", "Saved": "محفوظ ہو گیا", "Flagged for the owner": "مالک کے لیے نشان زد",
   "Verified": "تصدیق شدہ", "Check in": "آمد", "Check out": "روانگی", "Weather": "موسم", "Work done today": "آج کا کام", "Plan for tomorrow": "کل کا منصوبہ",
   "Staff present": "موجود عملہ", "Power": "بجلی", "Notes": "نوٹس", "Gallons": "گیلن", "Tanker no.": "ٹینکر نمبر", "Counted": "گنتی", "Vendor / shop": "دکان",
-  "Language": "زبان", "Stock & consumption": "اسٹاک اور کھپت", "Review & approve": "جائزہ اور منظوری", "People register": "افراد کا رجسٹر", "Team & logins": "ٹیم اور لاگ ان", "Set up your project": "اپنا پروجیکٹ بنائیں", "Email": "ای میل", "Password": "پاس ورڈ", "Projects": "پروجیکٹس", "Sign out": "سائن آؤٹ",
+  "Language": "زبان", "Stock & consumption": "اسٹاک اور کھپت", "Review & approve": "جائزہ اور منظوری", "People register": "افراد کا رجسٹر", "Team & logins": "ٹیم اور لاگ ان", "Set up your project": "اپنا پروجیکٹ بنائیں", "Email": "ای میل", "Password": "پاس ورڈ", "Projects": "پروجیکٹس", "Sign out": "سائن آؤٹ", "Full Site Office": "مکمل سائٹ آفس", "Field screens (camera & GPS checked)": "فیلڈ اسکرینز (کیمرہ اور جی پی ایس)", "Dashboard, progress, schedule, payments, budget, procurement, quality, snags, checklists": "ڈیش بورڈ، پیش رفت، شیڈول، ادائیگیاں، بجٹ، خریداری، معیار، خامیاں، چیک لسٹ",
 };
 let lang: "en" | "ur" = "en";
 export const t = (s: string) => (lang === "ur" ? UR[s] ?? s : s);
