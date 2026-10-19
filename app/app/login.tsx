@@ -18,7 +18,7 @@ export default function Login() {
       const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password: pw });
       if (error) setMsg({ k: "bad", t: /Invalid login/i.test(error.message) ? "Wrong email or password." : errText(error) }); else router.replace("/");
     } else {
-      const { data, error } = await supabase.auth.signUp({ email: email.trim(), password: pw, options: { data: { full_name: name } } });
+      const { data, error } = await supabase.auth.signUp({ email: email.trim(), password: pw, options: { data: { full_name: name }, emailRedirectTo: "https://smazharhasan.github.io/site-office/" } });
       if (error) setMsg({ k: "bad", t: errText(error) });
       else if (!data.session) setMsg({ k: "good", t: "Account created. Open the confirmation email we just sent, then come back and sign in." });
       else router.replace("/");
