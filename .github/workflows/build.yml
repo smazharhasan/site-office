@@ -1,0 +1,51 @@
+# Builds the Android APK and the web app on every change, with no setup on your side.
+#  - APK:  attached to the "latest" release  → https://github.com/<you>/<repo>/releases/latest
+#  - Web:  published with GitHub Pages        → https://<you>.github.io/<repo>/
+name: Build apps
+on:
+  push: { branches: [main] }
+  workflow_dispatch:
+permissions: { contents: write, pages: write, id-token: write }
+concurrency: { group: build, cancel-in-progress: true }
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: app } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm, cache-dependency-path: app/package-lock.json }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - run: npm ci
+      - run: npx expo prebuild --platform android --no-install
+      - name: Use the project's fixed signing key (so updates install over the old app)
+        env: { KEYSTORE_B64: "${{ secrets.ANDROID_KEYSTORE_B64 }}" }
+        run: echo "$KEYSTORE_B64" | base64 -d > android/app/debug.keystore
+      - name: Build release APK
+        run: cd android && ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
+      - run: cp android/app/build/outputs/apk/release/app-release.apk ../SiteOffice.apk
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Site Office (latest)
+          body: "Download **SiteOffice.apk** on the Android phone and open it to install. Built from ${{ github.sha }}."
+          files: SiteOffice.apk
+          make_latest: true
+
+  web:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: app } }
+    environment: { name: github-pages, url: "${{ steps.deploy.outputs.page_url }}" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm, cache-dependency-path: app/package-lock.json }
+      - run: npm ci
+      - run: npx expo export --platform web --output-dir web-dist
+      - run: cp web-dist/index.html web-dist/404.html && touch web-dist/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: app/web-dist }
+      - id: deploy
+        uses: actions/deploy-pages@v4

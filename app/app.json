@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "Site Office",
+    "slug": "site-office",
+    "scheme": "siteoffice",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "android": {
+      "package": "pk.siteoffice.app",
+      "permissions": [
+        "CAMERA",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
+      "blockedPermissions": [
+        "READ_MEDIA_IMAGES",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "The camera is used to photograph workers, materials and bills on site. Photos are taken live; the gallery is never used.",
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Your location is stamped on every site photo to prove it was taken on site."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": false,
+      "baseUrl": "/site-office"
+    },
+    "extra": {
+      "supabaseUrl": "https://bctdsetigzdamxjduxgb.supabase.co",
+      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjdGRzZXRpZ3pkYW14amR1eGdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MDA4ODksImV4cCI6MjEwNzk3Njg4OX0.Rn6AuNwHpVnMdYxJKO06qstvTCOBE-JKh1Dk1Sf01Yg"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    }
+  }
+}
