@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Text } from "react-native";
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { Banner, Button, Field, Screen, Select } from "../src/components/ui";
 import { useEvidence } from "../src/components/useEvidence";
 import { useProject } from "../src/lib/project";
@@ -17,6 +17,7 @@ export default function Register() {
   const cnicB = useEvidence("person_doc", "CNIC back", { strict: false });
   const [busy, setBusy] = useState(false); const [err, setErr] = useState("");
   if (!current) return null;
+  if (me && me.status === "active") return <Redirect href="/" />;
   if (me && me.status === "pending") return <Screen title="Register yourself"><Banner kind="warn" text="Registered. The owner's side is verifying your record; you'll get access once they mark you active." /><Button title="Check again" onPress={() => reload().then(() => router.replace("/"))} /></Screen>;
   const set = (k: keyof typeof f) => (v: string) => setF({ ...f, [k]: v });
   const save = async () => {
@@ -28,8 +29,9 @@ export default function Register() {
     if (error) { setErr(errText(error)); setBusy(false); return; }
     const docs = [["photo", face.evidence], ["cnic_front", cnicF.evidence], ["cnic_back", cnicB.evidence]].filter(([, e]) => e) as [string, { id: string }][];
     const r = await supabase.from("person_docs").insert(docs.map(([kind, e]) => ({ person_id: data.id, kind, evidence_id: e.id })));
-    if (r.error) setErr(errText(r.error));
+    if (r.error) { setErr(errText(r.error)); setBusy(false); return; }
     await reload(); setBusy(false);
+    router.replace("/");
   };
   return (
     <Screen title="Register yourself">
