@@ -37,7 +37,7 @@
     ],
     "experiments": {
       "typedRoutes": false,
-      "baseUrl": "/site-office"
+      "baseUrl": "/site-office/field"
     },
     "extra": {
       "supabaseUrl": "https://bctdsetigzdamxjduxgb.supabase.co",

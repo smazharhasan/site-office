@@ -44,8 +44,11 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: npm, cache-dependency-path: app/package-lock.json }
       - run: npm ci
-      - run: npx expo export --platform web --output-dir web-dist
-      - run: cp web-dist/index.html web-dist/404.html && touch web-dist/.nojekyll
+      - name: Full Site Office at the root, field app under /field
+        run: |
+          mkdir -p web-dist && cp -r ../web/. web-dist/
+          npx expo export --platform web --output-dir web-dist/field
+          cp web-dist/field/index.html web-dist/404.html && touch web-dist/.nojekyll
       - name: Publish to the gh-pages branch (GitHub Pages serves it)
         uses: peaceiris/actions-gh-pages@v4
         with:

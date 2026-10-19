@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Linking, Platform, Pressable, Text, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import { Banner, Button, Card, Screen, useColors } from "../src/components/ui";
 import { SCREENS, useProject } from "../src/lib/project";
@@ -45,6 +45,7 @@ export default function Home() {
           </Pressable>
         ))}
       </View>
+      <Button title="Open the full Site Office (dashboard, schedule, payments…)" kind="plain" onPress={() => { if (Platform.OS === "web") window.location.href = "/site-office/"; else Linking.openURL("https://smazharhasan.github.io/site-office/"); }} />
       {queued ? <Button title="Send now" kind="plain" onPress={async () => { const r = await flush(); setQueued(r.left); }} /> : null}
       <Button title={getLang() === "ur" ? "English" : "اردو"} kind="plain" onPress={() => setLang(getLang() === "ur" ? "en" : "ur").then(() => router.replace("/"))} />
       {memberships.length > 1 ? <Button title="Projects" kind="plain" onPress={() => choose("")} /> : null}
