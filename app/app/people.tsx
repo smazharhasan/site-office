@@ -79,7 +79,7 @@ export default function People() {
           <Field label="Gang / contractor" value={f.gang} onChangeText={set("gang")} />
           <Field label="BTK registration card no." value={f.btk_card_no} onChangeText={set("btk_card_no")} />
           <Field label="BTK card valid to (YYYY-MM-DD)" value={f.btk_card_expiry} onChangeText={set("btk_card_expiry")} />
-          <Field label="Daily wage (Rs)" value={f.daily_wage} onChangeText={set("daily_wage")} keyboardType="number-pad" />
+          {current?.role === "owner" ? <Field label="Daily wage (Rs)" value={f.daily_wage} onChangeText={set("daily_wage")} keyboardType="number-pad" /> : null}
           {face.ui}{cnicF.ui}{cnicB.ui}{btk.ui}
           <Button title="Save" onPress={save} busy={busy} disabled={!f.full_name || !f.cnic} />
         </Card>

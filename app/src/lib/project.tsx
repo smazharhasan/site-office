@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 
-export type Role = "owner" | "owner_supervisor" | "builder" | "site_supervisor" | "store_keeper" | "supplier" | "consultant";
+export type Role = "owner" | "owner_supervisor" | "builder" | "site_supervisor" | "store_keeper" | "supplier" | "consultant" | "labour";
 export interface Membership { project_id: string; role: Role; person_id: string | null; projects: { name: string; address: string | null } | null }
 export interface Me { full_name: string; status: string; type: string }
 

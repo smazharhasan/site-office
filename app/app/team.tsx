@@ -6,7 +6,7 @@ import { useProject } from "../src/lib/project";
 import { errText, supabase } from "../src/lib/supabase";
 
 interface Member { user_id: string; role: string; active: boolean; email: string; name: string; person_status: string }
-const ROLES = [["site_supervisor", "Site supervisor"], ["store_keeper", "Store keeper"], ["owner_supervisor", "Owner's supervisor"], ["builder", "Builder (contractor)"], ["consultant", "Consultant / engineer"], ["supplier", "Supplier"]];
+const ROLES = [["site_supervisor", "Site supervisor"], ["store_keeper", "Store keeper"], ["owner_supervisor", "Owner's supervisor"], ["builder", "Builder (contractor)"], ["consultant", "Consultant / engineer"], ["supplier", "Supplier"], ["labour", "Labour (no money shown)"]];
 
 /** Owner adds staff logins (email + password), changes roles, suspends access. */
 export default function Team() {

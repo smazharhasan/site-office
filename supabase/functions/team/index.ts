@@ -5,7 +5,7 @@
 //   { action: "reset",  project_id, user_id, password }
 import { admin, caller, handler, HttpError, json, membership } from "../_shared/common.ts";
 
-const ROLES = ["owner_supervisor", "builder", "site_supervisor", "store_keeper", "supplier", "consultant"];
+const ROLES = ["owner_supervisor", "builder", "site_supervisor", "store_keeper", "supplier", "consultant", "labour"];
 
 Deno.serve(handler(async (req) => {
   const user = await caller(req);

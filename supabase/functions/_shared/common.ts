@@ -29,7 +29,7 @@ export async function caller(req: Request): Promise<User> {
   return data.user;
 }
 
-export type Role = "owner" | "owner_supervisor" | "builder" | "site_supervisor" | "store_keeper" | "supplier" | "consultant";
+export type Role = "owner" | "owner_supervisor" | "builder" | "site_supervisor" | "store_keeper" | "supplier" | "consultant" | "labour";
 
 export async function membership(projectId: string, userId: string): Promise<{ role: Role; person_id: string | null }> {
   const { data } = await admin().from("project_members").select("role, person_id").eq("project_id", projectId).eq("user_id", userId).eq("active", true).maybeSingle();

@@ -14,8 +14,8 @@
   window.SO_setSession = s => sb.auth.setSession(s).catch(() => null);
   window.SO = { sb, project: null, role: null, user: null, fieldUrl: HOME + "field/" };
 
-  const ROLE_MAP = { owner: "owner", owner_supervisor: "ownerSup", builder: "sb", site_supervisor: "siteSup", store_keeper: "siteSup", supplier: "supplier", consultant: "ownerSup" };
-  const PORTAL_TO_ROLE = { ownerSup: "owner_supervisor", sb: "builder", siteSup: "site_supervisor", supplier: "supplier" };
+  const ROLE_MAP = { owner: "owner", owner_supervisor: "ownerSup", builder: "sb", site_supervisor: "siteSup", store_keeper: "storeKeeper", supplier: "supplier", consultant: "consultant", labour: "labour" };
+  const PORTAL_TO_ROLE = { ownerSup: "owner_supervisor", sb: "builder", siteSup: "site_supervisor", storeKeeper: "store_keeper", supplier: "supplier", consultant: "consultant", labour: "labour" };
   const ls = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} } };
   const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
@@ -122,8 +122,14 @@
 
   /* ---------- db: collection(col).doc(id).set/get/delete, onSnapshot ---------- */
   const cache = {}; const listeners = {}; let loaded = null;
-  const snap = col => ({ docs: Object.entries(cache[col] || {}).map(([id, data]) => ({ id, data: () => data })) });
-  const emit = col => (listeners[col] || []).forEach(l => { try { l.cb(snap(col)); } catch (e) { console.error(e); } });
+  // Money fields live in separate "…Money" records so the server can hide prices from people who
+  // only handle quantities. The app still sees one record: they are merged here and split on save.
+  const SPLIT = { pos: ["posMoney", ["unitPrice", "payProof", "paidRef", "payMethod", "paidDate"]], grns: ["grnsMoney", ["rate", "amount"]], materials: ["materialsMoney", ["budgetRate", "monthlyBudget"]], water: ["waterMoney", ["cost"]], risks: ["risksMoney", ["costImpact"]], people: ["peopleMoney", ["wage"]] };
+  const PARENT = Object.fromEntries(Object.entries(SPLIT).map(([c, [m]]) => [m, c]));
+  const merged = (col, id, data) => { const sp = SPLIT[col]; const m = sp && cache[sp[0]] && cache[sp[0]][id]; if (!m) return data; const o = Object.assign({}, data); sp[1].forEach(k => { if (m[k] !== undefined) o[k] = m[k]; }); return o; };
+  const snap = col => ({ docs: Object.entries(cache[col] || {}).map(([id, data]) => ({ id, data: () => merged(col, id, data) })) });
+  const fire = col => (listeners[col] || []).forEach(l => { try { l.cb(snap(col)); } catch (e) { console.error(e); } });
+  const emit = col => { fire(col); if (PARENT[col]) fire(PARENT[col]); };
   const mapErr = e => { const x = new Error(errText(e)); x.code = e && (e.code === "42501" || /row-level security|permission/i.test(e.message || "")) ? "invalid_argument" : (/payload|too large/i.test(e && e.message || "") ? "quota_exceeded" : "unknown"); return x; };
   async function loadAll() {
     const P = SO.project.id; let from = 0;
@@ -149,9 +155,18 @@
   const db = {
     collection: col => ({
       doc: id => ({
-        async set(body) { const { error } = await sb.from("app_records").upsert({ project_id: SO.project.id, col, id, data: body }); if (error) throw mapErr(error); (cache[col] = cache[col] || {})[id] = body; emit(col); },
-        async get() { const { data, error } = await sb.from("app_records").select("data").eq("project_id", SO.project.id).eq("col", col).eq("id", id).maybeSingle(); if (error) throw mapErr(error); return { exists: !!data, data: () => data ? data.data : undefined }; },
-        async delete() { const { error } = await sb.from("app_records").delete().eq("project_id", SO.project.id).eq("col", col).eq("id", id); if (error) throw mapErr(error); if (cache[col]) delete cache[col][id]; emit(col); },
+        async set(body) {
+          const sp = SPLIT[col]; let main = body, money = null;
+          if (sp) { main = Object.assign({}, body); const mk = {}; let any = false; sp[1].forEach(k => { if (k in main) { if (main[k] !== undefined && main[k] !== "") any = true; mk[k] = main[k]; delete main[k]; } });
+            if (any || (cache[sp[0]] && cache[sp[0]][id])) { money = Object.assign({}, (cache[sp[0]] || {})[id] || {}, mk); ["partyId", "supplierId"].forEach(k => { if (body[k]) money[k] = body[k]; }); } }
+          const { error } = await sb.from("app_records").upsert({ project_id: SO.project.id, col, id, data: main }); if (error) throw mapErr(error); (cache[col] = cache[col] || {})[id] = main;
+          if (money) { const r = await sb.from("app_records").upsert({ project_id: SO.project.id, col: sp[0], id, data: money }); if (r.error) { emit(col); throw mapErr(r.error); } (cache[sp[0]] = cache[sp[0]] || {})[id] = money; }
+          emit(col);
+        },
+        async get() { const { data, error } = await sb.from("app_records").select("data").eq("project_id", SO.project.id).eq("col", col).eq("id", id).maybeSingle(); if (error) throw mapErr(error); return { exists: !!data, data: () => data ? merged(col, id, data.data) : undefined }; },
+        async delete() { const { error } = await sb.from("app_records").delete().eq("project_id", SO.project.id).eq("col", col).eq("id", id); if (error) throw mapErr(error); if (cache[col]) delete cache[col][id];
+          const sp = SPLIT[col]; if (sp && cache[sp[0]] && cache[sp[0]][id]) { await sb.from("app_records").delete().eq("project_id", SO.project.id).eq("col", sp[0]).eq("id", id); delete cache[sp[0]][id]; }
+          emit(col); },
       }),
       onSnapshot(cb, onErr) { const l = { cb, onErr }; (listeners[col] = listeners[col] || []).push(l); loaded.then(() => cb(snap(col)), e => onErr && onErr(e)); return () => { listeners[col] = listeners[col].filter(x => x !== l); }; },
     }),
@@ -228,6 +243,7 @@
   window.SO.createLogin = async ({ email, password, full_name, portal }) => {
     const r = await team({ action: "add", email, password, full_name, role: PORTAL_TO_ROLE[portal] || "site_supervisor" }); teamCache = null; return r.user_id;
   };
+  window.SO.setLoginRole = (user_id, portal) => PORTAL_TO_ROLE[portal] ? team({ action: "set", user_id, role: PORTAL_TO_ROLE[portal] }).then(() => { teamCache = null; }).catch(e => soToast(e.message)) : null;
   window.SO.setLoginActive = (user_id, active) => team({ action: "set", user_id, active }).catch(() => {});
   window.SO.resetPassword = (user_id, password) => team({ action: "reset", user_id, password });
   window.SO.portalFor = role => ROLE_MAP[role] || null;

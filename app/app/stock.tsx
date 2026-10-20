@@ -41,10 +41,10 @@ export default function Stock() {
           <Select label="Unit" value={f.unit} onChange={set("unit")} options={["bag", "ton", "kg", "nos", "cft", "sft", "rft", "m³", "litre", "packet", "lot"].map((x) => ({ value: x, label: x }))} />
           <Select label="Used in" value={f.phase} onChange={set("phase")} options={[["grey", "Grey structure"], ["finishing", "Finishing"], ["site_running", "Site running (canteen, tools)"], ["design", "Design"], ["testing", "Testing"]].map(([value, label]) => ({ value, label }))} />
           {f.kind === "material" || f.kind === "consumable" ? <Field label="Estimated total quantity" value={f.budget_qty} onChangeText={set("budget_qty")} keyboardType="decimal-pad" /> : null}
-          <Field label="Budget rate (Rs per unit)" value={f.budget_rate} onChangeText={set("budget_rate")} keyboardType="decimal-pad" />
+          {current?.role === "owner" ? <Field label="Budget rate (Rs per unit)" value={f.budget_rate} onChangeText={set("budget_rate")} keyboardType="decimal-pad" /> : null}
           <Field label="Re-order level" value={f.reorder_level} onChangeText={set("reorder_level")} keyboardType="decimal-pad" />
           {f.kind === "canteen" ? <Field label="Normal use per worker per day (e.g. 0.01 kg tea)" value={f.norm_per_man_day} onChangeText={set("norm_per_man_day")} keyboardType="decimal-pad" /> : null}
-          {f.kind === "canteen" || f.kind === "consumable" ? <Field label="Monthly budget (Rs)" value={f.monthly_budget} onChangeText={set("monthly_budget")} keyboardType="decimal-pad" /> : null}
+          {current?.role === "owner" && (f.kind === "canteen" || f.kind === "consumable") ? <Field label="Monthly budget (Rs)" value={f.monthly_budget} onChangeText={set("monthly_budget")} keyboardType="decimal-pad" /> : null}
           {f.kind === "tool" ? <Field label="Must be returned within (days)" value={f.return_days} onChangeText={set("return_days")} keyboardType="number-pad" /> : null}
           <Button title="Save" onPress={save} disabled={!f.name} />
         </Card>
