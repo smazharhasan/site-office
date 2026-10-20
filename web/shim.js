@@ -241,9 +241,9 @@
   window.SO.signOut = async () => { if (NATIVE) return post({ type: "signout" }); await sb.auth.signOut(); location.reload(); };
   window.SO.switchProject = () => { ls.set("so.project", ""); location.reload(); };
   window.SO.createLogin = async ({ email, password, full_name, portal }) => {
-    const r = await team({ action: "add", email, password, full_name, role: PORTAL_TO_ROLE[portal] || "site_supervisor" }); teamCache = null; return r.user_id;
+    const r = await team({ action: "add", email, password, full_name, role: PORTAL_TO_ROLE[portal] || (window.SO_BASE && SO_BASE(portal)) || "site_supervisor" }); teamCache = null; return r.user_id;
   };
-  window.SO.setLoginRole = (user_id, portal) => PORTAL_TO_ROLE[portal] ? team({ action: "set", user_id, role: PORTAL_TO_ROLE[portal] }).then(() => { teamCache = null; }).catch(e => soToast(e.message)) : null;
+  window.SO.setLoginRole = (user_id, portal, base) => (base = base || PORTAL_TO_ROLE[portal] || (window.SO_BASE && SO_BASE(portal))) ? team({ action: "set", user_id, role: base }).then(() => { teamCache = null; }).catch(e => soToast(e.message)) : null;
   window.SO.setLoginActive = (user_id, active) => team({ action: "set", user_id, active }).catch(() => {});
   window.SO.resetPassword = (user_id, password) => team({ action: "reset", user_id, password });
   window.SO.portalFor = role => ROLE_MAP[role] || null;

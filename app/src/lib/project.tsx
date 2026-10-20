@@ -10,8 +10,10 @@ interface Ctx {
   session: Session | null; ready: boolean;
   memberships: Membership[]; current: Membership | null; me: Me | null;
   choose: (projectId: string) => void; reload: () => Promise<void>;
+  /** phone screens allowed by the owner's access profiles (null until loaded: use the built-in list) */
+  phone: Record<string, string> | null;
 }
-const C = createContext<Ctx>({ session: null, ready: false, memberships: [], current: null, me: null, choose: () => {}, reload: async () => {} });
+const C = createContext<Ctx>({ session: null, ready: false, memberships: [], current: null, me: null, choose: () => {}, reload: async () => {}, phone: null });
 export const useProject = () => useContext(C);
 
 export function ProjectProvider({ children }: { children: React.ReactNode }) {
@@ -20,6 +22,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const [memberships, setMemberships] = useState<Membership[]>([]);
   const [currentId, setCurrentId] = useState<string | null>(null);
   const [me, setMe] = useState<Me | null>(null);
+  const [phone, setPhone] = useState<Record<string, string> | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => { setSession(data.session); setReady(true); });
@@ -38,11 +41,19 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       const { data: p } = await supabase.from("people").select("full_name, status, type").eq("id", cur.person_id).maybeSingle();
       setMe((p as Me) ?? null);
     } else setMe(null);
+    setPhone(null);
+    if (cur && cur.role !== "owner") {
+      const { data: recs } = await supabase.from("app_records").select("col, id, data").eq("project_id", cur.project_id).in("col", ["config", "members"]).in("id", ["access", session.user.id]);
+      const acc = recs?.find((r) => r.col === "config" && r.id === "access")?.data as { profiles?: Record<string, { phone?: Record<string, string> }> } | undefined;
+      const mem = recs?.find((r) => r.col === "members" && r.id === session.user.id)?.data as { role?: string } | undefined;
+      const prof = acc?.profiles && mem?.role ? acc.profiles[mem.role] : undefined;
+      if (prof?.phone) setPhone(prof.phone);
+    }
   }, [session, currentId]);
   useEffect(() => { reload(); }, [reload]);
 
   const current = memberships.find((m) => m.project_id === currentId) ?? null;
-  return <C.Provider value={{ session, ready, memberships, current, me, choose: setCurrentId, reload }}>{children}</C.Provider>;
+  return <C.Provider value={{ session, ready, memberships, current, me, choose: setCurrentId, reload, phone }}>{children}</C.Provider>;
 }
 
 /** Which field screens each role may open. */
@@ -57,4 +68,12 @@ export const SCREENS: Record<string, Role[]> = {
   review: ["owner", "owner_supervisor"],
   people: ["owner", "owner_supervisor"],
   team: ["owner"],
+  office: ["owner", "owner_supervisor", "site_supervisor", "store_keeper", "builder", "supplier", "consultant", "labour"],
 };
+
+/** May this user open a field screen? The owner's access profiles decide; the built-in list is the fallback. */
+export function canOpen(key: string, role: Role, phone: Record<string, string> | null): boolean {
+  if (role === "owner") return true;
+  if (phone && key in phone) return phone[key] === "Yes";
+  return (SCREENS[key] ?? []).includes(role);
+}

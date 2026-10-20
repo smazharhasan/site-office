@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Platform, Pressable, Text, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import { Banner, Button, Card, Screen, useColors } from "../src/components/ui";
-import { SCREENS, useProject } from "../src/lib/project";
+import { canOpen, useProject } from "../src/lib/project";
 import { deviceKey } from "../src/lib/evidence";
 import { flush, pending } from "../src/lib/queue";
 import { supabase } from "../src/lib/supabase";
@@ -13,7 +13,7 @@ let officeOpened = false; // the phone app opens the full Site Office once per l
 const TILES: [string, string][] = [["attendance", "Attendance"], ["release", "Release material"], ["receive", "Receive goods"], ["tanker", "Water tanker"], ["count", "Stock count"], ["daily-log", "Daily log"], ["stock", "Stock & consumption"], ["review", "Review & approve"], ["people", "People register"], ["team", "Team & logins"]];
 
 export default function Home() {
-  const { memberships, current, me, choose } = useProject(); const c = useColors();
+  const { memberships, current, me, choose, phone } = useProject(); const c = useColors();
   const [queued, setQueued] = useState(0); const [device, setDevice] = useState<"approved" | "waiting" | "unknown">("unknown");
   useFocusEffect(useCallback(() => { pending().then((p) => setQueued(p.length)); }, []));
   useEffect(() => {
@@ -25,8 +25,8 @@ export default function Home() {
   }, [current]);
 
   useEffect(() => {
-    if (current && Platform.OS !== "web" && !officeOpened) { officeOpened = true; router.push("/office"); }
-  }, [current]);
+    if (current && Platform.OS !== "web" && !officeOpened && canOpen("office", current.role, phone)) { officeOpened = true; router.push("/office"); }
+  }, [current, phone]);
 
   if (!current) return (
     <Screen title="Projects">
@@ -41,18 +41,18 @@ export default function Home() {
   return (
     <Screen title={current.projects?.name ?? "Site Office"}>
       <Text style={{ color: c.muted }}>{me?.full_name} · {current.role.replace("_", " ")}</Text>
-      <Pressable onPress={() => router.push("/office")}>
+      {canOpen("office", current.role, phone) ? <Pressable onPress={() => router.push("/office")}>
         <View style={{ backgroundColor: c.accent, borderRadius: 12, padding: 16, gap: 4 }}>
           <Text style={{ color: "#fff", fontSize: 18, fontWeight: "800" }}>{t("Full Site Office")}</Text>
           <Text style={{ color: "#fff", opacity: 0.9 }}>{t("Dashboard, progress, schedule, payments, budget, procurement, quality, snags, checklists")}</Text>
         </View>
-      </Pressable>
+      </Pressable> : null}
       <Text style={{ color: c.muted, fontWeight: "700", marginTop: 4 }}>{t("Field screens (camera & GPS checked)")}</Text>
       {device === "waiting" ? <Banner kind="warn" text="This phone is waiting for the owner's approval." /> : null}
       {device === "unknown" ? <Banner text="This phone will be registered with your first photo, then the owner approves it." /> : null}
       {queued ? <Banner kind="warn" text={`${queued} item(s) waiting to upload`} /> : null}
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
-        {TILES.filter(([k]) => SCREENS[k].includes(current.role)).map(([k, label]) => (
+        {TILES.filter(([k]) => canOpen(k, current.role, phone)).map(([k, label]) => (
           <Pressable key={k} onPress={() => router.push(`/${k}` as never)} style={{ width: "48%" }}>
             <Card><Text style={{ fontSize: 16, fontWeight: "700", color: c.ink }}>{t(label)}</Text></Card>
           </Pressable>
