@@ -1,3 +1,4 @@
+import { t } from "../src/lib/i18n";
 import React, { useCallback, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { Banner, Button, Card, Field, Screen, Select, useColors } from "../src/components/ui";
@@ -58,7 +59,7 @@ export default function Stock() {
           </Card>
         );
       })}
-      {tools.length ? <Text style={{ fontWeight: "700", color: c.ink }}>Tools out</Text> : null}
+      {tools.length ? <Text style={{ fontWeight: "700", color: c.ink }}>{t("Tools out")}</Text> : null}
       {tools.map((t) => { const days = Math.floor((today - new Date(t.last_out).getTime()) / 864e5); const late = days > (t.return_days ?? 1);
         return <View key={t.material_id + t.person_id}><Text style={{ color: late ? c.bad : c.ink }}>{t.name}: {Number(t.held)} with {names[t.person_id] ?? "—"} for {days} day(s){late ? " · OVERDUE" : ""}</Text></View>; })}
     </Screen>

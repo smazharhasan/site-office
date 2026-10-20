@@ -1,3 +1,4 @@
+import { t } from "../src/lib/i18n";
 import React, { useState } from "react";
 import { Text } from "react-native";
 import * as Location from "expo-location";
@@ -31,14 +32,14 @@ export default function Setup() {
   };
   return (
     <Screen title="Set up your project">
-      <Text>One project per site. You become its owner and can add staff logins afterwards.</Text>
+      <Text>{t("One project per site. You become its owner and can add staff logins afterwards.")}</Text>
       <Field label="Your name or company (client)" value={f.org} onChangeText={set("org")} />
       <Field label="Project name" value={f.name} onChangeText={set("name")} placeholder="e.g. Villa 31" />
       <Field label="Site address" value={f.address} onChangeText={set("address")} />
       <Field label="Short description for the AI (floors, area, features)" value={f.description} onChangeText={set("description")} multiline />
       <Field label="Contract start (YYYY-MM-DD)" value={f.start_date} onChangeText={set("start_date")} placeholder="2026-11-01" />
       <Field label="Contract period (months)" value={f.months} onChangeText={set("months")} keyboardType="number-pad" />
-      <Text style={{ fontWeight: "700" }}>Site location — photos taken outside it are refused</Text>
+      <Text style={{ fontWeight: "700" }}>{t("Site location — photos taken outside it are refused")}</Text>
       <Button title="Use my current location (stand on the plot)" kind="plain" onPress={here} />
       <Field label="Latitude" value={f.lat} onChangeText={set("lat")} keyboardType="decimal-pad" />
       <Field label="Longitude" value={f.lng} onChangeText={set("lng")} keyboardType="decimal-pad" />

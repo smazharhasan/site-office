@@ -34,7 +34,7 @@
   .so-plist{display:flex;flex-direction:column;gap:8px}.so-plist button{text-align:left}`;
   document.head.append(css);
   let ov = null;
-  const show = html => { if (!ov) { ov = document.createElement("div"); ov.className = "so-ov"; document.body.append(ov); } ov.innerHTML = `<div class="so-card"><div class="so-brand"><div class="so-mark">SO</div><div><b style="font-family:var(--f-display,system-ui);font-size:17px">Site Office</b><p>Construction project management</p></div></div>${html}</div>`; return ov; };
+  const show = html => { if (!ov) { ov = document.createElement("div"); ov.className = "so-ov"; document.body.append(ov); } ov.innerHTML = `<div class="so-card"><div class="so-brand"><div class="so-mark">SO</div><div style="flex:1"><b style="font-family:var(--f-display,system-ui);font-size:17px">Site Office</b><p>Construction project management</p></div><button class="so-btn plain" id="soLang" type="button" style="padding:6px 10px">${ls.get("v31.lang") === "ur" ? "English" : "اردو"}</button></div>${html}</div>`; return ov; };
   const hide = () => { if (ov) { ov.remove(); ov = null; } };
   const errText = e => { const m = (e && (e.message || e.error_description || e.error)) || String(e); if (/Invalid login/i.test(m)) return "Wrong email or password."; if (/Email not confirmed/i.test(m)) return "Confirm your email first: open the link we emailed you (check spam)."; return m; };
 
@@ -238,6 +238,7 @@
     if (b) b.textContent = name + " Site Office"; if (sm) sm.textContent = sub; if (mk) mk.textContent = (name.match(/\d+/) || [name.charAt(0).toUpperCase()])[0].slice(0, 3);
     document.title = name + " Site Office";
   };
+  document.addEventListener("click", e => { if (e.target.closest("#soLang")){ ls.set("v31.lang", ls.get("v31.lang") === "ur" ? "en" : "ur"); location.reload(); } });
   document.addEventListener("click", async e => {
     const t = e.target.closest("[data-so]"); if (!t) return;
     const a = t.dataset.so;

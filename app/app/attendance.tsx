@@ -49,7 +49,7 @@ export default function Attendance() {
         <Card>
           <Text style={{ fontSize: 18, fontWeight: "700", color: c.ink }}>{person.full_name}</Text>
           <Text style={{ color: c.muted }}>{[person.trade || person.type, person.gang].filter(Boolean).join(" · ")}</Text>
-          {person.problem ? <Text style={{ color: c.bad, fontWeight: "700" }}>⚠ {person.problem}</Text> : <Text style={{ color: c.good }}>✓ Registered and active</Text>}
+          {person.problem ? <Text style={{ color: c.bad, fontWeight: "700" }}>⚠ {person.problem}</Text> : <Text style={{ color: c.good }}>✓ {t("Registered and Active")}</Text>}
           <Button title={dir === "in" ? "Check in" : "Check out"} kind="plain" onPress={() => setDir(dir === "in" ? "out" : "in")} />
         </Card>
       ) : null}

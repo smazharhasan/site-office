@@ -1,3 +1,4 @@
+import { t } from "../src/lib/i18n";
 import React, { useCallback, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { Banner, Button, Card, Field, Screen, Select, useColors } from "../src/components/ui";
@@ -26,7 +27,7 @@ export default function Team() {
   return (
     <Screen title="Team & logins">
       <Card>
-        <Text style={{ fontWeight: "700", color: c.ink }}>Add a login</Text>
+        <Text style={{ fontWeight: "700", color: c.ink }}>{t("Add a login")}</Text>
         <Field label="Name" value={f.full_name} onChangeText={(v) => setF({ ...f, full_name: v })} />
         <Field label="Email" value={f.email} onChangeText={(v) => setF({ ...f, email: v })} autoCapitalize="none" keyboardType="email-address" />
         <Field label="Password (8+ characters)" value={f.password} onChangeText={(v) => setF({ ...f, password: v })} autoCapitalize="none" />

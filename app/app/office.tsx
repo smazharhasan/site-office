@@ -1,3 +1,4 @@
+import { getLang, t } from "../src/lib/i18n";
 import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, BackHandler, Platform, Text, View } from "react-native";
 import { router } from "expo-router";
@@ -25,7 +26,7 @@ export default function Office() {
     supabase.auth.getSession().then(({ data }) => {
       const s = data.session;
       const payload = JSON.stringify({ access_token: s?.access_token, refresh_token: s?.refresh_token, project: current?.project_id ?? null });
-      setBoot(`window.SO_NATIVE = ${payload}; try { if (window.SO_NATIVE.project) localStorage.setItem("so.project", window.SO_NATIVE.project); } catch (e) {} true;`);
+      setBoot(`window.SO_NATIVE = ${payload}; try { if (window.SO_NATIVE.project) localStorage.setItem("so.project", window.SO_NATIVE.project); localStorage.setItem("v31.lang", "${getLang()}"); } catch (e) {} true;`);
     });
     const sub = supabase.auth.onAuthStateChange((ev, s) => {
       if (ev === "TOKEN_REFRESHED" && s) web.current?.injectJavaScript(`window.SO_setSession && window.SO_setSession(${JSON.stringify({ access_token: s.access_token, refresh_token: s.refresh_token })}); true;`);
@@ -53,8 +54,8 @@ export default function Office() {
 
   if (failed) return (
     <SafeAreaView style={{ flex: 1, backgroundColor: c.bg, padding: 24, gap: 12, justifyContent: "center" }}>
-      <Text style={{ color: c.ink, fontSize: 18, fontWeight: "700" }}>No internet connection</Text>
-      <Text style={{ color: c.muted }}>The full Site Office needs internet. The field screens (attendance, receiving, stock) still work offline and send later.</Text>
+      <Text style={{ color: c.ink, fontSize: 18, fontWeight: "700" }}>{t("No internet connection")}</Text>
+      <Text style={{ color: c.muted }}>{t("The full Site Office needs internet. The field screens (attendance, receiving, stock) still work offline and send later.")}</Text>
       <Button title="Try again" onPress={() => { setFailed(false); web.current?.reload(); }} />
       <Button title="Open field screens" kind="plain" onPress={() => router.replace("/")} />
     </SafeAreaView>

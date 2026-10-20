@@ -28,7 +28,7 @@ export function LiveCamera({ visible, title, facing = "back", onDone, onClose }:
       <SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
         <Text style={{ color: "#fff", fontSize: 18, fontWeight: "700", padding: 12 }}>{t(title)}</Text>
         {!perm?.granted ? (
-          <View style={{ padding: 16, gap: 12 }}><Text style={{ color: "#fff" }}>Camera permission is needed.</Text><Button title="Allow camera" onPress={ask} /></View>
+          <View style={{ padding: 16, gap: 12 }}><Text style={{ color: "#fff" }}>{t("Camera permission is needed.")}</Text><Button title="Allow camera" onPress={ask} /></View>
         ) : shot ? (
           <Image source={{ uri: shot.uri }} style={{ flex: 1 }} resizeMode="contain" />
         ) : (

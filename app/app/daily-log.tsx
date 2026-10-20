@@ -53,7 +53,7 @@ export default function DailyLog() {
         <Text style={{ color: c.ink }}>{w ? `${Math.round(w.temp_c)}°C (feels ${Math.round(w.feels_c)}°C), ${w.phrase}, humidity ${w.humidity}%, wind ${Math.round(w.wind_kmh)} km/h, rain ${w.rain_mm} mm` : "Weather unavailable (set the site location in the project)."}</Text>
         {w?.advice ? <Text style={{ color: c.bad }}>{w.advice}</Text> : null}
       </Card>
-      <Card><Text style={{ color: c.ink }}>Verified labour on site today: <Text style={{ fontWeight: "800" }}>{labour ?? "…"}</Text> (from attendance)</Text></Card>
+      <Card><Text style={{ color: c.ink }}>{t("Verified labour on site today (from attendance)")}: <Text style={{ fontWeight: "800" }}>{labour ?? "…"}</Text></Text></Card>
       <Text style={{ fontWeight: "700", color: c.ink }}>{t("Staff present")}</Text>
       {staff.map((p) => <Pressable key={p.id} onPress={() => setPresent((x) => x.includes(p.id) ? x.filter((y) => y !== p.id) : [...x, p.id])}><Text style={{ color: c.ink }}>{present.includes(p.id) ? "☑" : "☐"} {p.full_name} · {p.type.replace("_", " ")}</Text></Pressable>)}
       <Select label="Power" value={power} onChange={setPower} options={[{ value: "btk_normal", label: "BTK Electric – normal" }, { value: "btk_outage_generator", label: "BTK outage – generator used" }, { value: "btk_outage_work_affected", label: "BTK outage – work affected" }, { value: "generator_only", label: "Generator only" }]} />

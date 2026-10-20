@@ -1,3 +1,4 @@
+import { t } from "../src/lib/i18n";
 import React, { useEffect, useState } from "react";
 import { Text } from "react-native";
 import { Banner, Button, Card, Field, Screen, Select, useColors } from "../src/components/ui";
@@ -51,13 +52,13 @@ export default function Release() {
       {receiver?.problem ? <Banner kind="bad" text={`Cannot release to ${receiver.name}: ${receiver.problem}`} /> : null}
       <Select label="Item" value={f.material_id} onChange={(v) => setF({ ...f, material_id: v })} options={stock.map((s) => ({ value: s.material_id, label: s.name, sub: `${s.on_hand} ${s.unit} in store · ${s.kind}` }))} />
       <Field label="Quantity" value={f.qty} onChangeText={(v) => setF({ ...f, qty: v })} keyboardType="decimal-pad" />
-      {mat && Number(f.qty) > mat.on_hand && f.kind === "release" ? <Text style={{ color: c.bad }}>Only {mat.on_hand} {mat.unit} in store.</Text> : null}
+      {mat && Number(f.qty) > mat.on_hand && f.kind === "release" ? <Text style={{ color: c.bad }}>{t(`Only ${mat.on_hand} ${mat.unit} in store.`)}</Text> : null}
       <Select label="Authorised by" value={f.authorised_by} onChange={(v) => setF({ ...f, authorised_by: v })} options={staff.map((p) => ({ value: p.id, label: p.full_name, sub: p.type.replace("_", " ") }))} />
       <Field label="Area / activity" value={f.area} onChangeText={(v) => setF({ ...f, area: v })} />
       {photo.ui}
       {msg ? <Banner kind={msg.k} text={msg.t} /> : null}
       <Button title="Save" onPress={save} busy={busy} disabled={!receiver || !!receiver.problem || !mat || !Number(f.qty) || !f.authorised_by || !photo.evidence} />
-      <Card><Text style={{ color: c.muted }}>The store keeper is you (your registered record). Time, GPS, phone and your name are stored with the photo and cannot be edited later.</Text></Card>
+      <Card><Text style={{ color: c.muted }}>{t("The store keeper is you (your registered record). Time, GPS, phone and your name are stored with the photo and cannot be edited later.")}</Text></Card>
       <BadgeScanner visible={scan} projectId={current.project_id} onToken={onToken} onClose={() => setScan(false)} />
     </Screen>
   );

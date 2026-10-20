@@ -1,3 +1,4 @@
+import { t } from "../src/lib/i18n";
 import React, { useState } from "react";
 import { Text } from "react-native";
 import { Redirect, router } from "expo-router";
@@ -35,7 +36,7 @@ export default function Register() {
   };
   return (
     <Screen title="Register yourself">
-      <Text>Everyone using the site app must be registered with full details. The owner's side verifies your record before you can record anything.</Text>
+      <Text>{t("Everyone using the site app must be registered with full details. The owner's side verifies your record before you can record anything.")}</Text>
       <Field label="Full name" value={f.full_name} onChangeText={set("full_name")} />
       <Field label="Father's name" value={f.father_name} onChangeText={set("father_name")} />
       <Field label="CNIC (13 digits)" value={f.cnic} onChangeText={set("cnic")} keyboardType="number-pad" />
