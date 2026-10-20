@@ -3,7 +3,7 @@
     "name": "Mimaar",
     "slug": "site-office",
     "scheme": "siteoffice",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "android": {
@@ -18,7 +18,11 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      "versionCode": 10100
+      "versionCode": 10200,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive.png",
+        "backgroundColor": "#0f6f5c"
+      }
     },
     "plugins": [
       "expo-router",
@@ -47,6 +51,12 @@
     "web": {
       "bundler": "metro",
       "output": "single"
+    },
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0f6f5c"
     }
   }
 }

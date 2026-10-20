@@ -9,7 +9,7 @@ import { flush } from "../src/lib/queue";
 import { supabase } from "../src/lib/supabase";
 
 function Gate() {
-  const { session, ready, current, me } = useProject(); const path = usePathname();
+  const { session, ready } = useProject(); const path = usePathname();
   useEffect(() => {
     // keep the auth token fresh and send queued items whenever the app comes to the front
     const sub = AppState.addEventListener("change", (s) => { if (s === "active") { supabase.auth.startAutoRefresh(); flush().catch(() => {}); } else supabase.auth.stopAutoRefresh(); });
@@ -18,7 +18,6 @@ function Gate() {
   if (!ready) return null;
   if (!session && path !== "/login") return <Redirect href="/login" />;
   if (session && path === "/login") return <Redirect href="/" />;
-  if (session && current && (!me || me.status !== "active") && !["/register", "/setup"].includes(path)) return <Redirect href="/register" />;
   return <Stack screenOptions={{ headerShown: false }} />;
 }
 

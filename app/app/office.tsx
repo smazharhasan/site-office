@@ -36,14 +36,13 @@ export default function Office() {
   }, [current?.project_id, go]);
 
   useEffect(() => {
-    const h = BackHandler.addEventListener("hardwareBackPress", () => { if (canBack) { web.current?.goBack(); return true; } router.replace("/"); return true; });
+    const h = BackHandler.addEventListener("hardwareBackPress", () => { if (canBack) { web.current?.goBack(); return true; } return false; });
     return () => h.remove();
   }, [canBack]);
 
   const onMessage = async (e: WebViewMessageEvent) => {
     let m: { type: string; filename?: string; base64?: string; mime?: string };
     try { m = JSON.parse(e.nativeEvent.data); } catch { return; }
-    if (m.type === "field") router.replace("/");
     if (m.type === "signout") { await supabase.auth.signOut(); router.replace("/login"); }
     if (m.type === "download" && m.base64) {
       const path = FileSystem.cacheDirectory + (m.filename || "download").replace(/[^A-Za-z0-9._-]/g, "_");
@@ -55,9 +54,8 @@ export default function Office() {
   if (failed) return (
     <SafeAreaView style={{ flex: 1, backgroundColor: c.bg, padding: 24, gap: 12, justifyContent: "center" }}>
       <Text style={{ color: c.ink, fontSize: 18, fontWeight: "700" }}>{t("No internet connection")}</Text>
-      <Text style={{ color: c.muted }}>{t("Mimaar needs internet. The field screens (attendance, receiving, stock) still work offline and send later.")}</Text>
+      <Text style={{ color: c.muted }}>{t("Mimaar needs the internet to open your project. Check your connection and try again.")}</Text>
       <Button title="Try again" onPress={() => { setFailed(false); web.current?.reload(); }} />
-      <Button title="Open field screens" kind="plain" onPress={() => router.replace("/")} />
     </SafeAreaView>
   );
   if (!boot) return <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: c.bg }}><ActivityIndicator /></View>;
