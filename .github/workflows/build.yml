@@ -20,7 +20,7 @@ jobs:
       - name: Mark the first release (1.0.0) in the history
         run: |
           git config user.name "build bot"; git config user.email "build@users.noreply.github.com"
-          if ! git ls-remote --tags origin v1.0.0 | grep -q v1.0.0; then git tag -a v1.0.0 313ea63 -m "Mimaar 1.0.0" && git push origin v1.0.0 || true; fi
+          if ! git ls-remote --tags origin v1.0.0 | grep -q v1.0.0; then git tag v1.0.0 313ea63 && git push origin v1.0.0 || true; fi
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: npm, cache-dependency-path: app/package-lock.json }
       - uses: actions/setup-java@v4
