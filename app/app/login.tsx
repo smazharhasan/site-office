@@ -26,7 +26,7 @@ export default function Login() {
     setBusy(false);
   };
   return (
-    <Screen title="Site Office">
+    <Screen title="Mimaar">
       <Text>{mode === "in" ? "Sign in with the email and password the owner gave you." : "Create the owner's account. You'll set up the project next and add your staff from inside the app."}</Text>
       {mode === "up" ? <Field label="Your full name" value={name} onChangeText={setName} /> : null}
       <Field label="Email" value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" autoComplete="email" />

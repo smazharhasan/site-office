@@ -59,8 +59,9 @@ export function BadgeScanner({ visible, projectId, onToken, onClose }: { visible
   const [perm, ask] = useCameraPermissions(); const [msg, setMsg] = useState("");
   const scanned = (r: BarcodeScanningResult) => {
     const parts = String(r.data).split("|");
-    if (parts[0] !== "SOP1" || parts.length !== 3) return setMsg("Not a site badge");
-    if (parts[1] !== projectId) return setMsg("Badge is for another project");
+    // keep waiting quietly until a real site card is in front of the camera
+    if (parts[0] !== "SOP1" || parts.length !== 3) return setMsg("Waiting for a site card…");
+    if (parts[1] !== projectId) return setMsg("This card is for another project");
     onToken(parts[2]);
   };
   return (

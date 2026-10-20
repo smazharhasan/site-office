@@ -34,7 +34,7 @@
   .so-plist{display:flex;flex-direction:column;gap:8px}.so-plist button{text-align:left}`;
   document.head.append(css);
   let ov = null;
-  const show = html => { if (!ov) { ov = document.createElement("div"); ov.className = "so-ov"; document.body.append(ov); } ov.innerHTML = `<div class="so-card"><div class="so-brand"><div class="so-mark">SO</div><div style="flex:1"><b style="font-family:var(--f-display,system-ui);font-size:17px">Site Office</b><p>Construction project management</p></div><button class="so-btn plain" id="soLang" type="button" style="padding:6px 10px">${ls.get("v31.lang") === "ur" ? "English" : "اردو"}</button></div>${html}</div>`; return ov; };
+  const show = html => { if (!ov) { ov = document.createElement("div"); ov.className = "so-ov"; document.body.append(ov); } ov.innerHTML = `<div class="so-card"><div class="so-brand"><div class="so-mark">M</div><div style="flex:1"><b style="font-family:var(--f-display,system-ui);font-size:17px">Mimaar <span style="font-weight:400;font-size:12px;opacity:.7">v__APP_VERSION__</span></b><p>Construction site office · معمار</p></div><button class="so-btn plain" id="soLang" type="button" style="padding:6px 10px">${ls.get("v31.lang") === "ur" ? "English" : "اردو"}</button></div>${html}</div>`; return ov; };
   const hide = () => { if (ov) { ov.remove(); ov = null; } };
   const errText = e => { const m = (e && (e.message || e.error_description || e.error)) || String(e); if (/Invalid login/i.test(m)) return "Wrong email or password."; if (/Email not confirmed/i.test(m)) return "Confirm your email first: open the link we emailed you (check spam)."; return m; };
 
@@ -251,8 +251,8 @@
   window.SO.brand = c => {
     const name = (c && c.name) || (SO.project && SO.project.name) || "Site Office"; const sub = (c && (c.plot || c.address)) || (SO.project && SO.project.address) || "";
     const b = document.querySelector(".brand b"), sm = document.querySelector(".brand small"), mk = document.querySelector(".brand .mark");
-    if (b) b.textContent = name + " Site Office"; if (sm) sm.textContent = sub; if (mk) mk.textContent = (name.match(/\d+/) || [name.charAt(0).toUpperCase()])[0].slice(0, 3);
-    document.title = name + " Site Office";
+    if (b) b.innerHTML = 'Mimaar <span class="ver">v__APP_VERSION__</span>'.replace("v__APP_VERSION__", "v" + ("__APP_VERSION__".startsWith("__") ? "1.1.0" : "__APP_VERSION__")); if (sm) sm.textContent = name + (sub ? " · " + sub : ""); if (mk) mk.textContent = "M";
+    document.title = name + " · Mimaar";
   };
   document.addEventListener("click", e => { if (e.target.closest("#soLang")){ ls.set("v31.lang", ls.get("v31.lang") === "ur" ? "en" : "ur"); location.reload(); } });
   document.addEventListener("click", async e => {

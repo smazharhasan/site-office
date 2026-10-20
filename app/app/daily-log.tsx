@@ -43,7 +43,7 @@ export default function DailyLog() {
     <View style={{ gap: 6 }}>{tasks.map((tk) => (
       <View key={tk.id} style={{ gap: 4 }}>
         <Pressable onPress={() => toggle(set, tk.id)}><Text style={{ color: c.ink }}>{tk.id in sel ? "☑" : "☐"} {tk.title}</Text></Pressable>
-        {tk.id in sel ? <TextInput value={sel[tk.id]} onChangeText={(v) => set((m) => ({ ...m, [tk.id]: v }))} placeholder="What exactly, quantity, gang" placeholderTextColor={c.muted} style={{ borderWidth: 1, borderColor: c.line, borderRadius: 6, padding: 8, color: c.ink }} /> : null}
+        {tk.id in sel ? <TextInput value={sel[tk.id]} onChangeText={(v) => set((m) => ({ ...m, [tk.id]: v }))} placeholder="What exactly, quantity, group" placeholderTextColor={c.muted} style={{ borderWidth: 1, borderColor: c.line, borderRadius: 6, padding: 8, color: c.ink }} /> : null}
       </View>))}</View>
   );
   return (

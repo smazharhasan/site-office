@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Site Office",
+    "name": "Mimaar",
     "slug": "site-office",
     "scheme": "siteoffice",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "android": {
@@ -17,7 +17,8 @@
         "READ_MEDIA_IMAGES",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
-      ]
+      ],
+      "versionCode": 10100
     },
     "plugins": [
       "expo-router",

@@ -8,6 +8,8 @@ import { flush, pending } from "../src/lib/queue";
 import { supabase } from "../src/lib/supabase";
 import { getLang, setLang, t } from "../src/lib/i18n";
 
+/** Staff interactions go through the site card (scan card, then live face photo) in Mimaar. */
+const CARD_FLOW: Record<string, string> = { attendance: "attendance:card", release: "stores:card-issue" };
 let officeOpened = false; // the phone app opens the full Site Office once per launch
 
 const TILES: [string, string][] = [["attendance", "Attendance"], ["release", "Release material"], ["receive", "Receive goods"], ["tanker", "Water tanker"], ["count", "Stock count"], ["daily-log", "Daily log"], ["stock", "Stock & consumption"], ["review", "Review & approve"], ["people", "People register"], ["team", "Team & logins"]];
@@ -39,11 +41,11 @@ export default function Home() {
   );
 
   return (
-    <Screen title={current.projects?.name ?? "Site Office"}>
+    <Screen title={current.projects?.name ?? "Mimaar"}>
       <Text style={{ color: c.muted }}>{me?.full_name} · {current.role.replace("_", " ")}</Text>
       {canOpen("office", current.role, phone) ? <Pressable onPress={() => router.push("/office")}>
         <View style={{ backgroundColor: c.accent, borderRadius: 12, padding: 16, gap: 4 }}>
-          <Text style={{ color: "#fff", fontSize: 18, fontWeight: "800" }}>{t("Full Site Office")}</Text>
+          <Text style={{ color: "#fff", fontSize: 18, fontWeight: "800" }}>{t("Open Mimaar")}</Text>
           <Text style={{ color: "#fff", opacity: 0.9 }}>{t("Dashboard, progress, schedule, payments, budget, procurement, quality, snags, checklists")}</Text>
         </View>
       </Pressable> : null}
@@ -53,7 +55,7 @@ export default function Home() {
       {queued ? <Banner kind="warn" text={`${queued} item(s) waiting to upload`} /> : null}
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
         {TILES.filter(([k]) => canOpen(k, current.role, phone)).map(([k, label]) => (
-          <Pressable key={k} onPress={() => router.push(`/${k}` as never)} style={{ width: "48%" }}>
+          <Pressable key={k} onPress={() => router.push((CARD_FLOW[k] ? `/office?go=${CARD_FLOW[k]}` : `/${k}`) as never)} style={{ width: "48%" }}>
             <Card><Text style={{ fontSize: 16, fontWeight: "700", color: c.ink }}>{t(label)}</Text></Card>
           </Pressable>
         ))}

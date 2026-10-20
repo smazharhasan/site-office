@@ -53,7 +53,7 @@ export default function People() {
     const cards = who.map((p) => {
       const q = qrcode(0, "M"); q.addData(`SOP1|${current.project_id}|${p.badge_token}`); q.make();
       const img = thumbs[p.id] ? `<img class="ph" src="${thumbs[p.id]}">` : `<div class="ph"></div>`;
-      return `<div class="card"><div class="hd">${esc(current.projects?.name ?? "")} · SITE PASS</div><div class="bd">${img}<div class="tx"><b>${esc(p.full_name)}</b><br>${esc(p.trade || p.type)}<br>Gang: ${esc(p.gang || "—")}<br>BTK: ${esc(p.btk_card_no || "—")}<br>Valid to: ${esc(p.btk_card_expiry || "—")}<br>CNIC: ${esc(p.cnic.replace(/^(\d{5})-\d{7}-(\d)$/, "$1-*******-$2"))}</div><div class="qr">${q.createSvgTag({ cellSize: 3, margin: 0, scalable: true })}</div></div><div class="ft">Scan at the gate · must be worn on site</div></div>`;
+      return `<div class="card"><div class="hd">${esc(current.projects?.name ?? "")} · SITE PASS</div><div class="bd">${img}<div class="tx"><b>${esc(p.full_name)}</b><br>${esc(p.trade || p.type)}<br>Group: ${esc(p.gang || "—")}<br>BTK: ${esc(p.btk_card_no || "—")}<br>Valid to: ${esc(p.btk_card_expiry || "—")}<br>CNIC: ${esc(p.cnic.replace(/^(\d{5})-\d{7}-(\d)$/, "$1-*******-$2"))}</div><div class="qr">${q.createSvgTag({ cellSize: 3, margin: 0, scalable: true })}</div></div><div class="ft">Scan at the gate · must be worn on site</div></div>`;
     }).join("");
     const html = `<html><head><meta charset="utf-8"><style>@page{size:A4;margin:10mm}body{font-family:Arial,sans-serif;display:grid;grid-template-columns:86mm 86mm;gap:4mm 8mm}.card{width:86mm;height:54mm;border:1px solid #bbb;border-radius:3mm;overflow:hidden;break-inside:avoid;display:flex;flex-direction:column}.hd{background:#0f6f5c;color:#fff;font-size:9pt;font-weight:bold;padding:2mm 3mm}.bd{flex:1;display:flex;gap:2mm;padding:2mm 3mm;font-size:8pt}.ph{width:20mm;height:25mm;object-fit:cover;border:1px solid #ccc}.tx{flex:1}.qr{width:24mm;height:24mm}.qr svg{width:24mm;height:24mm}.ft{font-size:6.5pt;color:#666;padding:0 3mm 2mm}</style></head><body>${cards}</body></html>`;
     await Print.printAsync({ html, width: Platform.OS === "web" ? undefined : 595, height: Platform.OS === "web" ? undefined : 842 });
@@ -76,7 +76,7 @@ export default function People() {
           <Field label="Address" value={f.address} onChangeText={set("address")} />
           <Select label="Type" value={f.type} onChange={set("type")} options={TYPES.map((x) => ({ value: x, label: x.replace("_", " ") }))} />
           <Field label="Trade (mason, steel fixer…)" value={f.trade} onChangeText={set("trade")} />
-          <Field label="Gang / contractor" value={f.gang} onChangeText={set("gang")} />
+          <Field label="Group / contractor" value={f.gang} onChangeText={set("gang")} />
           <Field label="BTK registration card no." value={f.btk_card_no} onChangeText={set("btk_card_no")} />
           <Field label="BTK card valid to (YYYY-MM-DD)" value={f.btk_card_expiry} onChangeText={set("btk_card_expiry")} />
           {current?.role === "owner" ? <Field label="Daily wage (Rs)" value={f.daily_wage} onChangeText={set("daily_wage")} keyboardType="number-pad" /> : null}

@@ -1,7 +1,7 @@
 import { getLang, t } from "../src/lib/i18n";
 import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, BackHandler, Platform, Text, View } from "react-native";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { WebView, type WebViewMessageEvent } from "react-native-webview";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
@@ -16,7 +16,7 @@ export const OFFICE_URL = "https://smazharhasan.github.io/site-office/";
  *  The phone app owns the sign-in: it hands its session to the page and pushes refreshed tokens,
  *  so there is one login and one token refresher. */
 export default function Office() {
-  const c = useColors(); const { current } = useProject();
+  const c = useColors(); const { current } = useProject(); const { go } = useLocalSearchParams<{ go?: string }>();
   const web = useRef<WebView>(null);
   const [boot, setBoot] = useState<string | null>(null);
   const [failed, setFailed] = useState(false); const [canBack, setCanBack] = useState(false);
@@ -26,14 +26,14 @@ export default function Office() {
     supabase.auth.getSession().then(({ data }) => {
       const s = data.session;
       const payload = JSON.stringify({ access_token: s?.access_token, refresh_token: s?.refresh_token, project: current?.project_id ?? null });
-      setBoot(`window.SO_NATIVE = ${payload}; try { if (window.SO_NATIVE.project) localStorage.setItem("so.project", window.SO_NATIVE.project); localStorage.setItem("v31.lang", "${getLang()}"); } catch (e) {} true;`);
+      setBoot(`window.SO_NATIVE = ${payload}; try { if (window.SO_NATIVE.project) localStorage.setItem("so.project", window.SO_NATIVE.project); localStorage.setItem("v31.lang", "${getLang()}"); ${go ? `window.SO_GO = ${JSON.stringify(String(go))};` : ""} } catch (e) {} true;`);
     });
     const sub = supabase.auth.onAuthStateChange((ev, s) => {
       if (ev === "TOKEN_REFRESHED" && s) web.current?.injectJavaScript(`window.SO_setSession && window.SO_setSession(${JSON.stringify({ access_token: s.access_token, refresh_token: s.refresh_token })}); true;`);
       if (ev === "SIGNED_OUT") router.replace("/login");
     });
     return () => sub.data.subscription.unsubscribe();
-  }, [current?.project_id]);
+  }, [current?.project_id, go]);
 
   useEffect(() => {
     const h = BackHandler.addEventListener("hardwareBackPress", () => { if (canBack) { web.current?.goBack(); return true; } router.replace("/"); return true; });
@@ -55,7 +55,7 @@ export default function Office() {
   if (failed) return (
     <SafeAreaView style={{ flex: 1, backgroundColor: c.bg, padding: 24, gap: 12, justifyContent: "center" }}>
       <Text style={{ color: c.ink, fontSize: 18, fontWeight: "700" }}>{t("No internet connection")}</Text>
-      <Text style={{ color: c.muted }}>{t("The full Site Office needs internet. The field screens (attendance, receiving, stock) still work offline and send later.")}</Text>
+      <Text style={{ color: c.muted }}>{t("Mimaar needs internet. The field screens (attendance, receiving, stock) still work offline and send later.")}</Text>
       <Button title="Try again" onPress={() => { setFailed(false); web.current?.reload(); }} />
       <Button title="Open field screens" kind="plain" onPress={() => router.replace("/")} />
     </SafeAreaView>
