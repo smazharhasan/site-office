@@ -326,7 +326,7 @@
   window.SO.brand = c => {
     const name = (c && c.name) || (SO.project && SO.project.name) || "Site Office"; const sub = (c && (c.plot || c.address)) || (SO.project && SO.project.address) || "";
     const b = document.querySelector(".brand b"), sm = document.querySelector(".brand small"), mk = document.querySelector(".brand .mark");
-    if (b) b.innerHTML = 'Mimaar <span class="ver">v__APP_VERSION__</span>'.replace("v__APP_VERSION__", "v" + ("__APP_VERSION__".startsWith("__") ? "1.10.0" : "__APP_VERSION__")); if (sm) sm.textContent = name + (sub ? " · " + sub : ""); if (mk) mk.textContent = "M";
+    if (b) b.innerHTML = 'Mimaar <span class="ver">v__APP_VERSION__</span>'.replace("v__APP_VERSION__", "v" + ("__APP_VERSION__".startsWith("__") ? "2.0.0" : "__APP_VERSION__")); if (sm) sm.textContent = name + (sub ? " · " + sub : ""); if (mk) mk.textContent = "M";
     document.title = name + " · Mimaar";
   };
   document.addEventListener("click", e => { if (e.target.closest("#soLang")){ ls.set("v31.lang", ls.get("v31.lang") === "ur" ? "en" : "ur"); location.reload(); } });

@@ -3624,5 +3624,11 @@
 "Supplier account statement with PDF, WhatsApp and email": "سپلائر اکاؤنٹ اسٹیٹمنٹ PDF، واٹس ایپ اور ای میل کے ساتھ",
 "RFQs go to every supplier of the same items, are locked, then sent to each supplier by PDF, WhatsApp or email, with their replies compared": "RFQ انہی آئٹمز کے ہر سپلائر کو جاتا ہے، لاک ہوتا ہے، پھر ہر سپلائر کو PDF، واٹس ایپ یا ای میل سے بھیجا جاتا ہے، اور ان کے جوابات کا موازنہ ہوتا ہے",
 "Trace any item, quotation, PO, delivery note, invoice or payment from start to end": "کوئی بھی آئٹم، کوٹیشن، PO، ڈیلیوری نوٹ، انوائس یا ادائیگی شروع سے آخر تک ٹریس کریں",
-"Fixed: saving a quotation": "درست: کوٹیشن محفوظ کرنا"
+"Fixed: saving a quotation": "درست: کوٹیشن محفوظ کرنا",
+"Mimaar now runs on ERPNext, an established open-source ERP: suppliers, quotations, purchase orders, receiving, bills, payments, stock, budgets and the project plan all live on your own ERPNext site": "معمار اب ERPNext پر چلتا ہے، جو ایک مستند اوپن سورس ERP ہے: سپلائر، کوٹیشن، پرچیز آرڈر، مال کی وصولی، بل، ادائیگیاں، اسٹاک، بجٹ اور پروجیکٹ پلان سب آپ کی اپنی ERPNext سائٹ پر ہیں",
+"The Android app opens your ERPNext site: type the site address once (for example villa31.frappe.cloud)": "اینڈرائیڈ ایپ آپ کی ERPNext سائٹ کھولتی ہے: سائٹ کا پتہ ایک بار لکھیں (مثلاً villa31.frappe.cloud)",
+"This old app stays available from the start screen until the move is finished; your data has been copied across": "پرانی ایپ منتقلی مکمل ہونے تک شروع کی اسکرین سے دستیاب رہے گی؛ آپ کا ڈیٹا منتقل کر دیا گیا ہے",
+"Open your project": "اپنا پروجیکٹ کھولیں",
+"Use the old Mimaar app (until the move is finished)": "پرانی معمار ایپ استعمال کریں (منتقلی مکمل ہونے تک)",
+"Change site address": "سائٹ کا پتہ بدلیں"
 }

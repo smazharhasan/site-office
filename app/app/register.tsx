@@ -18,8 +18,8 @@ export default function Register() {
   const cnicB = useEvidence("person_doc", "CNIC back", { strict: false });
   const [busy, setBusy] = useState(false); const [err, setErr] = useState("");
   if (!current) return null;
-  if (me && me.status === "active") return <Redirect href="/" />;
-  if (me && me.status === "pending") return <Screen title="Register yourself"><Banner kind="warn" text="Registered. The owner's side is verifying your record; you'll get access once they mark you active." /><Button title="Check again" onPress={() => reload().then(() => router.replace("/"))} /></Screen>;
+  if (me && me.status === "active") return <Redirect href="/home" />;
+  if (me && me.status === "pending") return <Screen title="Register yourself"><Banner kind="warn" text="Registered. The owner's side is verifying your record; you'll get access once they mark you active." /><Button title="Check again" onPress={() => reload().then(() => router.replace("/home"))} /></Screen>;
   const set = (k: keyof typeof f) => (v: string) => setF({ ...f, [k]: v });
   const save = async () => {
     const d = f.cnic.replace(/\D/g, "");
@@ -32,7 +32,7 @@ export default function Register() {
     const r = await supabase.from("person_docs").insert(docs.map(([kind, e]) => ({ person_id: data.id, kind, evidence_id: e.id })));
     if (r.error) { setErr(errText(r.error)); setBusy(false); return; }
     await reload(); setBusy(false);
-    router.replace("/");
+    router.replace("/home");
   };
   return (
     <Screen title="Register yourself">

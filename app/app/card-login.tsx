@@ -28,7 +28,7 @@ export default function CardLogin() {
       let v = await supabase.auth.verifyOtp({ token_hash: d.token_hash, type: "magiclink" });
       if (v.error) v = await supabase.auth.verifyOtp({ token_hash: d.token_hash, type: "email" });
       if (v.error) throw new Error(v.error.message);
-      router.replace("/");
+      router.replace("/home");
     } catch (e) { setPin(""); setMsg(String((e as Error).message || e)); }
     setBusy(false);
   };
