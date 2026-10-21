@@ -4,6 +4,8 @@ import { router } from "expo-router";
 import { WebView } from "react-native-webview";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useCameraPermissions } from "expo-camera";
+import * as Location from "expo-location";
 import { Banner, Button, Field, Screen, useColors } from "../src/components/ui";
 
 const KEY = "mimaar.erp.site";
@@ -17,7 +19,14 @@ export default function Erp() {
   const [input, setInput] = useState(""); const [busy, setBusy] = useState(false); const [msg, setMsg] = useState("");
   const [failed, setFailed] = useState(false); const [canBack, setCanBack] = useState(false);
 
+  const [cam, askCam] = useCameraPermissions();
   useEffect(() => { AsyncStorage.getItem(KEY).then((v) => setSite(v || null)).catch(() => setSite(null)); }, []);
+  // the site uses the camera (scans, photos, site cards) and the location (attendance): ask once, up front
+  useEffect(() => {
+    if (!site || Platform.OS === "web") return;
+    if (cam && !cam.granted && cam.canAskAgain) askCam().catch(() => {});
+    Location.getForegroundPermissionsAsync().then((p) => { if (!p.granted && p.canAskAgain) Location.requestForegroundPermissionsAsync().catch(() => {}); }).catch(() => {});
+  }, [site, cam?.granted]);
   useEffect(() => {
     const h = BackHandler.addEventListener("hardwareBackPress", () => { if (site && canBack) { web.current?.goBack(); return true; } return false; });
     return () => h.remove();
@@ -68,9 +77,9 @@ export default function Erp() {
           const u = req.url;
           if (/^(https?:)?\/\//i.test(u) && !u.startsWith(base)) { Linking.openURL(u); return false; }
           if (/^(mailto|tel|whatsapp|intent):/i.test(u)) { Linking.openURL(u); return false; }
-          if (/download_pdf|\.pdf(\?|$)/i.test(u)) { Linking.openURL(u); return false; }
           return true;
         }}
+        // PDFs and other files are downloaded by the phone (with the sign-in), into Downloads
         sharedCookiesEnabled thirdPartyCookiesEnabled geolocationEnabled javaScriptEnabled domStorageEnabled allowFileAccess
         mediaCapturePermissionGrantType="grant" allowsInlineMediaPlayback setSupportMultipleWindows={false} pullToRefreshEnabled startInLoadingState
         renderLoading={() => <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, alignItems: "center", justifyContent: "center", backgroundColor: c.bg }}><ActivityIndicator size="large" /></View>} />
