@@ -2666,5 +2666,22 @@
  "STRN": "ایس ٹی آر این",
  "PEC": "پی ای سی",
  "MEP": "بجلی پانی",
- "BTK —": "بی ٹی کے —"
+ "BTK —": "بی ٹی کے —",
+ "Show all": "سب دیکھیں",
+ "Risks": "خطرات",
+ "Stages done": "مکمل مراحل",
+ "items need attention": "امور توجہ طلب",
+ "item needs attention": "امر توجہ طلب",
+ "{0} items need attention": "{0} امور توجہ طلب",
+ "{0} item needs attention": "{0} امر توجہ طلب",
+ "Choose": "منتخب کریں",
+ "Audits": "آڈٹ",
+ "Set the contract start date in Project settings": "پروجیکٹ کی ترتیبات میں معاہدے کے آغاز کی تاریخ درج کریں",
+ "Professional phone design: calm white cards, one accent colour, compact project summary": "فون کے لیے پیشہ ورانہ ڈیزائن: سادہ سفید کارڈ، ایک نمایاں رنگ، مختصر پروجیکٹ خلاصہ",
+ "Lists everywhere are short rows; tap a row for its details": "ہر جگہ فہرستیں مختصر قطاریں؛ تفصیل کے لیے قطار پر ٹیپ کریں",
+ "No sideways scrolling: long tab rows and filters open as a picker": "دائیں بائیں اسکرول ختم: لمبے ٹیب اور فلٹر انتخاب کی فہرست میں کھلتے ہیں",
+ "Long sections fold, dashboard sections open on tap": "لمبے حصے سمٹ جاتے ہیں، ڈیش بورڈ کے حصے ٹیپ پر کھلتے ہیں",
+ "Bottom bar with the + button always in the centre": "نیچے کی پٹی میں + بٹن ہمیشہ درمیان میں",
+ "Urdu lines no longer overlap; weather in Urdu": "اردو سطریں اب ایک دوسرے پر نہیں چڑھتیں؛ موسم اردو میں",
+ "Short option lists in forms are one-tap buttons": "فارم میں چھوٹی فہرستیں ایک ٹیپ والے بٹن"
 }
