@@ -243,6 +243,7 @@
   const fnCall = async (name, body) => { const { data, error } = await sb.functions.invoke(name, { body: Object.assign({ project_id: SO.project.id }, body) }); if (error) { let m = error.message; try { m = (await error.context.json()).error || m; } catch (e) {} const x = new Error(m); throw x; } return data; };
   window.SO.aiSettings = (action, body) => fnCall("ai-settings", Object.assign({ action }, body || {}));
   window.SO.translate = async texts => (await fnCall("translate", { texts })).pairs || {};
+  window.SO.changes = async n => { const { data, error } = await sb.from("app_changes").select("col, rec_id, op, by_user, at, changes").eq("project_id", SO.project.id).order("at", { ascending: false }).limit(n || 200); if (error) throw new Error(/does not exist|relation/i.test(error.message) ? "The change log is being switched on." : error.message); return data || []; };
   window.SO.resetAI = () => { samplePromise = null; };
   window.SO.geocode = async (lat, lng) => { const k = lat.toFixed(4) + "," + lng.toFixed(4); if (geoMem[k]) return geoMem[k]; const c = ls.get("geo." + k); if (c) return (geoMem[k] = c);
     const { data, error } = await sb.functions.invoke("geocode", { body: { lat, lng } }); if (error || !data || !data.address) return ""; ls.set("geo." + k, data.address); return (geoMem[k] = data.address); };
@@ -325,7 +326,7 @@
   window.SO.brand = c => {
     const name = (c && c.name) || (SO.project && SO.project.name) || "Site Office"; const sub = (c && (c.plot || c.address)) || (SO.project && SO.project.address) || "";
     const b = document.querySelector(".brand b"), sm = document.querySelector(".brand small"), mk = document.querySelector(".brand .mark");
-    if (b) b.innerHTML = 'Mimaar <span class="ver">v__APP_VERSION__</span>'.replace("v__APP_VERSION__", "v" + ("__APP_VERSION__".startsWith("__") ? "1.8.0" : "__APP_VERSION__")); if (sm) sm.textContent = name + (sub ? " · " + sub : ""); if (mk) mk.textContent = "M";
+    if (b) b.innerHTML = 'Mimaar <span class="ver">v__APP_VERSION__</span>'.replace("v__APP_VERSION__", "v" + ("__APP_VERSION__".startsWith("__") ? "1.9.0" : "__APP_VERSION__")); if (sm) sm.textContent = name + (sub ? " · " + sub : ""); if (mk) mk.textContent = "M";
     document.title = name + " · Mimaar";
   };
   document.addEventListener("click", e => { if (e.target.closest("#soLang")){ ls.set("v31.lang", ls.get("v31.lang") === "ur" ? "en" : "ur"); location.reload(); } });
