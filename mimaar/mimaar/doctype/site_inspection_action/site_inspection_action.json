@@ -1,0 +1,82 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-22 18:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mimaar",
+ "name": "Site Inspection Action",
+ "owner": "Administrator",
+ "modified": "2026-10-22 18:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "issue",
+   "fieldtype": "Data",
+   "label": "Issue found",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 3
+  },
+  {
+   "fieldname": "photo",
+   "fieldtype": "Attach Image",
+   "label": "Photo",
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "action",
+   "fieldtype": "Data",
+   "label": "Corrective action",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 3
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Responsible supplier",
+   "options": "Supplier",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "responsible_person",
+   "fieldtype": "Data",
+   "label": "Responsible person"
+  },
+  {
+   "fieldname": "target_date",
+   "fieldtype": "Date",
+   "label": "Target date",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "snag",
+   "fieldtype": "Link",
+   "label": "Snag",
+   "options": "Site Snag",
+   "read_only": 1
+  }
+ ],
+ "field_order": [
+  "issue",
+  "photo",
+  "action",
+  "supplier",
+  "responsible_person",
+  "target_date",
+  "snag"
+ ],
+ "links": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "row_format": "Dynamic",
+ "istable": 1,
+ "editable_grid": 1,
+ "permissions": []
+}

@@ -1,0 +1,8 @@
+.mimaar-trace .results{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.mimaar-trace-card{border:1px solid var(--border-color);border-radius:12px;padding:12px 14px;background:var(--card-bg)}
+.mimaar-trace-card .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.mimaar-trace-card .row-t{display:grid;grid-template-columns:130px 1fr;gap:10px;padding:6px 0;border-top:1px dashed var(--border-color);font-size:13px}
+.mimaar-trace-card .row-t>span{color:var(--text-muted);font-weight:600}
+@media (max-width:600px){.mimaar-trace-card .row-t{grid-template-columns:1fr}}
+html[lang=ur] body{font-family:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq","Noto Naskh Arabic",var(--font-stack)}
+html[lang=ur] .form-control,html[lang=ur] input,html[lang=ur] .frappe-control .control-value{font-family:var(--font-stack),"Noto Naskh Arabic"}

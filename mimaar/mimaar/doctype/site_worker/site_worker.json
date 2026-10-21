@@ -1,0 +1,278 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-22 18:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mimaar",
+ "name": "Site Worker",
+ "owner": "Administrator",
+ "modified": "2026-10-22 18:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Name",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_global_search": 1
+  },
+  {
+   "fieldname": "father_name",
+   "fieldtype": "Data",
+   "label": "Father's name"
+  },
+  {
+   "fieldname": "worker_type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "Labour\nMistri\nGroup head\nSupervisor\nBuilder staff\nSupplier staff\nConsultant\nOther",
+   "default": "Labour",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "trade",
+   "fieldtype": "Select",
+   "label": "Trade",
+   "options": "\nMason\nSteel fixer\nCarpenter\nShuttering\nElectrician\nPlumber\nPainter\nTile and marble\nWelder\nHelper\nOther",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "contractor",
+   "fieldtype": "Link",
+   "label": "Contractor / supplier",
+   "options": "Supplier",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "gang",
+   "fieldtype": "Data",
+   "label": "Group head / gang"
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "photo",
+   "fieldtype": "Attach Image",
+   "label": "Face photo",
+   "description": "Take a clear photo of the face. It is printed on the site card."
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nLeft the site\nBlocked",
+   "default": "Active",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "daily_wage",
+   "fieldtype": "Currency",
+   "label": "Daily wage"
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "label": "Mobile",
+   "options": "Phone"
+  },
+  {
+   "fieldname": "id_section",
+   "fieldtype": "Section Break",
+   "label": "Identity and verification"
+  },
+  {
+   "fieldname": "cnic",
+   "fieldtype": "Data",
+   "label": "CNIC",
+   "in_global_search": 1,
+   "description": "13 digits, e.g. 42101-1234567-1"
+  },
+  {
+   "fieldname": "cnic_expiry",
+   "fieldtype": "Date",
+   "label": "CNIC expiry"
+  },
+  {
+   "fieldname": "cnic_front",
+   "fieldtype": "Attach Image",
+   "label": "CNIC front"
+  },
+  {
+   "fieldname": "cnic_back",
+   "fieldtype": "Attach Image",
+   "label": "CNIC back"
+  },
+  {
+   "fieldname": "col2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "entry_card_no",
+   "fieldtype": "Data",
+   "label": "Society entry card no. (e.g. Bahria Town)"
+  },
+  {
+   "fieldname": "entry_card_expiry",
+   "fieldtype": "Date",
+   "label": "Entry card expiry"
+  },
+  {
+   "fieldname": "police_verification",
+   "fieldtype": "Select",
+   "label": "Police verification",
+   "options": "Not done\nApplied\nVerified",
+   "default": "Not done"
+  },
+  {
+   "fieldname": "police_document",
+   "fieldtype": "Attach",
+   "label": "Police verification document"
+  },
+  {
+   "fieldname": "verified_by",
+   "fieldtype": "Link",
+   "label": "Verified by",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "verified_on",
+   "fieldtype": "Date",
+   "label": "Verified on",
+   "read_only": 1
+  },
+  {
+   "fieldname": "contact_section",
+   "fieldtype": "Section Break",
+   "label": "Contact",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Small Text",
+   "label": "Address"
+  },
+  {
+   "fieldname": "col3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "emergency_contact",
+   "fieldtype": "Data",
+   "label": "Emergency contact (name and number)"
+  }
+ ],
+ "field_order": [
+  "full_name",
+  "father_name",
+  "worker_type",
+  "trade",
+  "contractor",
+  "gang",
+  "col1",
+  "photo",
+  "status",
+  "daily_wage",
+  "phone",
+  "id_section",
+  "cnic",
+  "cnic_expiry",
+  "cnic_front",
+  "cnic_back",
+  "col2",
+  "entry_card_no",
+  "entry_card_expiry",
+  "police_verification",
+  "police_document",
+  "verified_by",
+  "verified_on",
+  "contact_section",
+  "address",
+  "col3",
+  "emergency_contact"
+ ],
+ "links": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "row_format": "Dynamic",
+ "autoname": "WRK-.####",
+ "title_field": "full_name",
+ "show_title_field_in_link": 1,
+ "image_field": "photo",
+ "search_fields": "full_name,trade,contractor,cnic",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1
+  },
+  {
+   "role": "Projects Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Site Supervisor",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Projects User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Purchase User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  }
+ ],
+ "track_changes": 1,
+ "default_print_format": "Site Worker Card"
+}

@@ -1,0 +1,4354 @@
+"""SN-01::10"" for ""SN-01"" to ""SN-10""","""SN-01::10"" یعنی ""SN-01"" سے ""SN-10"" تک"
+% Amount Billed,% بل شدہ رقم
+% Billed,% بل شدہ
+% Complete Method,% مکمل کا طریقہ
+% Complete must be between 0 and 100,% مکمل 0 اور 100 کے درمیان ہونا چاہیے
+% Completed,% مکمل
+% Ordered,% آرڈر شدہ
+% Process Loss,% ضیاع
+% Progress,% پیش رفت
+% Received,% وصول شدہ
+% Returned,% واپس
+% of Component Cost,% جزو کی لاگت
+'Opening','ابتدائی'
+(A) Qty After Transaction,(A) لین دین کے بعد مقدار
+(B) Expected Qty After Transaction,(B) لین دین کے بعد متوقع مقدار
+(C) Total Qty in Queue,(C) قطار میں کل مقدار
+(D) Balance Stock Value,(D) اسٹاک کی بقایا مالیت
+(E) Balance Stock Value in Queue,(E) قطار میں اسٹاک کی بقایا مالیت
+(F) Change in Stock Value,(F) اسٹاک کی مالیت میں تبدیلی
+(G) Sum of Change in Stock Value,(G) اسٹاک کی مالیت میں تبدیلی کا مجموعہ
+(H) Change in Stock Value (FIFO Queue),(H) اسٹاک کی مالیت میں تبدیلی (FIFO قطار)
+(I) Valuation Rate,(I) ویلیوایشن ریٹ
+(J) Valuation Rate as per FIFO,(J) FIFO کے مطابق ویلیوایشن ریٹ
+(K) Valuation = Value (D) ÷ Qty (A),(K) ویلیوایشن = مالیت (D) ÷ مقدار (A)
+(Purchase Order + Material Request + Actual Expense),(پرچیز آرڈر + میٹیریل ریکوئسٹ + اصل خرچ)
+** Failed: {0} to {1}: {2},** ناکام: {0} سے {1}: {2}
++ Add / Remove Fields,+ فیلڈز شامل / حذف کریں
++{0} more,+{0} مزید
+1 = True & 0 = False,1 = ہاں اور 0 = نہیں
+1 Day,1 دن
+1 Report,1 رپورٹ
+1 hour,1 گھنٹہ
+1 hour ago,1 گھنٹہ پہلے
+1 minute ago,1 منٹ پہلے
+1 month ago,1 مہینہ پہلے
+1 row from {0},{0} سے 1 لائن
+1 row to {0},{0} میں 1 لائن
+1 week ago,1 ہفتہ پہلے
+1 year ago,1 سال پہلے
+30 minutes,30 منٹ
+4 hours,4 گھنٹے
+<b>{0}</b> is not a valid URL,<b>{0}</b> درست URL نہیں
+A bill from a supplier for what you bought.,سپلائر کا بل، جو آپ نے خریدا اس کا۔
+A failed inspection needs at least one corrective action.,ناکام معائنے کے لیے کم از کم ایک اصلاحی اقدام ضروری ہے۔
+A layout with this name already exists,اس نام کا لے آؤٹ پہلے سے موجود ہے
+"A piece of work with tasks, time and costs.",کاموں، وقت اور لاگت کے ساتھ ایک کام کا منصوبہ۔
+A place where you keep stock.,وہ جگہ جہاں اسٹاک رکھا جاتا ہے۔
+A submitted purchase order can't be cancelled or revised,جمع شدہ پرچیز آرڈر منسوخ یا تبدیل نہیں ہو سکتا
+"A submitted purchase order is locked and can't be cancelled or revised. If it is no longer needed, set its status to Closed.",جمع شدہ پرچیز آرڈر لاک ہے، منسوخ یا تبدیل نہیں ہو سکتا۔ اگر اب ضرورت نہیں تو اس کا اسٹیٹس بند (Closed) کر دیں۔
+AI document reading,AI سے دستاویز پڑھنا
+AI error,AI کی خرابی
+AI not set up,AI سیٹ اپ نہیں
+AI provider,AI فراہم کنندہ
+AI reading is off. Choose Gemini or Claude and paste the API key in Mimaar Settings.,AI سے پڑھنا بند ہے۔ معمار سیٹنگز میں Gemini یا Claude منتخب کریں اور API کی پیسٹ کریں۔
+AP Summary,واجب الادا خلاصہ
+API Access,API رسائی
+API Key,API کی
+API Secret,API سیکرٹ
+API key,اے پی آئی کلید
+AR Summary,وصولی خلاصہ
+Abbr,مخفف
+About,تعارف
+Accepted,قبول
+Accepted Qty,قبول شدہ مقدار
+Accepted Qty in Stock UOM,اسٹاک یونٹ میں قبول شدہ مقدار
+Accepted Quantity,قبول شدہ مقدار
+Accepted Warehouse,قبول شدہ گودام
+Access,رسائی
+Account,اکاؤنٹ
+Account Category,اکاؤنٹ کیٹیگری
+Account Currency,اکاؤنٹ کرنسی
+Account Currency (From),اکاؤنٹ کرنسی (سے)
+Account Currency (To),اکاؤنٹ کرنسی (تک)
+Account Head,اکاؤنٹ ہیڈ
+Account Paid From,ادائیگی اس اکاؤنٹ سے
+Account Paid To,ادائیگی اس اکاؤنٹ میں
+Account Type,اکاؤنٹ کی قسم
+Account is mandatory,اکاؤنٹ ضروری ہے
+Account statement,اکاؤنٹ اسٹیٹمنٹ
+Account where cost of goods sold will be posted when this item is sold,وہ اکاؤنٹ جس میں آئٹم بکنے پر فروخت شدہ مال کی لاگت درج ہوگی
+Account where revenue from selling this item will be credited,وہ اکاؤنٹ جس میں آئٹم بکنے کی آمدنی درج ہوگی
+Account where the cost of this item will be debited on purchase,وہ اکاؤنٹ جس میں خریداری پر اس آئٹم کی لاگت درج ہوگی
+Accounting,اکاؤنٹنگ
+Accounting Details,اکاؤنٹنگ کی تفصیل
+Accounting Dimension,اکاؤنٹنگ ڈائمینشن
+Accounting Dimensions,اکاؤنٹنگ ڈائمینشنز
+Accounting Dimensions ,اکاؤنٹنگ ڈائمینشنز
+Accounting Entry for Service,سروس کی اکاؤنٹنگ انٹری
+Accounting Entry for Stock,اسٹاک کی اکاؤنٹنگ انٹری
+Accounting Entry for {0},{0} کی اکاؤنٹنگ انٹری
+Accounting Ledger,اکاؤنٹنگ لیجر
+Accounts,اکاؤنٹس
+Accounts Closing,اکاؤنٹس کی بندش
+Accounts Frozen Till Date,اس تاریخ تک اکاؤنٹس منجمد
+Accounts Payable,واجب الادا رقوم
+Accounts Payable Summary,واجب الادا رقوم کا خلاصہ
+Accounts Receivable,قابل وصول رقوم
+Accounts Receivable Summary,قابل وصول رقوم کا خلاصہ
+Accounts Settings,اکاؤنٹس سیٹنگز
+Accounts Setup,اکاؤنٹس سیٹ اپ
+Accumulated Monthly,ماہانہ مجموعی
+Action,اقدام
+Action Failed,اقدام ناکام
+Action Label,اقدام کا لیبل
+Action failed.,اقدام ناکام ہو گیا۔
+Action if Accumulated Monthly Budget Exceeded on Actual,ماہانہ مجموعی بجٹ اصل خرچ پر بڑھ جائے تو اقدام
+Action if Accumulated Monthly Budget Exceeded on MR,ماہانہ مجموعی بجٹ میٹیریل ریکوئسٹ پر بڑھ جائے تو اقدام
+Action if Accumulated Monthly Budget Exceeded on PO,ماہانہ مجموعی بجٹ پرچیز آرڈر پر بڑھ جائے تو اقدام
+Action if Accumulative Monthly Budget Exceeded on Cumulative Expense,مجموعی خرچ پر ماہانہ مجموعی بجٹ بڑھ جائے تو اقدام
+Action if Annual Budget Exceeded on Actual,سالانہ بجٹ اصل خرچ پر بڑھ جائے تو اقدام
+Action if Annual Budget Exceeded on MR,سالانہ بجٹ میٹیریل ریکوئسٹ پر بڑھ جائے تو اقدام
+Action if Annual Budget Exceeded on PO,سالانہ بجٹ پرچیز آرڈر پر بڑھ جائے تو اقدام
+Action if Anual Budget Exceeded on Cumulative Expense,مجموعی خرچ پر سالانہ بجٹ بڑھ جائے تو اقدام
+Action if same rate is not maintained,ریٹ برقرار نہ رہے تو اقدام
+Actions,اقدامات
+Activate Serial / Batch No for Item,آئٹم کے لیے سیریل / بیچ نمبر فعال کریں
+Active,فعال
+Active Sessions,فعال سیشنز
+Activity,سرگرمی
+Activity Cost,سرگرمی کی لاگت
+Activity Type,سرگرمی کی قسم
+Actual,اصل
+Actual End Date (via Timesheet),اصل اختتامی تاریخ (ٹائم شیٹ سے)
+Actual Expense,اصل خرچ
+Actual Expenses,اصل اخراجات
+Actual Qty,اصل مقدار
+Actual Qty (at source/target),اصل مقدار (ماخذ/منزل پر)
+Actual Start Date (via Timesheet),اصل آغاز کی تاریخ (ٹائم شیٹ سے)
+Actual Time in Hours (via Timesheet),اصل وقت گھنٹوں میں (ٹائم شیٹ سے)
+Add,شامل کریں
+Add / Remove Columns,کالم شامل / حذف کریں
+Add Attachment,اٹیچمنٹ شامل کریں
+Add Card to Dashboard,ڈیش بورڈ میں کارڈ شامل کریں
+Add Chart to Dashboard,ڈیش بورڈ میں چارٹ شامل کریں
+Add Child,ذیلی شامل کریں
+Add Column,کالم شامل کریں
+Add Contacts,رابطے شامل کریں
+Add Filter,فلٹر شامل کریں
+Add Filters,فلٹرز شامل کریں
+Add Group,گروپ شامل کریں
+Add Items,آئٹمز شامل کریں
+Add More,مزید شامل کریں
+Add Multiple,ایک سے زیادہ شامل کریں
+Add Multiple Tasks,ایک سے زیادہ کام شامل کریں
+Add New,نیا شامل کریں
+Add Opening Stock,ابتدائی اسٹاک شامل کریں
+Add Participants,شرکاء شامل کریں
+Add Permission for {0},{0} کے لیے اجازت شامل کریں
+Add Price,قیمت شامل کریں
+Add Row,لائن شامل کریں
+Add Serial / Batch No,سیریل / بیچ نمبر شامل کریں
+Add Serial / Batch No (Rejected Qty),سیریل / بیچ نمبر شامل کریں (مسترد مقدار)
+Add Series,سیریز شامل کریں
+Add Series Prefix,سیریز کا سابقہ شامل کریں
+Add Suppliers,سپلائرز شامل کریں
+Add Tags,ٹیگز شامل کریں
+Add User Permission,یوزر اجازت شامل کریں
+Add Video Conferencing,ویڈیو کانفرنس شامل کریں
+Add a Filter,فلٹر شامل کریں
+Add a Note,نوٹ شامل کریں
+Add a Row,لائن شامل کریں
+Add a photo after fixing before marking the snag {0}.,خرابی کو {0} کرنے سے پہلے ٹھیک ہونے کے بعد کی تصویر لگائیں۔
+Add a row above the current row,موجودہ لائن کے اوپر لائن شامل کریں
+Add a row at the bottom,سب سے نیچے لائن شامل کریں
+Add a row at the top,سب سے اوپر لائن شامل کریں
+Add a row below the current row,موجودہ لائن کے نیچے لائن شامل کریں
+Add a {0} Chart,{0} چارٹ شامل کریں
+Add attachment,اٹیچمنٹ شامل کریں
+Add card,کارڈ شامل کریں
+Add multiple,ایک سے زیادہ شامل کریں
+Add new attachments,نئی اٹیچمنٹس شامل کریں
+Add or Deduct,جمع یا منہا
+Add role,رول شامل کریں
+Add row,لائن شامل کریں
+Add suppliers of these items,ان آئٹمز کے سپلائرز شامل کریں
+"Add the items and suppliers, then submit to finalise and lock it. After that it is sent to each supplier.",آئٹمز اور سپلائرز شامل کریں، پھر جمع کر کے حتمی اور لاک کریں۔ اس کے بعد یہ ہر سپلائر کو بھیجا جاتا ہے۔
+Add the items first.,پہلے آئٹمز شامل کریں۔
+Add to Dashboard,ڈیش بورڈ میں شامل کریں
+Add to ToDo,ٹو ڈو میں شامل کریں
+Add to Transit,ٹرانزٹ میں شامل کریں
+Add to the Sidebar,سائیڈ بار میں شامل کریں
+Add to the dock,ڈاک میں شامل کریں
+Add to this activity by mailing to {0},{0} پر ای میل کر کے اس سرگرمی میں شامل کریں
+Add {0},{0} شامل کریں
+Add {0} to a module,{0} کو کسی ماڈیول میں شامل کریں
+Add/Update Filter,فلٹر شامل / اپ ڈیٹ کریں
+Added,شامل کیا
+Added Roles,شامل کیے گئے رولز
+Added Supplier Role to User {0}.,یوزر {0} کو سپلائر رول دیا گیا۔
+Added Widgets,شامل کیے گئے ویجیٹس
+Added to global search,عمومی تلاش میں شامل کیا گیا
+Added {0} ({1}),{0} شامل کیا گیا ({1})
+Added {0} to {1},{0} کو {1} میں شامل کیا گیا
+Additional Cost,اضافی لاگت
+Additional Costs,اضافی لاگتیں
+Additional Discount,اضافی رعایت
+Additional Discount Amount,اضافی رعایت کی رقم
+Additional Discount Amount (Company Currency),اضافی رعایت کی رقم (کمپنی کرنسی)
+Additional Discount Percentage,اضافی رعایت فیصد
+Additional Discount per Stock Unit,فی اسٹاک یونٹ اضافی رعایت
+Additional Finished Good,اضافی تیار مال
+Additional Info,اضافی معلومات
+Address,پتہ
+Address & Contact,پتہ اور رابطہ
+Address And Contacts,پتے اور رابطے
+Address HTML,پتہ HTML
+Address Line 1,پتہ لائن 1
+Address Line 2,پتہ لائن 2
+Address Title,پتے کا عنوان
+Address Type,پتے کی قسم
+Address and Contact,پتہ اور رابطہ
+Address and Contacts,پتے اور رابطے
+Administrator,ایڈمنسٹریٹر
+Administrator can't follow,ایڈمنسٹریٹر فالو نہیں کر سکتا
+Advance (% of PO total),ایڈوانس (PO کل کا %)
+Advance Amount,ایڈوانس کی رقم
+Advance Paid (Company Currency),ادا شدہ ایڈوانس (کمپنی کرنسی)
+Advance Payment,ایڈوانس ادائیگی
+Advance Payment Date,ایڈوانس ادائیگی کی تاریخ
+Advance Payment Status,ایڈوانس ادائیگی کی صورتحال
+Advance Payments,ایڈوانس ادائیگیاں
+Advance Taxes and Charges,ایڈوانس ٹیکس اور چارجز
+Advance Voucher No,ایڈوانس واؤچر نمبر
+Advance Voucher Type,ایڈوانس واؤچر کی قسم
+Advance asked (% of total),مانگا گیا ایڈوانس (کل کا %)
+Advance asked (%),مانگا گیا ایڈوانس (%)
+Advance limit,ایڈوانس کی حد
+Advance must be between 0 and 100 percent.,ایڈوانس 0 سے 100 فیصد کے درمیان ہونا چاہیے۔
+Advance on {0} can't be more than {1} ({2}% of the order). Already paid: {3}.,{0} پر ایڈوانس {1} ({2}% آرڈر) سے زیادہ نہیں ہو سکتا۔ پہلے سے ادا: {3}۔
+Advance payment ({0}),ایڈوانس ادائیگی ({0})
+Advance payments allocated against orders will only be fetched,صرف آرڈرز کے مقابل مختص ایڈوانس ادائیگیاں حاصل ہوں گی
+Advance with supplier,سپلائر کے پاس ایڈوانس
+Advance with supplier {0},سپلائر کے پاس ایڈوانس {0}
+Advanced Control,اعلیٰ کنٹرول
+Advanced Search,تفصیلی تلاش
+Advances,ایڈوانس
+After,کے بعد
+Against Blanket Order,بلینکٹ آرڈر کے مقابل
+Against Expense Account,اخراجات کے اکاؤنٹ کے مقابل
+Against Finished Good,تیار مال کے مقابل
+Against Stock Entry,اسٹاک انٹری کے مقابل
+Against Supplier Invoice {0},سپلائر انوائس {0} کے مقابل
+Age (Days),عمر (دن)
+Age as on,اس تاریخ تک عمر
+Ageing Based On,عمر کی بنیاد
+Ageing Range,عمر کی حد
+Aggregate Function Based On,مجموعی فنکشن کی بنیاد
+Alias,متبادل نام
+Alignment,ترتیب
+All,سب
+All Day,سارا دن
+All DocTypes,تمام DocTypes
+All Parties,تمام فریقین
+All Results,تمام نتائج
+All Submissions,تمام جمع شدہ
+All apps,تمام ایپس
+All set! Opening your workspace,سب تیار! آپ کی ورک اسپیس کھل رہی ہے
+Allocate Full Amount to Stock Items,پوری رقم اسٹاک آئٹمز میں تقسیم کریں
+Allocate Payment Amount,ادائیگی کی رقم تقسیم کریں
+Allocate Payment Request,ادائیگی کی درخواست تقسیم کریں
+Allocated,مختص
+Allocated Amount,مختص رقم
+Allocated To,مختص برائے
+Allocations,تقسیم
+Allow Alternative Item,متبادل آئٹم کی اجازت
+Allow Bulk Editing,ایک ساتھ ترمیم کی اجازت
+Allow Modules,ماڈیولز کی اجازت
+Allow Negative Stock,منفی اسٹاک کی اجازت
+Allow Purchase,خریداری کی اجازت
+Allow Purchase Order with Zero Quantity,صفر مقدار کے ساتھ پرچیز آرڈر کی اجازت
+Allow Roles,رولز کی اجازت
+Allow Sales,فروخت کی اجازت
+Allow Supplier Quotation with Zero Quantity,صفر مقدار کے ساتھ سپلائر کوٹیشن کی اجازت
+Allow Zero Valuation Rate,صفر ویلیوایشن ریٹ کی اجازت
+Allow bulk actions,ایک ساتھ اقدامات کی اجازت
+Allow negative rates for Items,آئٹمز کے منفی ریٹ کی اجازت
+Allow notifications,نوٹیفکیشنز کی اجازت
+Allow purchase invoice creation without purchase order,پرچیز آرڈر کے بغیر پرچیز انوائس کی اجازت
+Allow purchase invoice creation without purchase receipt,پرچیز رسید کے بغیر پرچیز انوائس کی اجازت
+Allow this item to be used in purchase transactions.,اس آئٹم کو خریداری میں استعمال کی اجازت۔
+Allow this item to be used in sales transactions.,اس آئٹم کو فروخت میں استعمال کی اجازت۔
+Allowed Items,اجازت شدہ آئٹمز
+Allowed to transact with,ان کے ساتھ لین دین کی اجازت
+"Allowing DocType, DocType. Be careful!",DocType کی اجازت دی جا رہی ہے۔ احتیاط کریں!
+Allows the user to create new documents.,یوزر کو نئی دستاویزات بنانے کی اجازت دیتا ہے۔
+Allows the user to delete documents.,یوزر کو دستاویزات حذف کرنے کی اجازت دیتا ہے۔
+Allows the user to submit documents.,یوزر کو دستاویزات جمع کرنے کی اجازت دیتا ہے۔
+Allows the user to view the document.,یوزر کو دستاویز دیکھنے کی اجازت دیتا ہے۔
+Almost done,تقریباً مکمل
+Already amended as {0},پہلے ہی {0} کے طور پر ترمیم ہو چکی
+Alt UOM,متبادل یونٹ
+Alternate Item,متبادل آئٹم
+Aluminium and glass,ایلومینیم اور شیشہ
+Amend,ترمیم کریں
+Amended From,ترمیم شدہ از
+Amending,ترمیم ہو رہی ہے
+Amendment Not Allowed,ترمیم کی اجازت نہیں
+Amount,رقم
+Amount (Company Currency),رقم (کمپنی کرنسی)
+Amount Difference with Purchase Invoice,پرچیز انوائس کے ساتھ رقم کا فرق
+Amount {0} {1} adjusted against {2} {3},رقم {0} {1} کو {2} {3} کے مقابل ایڈجسٹ کیا گیا
+Amount {0} {1} as adjustment to {2},رقم {0} {1} کو {2} کی ایڈجسٹمنٹ کے طور پر
+Amount {0} {1} {2} {3},رقم {0} {1} {2} {3}
+An order you place with a supplier.,سپلائر کو دیا گیا آرڈر۔
+Analysis Chart,تجزیاتی چارٹ
+Ancestors Of,کے آباؤ اجداد
+Annual Billing: {0},سالانہ بلنگ: {0}
+App,ایپ
+App Logo,ایپ کا لوگو
+Appearance,ظاہری شکل
+Applicable For,کس پر لاگو
+Applicable on Cumulative Expense,مجموعی خرچ پر لاگو
+Applicable on Material Request,میٹیریل ریکوئسٹ پر لاگو
+Applicable on Purchase Order,پرچیز آرڈر پر لاگو
+Applicable on booking actual expenses,اصل خرچ درج کرنے پر لاگو
+Apply,لاگو کریں
+Apply Additional Discount On,اضافی رعایت کس پر لاگو کریں
+Apply Assignment Rule,تفویض کا اصول لاگو کریں
+Apply Filters,فلٹرز لاگو کریں
+Apply Putaway Rule,رکھنے کا اصول لاگو کریں
+Apply To All Document Types,تمام دستاویزی اقسام پر لاگو کریں
+Applying: {0},لاگو ہو رہا ہے: {0}
+Appointment,ملاقات
+Appointment Booking,ملاقات کی بکنگ
+Appointment Booking Settings,ملاقات کی بکنگ کی سیٹنگز
+Apps,ایپس
+Archive,آرکائیو کریں
+Archived,آرکائیو شدہ
+Archived Columns,آرکائیو شدہ کالم
+Are you sure you want to log out?,کیا آپ واقعی لاگ آؤٹ کرنا چاہتے ہیں؟
+Are you sure you want to proceed?,کیا آپ واقعی آگے بڑھنا چاہتے ہیں؟
+Are you sure you want to {0}?,کیا آپ واقعی {0} کرنا چاہتے ہیں؟
+Area / activity,جگہ / کام
+Arrange,ترتیب دیں
+Arranging,ترتیب دی جا رہی ہے
+As on Date,اس تاریخ تک
+As per Stock UOM,اسٹاک یونٹ کے مطابق
+Ascending,بڑھتی ترتیب
+Ask,پوچھیں
+Ask for a contract instead,اس کے بجائے کنٹریکٹ مانگیں
+Asked the supplier for their contract instead of a purchase order.,پرچیز آرڈر کے بجائے سپلائر سے ان کا کنٹریکٹ مانگا گیا۔
+"Assalam-o-Alaikum. Your account statement from {0}: billed {1}, paid {2}, balance {3}.",السلام علیکم۔ {0} کی طرف سے آپ کا اکاؤنٹ اسٹیٹمنٹ: بل {1}، ادا شدہ {2}، بقایا {3}۔
+Assalam-o-Alaikum. {0} {1} from {2}.,السلام علیکم۔ {2} کی طرف سے {0} {1}۔
+Asset,اثاثہ
+Asset Activity,اثاثے کی سرگرمی
+Asset Capitalization,اثاثے کی سرمایہ کاری
+Asset Category,اثاثے کی کیٹیگری
+Asset Depreciation Ledger,اثاثے کی فرسودگی کا لیجر
+Asset Depreciations and Balances,اثاثوں کی فرسودگی اور بقایا
+Asset Location,اثاثے کی جگہ
+Asset Maintenance,اثاثے کی دیکھ بھال
+Asset Maintenance Log,اثاثے کی دیکھ بھال کا ریکارڈ
+Asset Maintenance Team,اثاثے کی دیکھ بھال کی ٹیم
+Asset Movement,اثاثے کی منتقلی
+Asset Naming Series,اثاثے کی نام سازی سیریز
+Asset Repair,اثاثے کی مرمت
+Asset Value Adjustment,اثاثے کی مالیت میں ایڈجسٹمنٹ
+Assets,اثاثے
+Assign,تفویض کریں
+Assign To,کو تفویض کریں
+Assign To User Group,یوزر گروپ کو تفویض کریں
+Assign a user,یوزر کو تفویض کریں
+Assign to me,مجھے تفویض کریں
+Assigned By,تفویض کرنے والا
+Assigned By Full Name,تفویض کرنے والے کا پورا نام
+Assigned To,تفویض شدہ
+Assigned To/Owner,تفویض شدہ/مالک
+Assigning...,تفویض ہو رہا ہے...
+Assignment Rule,تفویض کا اصول
+Assignment Update on {0},{0} پر تفویض کی تازہ کاری
+Assignment for {0} {1},{0} {1} کی تفویض
+Assignment of {0} removed by {1},{0} کی تفویض {1} نے ختم کی
+Assignments,تفویضات
+At least one warehouse is mandatory,کم از کم ایک گودام ضروری ہے
+Attach,منسلک کریں
+Attach CSV File,CSV فائل منسلک کریں
+Attach Document Print,دستاویز کا پرنٹ منسلک کریں
+Attach Image field for card thumbnail.,کارڈ کی چھوٹی تصویر کے لیے تصویر کا فیلڈ۔
+Attach a web link,ویب لنک منسلک کریں
+Attach document print,دستاویز کا پرنٹ منسلک کریں
+Attach files,فائلیں منسلک کریں
+"Attach the proof of payment (transfer screenshot, cheque photo or receipt).",ادائیگی کا ثبوت لگائیں (ٹرانسفر اسکرین شاٹ، چیک کی تصویر یا رسید)۔
+Attached File,منسلک فائل
+Attached To DocType,منسلک DocType
+Attached To Field,منسلک فیلڈ
+Attached To Name,منسلک نام
+Attachment,اٹیچمنٹ
+Attachment Limit Reached,اٹیچمنٹ کی حد پوری ہو گئی
+Attachment Link,اٹیچمنٹ لنک
+Attachments,اٹیچمنٹس
+Attempting Connection to QZ Tray...,QZ Tray سے رابطے کی کوشش...
+Attempting to launch QZ Tray...,QZ Tray شروع کرنے کی کوشش...
+Attendee not found in this event.,اس ایونٹ میں شرکت کنندہ نہیں ملا۔
+Attending,شرکت
+Attribute table is mandatory,خصوصیات کی ٹیبل ضروری ہے
+Attribute {0} is disabled.,خصوصیت {0} غیر فعال ہے۔
+Attributes,خصوصیات
+Auditor,آڈیٹر
+Authorization Rule,اجازت کا اصول
+Auto Assign,خودکار تفویض
+Auto Created (Reorder),خود بنایا گیا (دوبارہ آرڈر)
+Auto Fetch,خودکار حاصل کریں
+Auto Repeat,خودکار دہرائی
+Auto Repeat created for this document,اس دستاویز کے لیے خودکار دہرائی بنائی گئی
+Auto create Purchase Receipt,پرچیز رسید خود بنائیں
+Auto follow documents that are assigned to you,تفویض شدہ دستاویزات خود فالو کریں
+Auto follow documents that are shared with you,شیئر شدہ دستاویزات خود فالو کریں
+Auto follow documents that you Like,پسند کی گئی دستاویزات خود فالو کریں
+Auto follow documents that you comment on,تبصرہ شدہ دستاویزات خود فالو کریں
+Auto follow documents that you create,اپنی بنائی دستاویزات خود فالو کریں
+Auto re-order,خودکار دوبارہ آرڈر
+Auto repeat document updated,خودکار دہرائی کی دستاویز اپ ڈیٹ ہو گئی
+Automatic,خودکار
+Automation,خودکاری
+Available Qty,دستیاب مقدار
+Available Qty For Consumption,استعمال کے لیے دستیاب مقدار
+Available Qty at Company,کمپنی میں دستیاب مقدار
+Available Qty at Target Warehouse,منزل گودام میں دستیاب مقدار
+"Available quantity is {0}, you need {1}",دستیاب مقدار {0} ہے، آپ کو {1} چاہیے
+Available to all users,تمام یوزرز کے لیے دستیاب
+Average,اوسط
+Average Age,اوسط عمر
+Average of {0},{0} کی اوسط
+Average time taken by the supplier to deliver,سپلائر کو ترسیل میں لگنے والا اوسط وقت
+Avg Rate (Balance Stock),اوسط ریٹ (بقایا اسٹاک)
+Back,واپس
+Back to sign in,واپس داخلے پر
+Background Color,پس منظر کا رنگ
+Background Jobs,پس منظر کے کام
+Background Jobs Check,پس منظر کے کاموں کی جانچ
+Background Workers,پس منظر کے ورکرز
+Background color,پس منظر کا رنگ
+Backup Encryption Key,بیک اپ کی خفیہ کلید
+Backups,بیک اپس
+Backups (MB),بیک اپس (MB)
+Balance,بقایا
+Balance Qty,بقایا مقدار
+Balance Qty (Alt UOM),بقایا مقدار (متبادل یونٹ)
+Balance Sheet,بیلنس شیٹ
+Balance Value,بقایا مالیت
+Bank,بینک
+Bank Account,بینک اکاؤنٹ
+Bank Account No,بینک اکاؤنٹ نمبر
+Bank Clearance,بینک کلیئرنس
+Banking,بینکاری
+Bar,بار
+Barcode,بار کوڈ
+Barcode {0} already used in Item {1},بار کوڈ {0} پہلے سے آئٹم {1} میں استعمال ہو چکا
+Barcode {0} is not a valid {1} code,بار کوڈ {0} درست {1} کوڈ نہیں
+Barcodes,بار کوڈز
+Based On Payment Terms,ادائیگی کی شرائط کی بنیاد پر
+Basic Amount,بنیادی رقم
+Basic Info,بنیادی معلومات
+Basic Rate (as per Stock UOM),بنیادی ریٹ (اسٹاک یونٹ کے مطابق)
+Batchwise Valuation,بیچ وار ویلیوایشن
+Before,پہلے
+Before submitting: {0}. Count what actually arrived; partial deliveries keep the purchase order open.,جمع کرنے سے پہلے: {0}۔ جو اصل میں آیا وہ گنیں؛ جزوی ترسیل پر پرچیز آرڈر کھلا رہتا ہے۔
+Begin On (Days),شروع (دنوں میں)
+Begin typing for results.,نتائج کے لیے لکھنا شروع کریں۔
+Beginning with,سے شروع
+Between,درمیان
+Bill / invoice scan,بل / انوائس کا اسکین
+Bill Date,بل کی تاریخ
+Bill No,بل نمبر
+Bill number needed,بل نمبر ضروری ہے
+Bill of Materials,مٹیریل کی فہرست
+Bill scan needed,بل کا اسکین ضروری ہے
+Billed,بل شدہ
+Billed Amount,بل شدہ رقم
+Billed Amt,بل شدہ رقم
+Billed {0},بل شدہ {0}
+"Billed, Received & Returned",بل شدہ، وصول شدہ اور واپس
+Billing,بلنگ
+Billing Address,بلنگ کا پتہ
+Billing Address Details,بلنگ پتے کی تفصیل
+Billing Currency,بلنگ کرنسی
+Binary Logging,بائنری لاگنگ
+Bio,تعارف
+Birth Date,تاریخ پیدائش
+Block Invoice,انوائس روکیں
+Block Supplier,سپلائر روکیں
+Blockquote,اقتباس
+Blocks,بلاک
+Blockwork,بلاک کا کام
+Blue,نیلا
+Board Name,بورڈ کا نام
+Board Settings,بورڈ کی سیٹنگز
+Board name is required,بورڈ کا نام ضروری ہے
+Board settings saved,بورڈ کی سیٹنگز محفوظ ہو گئیں
+Bold,موٹا
+Bottom,نیچے
+Bottom Center,نیچے درمیان
+Bottom Right,نیچے دائیں
+Brand,برانڈ
+Brands,برانڈز
+Breadcrumb,راستہ (بریڈ کرمب)
+Bring every entry back onto the dock.,ہر اندراج کو دوبارہ ڈاک پر لائیں۔
+Browser not supported,براؤزر سپورٹ نہیں کرتا
+Budget,بجٹ
+Budget Account,بجٹ اکاؤنٹ
+Budget Against,بجٹ کس کے مقابل
+Budget Amount,بجٹ کی رقم
+Budget Amount can not be {0}.,بجٹ کی رقم {0} نہیں ہو سکتی۔
+Budget Detail,بجٹ کی تفصیل
+Budget Distribution,بجٹ کی تقسیم
+Budget Distribution Total,بجٹ کی تقسیم کا مجموعہ
+Budget End Date,بجٹ کی اختتامی تاریخ
+Budget Exceeded,بجٹ سے تجاوز
+Budget Limit Exceeded,بجٹ کی حد سے تجاوز
+Budget Start Date,بجٹ کی آغاز تاریخ
+Budget Variance,بجٹ کا فرق
+Budget Variance Report,بجٹ بمقابلہ اصل رپورٹ
+Budget vs actual,بجٹ بمقابلہ اصل
+Budgeting,بجٹ سازی
+Bufferpool Size,بفر پول سائز
+Build,تعمیر
+Bulk Actions,ایک ساتھ اقدامات
+Bulk Edit,ایک ساتھ ترمیم
+Bulk Edit {0},{0} میں ایک ساتھ ترمیم
+Bulk PDF Export,ایک ساتھ PDF ایکسپورٹ
+Bulk Transaction Log,ایک ساتھ لین دین کا ریکارڈ
+Bulk Update,ایک ساتھ اپ ڈیٹ
+Bulk {0} is enqueued in background.,ایک ساتھ {0} پس منظر میں قطار میں ہے۔
+Bullet list,بلٹ فہرست
+Buy,خریدیں
+Buy & Sell,خرید و فروخت
+Buying,خریداری
+Buying & Selling Settings,خرید و فروخت کی سیٹنگز
+Buying Settings,خریداری کی سیٹنگز
+Buying and Selling,خرید و فروخت
+By-Product,ضمنی پیداوار
+CRM Settings,CRM سیٹنگز
+Cache,کیش
+Calendar,کیلنڈر
+Call,کال
+Call Log,کال کا ریکارڈ
+Callback Message,کال بیک پیغام
+Callback Title,کال بیک عنوان
+Camera,کیمرہ
+Campaign,مہم
+Campaign Efficiency,مہم کی کارکردگی
+Cancel,منسوخ
+Cancel All,سب منسوخ کریں
+Cancel All Documents,تمام دستاویزات منسوخ کریں
+Cancel Stock Ledger Entries,اسٹاک لیجر انٹریز منسوخ کریں
+Cancel {0} documents?,{0} دستاویزات منسوخ کریں؟
+Cancelled,منسوخ
+Cancelling,منسوخ ہو رہا ہے
+Cancelling documents,دستاویزات منسوخ ہو رہی ہیں
+Cancelling {0},{0} منسوخ ہو رہا ہے
+Cannot Merge,ضم نہیں ہو سکتا
+Cannot Update After Submit,جمع ہونے کے بعد تبدیلی نہیں ہو سکتی
+Cannot apply taxes,ٹیکس لاگو نہیں ہو سکتے
+Cannot apply taxes from this address,اس پتے سے ٹیکس لاگو نہیں ہو سکتے
+Cannot cancel {0}.,{0} منسوخ نہیں ہو سکتا۔
+Cannot delete {0},{0} حذف نہیں ہو سکتا
+Cannot edit Standard Dashboards,معیاری ڈیش بورڈز میں تبدیلی نہیں ہو سکتی
+Cannot edit Standard charts,معیاری چارٹس میں تبدیلی نہیں ہو سکتی
+Cannot edit cancelled document,منسوخ شدہ دستاویز میں تبدیلی نہیں ہو سکتی
+Cannot edit filters for standard charts,معیاری چارٹس کے فلٹر تبدیل نہیں ہو سکتے
+Cannot find Item with this Barcode,اس بار کوڈ کا آئٹم نہیں ملا
+Cannot link cancelled document: {0},منسوخ شدہ دستاویز سے لنک نہیں ہو سکتا: {0}
+Cannot load {0} details,{0} کی تفصیل لوڈ نہیں ہو سکی
+Cannot move row,لائن منتقل نہیں ہو سکتی
+Cannot remove ID field,ID فیلڈ حذف نہیں ہو سکتی
+Cannot set Project to Completed,پروجیکٹ کو مکمل نہیں کیا جا سکتا
+Cannot submit {0}.,{0} جمع نہیں ہو سکتا۔
+Cannot update {0},{0} اپ ڈیٹ نہیں ہو سکتا
+Cannot use sub-query here.,یہاں ذیلی سوال استعمال نہیں ہو سکتا۔
+Cannot use {0} in order/group by,ترتیب/گروپ میں {0} استعمال نہیں ہو سکتا
+Cannot {0} {1}.,{1} کو {0} نہیں کیا جا سکتا۔
+Capture,تصویر لیں
+Card,کارڈ
+Card Break,کارڈ بریک
+Card Fields,کارڈ کے فیلڈز
+Card Label,کارڈ کا لیبل
+Card Links,کارڈ کے لنکس
+Card and Preview Fields,کارڈ اور پیش منظر کے فیلڈز
+Card title…,کارڈ کا عنوان…
+Cards,کارڈز
+Cash Flow,نقدی کا بہاؤ
+Cash/Bank Account,نقد/بینک اکاؤنٹ
+Categorize by,درجہ بندی بلحاظ
+Categorize by Item,آئٹم کے لحاظ سے درجہ بندی
+Categorize by Supplier,سپلائر کے لحاظ سے درجہ بندی
+Category,قسم
+Caution,احتیاط
+Change,تبدیلی
+Change Language,زبان تبدیل کریں
+Change Password,پاس ورڈ تبدیل کریں
+Change Release Date,اجرا کی تاریخ تبدیل کریں
+Change Time Zone,ٹائم زون تبدیل کریں
+Change print settings,پرنٹ سیٹنگز تبدیل کریں
+Changes,تبدیلیاں
+Channel,چینل
+Chart,چارٹ
+Chart Configuration,چارٹ کی ترتیب
+Chart Name,چارٹ کا نام
+Chart Options,چارٹ کے اختیارات
+Chart Source,چارٹ کا ماخذ
+Chart Type,چارٹ کی قسم
+Chart of Accounts,اکاؤنٹس کا چارٹ
+Chart of Cost Centers,لاگت مراکز کا چارٹ
+Charts,چارٹس
+Check,جانچ
+Check the lines read from the document,دستاویز سے پڑھی گئی لائنیں چیک کریں
+"Check the numbers: the document total is {0}, the lines add up to {1}.",اعداد چیک کریں: دستاویز کا کل {0} ہے، لائنوں کا مجموعہ {1} ہے۔
+Check this to disallow fractions. (for Nos),کسور کی اجازت نہ دینے کے لیے نشان لگائیں۔ (عدد کے لیے)
+Checking one moment,جانچ ہو رہی ہے، ایک لمحہ
+Checklist,چیک لسٹ
+Checks,جانچ
+Cheque/Reference Date,چیک/حوالہ کی تاریخ
+Cheque/Reference No,چیک/حوالہ نمبر
+Child Item,ذیلی آئٹم
+Child Row Reference,ذیلی لائن کا حوالہ
+Choose Existing Card or create New Card,موجودہ کارڈ منتخب کریں یا نیا کارڈ بنائیں
+Choose a block or continue typing,بلاک منتخب کریں یا لکھتے رہیں
+Choose a color,رنگ منتخب کریں
+Choose an existing supplier,موجودہ سپلائر منتخب کریں
+Choose an icon,آئیکن منتخب کریں
+Choose an item for at least one line.,کم از کم ایک لائن کے لیے آئٹم منتخب کریں۔
+"Choose the catalogue item for each line, or tick “New item” to add it to the catalogue. Check every quantity and rate.",ہر لائن کے لیے کیٹلاگ کا آئٹم منتخب کریں، یا کیٹلاگ میں شامل کرنے کے لیے “نیا آئٹم” پر نشان لگائیں۔ ہر مقدار اور ریٹ چیک کریں۔
+Choose the supplier,سپلائر منتخب کریں
+Circular Reference Error,گول حوالے کی خرابی
+City,شہر
+City/Town,شہر
+Clear,صاف
+Clear All,سب صاف کریں
+Clear Assignment,تفویض ختم کریں
+Clear Customizations,تخصیص ختم کریں
+Clear Filters,فلٹرز صاف کریں
+Clear Last Scanned Warehouse,آخری اسکین شدہ گودام صاف کریں
+Clear Link,لنک صاف کریں
+Clear all filters,تمام فلٹرز صاف کریں
+Clear cache and reload,کیش صاف کر کے دوبارہ لوڈ کریں
+Clear selection,انتخاب صاف کریں
+Clear the filters to see all records.,تمام ریکارڈ دیکھنے کے لیے فلٹرز صاف کریں۔
+Clearance Date,کلیئرنس کی تاریخ
+Clearing Demo Data...,ڈیمو ڈیٹا صاف ہو رہا ہے...
+Click on a file to select it.,منتخب کرنے کے لیے فائل پر کلک کریں۔
+Click on the {0} menu to edit,ترمیم کے لیے {0} مینو پر کلک کریں
+Click on {0} to edit,ترمیم کے لیے {0} پر کلک کریں
+Click table to edit,ترمیم کے لیے ٹیبل پر کلک کریں
+Click to Set Dynamic Filters,متحرک فلٹرز کے لیے کلک کریں
+Click to Set Filters,فلٹرز کے لیے کلک کریں
+Click to sort by {0},{0} کے لحاظ سے ترتیب کے لیے کلک کریں
+Client,مالک
+Close,بند کریں
+Closed,بند
+Closed by,بند کرنے والا
+Closed on,بند ہونے کی تاریخ
+Closing,بندش
+Closing Date,اختتامی تاریخ
+Cloud settings,کلاؤڈ سیٹنگز
+Co-Product,شریک پیداوار
+Code,کوڈ
+Code List,کوڈ فہرست
+Code block,کوڈ بلاک
+Collapse,سمیٹیں
+Collapse All,سب سمیٹیں
+Collapse sidebar,سائیڈ بار سمیٹیں
+Collapsible,سمیٹنے کے قابل
+Collect Progress,پیش رفت جمع کریں
+Color,رنگ
+Column <b>{0}</b> already exist.,کالم <b>{0}</b> پہلے سے موجود ہے۔
+Column Field,کالم فیلڈ
+Column Name,کالم کا نام
+Column Name cannot be empty,کالم کا نام خالی نہیں ہو سکتا
+Column Width,کالم کی چوڑائی
+Column name is required,کالم کا نام ضروری ہے
+Columns,کالم
+Columns based on,کالم کی بنیاد
+Comment,تبصرہ
+Comment can only be edited by the owner,تبصرہ صرف لکھنے والا ہی تبدیل کر سکتا ہے
+Comments,تبصرے
+Commit,کمٹ
+Committed,کمٹ شدہ
+Common Code,مشترکہ کوڈ
+Communication,رابطہ
+Communication Medium,رابطے کا ذریعہ
+Compact,مختصر
+Company,کمپنی
+Company / business name,کمپنی / کاروبار کا نام
+Company Bank Account,کمپنی کا بینک اکاؤنٹ
+Company Billing Address,کمپنی کا بلنگ پتہ
+Company Description,کمپنی کی تفصیل
+Company Name,کمپنی کا نام
+Company Shipping Address,کمپنی کا ترسیلی پتہ
+Company field is required,کمپنی کا فیلڈ ضروری ہے
+Company registration numbers for your reference. Tax numbers etc.,آپ کے حوالے کے لیے کمپنی کے رجسٹریشن نمبر۔ ٹیکس نمبر وغیرہ۔
+Company which internal supplier represents,اندرونی سپلائر جس کمپنی کی نمائندگی کرتا ہے
+Compare Versions,ورژن کا موازنہ
+Compare quotations,کوٹیشنز کا موازنہ
+Competitors,حریف
+Complete,مکمل
+Complete By,تکمیل کی آخری تاریخ
+Complete Setup,سیٹ اپ مکمل کریں
+Completed,مکمل
+Completed By,مکمل کرنے والا
+Completed On,تکمیل کی تاریخ
+Completed Qty,مکمل مقدار
+Compose Email,ای میل لکھیں
+Concrete pour,کنکریٹ کی ڈھلائی
+Condition,شرط
+Condition based field,شرط پر مبنی فیلڈ
+Config,ترتیب
+Configure,ترتیب دیں
+Configure Chart,چارٹ ترتیب دیں
+Configure Columns,کالم ترتیب دیں
+Configure Series,سیریز ترتیب دیں
+Configure fields,فیلڈز ترتیب دیں
+Configure form view behaviour.,فارم کا طرز ترتیب دیں۔
+Configure list view behaviour.,فہرست کا طرز ترتیب دیں۔
+Configure report view behaviour.,رپورٹ کا طرز ترتیب دیں۔
+Configure search fields,تلاش کے فیلڈز ترتیب دیں
+Configure search settings,تلاش کی سیٹنگز ترتیب دیں
+Configure your email settings.,اپنی ای میل سیٹنگز ترتیب دیں۔
+Confirm,تصدیق کریں
+Confirmation,تصدیق
+Confirmed,تصدیق شدہ
+"Confirmed. It can't be edited: a change in price, discount or items is a new revision (Cancel, then Amend). Lock it as final when agreed.",تصدیق شدہ۔ اب اس میں تبدیلی نہیں ہو سکتی: قیمت، رعایت یا آئٹمز میں تبدیلی نیا ریویژن ہے (پہلے منسوخ، پھر ترمیم)۔ طے ہونے پر حتمی کے طور پر لاک کریں۔
+Connection Lost,رابطہ ٹوٹ گیا
+Connections,روابط
+Consider Tax or Charge for,ٹیکس یا چارج کس کے لیے
+Consider for Tax Withholding,ٹیکس کٹوتی کے لیے شمار کریں
+Considered In Paid Amount,ادا شدہ رقم میں شامل
+Console,کنسول
+Console Log,کنسول لاگ
+Console Logs can not be deleted,کنسول لاگز حذف نہیں ہو سکتے
+Consolidated Report,مجموعی رپورٹ
+Construction,تعمیر
+Consumed Items,استعمال شدہ آئٹمز
+Consumed Qty,استعمال شدہ مقدار
+Consumption Rate,استعمال کی شرح
+Contact,رابطہ
+Contact Details,رابطے کی تفصیل
+Contact Email,رابطے کی ای میل
+Contact HTML,رابطہ HTML
+Contact Mobile No,رابطے کا موبائل نمبر
+Contact Name,رابطے کا نام
+Contact Numbers,رابطے کے نمبر
+Contact Person,رابطہ شخص
+Contact Phone,رابطے کا فون
+Contact person,رابطہ کرنے والا
+Content,مواد
+Content data shoud be a list,مواد کا ڈیٹا فہرست ہونا چاہیے
+Continue,جاری رکھیں
+Contract,معاہدہ
+Contract asked from the supplier,سپلائر سے کنٹریکٹ مانگا گیا
+Control Action,کنٹرول کا اقدام
+Control Action for Cumulative Expense,مجموعی خرچ پر کنٹرول کا اقدام
+"Control who can access {0}, by role.",رول کے لحاظ سے {0} تک رسائی کنٹرول کریں۔
+Controls,کنٹرول
+Conversion Factor,تبدیلی کا عامل
+Convert to Group,گروپ میں بدلیں
+Convert to Ledger,لیجر میں بدلیں
+Convert to new builder,نئے بلڈر میں بدلیں
+Copied From,سے نقل شدہ
+Copied to clipboard.,کلپ بورڈ پر کاپی ہو گیا۔
+Copied {0} {1} to clipboard,{0} {1} کلپ بورڈ پر کاپی ہو گیا
+Copy Apps Version,ایپس کا ورژن کاپی کریں
+Copy File URL,فائل URL کاپی کریں
+Copy Link,لنک کاپی کریں
+Copy error to clipboard,خرابی کلپ بورڈ پر کاپی کریں
+Copy file URL to clipboard,فائل URL کلپ بورڈ پر کاپی کریں
+Copy this board to change its setup,اس کی ترتیب بدلنے کے لیے بورڈ کاپی کریں
+Copy to Clipboard,کلپ بورڈ پر کاپی کریں
+Corrective action,اصلاحی اقدام
+Corrective action plan,درستی کا منصوبہ
+Corrective actions,اصلاحی اقدامات
+Cost Center,لاگت مرکز
+Cost Center Allocation,لاگت مرکز کی تقسیم
+Cost center used for tracking purchase expenses for this item,اس آئٹم کے خریداری اخراجات کے لیے لاگت مرکز
+Cost of Goods Sold,فروخت شدہ مال کی لاگت
+Costing,لاگت کا حساب
+Costing and Billing,لاگت اور بلنگ
+Could not find {0},{0} نہیں ملا
+Could not load groups.,گروپس لوڈ نہیں ہو سکے۔
+Could not load this document,یہ دستاویز لوڈ نہیں ہو سکی
+Could not load this tab.,یہ ٹیب لوڈ نہیں ہو سکا۔
+Could not move {0},{0} منتقل نہیں ہو سکا
+Could not move {0} cards,{0} کارڈز منتقل نہیں ہو سکے
+Could not update,اپ ڈیٹ نہیں ہو سکا
+Couldn't load options,اختیارات لوڈ نہیں ہو سکے
+Couldn't reach the AI service. Check the internet connection and try again.,AI سروس تک رسائی نہیں ہو سکی۔ انٹرنیٹ چیک کر کے دوبارہ کوشش کریں۔
+Count,تعداد
+Count Customizations,تخصیص کی تعداد
+Count Filter,تعداد کا فلٹر
+Count of linked documents,منسلک دستاویزات کی تعداد
+Counter,کاؤنٹر
+Country,ملک
+Country dialling code for WhatsApp,واٹس ایپ کے لیے ملک کا کوڈ
+Country of Origin,اصل ملک
+County,ضلع
+Cr,کریڈٹ
+Create,بنائیں
+Create Address,پتہ بنائیں
+Create Board,بورڈ بنائیں
+Create Card,کارڈ بنائیں
+Create Chart,چارٹ بنائیں
+Create Entry,اندراج بنائیں
+Create Layout,لے آؤٹ بنائیں
+Create Link,لنک بنائیں
+Create New,نیا بنائیں
+Create Payment Request,ادائیگی کی درخواست بنائیں
+Create Reposting Entries,ری پوسٹنگ انٹریز بنائیں
+Create Reposting Entry,ری پوسٹنگ انٹری بنائیں
+Create Supplier Quotation,سپلائر کوٹیشن بنائیں
+Create Variant,ورائنٹ بنائیں
+Create Variants,ورائنٹس بنائیں
+Create a Reminder,یاد دہانی بنائیں
+Create a new document,نئی دستاویز بنائیں
+Create a new {0},نیا {0} بنائیں
+Create a {0} to finish this step.,یہ مرحلہ مکمل کرنے کے لیے {0} بنائیں۔
+Create copy,کاپی بنائیں
+Create layout,لے آؤٹ بنائیں
+Create your account,اپنا اکاؤنٹ بنائیں
+Create your first {0} to get started.,شروع کرنے کے لیے اپنا پہلا {0} بنائیں۔
+Created,بنایا گیا
+Created By,بنانے والا
+Created By You,آپ نے بنایا
+Created By {0},{0} نے بنایا
+Created On,بنانے کی تاریخ
+Created {0},{0} بنایا گیا
+Creating Opening Stock Entry...,ابتدائی اسٹاک انٹری بن رہی ہے...
+Creating Purchase Receipt ...,پرچیز رسید بن رہی ہے ...
+Creating Stock Entry,اسٹاک انٹری بن رہی ہے
+Creating {0},{0} بن رہا ہے
+Creation,تخلیق
+Creator's Access,بنانے والے کی رسائی
+Credit Days,ادھار کے دن
+Credit Limit,ادھار کی حد
+Credit Months,ادھار کے مہینے
+Credit Note,کریڈٹ نوٹ
+Credit To,کریڈٹ برائے
+Crop,تراشیں
+Ctrl + Down,Ctrl + نیچے
+Ctrl + Up,Ctrl + اوپر
+Currency,کرنسی
+Currency Exchange,کرنسی کا تبادلہ
+Currency Exchange Settings,کرنسی تبادلے کی سیٹنگز
+Currency and Price List,کرنسی اور قیمت کی فہرست
+Currency for {0} must be {1},{0} کی کرنسی {1} ہونی چاہیے
+Current,موجودہ
+Current Series,موجودہ سیریز
+Current Stock,موجودہ اسٹاک
+Current status,موجودہ صورتحال
+Current value,موجودہ قدر
+Currently Viewing,ابھی دیکھ رہے ہیں
+Custom,حسب ضرورت
+Custom Block,حسب ضرورت بلاک
+Custom Block Name,حسب ضرورت بلاک کا نام
+Custom Blocks,حسب ضرورت بلاکس
+Custom Configuration,حسب ضرورت ترتیب
+Custom Documents,حسب ضرورت دستاویزات
+Custom Financial Statement,حسب ضرورت مالی گوشوارہ
+Custom HTML Block,حسب ضرورت HTML بلاک
+Custom Options,حسب ضرورت اختیارات
+Custom Remarks,حسب ضرورت ریمارکس
+Custom Reports,حسب ضرورت رپورٹس
+Custom Sidebar,حسب ضرورت سائیڈ بار
+Customization,تخصیص
+Customizations Discarded,تخصیص ختم کر دی گئی
+Customized since,اس وقت سے تخصیص شدہ
+Customs Tariff Number,کسٹمز ٹیرف نمبر
+Cut,کاٹیں
+Cyan,ہلکا نیلا
+DN,ڈلیوری نوٹ
+Daily,روزانہ
+Daily Project Summary for {0},{0} کا روزانہ پروجیکٹ خلاصہ
+Daily Time to send,روزانہ بھیجنے کا وقت
+Daily Timesheet Summary,روزانہ ٹائم شیٹ خلاصہ
+Dark,تاریک
+Dark Theme,گہرا تھیم
+Dashboard,ڈیش بورڈ
+Dashboard Chart,ڈیش بورڈ چارٹ
+Dashboard Chart Field,ڈیش بورڈ چارٹ فیلڈ
+Dashboard Chart Link,ڈیش بورڈ چارٹ لنک
+Dashboard Chart Source,ڈیش بورڈ چارٹ ماخذ
+Dashboard Manager,ڈیش بورڈ منیجر
+Dashboard Name,ڈیش بورڈ کا نام
+Dashboard Settings,ڈیش بورڈ سیٹنگز
+Dashboard View,ڈیش بورڈ ویو
+Dashboards,ڈیش بورڈز
+Data,ڈیٹا
+Data Clipped,ڈیٹا کاٹا گیا
+Database,ڈیٹا بیس
+Database Processes,ڈیٹا بیس کے عمل
+Database Version,ڈیٹا بیس ورژن
+Date,تاریخ
+Date Range,تاریخ کی حد
+Date of Commencement,آغاز کی تاریخ
+Date of Establishment,قیام کی تاریخ
+Date of Incorporation,رجسٹریشن کی تاریخ
+Date {0} must be in format: {1},تاریخ {0} اس فارمیٹ میں ہونی چاہیے: {1}
+Day,دن
+Day of month,مہینے کا دن
+Day to Send,بھیجنے کا دن
+Day(s) after invoice date,انوائس کی تاریخ کے بعد دن
+Day(s) after the end of the invoice month,انوائس کے مہینے کے اختتام کے بعد دن
+Days,دن
+Days a shared PDF link stays valid,شیئر کیا گیا PDF لنک کتنے دن چلے
+Deadlock Occurred,ڈیڈ لاک ہو گیا
+Debit Note,ڈیبٹ نوٹ
+Debit Note Amount,ڈیبٹ نوٹ کی رقم
+Debit Note Issued,ڈیبٹ نوٹ جاری
+Debit Notes,ڈیبٹ نوٹس
+Declare Lost,ناکام قرار دیں
+Decrease indent,حاشیہ کم کریں
+Deduct,منہا کریں
+Deductions or Loss,کٹوتیاں یا نقصان
+Default,ڈیفالٹ
+Default Accounts,ڈیفالٹ اکاؤنٹس
+Default Advance Paid Account,ڈیفالٹ ادا شدہ ایڈوانس اکاؤنٹ
+Default Bank Account,ڈیفالٹ بینک اکاؤنٹ
+Default Buying Cost Center,ڈیفالٹ خریداری لاگت مرکز
+Default Buying Price List,ڈیفالٹ خریداری قیمت فہرست
+Default Buying Terms,ڈیفالٹ خریداری کی شرائط
+Default Cash Account,ڈیفالٹ نقد اکاؤنٹ
+Default Cost Center,ڈیفالٹ لاگت مرکز
+Default Currency,ڈیفالٹ کرنسی
+Default Expense Account,ڈیفالٹ خرچ کا اکاؤنٹ
+Default Holiday List,ڈیفالٹ چھٹیوں کی فہرست
+Default In-Transit Warehouse,ڈیفالٹ راستے کا گودام
+Default Inventory Account,ڈیفالٹ انوینٹری اکاؤنٹ
+Default Layout,ڈیفالٹ لے آؤٹ
+Default Letter Head,ڈیفالٹ لیٹر ہیڈ
+Default Material Request Type,ڈیفالٹ میٹیریل ریکوئسٹ کی قسم
+Default Payable Account,ڈیفالٹ واجب الادا اکاؤنٹ
+Default Payment Terms Template,ادائیگی کی شرائط کا ڈیفالٹ ٹیمپلیٹ
+Default Price List,ڈیفالٹ قیمت فہرست
+Default Purchase Unit of Measure,خریداری کا ڈیفالٹ یونٹ
+Default Source Warehouse,ڈیفالٹ ماخذ گودام
+Default Stock Valuation Method,اسٹاک کی قدر کاری کا ڈیفالٹ طریقہ
+Default Supplier,ڈیفالٹ سپلائر
+Default Supplier Group,ڈیفالٹ سپلائر گروپ
+Default Target Warehouse,ڈیفالٹ منزل گودام
+Default Unit of Measure,ڈیفالٹ یونٹ
+Default Warehouse,ڈیفالٹ گودام
+Default Workspace,ڈیفالٹ ورک اسپیس
+Default price list for buying or selling this item,اس آئٹم کی خریداری کے لیے ڈیفالٹ قیمت فہرست
+Default removed,ڈیفالٹ ہٹا دیا گیا
+Default template: {0},ڈیفالٹ ٹیمپلیٹ: {0}
+Default updated,ڈیفالٹ اپ ڈیٹ ہو گیا
+Default warehouse from Item Defaults.,آئٹم ڈیفالٹس سے ڈیفالٹ گودام۔
+Defaults,ڈیفالٹس
+Deferred Accounting,مؤخر اکاؤنٹنگ
+Deferred Expense,مؤخر خرچ
+Deferred Expense Account,مؤخر خرچ کا اکاؤنٹ
+Delay,دیر
+Delayed Tasks Summary,تاخیر شدہ کاموں کا خلاصہ
+Delete,مٹا دیں
+Delete Column,کالم حذف کریں
+Delete Demo Data,ڈیمو ڈیٹا حذف کریں
+Delete Row,لائن حذف کریں
+Delete Table,ٹیبل حذف کریں
+Delete all,سب حذف کریں
+Delete all {0} rows,تمام {0} لائنیں حذف کریں
+Delete and Generate New,حذف کر کے نیا بنائیں
+Delete attachment,اٹیچمنٹ حذف کریں
+Delete comment?,تبصرہ حذف کریں؟
+Delete layout <strong>{0}</strong>?,لے آؤٹ <strong>{0}</strong> حذف کریں؟
+Delete naming rule {0}?,نام سازی کا اصول {0} حذف کریں؟
+Delete row,لائن حذف کریں
+Delete series {0}?,سیریز {0} حذف کریں؟
+Delete this user permission?,یہ یوزر اجازت حذف کریں؟
+Delete {0} item permanently?,{0} آئٹم مستقل طور پر حذف کریں؟
+Delete {0} items permanently?,{0} آئٹمز مستقل طور پر حذف کریں؟
+Delete {0} rows,{0} لائنیں حذف کریں
+Deleted,حذف کیا
+Deleting {0},{0} حذف ہو رہا ہے
+Deleting {0} records...,{0} ریکارڈ حذف ہو رہے ہیں...
+Deleting {0}...,{0} حذف ہو رہا ہے...
+Deleting...,حذف ہو رہا ہے...
+Delimiter must be a single character,حد بندی کا نشان ایک ہی حرف ہونا چاہیے
+Deliver (Dropship),ترسیل (ڈراپ شپ)
+Deliver to (site address),ترسیل کا پتہ (سائٹ)
+Delivered,پہنچ گیا
+Delivered Qty,ترسیل شدہ مقدار
+Delivered by Supplier,سپلائر نے ترسیل کی
+Delivered by Supplier (Drop Ship),سپلائر نے ترسیل کی (ڈراپ شپ)
+Delivery,ڈلیوری
+Delivery / completion time,ترسیل / تکمیل کا وقت
+Delivery Date,ترسیل کی تاریخ
+Delivery Manager,ترسیل منیجر
+Delivery Note,ڈیلیوری نوٹ
+Delivery Note No,ڈیلیوری نوٹ نمبر
+Delivery Note Trends,ڈیلیوری نوٹ کے رجحانات
+Delivery Settings,ترسیل کی سیٹنگز
+Delivery Trip,ترسیل کا سفر
+Delivery User,ترسیل یوزر
+Delivery note / bill scan,ڈیلیوری نوٹ / بل کا اسکین
+Delivery note needed,ڈیلیوری نوٹ ضروری ہے
+Delivery time,ترسیل کا وقت
+Demo data cleared,ڈیمو ڈیٹا صاف ہو گیا
+Department,شعبہ
+Dependencies,انحصار
+Dependent Tasks,منحصر کام
+Depends on Tasks,ان کاموں پر منحصر
+Deprecated,متروک
+Descendants Of,کی اولاد
+Descendants Of (inclusive),کی اولاد (شامل)
+Descending,گھٹتی ترتیب
+Description,تفصیل
+Design,نقشہ
+Designation,عہدہ
+Desk Settings,ڈیسک سیٹنگز
+Desk Theme,ڈیسک تھیم
+Desk User,ڈیسک یوزر
+Desktop Icon,ڈیسک ٹاپ آئیکن
+Desktop Icons,ڈیسک ٹاپ آئیکنز
+Desktop Layout,ڈیسک ٹاپ لے آؤٹ
+Desktop Page,ڈیسک ٹاپ صفحہ
+Desktop Settings,ڈیسک ٹاپ سیٹنگز
+Detailed Reason,تفصیلی وجہ
+Details,تفصیلات
+Determines which tax rules apply to this supplier,اس سپلائر پر کون سے ٹیکس اصول لاگو ہوں گے
+Diff,فرق
+Difference Account,فرق کا اکاؤنٹ
+Difference Account in Items Table,آئٹمز ٹیبل میں فرق کا اکاؤنٹ
+Difference Amount (Company Currency),فرق کی رقم (کمپنی کرنسی)
+Difference Amount must be zero,فرق کی رقم صفر ہونی چاہیے
+Difference In,فرق میں
+Difference Posting Date,فرق کی پوسٹنگ تاریخ
+Dimension Filter,ڈائمینشن فلٹر
+Disable,غیر فعال کریں
+Disable Auto Refresh,خودکار ریفریش بند کریں
+Disable Automatic Recency Filters,خودکار حالیہ فلٹرز بند کریں
+Disable Comment Count,تبصروں کی تعداد بند کریں
+Disable Count,تعداد بند کریں
+Disable Rounded Total,گول کل رقم بند کریں
+Disable Scrolling,اسکرولنگ بند کریں
+Disable Sidebar Stats,سائیڈ بار کے اعداد بند کریں
+Disable last purchase rate,آخری خریداری ریٹ بند کریں
+Disabled,غیر فعال
+Disabled items cannot be selected in any transaction.,غیر فعال آئٹمز کسی لین دین میں منتخب نہیں ہو سکتے۔
+Disassemble,الگ کریں
+Disc %,رعایت %
+Discard,چھوڑ دیں
+Discard {0},{0} ترک کریں
+Discarded,ترک کر دیا گیا
+Discount,رعایت
+Discount Amount,رعایت کی رقم
+Discount Date,رعایت کی تاریخ
+Discount Type,رعایت کی قسم
+Discount Validity,رعایت کی مدت
+Discount Validity Based On,رعایت کی مدت کی بنیاد
+Discount and Margin,رعایت اور مارجن
+Discount on Price List Rate (%),قیمت فہرست کے ریٹ پر رعایت (%)
+Discounted Amount,رعایت شدہ رقم
+Dismiss,بند کریں
+Dispatch Address,روانگی کا پتہ
+Dispatch Address Details,روانگی کے پتے کی تفصیل
+Dispatch Address Template,روانگی کے پتے کا ٹیمپلیٹ
+Display,ڈسپلے
+Distribute Equally,برابر تقسیم کریں
+Distributed Discount Amount,تقسیم شدہ رعایت کی رقم
+Distribution Frequency,تقسیم کی شرح
+Do not warn me again about {0},{0} کے بارے میں دوبارہ خبردار نہ کریں
+Do you want to change valuation method?,کیا آپ ویلیوایشن کا طریقہ بدلنا چاہتے ہیں؟
+Dock,ڈاک
+Dock Item,ڈاک آئٹم
+Dock Items,ڈاک آئٹمز
+Dock updated,ڈاک اپ ڈیٹ ہو گیا
+Dock updated for everyone,سب کے لیے ڈاک اپ ڈیٹ ہو گیا
+Document,دستاویز
+Document Follow,دستاویز فالو
+Document Follow Notification,دستاویز فالو کرنے کی اطلاع
+Document Name,دستاویز کا نام
+Document Name (ID),دستاویز کا نام (ID)
+Document Naming,دستاویز کی نام سازی
+Document Queued,دستاویز قطار میں ہے
+Document Share,دستاویز شیئر
+Document Status,دستاویز کی صورتحال
+Document Tag,دستاویز ٹیگ
+Document Title,دستاویز کا عنوان
+Document Type,دستاویز کی قسم
+Document Type is required,دستاویز کی قسم ضروری ہے
+Document Type {0} has been repeated.,دستاویز کی قسم {0} دہرائی گئی ہے۔
+Document Unlocked,دستاویز ان لاک ہو گئی
+Document attached. AI reading is off: type in the lines.,دستاویز لگ گئی۔ AI سے پڑھنا بند ہے: لائنیں خود لکھیں۔
+Document has been cancelled,دستاویز منسوخ ہو گئی ہے
+Document has been submitted,دستاویز جمع ہو گئی ہے
+Document is in draft state,دستاویز ڈرافٹ میں ہے
+Document renamed from {0} to {1},دستاویز کا نام {0} سے {1} کر دیا گیا
+Document type,دستاویز کی قسم
+Documentation,دستاویزات
+Documents,کاغذات
+Don't Recompute Tax,ٹیکس دوبارہ حساب نہ کریں
+Done,مکمل
+Done: {0},مکمل: {0}
+Donut,ڈونٹ
+Download,ڈاؤن لوڈ
+Download Backups,بیک اپس ڈاؤن لوڈ کریں
+Download CSV Template,CSV ٹیمپلیٹ ڈاؤن لوڈ کریں
+Download Files Backup,فائلوں کا بیک اپ ڈاؤن لوڈ کریں
+Download PDF,PDF ڈاؤن لوڈ کریں
+Download PDF for Supplier,سپلائر کے لیے PDF ڈاؤن لوڈ کریں
+Download Report,رپورٹ ڈاؤن لوڈ کریں
+Downtime Analysis,بندش کا تجزیہ
+Downtime Entry,بندش کی انٹری
+Dr,ڈیبٹ
+Draft,کچا
+"Draft: change it as needed, every saved version is kept in the activity below. Submit to lock it; only a locked purchase order can be sent.",ڈرافٹ: ضرورت کے مطابق تبدیل کریں، ہر محفوظ ورژن نیچے سرگرمی میں رہتا ہے۔ لاک کرنے کے لیے جمع کریں؛ صرف لاک شدہ پرچیز آرڈر بھیجا جا سکتا ہے۔
+Drafts,ڈرافٹس
+Drag,گھسیٹیں
+Drag and drop files here or upload from,فائلیں یہاں گھسیٹ کر لائیں یا یہاں سے اپ لوڈ کریں
+Drag to resize,سائز بدلنے کے لیے گھسیٹیں
+Drop Ship,ڈراپ شپ
+Drop files here,فائلیں یہاں چھوڑیں
+Due Date,آخری تاریخ
+Due Date Based On,آخری تاریخ کی بنیاد
+Due This Month,اس مہینے واجب
+Due in 7 Days,7 دن میں واجب
+Due to supplier,سپلائر کو واجب الادا
+Due to the supplier: {0}. Pay it with Create → Payment; advances already paid can be set against it.,سپلائر کو واجب الادا: {0}۔ بنائیں → ادائیگی سے ادا کریں؛ پہلے دیے گئے ایڈوانس اس میں منہا ہو سکتے ہیں۔
+"Due to {0}: {1}. Pay only against their due invoices (Get Outstanding Invoices), or as an advance from the purchase order.",{0} کو واجب الادا: {1}۔ صرف ان کی واجب انوائسز کے مقابل ادا کریں (Get Outstanding Invoices)، یا پرچیز آرڈر سے ایڈوانس کے طور پر۔
+Due {0},واجب الادا {0}
+Dunning,یاد دہانی وصولی
+Duplicate,نقل
+Duplicate Label,نقل لیبل
+Duplicate Name,نقل نام
+Duplicate Project with Tasks,کاموں سمیت پروجیکٹ کی نقل
+Duplicate current row,موجودہ لائن کی نقل
+Duplicate project has been created,پروجیکٹ کی نقل بن گئی ہے
+Duplicate row,لائن کی نقل
+Duplicate rows,لائنوں کی نقل
+Duplicate {0} rows,{0} لائنوں کی نقل
+Duration,مدت
+Duration (Days),دورانیہ (دن)
+Dynamic Filters,متحرک فلٹرز
+Dynamic Filters JSON,متحرک فلٹرز JSON
+Dynamic Filters Section,متحرک فلٹرز کا حصہ
+ERPNext Settings,ERPNext سیٹنگز
+Each Transaction,ہر لین دین
+Each row becomes a snag with the responsible supplier and target date when the inspection is submitted.,معائنہ جمع ہونے پر ہر لائن ذمہ دار سپلائر اور ہدف کی تاریخ کے ساتھ ایک خرابی (سنیگ) بن جاتی ہے۔
+Earliest Age,کم سے کم عمر
+Edit,ترمیم
+Edit Address in Form,فارم میں پتہ تبدیل کریں
+Edit Chart,چارٹ تبدیل کریں
+Edit Custom Block,حسب ضرورت بلاک تبدیل کریں
+Edit Filter,فلٹر تبدیل کریں
+Edit Filters,فلٹرز تبدیل کریں
+Edit Full Form,پورا فارم تبدیل کریں
+Edit Links,لنکس تبدیل کریں
+Edit Note,نوٹ تبدیل کریں
+Edit Number Card,نمبر کارڈ تبدیل کریں
+Edit Posting Date and Time,پوسٹنگ کی تاریخ اور وقت تبدیل کریں
+Edit Quick List,فوری فہرست تبدیل کریں
+Edit Section,حصہ تبدیل کریں
+Edit Series,سیریز تبدیل کریں
+Edit Shortcut,شارٹ کٹ تبدیل کریں
+Edit Sidebar,سائیڈ بار تبدیل کریں
+Edit Tax Withholding Entries,ٹیکس کٹوتی انٹریز تبدیل کریں
+Edit Values,قدریں تبدیل کریں
+Edit layout,لے آؤٹ تبدیل کریں
+Edit mode,ترمیمی موڈ
+Edit row,لائن تبدیل کریں
+Edit {0},{0} تبدیل کریں
+Edit {0} rows,{0} لائنیں تبدیل کریں
+Editing Row,لائن میں ترمیم
+Electrical conduits,بجلی کی کنڈیوٹ
+Element Selector,عنصر منتخب کنندہ
+Email,ای میل
+Email Address,ای میل پتہ
+Email Campaign,ای میل مہم
+Email Details,ای میل کی تفصیل
+Email Digest,ای میل خلاصہ
+Email Header,ای میل ہیڈر
+Email ID,ای میل ID
+Email IDs,ای میل IDs
+Email Inbox,ای میل ان باکس
+Email Sent,ای میل بھیج دی گئی
+Email Sent to Supplier {0},سپلائر {0} کو ای میل بھیج دی گئی
+Email Settings,ای میل سیٹنگز
+Email Signature,ای میل دستخط
+Email Template,ای میل ٹیمپلیٹ
+Email Templates,ای میل ٹیمپلیٹس
+Email Threads on Assigned Document,تفویض شدہ دستاویز پر ای میل سلسلے
+Email me for these notification types,ان اطلاعات کے لیے مجھے ای میل کریں
+Email sending undone,ای میل بھیجنا واپس لیا گیا
+Emails,ای میلز
+Employee,ملازم
+Empty State Message,خالی حالت کا پیغام
+Enable,فعال کریں
+Enable Auto Re-Order,خودکار دوبارہ آرڈر فعال کریں
+Enable Deferred Expense,مؤخر خرچ فعال کریں
+Enable Deferred Revenue,مؤخر آمدنی فعال کریں
+Enable Email Notifications,ای میل اطلاعات فعال کریں
+Enable Email Notifications for All Users,تمام یوزرز کے لیے ای میل اطلاعات فعال کریں
+Enable Perpetual Inventory,مسلسل انوینٹری فعال کریں
+Enable System Notification,سسٹم اطلاع فعال کریں
+Enable if on click\nopens modal.,اگر کلک پر ونڈو کھلتی ہو تو فعال کریں۔
+Enabled,فعال
+End Date,اختتامی تاریخ
+End Date Field,اختتامی تاریخ کا فیلڈ
+End Transit,راستہ ختم کریں
+End date of current invoice's period,موجودہ انوائس کی مدت کی اختتامی تاریخ
+End of Life,استعمال کی آخری تاریخ
+Ends on,ختم ہوتا ہے
+Enter Manually,خود لکھیں
+Enter Value,قدر لکھیں
+Enter a full phone number like 0300-1234567.,پورا فون نمبر لکھیں جیسے 0300-1234567۔
+Enter a name for this {0},اس {0} کا نام لکھیں
+Enter folder name,فولڈر کا نام لکھیں
+Enter the item name.,آئٹم کا نام لکھیں۔
+Enter the opening stock units.,ابتدائی اسٹاک کی مقدار لکھیں۔
+Enter the supplier's delivery note / challan number.,سپلائر کا ڈیلیوری نوٹ / چالان نمبر لکھیں۔
+Enter the supplier's invoice / bill number.,سپلائر کا انوائس / بل نمبر لکھیں۔
+Enter the supplier's name.,سپلائر کا نام لکھیں۔
+Enter who the material is released to (mistri or group head).,لکھیں کہ مٹیریل کس کو دیا جا رہا ہے (مستری یا گروپ ہیڈ)۔
+Enter your password,اپنا پاس ورڈ لکھیں
+Entries,اندراجات
+Equals,برابر
+Error,خرابی
+Error in Client Script,کلائنٹ اسکرپٹ میں خرابی
+Error in Client Script.,کلائنٹ اسکرپٹ میں خرابی۔
+Error: Data missing in table {0},خرابی: ٹیبل {0} میں ڈیٹا نہیں
+Error: Value missing for {0}: {1},خرابی: {0} کی قدر نہیں: {1}
+Error: {0} is mandatory field,خرابی: {0} ضروری فیلڈ ہے
+Errors,خرابیاں
+Estimated Cost,اندازاً لاگت
+Event,ایونٹ
+Event Category,ایونٹ کیٹیگری
+Event Notifications,ایونٹ کی اطلاعات
+Event Participants,ایونٹ کے شرکاء
+Event Reminders,ایونٹ کی یاد دہانیاں
+Event Type,ایونٹ کی قسم
+Events,ایونٹس
+Every line needs a quantity and a rate above 0.,ہر لائن میں 0 سے زیادہ مقدار اور ریٹ ضروری ہے۔
+Everyone,سب
+"Ex: ""colors"": [""#d1d8dd"", ""#ff5858""]","مثال: ""colors"": [""#d1d8dd"", ""#ff5858""]"
+Example of a linked document: {0},منسلک دستاویز کی مثال: {0}
+Example: #Tree/Account,مثال: #Tree/Account
+Examples:,مثالیں:
+Excavation,کھدائی
+Excellent,بہترین
+Excess Disassembly,زائد الگ کرنا
+Excess Material Transfer,زائد مٹیریل کی منتقلی
+Exchange Rate,شرح تبادلہ
+Excise Invoice,ایکسائز انوائس
+Execute,چلائیں
+Execute Console script,کنسول اسکرپٹ چلائیں
+Executing Code,کوڈ چل رہا ہے
+Executing...,چل رہا ہے...
+Execution Time: {0} sec,چلنے کا وقت: {0} سیکنڈ
+Exit full screen,پوری اسکرین سے باہر
+Expand,پھیلائیں
+Expand All,سب پھیلائیں
+Expand sidebar,سائیڈ بار پھیلائیں
+Expand/Collapse,پھیلائیں/سمیٹیں
+Expected Delivery Date,متوقع ترسیل کی تاریخ
+Expected End Date,متوقع اختتامی تاریخ
+Expected Start Date,متوقع آغاز کی تاریخ
+Expected Time (in hours),متوقع وقت (گھنٹوں میں)
+Expense,خرچ
+Expense Account,خرچ کا اکاؤنٹ
+Expense Head,خرچ کی مد
+Expense Head Changed,خرچ کی مد تبدیل
+Experimental,تجرباتی
+Expire Notification On,اطلاع کی میعاد
+Expired,میعاد ختم
+Expired Batches,میعاد ختم بیچز
+Expires in a week or less,ایک ہفتے یا کم میں ختم
+Expires today or already expired,آج ختم یا پہلے ختم
+Export,ایکسپورٹ
+Export Report: {0},رپورٹ ایکسپورٹ کریں: {0}
+Export all matching rows?,تمام ملتی لائنیں ایکسپورٹ کریں؟
+Export all {0} rows?,تمام {0} لائنیں ایکسپورٹ کریں؟
+Export as zip,zip کے طور پر ایکسپورٹ
+Export in Background,پس منظر میں ایکسپورٹ
+Export to app,ایپ میں ایکسپورٹ
+Exported to the app,ایپ میں ایکسپورٹ ہو گیا
+Expression,اظہار
+External,بیرونی
+External Link,بیرونی لنک
+FIFO,FIFO
+FIFO/LIFO Queue,FIFO/LIFO قطار
+Fail,فیل
+Failed Emails,ناکام ای میلز
+Failed Jobs,ناکام کام
+Failed Logins (Last 30 days),ناکام لاگ ان (پچھلے 30 دن)
+Failed Transactions,ناکام لین دین
+Failed to delete {0} documents: {1},{0} دستاویزات حذف نہیں ہو سکیں: {1}
+Failed to load data.,ڈیٹا لوڈ نہیں ہو سکا۔
+Failed to load settings,سیٹنگز لوڈ نہیں ہو سکیں
+Failed to remove permission.,اجازت ہٹائی نہیں جا سکی۔
+Failed to save,محفوظ نہیں ہو سکا
+Failed to save permission.,اجازت محفوظ نہیں ہو سکی۔
+Failed to send notification email,اطلاع کی ای میل نہیں بھیجی جا سکی
+Failing Scheduled Jobs (last 7 days),ناکام شیڈول کام (پچھلے 7 دن)
+Failure Rate,ناکامی کی شرح
+Fax,فیکس
+Feedback,رائے
+Feedback Template,رائے کا ٹیمپلیٹ
+Female,خاتون
+Fetch Based On,حاصل کرنے کی بنیاد
+Fetching exchange rates ...,شرح تبادلہ حاصل ہو رہی ہے ...
+Field,فیلڈ
+Field <code>{0}</code> not found in {1},فیلڈ <code>{0}</code> {1} میں نہیں ملا
+Field Name,فیلڈ کا نام
+Field not permitted in query,اس سوال میں فیلڈ کی اجازت نہیں
+Field {0} not found.,فیلڈ {0} نہیں ملا۔
+Fieldname,فیلڈ کا نام
+Fields,فیلڈز
+Fieldtype,فیلڈ کی قسم
+File,فائل
+File Manager,فائل منیجر
+File Name,فائل کا نام
+File Size,فائل کا سائز
+File Storage,فائل اسٹوریج
+File Type,فائل کی قسم
+File URL,فائل URL
+File backup is ready,فائلوں کا بیک اپ تیار ہے
+File too big,فائل بہت بڑی ہے
+File upload failed.,فائل اپ لوڈ ناکام۔
+Fill in the quotation,کوٹیشن بھریں
+Filled in from the bill. Check every line and number.,بل سے بھرا گیا۔ ہر لائن اور عدد چیک کریں۔
+Filling in…,بھرا جا رہا ہے…
+Filter,فلٹر
+Filter Area,فلٹر ایریا
+Filter Name,فلٹر کا نام
+Filtered by: {0}.,فلٹر: {0}۔
+Filters,فلٹرز
+Filters & Sorting,فلٹرز اور ترتیب
+Filters Configuration,فلٹرز کی ترتیب
+Filters JSON,فلٹرز JSON
+Filters Section,فلٹرز کا حصہ
+Filters saved,فلٹرز محفوظ ہو گئے
+Filters {0},فلٹرز {0}
+Filters:,فلٹرز:
+Final,حتمی
+Final handover,آخری حوالگی
+Final quotation needed,حتمی کوٹیشن ضروری ہے
+"Final quotation, locked on {0}. Raise the purchase order from it (Create → Purchase Order), or ask the supplier for their contract.",حتمی کوٹیشن، {0} کو لاک کی گئی۔ اس سے پرچیز آرڈر بنائیں (بنائیں → پرچیز آرڈر)، یا سپلائر سے ان کا کنٹریکٹ مانگیں۔
+Finance Book,مالیاتی کتاب
+Financial Report Template,مالی رپورٹ کا ٹیمپلیٹ
+Financial Reports,مالی رپورٹس
+Find {0} in {1},{1} میں {0} تلاش کریں
+Finish {0} to finish this step.,یہ مرحلہ مکمل کرنے کے لیے {0} مکمل کریں۔
+Finished Good,تیار مال
+Finished Good Item,تیار مال کا آئٹم
+Finished Good Item Qty,تیار مال کی مقدار
+Finished Good Qty,تیار مال کی مقدار
+Finished Good Quantity ,تیار مال کی مقدار
+Finished Good Quantity Exceeded,تیار مال کی مقدار سے تجاوز
+Finishing,فنشنگ
+First,پہلی بار
+First Email,پہلی ای میل
+First Name,پہلا نام
+First Response Time for Issues,مسائل پر پہلے جواب کا وقت
+Fiscal Year,مالی سال
+Fit,پورا دکھائیں
+Fixed,ٹھیک ہو گیا
+Fixed Outgoing Email Account,مقررہ آؤٹ گوئنگ ای میل اکاؤنٹ
+Float,گنجائش
+Floating,تیرتا ہوا
+Folder,فولڈر
+Follow,فالو کریں
+Following document {0},دستاویز {0} کو فالو کر رہے ہیں
+Following documents are linked with {0},درج ذیل دستاویزات {0} سے منسلک ہیں
+Following fields have invalid values:,درج ذیل فیلڈز کی قدریں غلط ہیں:
+Following fields have missing values,درج ذیل فیلڈز خالی ہیں
+Following fields have missing values:,درج ذیل فیلڈز خالی ہیں:
+Font size,فونٹ سائز
+Footer Date,فٹر کی تاریخ
+For Example: {} Open,مثال: {} کھلا
+For User,یوزر کے لیے
+For Value,قدر کے لیے
+For everyone,سب کے لیے
+For example:,مثال کے طور پر:
+For example: {} Open,مثال: {} کھلا
+For individual supplier,انفرادی سپلائر کے لیے
+"For project - {0}, update your status",پروجیکٹ {0} کے لیے اپنی صورتحال اپ ڈیٹ کریں
+For service item,سروس آئٹم کے لیے
+For {0},{0} کے لیے
+Forecasting,پیشن گوئی
+Foreign Trade Details,بیرونی تجارت کی تفصیل
+Forgot password?,پاس ورڈ بھول گئے؟
+Form,فارم
+Form Settings,فارم سیٹنگز
+Form Tour,فارم کا تعارف
+Form Tour Step,فارم تعارف کا مرحلہ
+Format,فارمیٹ
+Formatting options,فارمیٹنگ کے اختیارات
+Forms,فارمز
+Forum,فورم
+Foundation,بنیاد
+Frappe Framework Version,Frappe فریم ورک ورژن
+Frappe Support,Frappe سپورٹ
+Free,مفت
+Frequency,تعدد
+Frequency To Collect Progress,پیش رفت جمع کرنے کا تعدد
+Friday,جمعہ
+From,سے
+From Date,تاریخ سے
+From Document Type,دستاویز کی قسم سے
+From Fiscal Year,مالی سال سے
+From Template,ٹیمپلیٹ سے
+From Time,وقت سے
+From User,یوزر سے
+From Warehouse,گودام سے
+From inspection,معائنے سے
+From version,ورژن سے
+Frozen,منجمد
+Full,پورا
+Full Name,پورا نام
+Full Page,پورا صفحہ
+Full Width,پوری چوڑائی
+Full screen,پوری اسکرین
+Fully Paid,مکمل ادا شدہ
+Function,فنکشن
+Function Based On,فنکشن کی بنیاد
+Gantt,ٹائم لائن
+Gantt Chart,گینٹ چارٹ
+Gantt View,گینٹ ویو
+Gantt View Mode,گینٹ ویو موڈ
+Gender,جنس
+Genderqueer,غیر روایتی جنس
+General,عام
+General Ledger,جنرل لیجر
+General Settings,عمومی سیٹنگز
+General information about your Supplier,آپ کے سپلائر کی عمومی معلومات
+Generate New Report,نئی رپورٹ بنائیں
+Generate Random Password,بے ترتیب پاس ورڈ بنائیں
+Generate Tracking URL,ٹریکنگ URL بنائیں
+Get Advances Paid,ادا شدہ ایڈوانس حاصل کریں
+Get Backup Encryption Key,بیک اپ کی خفیہ کلید حاصل کریں
+Get Current Stock,موجودہ اسٹاک حاصل کریں
+Get Items,آئٹمز حاصل کریں
+Get Items From,آئٹمز یہاں سے حاصل کریں
+Get Items from Product Bundle,پروڈکٹ بنڈل سے آئٹمز حاصل کریں
+Get Outstanding Invoices,واجب الادا انوائسز حاصل کریں
+Get Outstanding Orders,زیر التوا آرڈرز حاصل کریں
+Get Started,شروع کریں
+Get Supplier Group Details,سپلائر گروپ کی تفصیل حاصل کریں
+Get Suppliers,سپلائرز حاصل کریں
+Get Suppliers By,سپلائرز بلحاظ
+Getting started,آغاز
+Global,عالمی
+Global Defaults,عالمی ڈیفالٹس
+Global Layouts,عالمی لے آؤٹس
+Global Search,عالمی تلاش
+Global Search Document Types Reset.,عالمی تلاش کی دستاویزی اقسام ری سیٹ۔
+Global Search Settings,عالمی تلاش کی سیٹنگز
+Global Shortcuts,عالمی شارٹ کٹس
+Global search updated,عالمی تلاش اپ ڈیٹ ہو گئی
+Go,جائیں
+Go to Notification Settings List,اطلاع کی سیٹنگز کی فہرست پر جائیں
+Go to Page,صفحے پر جائیں
+Go to next record,اگلے ریکارڈ پر جائیں
+Go to previous record,پچھلے ریکارڈ پر جائیں
+Good afternoon,سہ پہر بخیر
+"Good afternoon, {0}",سہ پہر بخیر، {0}
+Good evening,شام بخیر
+"Good evening, {0}",شام بخیر، {0}
+Good morning,صبح بخیر
+"Good morning, {0}",صبح بخیر، {0}
+Goods In Transit,راستے میں سامان
+Goods Transferred,منتقل شدہ سامان
+Grand Total,کل رقم
+Grand Total (Company Currency),کل رقم (کمپنی کرنسی)
+Grant Commission,کمیشن دیں
+Granted,دیا گیا
+Graph,گراف
+Gray,سلیٹی
+Greater Than,سے زیادہ
+Greater Than Amount,رقم سے زیادہ
+Greater Than Or Equal To,سے زیادہ یا برابر
+Green,سبز
+Grey structure,گرے اسٹرکچر
+Grid Shortcuts,ٹیبل شارٹ کٹس
+Gross Margin,مجموعی منافع
+Gross Margin %,مجموعی منافع %
+Gross Profit,مجموعی منافع
+Group,گروپ
+Group By,گروپ بلحاظ
+Group By Based On,گروپ کی بنیاد
+Group By Supplier,سپلائر کے لحاظ سے گروپ
+Group By Type,قسم کے لحاظ سے گروپ
+Group by Voucher,واؤچر کے لحاظ سے گروپ
+Group same items,ایک جیسے آئٹمز گروپ کریں
+Groups,گروپس
+HR Manager,HR منیجر
+HR User,HR یوزر
+HTML Message,HTML پیغام
+Half,آدھا
+Half Yearly,ششماہی
+Half-Yearly,ششماہی
+Half-yearly,ششماہی
+Handle Employee Advances,ملازمین کے ایڈوانس سنبھالیں
+Handled Emails,نمٹائی گئی ای میلز
+Has Attachments,اٹیچمنٹس ہیں
+Has Expiry Date,میعاد کی تاریخ ہے
+Has Item Scanned,آئٹم اسکین ہوا
+Has Next Condition,اگلی شرط ہے
+Has Unit Price Items,فی یونٹ قیمت والے آئٹمز ہیں
+Has Variants,ورائنٹس ہیں
+Header Icon,ہیڈر آئیکن
+Heading {0},سرخی {0}
+Heatmap,ہیٹ میپ
+Help,مدد
+Here's your tracking URL,یہ رہا آپ کا ٹریکنگ URL
+"Hi {0}, let's get the basics right",السلام علیکم {0}، بنیادی چیزیں ٹھیک کرتے ہیں
+Hidden,چھپا ہوا
+Hidden Fields,چھپے فیلڈز
+Hidden columns include: <br> {0},چھپے کالم: <br> {0}
+Hide,چھپائیں
+Hide Buttons,بٹن چھپائیں
+Hide Custom DocTypes and Reports,حسب ضرورت DocTypes اور رپورٹس چھپائیں
+Hide Descendants,اولاد چھپائیں
+Hide Weekends,ہفتہ وار چھٹیاں چھپائیں
+Hide details,تفصیل چھپائیں
+High,زیادہ
+Hold,روکیں
+Hold Invoice,انوائس روکیں
+Hold Type,روکنے کی قسم
+Holiday List,چھٹیوں کی فہرست
+Home,ہوم
+Hourly,فی گھنٹہ
+Hours,گھنٹے
+How it reads on the rail.,ریل پر یہ کیسا دکھتا ہے۔
+ID or a text field.,ID یا کوئی متن فیلڈ۔
+Icon,آئیکن
+Icon Image,آئیکن تصویر
+Icon Style,آئیکن کا انداز
+Icon Type,آئیکن کی قسم
+Idx,ترتیب نمبر
+"If enabled, a print of this document will be attached to each email",فعال ہو تو اس دستاویز کا پرنٹ ہر ای میل کے ساتھ منسلک ہوگا
+"If enabled, all files attached to this document will be attached to each email",فعال ہو تو اس دستاویز کی تمام فائلیں ہر ای میل کے ساتھ منسلک ہوں گی
+"If yes, then this warehouse will be used to store rejected materials",اگر ہاں، تو یہ گودام مسترد مٹیریل رکھنے کے لیے استعمال ہوگا
+Ignore,نظر انداز کریں
+Ignore Closing Balance,اختتامی بقایا نظر انداز کریں
+Ignore Default Payment Terms Template,ادائیگی کی شرائط کا ڈیفالٹ ٹیمپلیٹ نظر انداز کریں
+Ignore Pricing Rule,قیمت کا اصول نظر انداز کریں
+Ignore Tax Withholding Threshold,ٹیکس کٹوتی کی حد نظر انداز کریں
+Illegal Document Status for {0},{0} کے لیے غلط دستاویزی صورتحال
+Illegal SQL Query,غلط SQL سوال
+Image,تصویر
+Image Field,تصویر کا فیلڈ
+Image View,تصویری ویو
+Images,تصاویر
+Impersonated by {0},{0} نے بطور دوسرا یوزر استعمال کیا
+Import,امپورٹ
+Import Using CSV file,CSV فائل سے امپورٹ
+Import Zip,Zip امپورٹ کریں
+In,آمد
+In Party Currency,فریق کی کرنسی میں
+In Qty,آمد مقدار
+In Transit,راستے میں
+In Value,آمد مالیت
+In Words,الفاظ میں
+In Words (Company Currency),الفاظ میں (کمپنی کرنسی)
+In progress,جاری
+"In {0}, {1} is required in every row.",{0} میں ہر لائن میں {1} ضروری ہے۔
+"In {0}, {1} is required in row {2}.",{0} میں لائن {2} میں {1} ضروری ہے۔
+"In {0}, {1} is required in rows {2}.",{0} میں لائنوں {2} میں {1} ضروری ہے۔
+"In {0}, {1} is required in {2} rows.",{0} میں {2} لائنوں میں {1} ضروری ہے۔
+Inactive,غیر فعال
+Inbox,ان باکس
+Inbox View,ان باکس ویو
+Include Disabled,غیر فعال شامل کریں
+Include Expired,میعاد ختم شامل کریں
+Include Exploded Items,کھلے آئٹمز شامل کریں
+Include Name Field,نام کا فیلڈ شامل کریں
+Include Revaluation Journals,نئی قدر کاری کے جرنلز شامل کریں
+Include UOM,یونٹ شامل کریں
+Include Zero Stock Items,صفر اسٹاک والے آئٹمز شامل کریں
+Include filters,فلٹرز شامل کریں
+Include hidden columns,چھپے کالم شامل کریں
+Include indentation,حاشیہ شامل کریں
+Include {0} in global search,{0} کو عالمی تلاش میں شامل کریں
+Including items for sub assemblies,ذیلی اسمبلیوں کے آئٹمز سمیت
+Incoming Call Settings,آنے والی کال کی سیٹنگز
+Incoming Emails (Last 7 days),آنے والی ای میلز (پچھلے 7 دن)
+Incoming Rate,آمد کا ریٹ
+Incorrect Component Quantity,جزو کی غلط مقدار
+Incorrect Payment Type,ادائیگی کی غلط قسم
+Incorrect configuration,غلط ترتیب
+Incorrect value in row {0}:,لائن {0} میں غلط قدر:
+Incorrect value:,غلط قدر:
+Incoterm,انکوٹرم
+Increase indent,حاشیہ بڑھائیں
+Indent,حاشیہ
+Index,انڈیکس
+Indicator,اشارہ
+Indicator Color,اشارے کا رنگ
+Individual,انفرادی
+Inherit,وراثت میں لیں
+Initiated,شروع کیا گیا
+Insert Above,اوپر داخل کریں
+Insert After,کے بعد داخل کریں
+Insert Below,نیچے داخل کریں
+Insert Column Before {0},{0} سے پہلے کالم داخل کریں
+Insert Column Left,بائیں کالم داخل کریں
+Insert Column Right,دائیں کالم داخل کریں
+Insert Image in Markdown,مارک ڈاؤن میں تصویر داخل کریں
+Insert Row Above,اوپر لائن داخل کریں
+Insert Row Below,نیچے لائن داخل کریں
+Insert Table,ٹیبل داخل کریں
+Insert image,تصویر داخل کریں
+Insert link,لنک داخل کریں
+Inspected by,معائنہ کنندہ
+Inspection,معائنہ
+Inspection Required,معائنہ ضروری
+Inspection Required before Delivery,ترسیل سے پہلے معائنہ ضروری
+Inspection Required before Purchase,خریداری سے پہلے معائنہ ضروری
+Inspections,معائنے
+Installed Apps,انسٹال شدہ ایپس
+Instructions,ہدایات
+Insufficient Stock,اسٹاک ناکافی
+Interest and/or dunning fee,سود اور/یا یاد دہانی فیس
+Interests,دلچسپیاں
+Internal Server Error,اندرونی سرور خرابی
+Internal Supplier Already Exists,اندرونی سپلائر پہلے سے موجود ہے
+Internal Supplier Details,اندرونی سپلائر کی تفصیل
+Internal Transfer,اندرونی منتقلی
+Interval,وقفہ
+"Invalid ""depends_on"" expression","غلط ""depends_on"" اظہار"
+Invalid Account,غلط اکاؤنٹ
+Invalid Accounting Dimension,غلط اکاؤنٹنگ ڈائمینشن
+Invalid Allocated Amount,غلط مختص رقم
+Invalid Attribute Values,خصوصیات کی غلط قدریں
+Invalid Disassembly Item,الگ کرنے کا غلط آئٹم
+Invalid Disassembly Quantity,الگ کرنے کی غلط مقدار
+Invalid Item Defaults,آئٹم کے غلط ڈیفالٹس
+Invalid Naming Series: {},غلط نام سازی سیریز: {}
+Invalid Override,غلط اوور رائیڈ
+Invalid Parent Task,غلط مرکزی کام
+Invalid Part Number,غلط پارٹ نمبر
+Invalid Project,غلط پروجیکٹ
+Invalid Purchase Invoice,غلط پرچیز انوائس
+Invalid Search Field {0},تلاش کا غلط فیلڈ {0}
+Invalid Source and Target Warehouse,غلط ماخذ اور منزل گودام
+Invalid URL,غلط URL
+Invalid Valuation Method,ویلیوایشن کا غلط طریقہ
+Invalid Values,غلط قدریں
+Invalid aggregate function,غلط مجموعی فنکشن
+Invalid aggregate function: {0},غلط مجموعی فنکشن: {0}
+Invalid column,غلط کالم
+Invalid docstatus,غلط دستاویزی صورتحال
+Invalid document type,غلط دستاویزی قسم
+Invalid expression set in filter {0},فلٹر {0} میں غلط اظہار
+Invalid filter: {0},غلط فلٹر: {0}
+Invalid group field,غلط گروپ فیلڈ
+Invalid name,غلط نام
+Invalid type,غلط قسم
+Invalid value specified for UUID: {},UUID کی غلط قدر: {}
+Inventory,انوینٹری
+Inventory Dimension,انوینٹری ڈائمینشن
+Inventory Settings,انوینٹری سیٹنگز
+Inventory Valuation,انوینٹری کی قدر
+Invoice Portion,انوائس کا حصہ
+Invoiced Amount,انوائس شدہ رقم
+Invoices,بل
+Invoicing,انوائسنگ
+Is,ہے
+Is Active,فعال ہے
+Is Additional Transfer Entry,اضافی منتقلی انٹری ہے
+Is Complete,مکمل ہے
+Is Default,ڈیفالٹ ہے
+Is Default Module,ڈیفالٹ ماڈیول ہے
+Is Finished Item,تیار آئٹم ہے
+Is Folder,فولڈر ہے
+Is Free Item,مفت آئٹم ہے
+Is Frozen,منجمد ہے
+Is Group,گروپ ہے
+Is Group Warehouse,گروپ گودام ہے
+Is Hidden,چھپا ہوا ہے
+Is Internal Supplier,اندرونی سپلائر ہے
+Is Milestone,سنگ میل ہے
+Is Opening,ابتدائی ہے
+Is Opening Entry,ابتدائی انٹری ہے
+Is Optional,اختیاری ہے
+Is Paid,ادا شدہ ہے
+Is Primary,بنیادی ہے
+Is Primary Contact,بنیادی رابطہ ہے
+Is Primary Mobile,بنیادی موبائل ہے
+Is Primary Phone,بنیادی فون ہے
+Is Private,ذاتی ہے
+Is Public,عوامی ہے
+Is Query Report,سوال رپورٹ ہے
+Is Rejected Warehouse,مسترد گودام ہے
+Is Return,واپسی ہے
+Is Return (Debit Note),واپسی ہے (ڈیبٹ نوٹ)
+Is Single,سنگل ہے
+Is Skipped,چھوڑا گیا ہے
+Is Standard,معیاری ہے
+Is Table Field,ٹیبل فیلڈ ہے
+Is Tax Withholding Account,ٹیکس کٹوتی اکاؤنٹ ہے
+Is Template,ٹیمپلیٹ ہے
+Is Transporter,ٹرانسپورٹر ہے
+Is this Tax included in Basic Rate?,کیا یہ ٹیکس بنیادی ریٹ میں شامل ہے؟
+Issue,مسئلہ
+Issue Priority,مسئلے کی ترجیح
+Issue Type,مسئلے کی قسم
+Issue found,پایا گیا مسئلہ
+Issued,جاری
+Issues and Receipts,اجرا اور وصولیاں
+It is needed to fetch Item Details.,آئٹم کی تفصیل حاصل کرنے کے لیے ضروری ہے۔
+Italic,ترچھا
+Item,چیز
+Item Alternative,متبادل آئٹم
+Item Attribute,آئٹم کی خصوصیت
+Item Attributes,آئٹم کی خصوصیات
+Item Code,آئٹم کوڈ
+Item Code required at Row No {0},لائن نمبر {0} پر آئٹم کوڈ ضروری ہے
+Item Default,آئٹم ڈیفالٹ
+Item Defaults,آئٹم ڈیفالٹس
+Item Group,آئٹم گروپ
+Item Group Defaults,آئٹم گروپ ڈیفالٹس
+Item Group Name,آئٹم گروپ کا نام
+Item Manager,آئٹم منیجر
+Item Name,آئٹم کا نام
+Item Price,آئٹم کی قیمت
+Item Price Stock,آئٹم کی قیمت اور اسٹاک
+Item Price created at rate {0},{0} ریٹ پر آئٹم کی قیمت بنائی گئی
+Item Prices,آئٹمز کی قیمتیں
+Item Reorder,آئٹم دوبارہ آرڈر
+Item Shortage Report,آئٹمز کی کمی کی رپورٹ
+Item Supplier,آئٹم سپلائر
+Item Tax,آئٹم ٹیکس
+Item Tax Amount Included in Value,آئٹم ٹیکس کی رقم قدر میں شامل
+Item Tax Rate,آئٹم ٹیکس ریٹ
+Item Tax Template,آئٹم ٹیکس ٹیمپلیٹ
+Item Variant,آئٹم ورائنٹ
+Item Variant Details,آئٹم ورائنٹ کی تفصیل
+Item Variant Settings,آئٹم ورائنٹ سیٹنگز
+Item Variants updated,آئٹم ورائنٹس اپ ڈیٹ ہو گئے
+Item Weight Details,آئٹم کے وزن کی تفصیل
+Item Wise Consumption,آئٹم وار استعمال
+Item Wise Tax Details,آئٹم وار ٹیکس کی تفصیل
+Item has variants.,آئٹم کے ورائنٹس ہیں۔
+Item {0} does not exist,آئٹم {0} موجود نہیں
+Item {0} is cancelled,آئٹم {0} منسوخ ہے
+Item {0} is disabled,آئٹم {0} غیر فعال ہے
+Item {0} is not a stock Item,آئٹم {0} اسٹاک آئٹم نہیں
+Item {0} is not a template item.,آئٹم {0} ٹیمپلیٹ آئٹم نہیں۔
+Item-wise Purchase History,آئٹم وار خریداری کی تاریخ
+Item-wise Purchase Register,آئٹم وار خریداری رجسٹر
+Items,آئٹمز
+Items & Pricing,آئٹمز اور قیمتیں
+Items To Be Requested,منگوانے کے لیے آئٹمز
+Items received from a supplier.,سپلائر سے وصول شدہ آئٹمز۔
+Itemwise Recommended Reorder Level,آئٹم وار تجویز کردہ دوبارہ آرڈر کی سطح
+JS Message,JS پیغام
+Javascript,جاوا اسکرپٹ
+Journal Entry,جرنل انٹری
+Jump to field,فیلڈ پر جائیں
+Just for me,صرف میرے لیے
+Kanban,کانبان
+Keep Closed,بند رکھیں
+Kept encrypted on the server. Only the owner can see this page.,سرور پر خفیہ (encrypted) رکھی جاتی ہے۔ یہ صفحہ صرف مالک دیکھ سکتا ہے۔
+Key,کلید
+Keyboard Shortcuts,کی بورڈ شارٹ کٹس
+Kind,قسم
+LIFO,LIFO
+Label,لیبل
+Landscape,باغبانی
+Language,زبان
+Last,آخری بار
+Last 10 active users,آخری 10 فعال یوزرز
+Last 14 Days,پچھلے 14 دن
+Last 30 Days,پچھلے 30 دن
+Last 6 Months,پچھلے 6 مہینے
+Last 7 Days,پچھلے 7 دن
+Last 90 Days,پچھلے 90 دن
+Last Active,آخری بار فعال
+Last Edited By You,آخری تبدیلی آپ نے کی
+Last Edited By {0},آخری تبدیلی {0} نے کی
+Last IP,آخری IP
+Last Login,آخری لاگ ان
+Last Modified On,آخری تبدیلی کی تاریخ
+Last Month,پچھلا مہینہ
+Last Name,آخری نام
+Last Purchase Rate,آخری خریداری ریٹ
+Last Quarter,پچھلی سہ ماہی
+Last Scanned Warehouse,آخری اسکین شدہ گودام
+Last Synced On,آخری ہم آہنگی
+Last Updated By,آخری اپ ڈیٹ کرنے والا
+Last Updated On,آخری اپ ڈیٹ کی تاریخ
+Last Week,پچھلا ہفتہ
+Last Year,پچھلا سال
+Last synced {0},آخری ہم آہنگی {0}
+Latest Age,زیادہ سے زیادہ عمر
+Layout,لے آؤٹ
+Layout <b>{0}</b> created,لے آؤٹ <b>{0}</b> بنا دیا گیا
+Layout <b>{0}</b> deleted,لے آؤٹ <b>{0}</b> حذف ہو گیا
+Layout <b>{0}</b> updated,لے آؤٹ <b>{0}</b> اپ ڈیٹ ہو گیا
+Layout Order,لے آؤٹ کی ترتیب
+Layout name,لے آؤٹ کا نام
+Layout name is required,لے آؤٹ کا نام ضروری ہے
+Layouts you create will show up here.,آپ کے بنائے لے آؤٹ یہاں نظر آئیں گے۔
+Lead Time Date,ترسیل میں لگنے والے وقت کی تاریخ
+Lead Time in days,ترسیل میں لگنے والے دن
+Leave as 0 to allow zero valuation rate.,صفر ویلیوایشن ریٹ کی اجازت کے لیے 0 رہنے دیں۔
+Leave blank if the Supplier is blocked indefinitely,اگر سپلائر غیر معینہ مدت کے لیے روکا گیا ہو تو خالی چھوڑیں
+Leave blank to inherit the app-shipped color.,ایپ کا اصل رنگ رکھنے کے لیے خالی چھوڑیں۔
+Leave blank to inherit the app-shipped icon.,ایپ کا اصل آئیکن رکھنے کے لیے خالی چھوڑیں۔
+Leave blank to repeat always,ہمیشہ دہرانے کے لیے خالی چھوڑیں
+Leaves the desk. It has no sidebar.,ڈیسک سے باہر جاتا ہے۔ اس کا سائیڈ بار نہیں۔
+Ledgers,لیجرز
+Left,بائیں
+Left Bottom,بائیں نیچے
+Left Center,بائیں درمیان
+Less,کم
+Less Than,سے کم
+Less Than Amount,رقم سے کم
+Less Than Or Equal To,سے کم یا برابر
+Let's Get Started,آئیے شروع کریں
+Let's get the basics right,آئیے بنیادی چیزیں ٹھیک کریں
+Letter Head,لیٹر ہیڈ
+Level,سطح
+Library,لائبریری
+Light,روشن
+Light Blue,ہلکا نیلا
+Light Theme,ہلکا تھیم
+Like,پسند
+Liked,پسند کیا
+Liked By,پسند کرنے والے
+Liked by me,میں نے پسند کیا
+Liked by {0} people,{0} لوگوں نے پسند کیا
+Limit,حد
+Line,مد
+"Line {0} ({1}): choose the catalogue item, or tick “New item” to add it. Delete the line if it shouldn't be in the quotation.",لائن {0} ({1}): کیٹلاگ کا آئٹم منتخب کریں، یا شامل کرنے کے لیے “نیا آئٹم” پر نشان لگائیں۔ اگر یہ لائن کوٹیشن میں نہیں ہونی چاہیے تو اسے حذف کریں۔
+Lines,لائنیں
+Link,لنک
+Link Cards,لنک کارڈز
+Link Count,لنکس کی تعداد
+Link Details,لنک کی تفصیل
+Link To,لنک برائے
+Link To in Row,لائن میں لنک برائے
+Link Type,لنک کی قسم
+Link Type in Row,لائن میں لنک کی قسم
+Link to Material Request,میٹیریل ریکوئسٹ سے لنک
+Link to Material Requests,میٹیریل ریکوئسٹس سے لنک
+Linked with submitted documents,جمع شدہ دستاویزات سے منسلک
+Linked with {0},{0} سے منسلک
+Linking Failed,لنک ناکام
+Links,لنکس
+Links To,لنک برائے
+List,فہرست
+List Filter,فہرست فلٹر
+List Settings,فہرست کی سیٹنگز
+List View,فہرست ویو
+List View Settings,فہرست ویو کی سیٹنگز
+Lists,فہرستیں
+Load More,مزید لوڈ کریں
+Load More Communications,مزید پیغامات لوڈ کریں
+Load more,مزید لوڈ کریں
+Loading,لوڈ ہو رہا ہے
+Loading Filters...,فلٹرز لوڈ ہو رہے ہیں...
+Loading full tree...,پورا درخت لوڈ ہو رہا ہے...
+Loading groups…,گروپس لوڈ ہو رہے ہیں…
+Loading preview...,پیش منظر لوڈ ہو رہا ہے...
+Loading...,لوڈ ہو رہا ہے...
+Locale,مقامی ترتیب
+Location,جگہ
+Location / area,جگہ / ایریا
+Lock as final,حتمی کے طور پر لاک کریں
+Lock the quotation as final first.,پہلے کوٹیشن کو حتمی کے طور پر لاک کریں۔
+Lock {0} as the final quotation? No more revisions can be made after this.,{0} کو حتمی کوٹیشن کے طور پر لاک کریں؟ اس کے بعد کوئی ریویژن نہیں ہو سکے گا۔
+Locked as final,حتمی کے طور پر لاک
+Locked as the final quotation. No more revisions.,حتمی کوٹیشن کے طور پر لاک کر دی گئی۔ مزید کوئی ریویژن نہیں۔
+Locked on,لاک کی تاریخ
+Log out,لاگ آؤٹ
+Login After,اس وقت کے بعد لاگ ان
+Login Before,اس وقت سے پہلے لاگ ان
+Login Failed please try again,لاگ ان ناکام، دوبارہ کوشش کریں
+Logo URL,لوگو URL
+Logout,لاگ آؤٹ
+Lost,گم
+Lost Reasons,ناکامی کی وجوہات
+Low,کم
+Madam,محترمہ
+Main project,مرکزی پروجیکٹ
+Maintain Stock,اسٹاک رکھیں
+Maintenance,دیکھ بھال
+Maintenance Schedule,دیکھ بھال کا شیڈول
+Maintenance Schedules,دیکھ بھال کے شیڈول
+Maintenance Visit,دیکھ بھال کا دورہ
+Major,بڑا
+Make Return Entry,واپسی کی انٹری بنائیں
+Make Stock Entry,اسٹاک انٹری بنائیں
+Make {0},{0} بنائیں
+Make {0} Variant,{0} ورائنٹ بنائیں
+Make {0} Variants,{0} ورائنٹس بنائیں
+Male,مرد
+Manage,انتظام
+Manage Dock,ڈاک کا انتظام
+Manage Layouts,لے آؤٹس کا انتظام
+Manage Workspaces,ورک اسپیسز کا انتظام
+Manage priority,ترجیح کا انتظام
+Manage {0} Dock,{0} ڈاک کا انتظام
+Manage {0} Sidebar,{0} سائیڈ بار کا انتظام
+Mandatory Purchase Order,پرچیز آرڈر لازمی
+Mandatory Purchase Receipt,پرچیز رسید لازمی
+Mandatory fields required in {0},{0} میں ضروری فیلڈز درکار ہیں
+Manual,دستی
+Manufacturer,بنانے والی کمپنی
+Manufacturer Part Number,بنانے والے کا پارٹ نمبر
+Map,نقشہ
+Map Raw Materials to Finished Goods,خام مال کو تیار مال سے جوڑیں
+Map View,نقشہ ویو
+Mapping saved,نقشہ بندی محفوظ ہو گئی
+Mapping {0} ...,{0} کی نقشہ بندی ...
+Margin,مارجن
+Margin Rate or Amount,مارجن ریٹ یا رقم
+Margin Type,مارجن کی قسم
+MariaDB Variables,MariaDB متغیرات
+Mark all as read,سب کو پڑھا ہوا نشان زد کریں
+Mark as Standard,معیاری نشان زد کریں
+Master,بنیادی ریکارڈ
+Material,سامان
+Material Issue,مٹیریل کا اجرا
+Material Planning,مٹیریل کی منصوبہ بندی
+Material Receipt,مٹیریل کی وصولی
+Material Request,میٹیریل ریکوئسٹ
+Material Request Item,میٹیریل ریکوئسٹ آئٹم
+Material Requests,میٹیریل ریکوئسٹس
+Material Requirements Planning Report,مٹیریل ضروریات کی منصوبہ بندی رپورٹ
+Material Returned from WIP,زیر عمل سے واپس مٹیریل
+Material Transfer,مٹیریل کی منتقلی
+Material to Supplier,سپلائر کو مٹیریل
+Materials,سامان
+Materials used,استعمال شدہ مٹیریل
+Max 500 records at a time,ایک وقت میں زیادہ سے زیادہ 500 ریکارڈ
+Max Discount (%),زیادہ سے زیادہ رعایت (%)
+Max Sample Quantity,نمونے کی زیادہ سے زیادہ مقدار
+Max: {0},زیادہ سے زیادہ: {0}
+Maximum,زیادہ سے زیادہ
+Maximum quantity scanned for item {0}.,آئٹم {0} کی زیادہ سے زیادہ مقدار اسکین ہو گئی۔
+Maximum sample quantity that can be retained,نمونے کی زیادہ سے زیادہ مقدار جو رکھی جا سکتی ہے
+Maximum {0} rows allowed,زیادہ سے زیادہ {0} لائنوں کی اجازت
+Maybe,شاید
+Me,میں
+Medium,درمیانہ
+Meeting,میٹنگ
+Meetings & Feedback,میٹنگز اور رائے
+Meets Condition?,شرط پوری؟
+Memory Usage,میموری کا استعمال
+Mentions,ذکر
+Menu,مینو
+Merge taxes from multiple documents,کئی دستاویزات کے ٹیکس ملائیں
+Merge with existing,موجودہ کے ساتھ ملائیں
+Merged From,سے ملایا گیا
+Message,پیغام
+Message clipped,پیغام کاٹا گیا
+Message for Supplier,سپلائر کے لیے پیغام
+Message will be sent to the users to get their status on the Project,پروجیکٹ کی صورتحال جاننے کے لیے یوزرز کو پیغام بھیجا جائے گا
+Method,طریقہ
+Mid Center,درمیان وسط
+Middle Name,درمیانی نام
+Milestone,مرحلہ
+Mimaar,معمار
+Mimaar Settings,معمار سیٹنگز
+Min Order Qty,کم سے کم آرڈر مقدار
+Minimize,چھوٹا کریں
+Minimum,کم سے کم
+Minimum Order Qty,کم سے کم آرڈر مقدار
+Minimum quantity should be as per Stock UOM\n\n,کم سے کم مقدار اسٹاک یونٹ کے مطابق ہونی چاہیے
+Minor,معمولی
+Minutes,منٹ
+Miss,محترمہ
+Missing Account,اکاؤنٹ موجود نہیں
+Missing Default in Company,کمپنی میں ڈیفالٹ موجود نہیں
+Missing Fields,فیلڈز خالی ہیں
+Missing Finished Good,تیار مال موجود نہیں
+Missing Item,آئٹم موجود نہیں
+Missing Permission,اجازت موجود نہیں
+Missing Values Required,ضروری قدریں موجود نہیں
+Mobile,موبائل
+Mobile (for WhatsApp),موبائل (واٹس ایپ کے لیے)
+Mobile No,موبائل نمبر
+Modal Trigger,ونڈو کھولنے والا
+Mode of Payment,ادائیگی کا طریقہ
+Model (leave empty for the default),ماڈل (ڈیفالٹ کے لیے خالی چھوڑیں)
+Modified,تبدیل شدہ
+Module,ماڈیول
+Module is required for a standard layout,معیاری لے آؤٹ کے لیے ماڈیول ضروری ہے
+Modules,ماڈیولز
+Monday,پیر
+Month,مہینہ
+Month(s) after the end of the invoice month,انوائس کے مہینے کے اختتام کے بعد مہینے
+Monthly,ماہانہ
+Monthly Distribution,ماہانہ تقسیم
+More,مزید
+More Info,مزید معلومات
+More Information,مزید معلومات
+More actions,مزید اقدامات
+More options,مزید اختیارات
+More send options,بھیجنے کے مزید اختیارات
+Most Used,سب سے زیادہ استعمال شدہ
+Mount On,نصب کریں
+Move,منتقل کریں
+Move To,منتقل کریں
+Move cursor to above row,کرسر اوپر والی لائن پر
+Move cursor to below row,کرسر نیچے والی لائن پر
+Move cursor to next column,کرسر اگلے کالم پر
+Move cursor to previous column,کرسر پچھلے کالم پر
+Move to Row Number,لائن نمبر پر جائیں
+Move to...,منتقل کریں...
+Move {0},{0} منتقل کریں
+Moving Average,متحرک اوسط
+Moving {0},{0} منتقل ہو رہا ہے
+Mr,جناب
+Mrs,بیگم
+Ms,محترمہ
+Multiple Variants,متعدد ورائنٹس
+Must be Whole Number,پورا عدد ہونا چاہیے
+Mute Sounds,آوازیں بند کریں
+Mute sounds,آوازیں بند کریں
+My Device,میرا آلہ
+My Settings,میری سیٹنگز
+My Space,میری جگہ
+N/A,لاگو نہیں
+NTN,این ٹی این
+Name,نام
+Name of {0} cannot be {1},{0} کا نام {1} نہیں ہو سکتا
+Named Place,نامزد جگہ
+Naming,نام سازی
+Naming Rules,نام سازی کے اصول
+Naming Series,نام سازی سیریز
+Naming Series mandatory,نام سازی سیریز ضروری
+Naming Series options,نام سازی سیریز کے اختیارات
+Naming Series updated,نام سازی سیریز اپ ڈیٹ ہو گئی
+Navigate list down,فہرست میں نیچے جائیں
+Navigate list up,فہرست میں اوپر جائیں
+Navigate to main content,مرکزی مواد پر جائیں
+Navigation Settings,نیویگیشن سیٹنگز
+Negative Value,منفی قدر
+Net Amount,خالص رقم
+Net Amount (Company Currency),خالص رقم (کمپنی کرنسی)
+Net Rate,خالص ریٹ
+Net Rate (Company Currency),خالص ریٹ (کمپنی کرنسی)
+Net Total,خالص کل
+Net Total (Company Currency),خالص کل (کمپنی کرنسی)
+New,نیا
+New Activity,نئی سرگرمی
+New Address,نیا پتہ
+New Chart,نیا چارٹ
+New Contact,نیا رابطہ
+New Custom Block,نیا حسب ضرورت بلاک
+New Document Form,نئی دستاویز کا فارم
+New Document Shared {0},نئی دستاویز شیئر کی گئی {0}
+New Email,نئی ای میل
+New Email Account,نیا ای میل اکاؤنٹ
+New Event,نیا ایونٹ
+New Folder,نیا فولڈر
+New Format Name,نئے فارمیٹ کا نام
+New Links,نئے لنکس
+New Mention on {0},{0} پر نیا ذکر
+New Name,نیا نام
+New Notification,نئی اطلاع
+New Number Card,نیا نمبر کارڈ
+New Parent,نیا مرکزی
+New Print Format,نیا پرنٹ فارمیٹ
+New Print Format Name,نئے پرنٹ فارمیٹ کا نام
+New Quick List,نئی فوری فہرست
+New Report name,نئی رپورٹ کا نام
+New Shortcut,نیا شارٹ کٹ
+New Task,نیا کام
+New Template,نیا ٹیمپلیٹ
+New Users (Last 30 days),نئے یوزرز (پچھلے 30 دن)
+New Warehouse Name,نئے گودام کا نام
+New Workflow,نیا ورک فلو
+New item,نیا آئٹم
+New release date should be in the future,اجرا کی نئی تاریخ مستقبل کی ہونی چاہیے
+New revised budget created successfully,نیا نظرثانی شدہ بجٹ کامیابی سے بن گیا
+New supplier from their quotation,ان کی کوٹیشن سے نیا سپلائر
+New supplier from this quotation,اس کوٹیشن سے نیا سپلائر
+New {0},نیا {0}
+New {0} Created,نیا {0} بن گیا
+New {0} {1} added to Dashboard {2},نیا {0} {1} ڈیش بورڈ {2} میں شامل کیا گیا
+New {0} {1} created,نیا {0} {1} بن گیا
+Next,اگلا
+Next 14 Days,اگلے 14 دن
+Next 30 Days,اگلے 30 دن
+Next 6 Months,اگلے 6 مہینے
+Next 7 Days,اگلے 7 دن
+Next Document,اگلی دستاویز
+Next Form Tour,اگلا فارم تعارف
+Next Month,اگلا مہینہ
+Next Quarter,اگلی سہ ماہی
+Next Step Condition,اگلے مرحلے کی شرط
+Next Week,اگلا ہفتہ
+Next Year,اگلا سال
+Next actions,اگلے اقدامات
+Next on Click,کلک پر اگلا
+Next page,اگلا صفحہ
+Next: {0},اگلا: {0}
+No,نہیں
+No Company Found,کوئی کمپنی نہیں ملی
+No Data,کوئی ڈیٹا نہیں
+No Data...,کوئی ڈیٹا نہیں...
+No Email Account,کوئی ای میل اکاؤنٹ نہیں
+No Email Accounts Assigned,کوئی ای میل اکاؤنٹ تفویض نہیں
+No Email Templates found,کوئی ای میل ٹیمپلیٹ نہیں ملا
+No Emails,کوئی ای میل نہیں
+No Filters Set,کوئی فلٹر نہیں
+No Images,کوئی تصویر نہیں
+No Impact on Accounting Ledger,اکاؤنٹنگ لیجر پر کوئی اثر نہیں
+No Letterhead,لیٹر ہیڈ کے بغیر
+No Name Specified for {0},{0} کا کوئی نام نہیں دیا گیا
+No New Notifications,کوئی نئی اطلاع نہیں
+No Permission,اجازت نہیں
+No Print Formats found,کوئی پرنٹ فارمیٹ نہیں ملا
+No Results,کوئی نتیجہ نہیں
+No Select Field Found,کوئی سلیکٹ فیلڈ نہیں ملا
+No Selection,کچھ منتخب نہیں
+No Tags,کوئی ٹیگ نہیں
+No Upcoming Events,کوئی آنے والا ایونٹ نہیں
+No Workflows found,کوئی ورک فلو نہیں ملا
+No access,رسائی نہیں
+No active item prices found.,کوئی فعال آئٹم قیمت نہیں ملی۔
+No addresses added yet,ابھی کوئی پتہ شامل نہیں
+No advance in the terms,شرائط میں ایڈوانس نہیں
+No attachments,کوئی اٹیچمنٹ نہیں
+No cards to group.,گروپ کرنے کو کوئی کارڈ نہیں۔
+No changes in document,دستاویز میں کوئی تبدیلی نہیں
+No changes made,کوئی تبدیلی نہیں کی گئی
+No charts or cards yet,ابھی کوئی چارٹ یا کارڈ نہیں
+No contact details,رابطے کی کوئی تفصیل نہیں
+No contacts added yet,ابھی کوئی رابطہ شامل نہیں
+No data to export,ایکسپورٹ کے لیے کوئی ڈیٹا نہیں
+No data to perform this action,اس اقدام کے لیے کوئی ڈیٹا نہیں
+No data yet,ابھی کوئی ڈیٹا نہیں
+No document to preview,پیش منظر کے لیے کوئی دستاویز نہیں
+No documents found tagged with {0},{0} ٹیگ والی کوئی دستاویز نہیں ملی
+No filters available for this report,اس رپورٹ کے لیے کوئی فلٹر نہیں
+No filters found,کوئی فلٹر نہیں ملا
+No filters selected,کوئی فلٹر منتخب نہیں
+No further records,مزید کوئی ریکارڈ نہیں
+No matching records,کوئی ملتا ریکارڈ نہیں
+No matching records.,کوئی ملتا ریکارڈ نہیں۔
+No mobile number for this supplier: choose the contact in WhatsApp.,اس سپلائر کا موبائل نمبر نہیں: واٹس ایپ میں رابطہ منتخب کریں۔
+No module,کوئی ماڈیول نہیں
+No naming series defined,کوئی نام سازی سیریز مقرر نہیں
+No notifications configured,کوئی اطلاع ترتیب نہیں دی گئی
+No of Months (Expense),مہینوں کی تعداد (خرچ)
+No of Months (Revenue),مہینوں کی تعداد (آمدنی)
+No options,کوئی اختیار نہیں
+No other document types.,کوئی اور دستاویزی قسم نہیں۔
+No other supplier of these items yet,ان آئٹمز کا ابھی کوئی اور سپلائر نہیں
+No permission to '{0}' {1},'{0}' {1} کی اجازت نہیں
+No permission to read {0},{0} پڑھنے کی اجازت نہیں
+No pinned document types.,کوئی پن شدہ دستاویزی قسم نہیں۔
+No private workspaces yet,ابھی کوئی ذاتی ورک اسپیس نہیں
+No records found.,کوئی ریکارڈ نہیں ملا۔
+No records tagged.,کوئی ریکارڈ ٹیگ نہیں۔
+No related settings,کوئی متعلقہ سیٹنگ نہیں
+No results found,کوئی نتیجہ نہیں ملا
+No roles have access yet.,ابھی کسی رول کو رسائی نہیں۔
+No rows,کوئی لائن نہیں
+No rows selected,کوئی لائن منتخب نہیں
+No rules found.,کوئی اصول نہیں ملا۔
+No saved layouts yet,ابھی کوئی محفوظ لے آؤٹ نہیں
+No session defaults configured.,کوئی سیشن ڈیفالٹ ترتیب نہیں۔
+No templates,کوئی ٹیمپلیٹ نہیں
+No user permissions yet.,ابھی کوئی یوزر اجازت نہیں۔
+No values to show,دکھانے کو کوئی قدر نہیں
+No workspaces in this module.,اس ماڈیول میں کوئی ورک اسپیس نہیں۔
+No {0} created,کوئی {0} نہیں بنا
+No {0} found,کوئی {0} نہیں ملا
+No {0} mail,کوئی {0} میل نہیں
+No {0} records yet,ابھی کوئی {0} ریکارڈ نہیں
+No.,نمبر
+Non Conformance,عدم مطابقت
+Non-Conforming,غیر مطابق
+None,کوئی نہیں
+None: End of Workflow,کوئی نہیں: ورک فلو کا اختتام
+Normal,عام
+Not Ancestors Of,کے آباؤ اجداد نہیں
+Not Descendants Of,کی اولاد نہیں
+Not Editable,تبدیل نہیں ہو سکتا
+Not Equals,برابر نہیں
+Not In,میں نہیں
+Not Initiated,شروع نہیں ہوا
+Not Like,جیسا نہیں
+Not Linked to any record,کسی ریکارڈ سے منسلک نہیں
+Not OK,ٹھیک نہیں
+Not Permitted,اجازت نہیں
+Not Permitted to read {0},{0} پڑھنے کی اجازت نہیں
+Not Saved,محفوظ نہیں
+Not Set,مقرر نہیں
+Not Started,شروع نہیں ہوا
+Not a valid Workflow Action,درست ورک فلو اقدام نہیں
+Not configured,ترتیب نہیں دی گئی
+Not found,نہیں ملا
+Not in any app,کسی ایپ میں نہیں
+Not permitted,اجازت نہیں
+Not permitted to view {0},{0} دیکھنے کی اجازت نہیں
+Not permitted. {0}.,اجازت نہیں۔ {0}۔
+Not set,مقرر نہیں
+Not yet overwritten,ابھی تبدیل نہیں ہوا
+Note,نوٹ
+Note Seen By,نوٹ دیکھنے والے
+Notes,نوٹس
+Nothing found,کچھ نہیں ملا
+Nothing has been added yet.,ابھی کچھ شامل نہیں کیا گیا۔
+Nothing here yet,ابھی یہاں کچھ نہیں
+Nothing left to navigate to,جانے کو کچھ باقی نہیں
+Nothing left to redo,دوبارہ کرنے کو کچھ نہیں
+Nothing left to undo,واپس لینے کو کچھ نہیں
+Nothing on the dock,ڈاک پر کچھ نہیں
+Nothing on the sidebar,سائیڈ بار پر کچھ نہیں
+Nothing to restore,بحال کرنے کو کچھ نہیں
+Nothing to show,دکھانے کو کچھ نہیں
+Notification,اطلاع
+Notification Log,اطلاعات کا ریکارڈ
+Notification Settings,اطلاع کی سیٹنگز
+Notification Subscribed Document,اطلاع کی سبسکرائب شدہ دستاویز
+Notification Type,اطلاع کی قسم
+Notification Type Preference,اطلاع کی قسم کی ترجیح
+Notification categories,اطلاعات کی اقسام
+Notification sent to,اطلاع بھیجی گئی
+Notifications,اطلاعات
+Notifications Disabled,اطلاعات بند
+Notify Users On Every Login,ہر لاگ ان پر یوزرز کو اطلاع دیں
+Notify users with a popup when they log in,لاگ ان پر یوزرز کو پاپ اپ سے اطلاع دیں
+Now,ابھی
+Number,نمبر
+Number Card,نمبر کارڈ
+Number Card Link,نمبر کارڈ لنک
+Number Card Name,نمبر کارڈ کا نام
+Number Cards,نمبر کارڈز
+Number of Groups,گروپس کی تعداد
+Number of keys,کلیدوں کی تعداد
+Number of onsite backups,سائٹ پر بیک اپس کی تعداد
+Numbered list,نمبر والی فہرست
+OK,ٹھیک
+Occurrences,واقعات
+Off,بند
+Office,دفتر
+Offset X,X فاصلہ
+Offset Y,Y فاصلہ
+Old Parent,پرانا مرکزی
+Oldest Unscheduled Job,سب سے پرانا غیر شیڈول کام
+On Hold,روکا ہوا
+On Item Quantity,آئٹم کی مقدار پر
+On Net Total,خالص کل پر
+On Previous Row Amount,پچھلی لائن کی رقم پر
+On Previous Row Total,پچھلی لائن کے کل پر
+On hold,رکا ہوا
+On or After,اس دن یا بعد
+On or Before,اس دن یا پہلے
+On the document,دستاویز پر
+"On {0}, {1} wrote:",{0} کو {1} نے لکھا:
+Onboard,شامل
+"Once set, this invoice will be on hold till the set date",مقرر ہونے کے بعد یہ انوائس مقررہ تاریخ تک روکی رہے گی
+Only Include Allocated Payments,صرف مختص ادائیگیاں شامل کریں
+Only a submitted (locked) document can be sent.,صرف جمع شدہ (لاک) دستاویز بھیجی جا سکتی ہے۔
+Only a submitted (locked) {0} can be sent.,صرف جمع شدہ (لاک) {0} بھیجا جا سکتا ہے۔
+Only draft documents can be discarded,صرف ڈرافٹ دستاویزات ترک کی جا سکتی ہیں
+Only for,صرف برائے
+Only if Creator,صرف اگر بنانے والا ہو
+Only leaf nodes are allowed in transaction,لین دین میں صرف آخری سطح کی اکائیوں کی اجازت ہے
+Only own,صرف اپنا
+Only to you,صرف آپ کو
+Open,کھولیں
+Open Awesomebar,تلاش بار کھولیں
+Open Communication,پیغام کھولیں
+Open Documents,کھلی دستاویزات
+Open Frappe CRM,Frappe CRM کھولیں
+Open Frappe Helpdesk,Frappe ہیلپ ڈیسک کھولیں
+Open Global Search,عالمی تلاش کھولیں
+Open Link,لنک کھولیں
+Open Reference Document,حوالہ دستاویز کھولیں
+Open Role Permissions Manager,رول اجازت منیجر کھولیں
+Open Source applications for the web.,ویب کے لیے اوپن سورس ایپلیکیشنز۔
+Open console,کنسول کھولیں
+Open file,فائل کھولیں
+Open file in new tab,فائل نئے ٹیب میں کھولیں
+Open in Desk,ڈیسک میں کھولیں
+Open in New Tab,نئے ٹیب میں کھولیں
+Open in full page,پورے صفحے پر کھولیں
+Open list item,فہرست کا آئٹم کھولیں
+Open the app dock,ایپ ڈاک کھولیں
+Open {0},{0} کھولیں
+Opening Qty,ابتدائی مقدار
+Opening Stock,ابتدائی اسٹاک
+Opening Value,ابتدائی مالیت
+Opening balance,ابتدائی بقایا
+Optimize,بہتر بنائیں
+Optional,اختیاری
+Options,اختیارات
+Options not set for link field {0},لنک فیلڈ {0} کے اختیارات مقرر نہیں
+Orange,نارنجی
+Order,ترتیب
+Order Confirmation Date,آرڈر کی تصدیق کی تاریخ
+Order Confirmation No,آرڈر کی تصدیق نمبر
+Order Status,آرڈر کی صورتحال
+Ordered,آرڈر دیا
+Ordered {0},آرڈر شدہ {0}
+Orders,آرڈرز
+Organization,ادارہ
+Orientation,سمت
+Original Item,اصل آئٹم
+Other,دیگر
+Other Details,دیگر تفصیل
+Other Info,دیگر معلومات
+Other Reports,دیگر رپورٹس
+Other Settings,دیگر سیٹنگز
+Other terms,دیگر شرائط
+Out Qty,اخراج مقدار
+Out Value,اخراج مالیت
+Outgoing Emails (Last 7 days),جانے والی ای میلز (پچھلے 7 دن)
+Outgoing Rate,اخراج کا ریٹ
+Output,نتیجہ
+Outstanding,واجب الادا
+Outstanding (Company Currency),واجب الادا (کمپنی کرنسی)
+Outstanding Amount,واجب الادا رقم
+Over Billing Allowance (%),زائد بلنگ کی گنجائش (%)
+Over Delivery/Receipt Allowance (%),زائد ترسیل/وصولی کی گنجائش (%)
+Over Order Allowance (%),زائد آرڈر کی گنجائش (%)
+Over Transfer Allowance (%),زائد منتقلی کی گنجائش (%)
+Overall discount (Rs),مجموعی رعایت (روپے)
+Overdue,تاخیر شدہ
+Override Sidebar Position,سائیڈ بار کی جگہ تبدیل کریں
+Overrides the dock label for this module.,اس ماڈیول کا ڈاک لیبل تبدیل کرتا ہے۔
+Overview,خلاصہ
+Overwritten,تبدیل شدہ
+Owner,مالک
+PDF,پی ڈی ایف
+PO Supplied Item,PO کا فراہم کردہ آئٹم
+Page,صفحہ
+Page Break,صفحہ بریک
+Page Height (in mm),صفحے کی اونچائی (ملی میٹر)
+Page Route,صفحے کا راستہ
+Page Shortcuts,صفحے کے شارٹ کٹس
+Page Size,صفحے کا سائز
+Page Width (in mm),صفحے کی چوڑائی (ملی میٹر)
+Page height and width cannot be zero,صفحے کی اونچائی اور چوڑائی صفر نہیں ہو سکتی
+Page not found,صفحہ نہیں ملا
+Page {0} of {1},صفحہ {0} از {1}
+Paid,ادا ہو گیا
+Paid Amount,ادا شدہ رقم
+Paid Amount (Company Currency),ادا شدہ رقم (کمپنی کرنسی)
+Paid Amount After Tax,ٹیکس کے بعد ادا شدہ رقم
+Paid Amount After Tax (Company Currency),ٹیکس کے بعد ادا شدہ رقم (کمپنی کرنسی)
+Paid From Account Type,ادائیگی کرنے والے اکاؤنٹ کی قسم
+Paid To Account Type,وصول کرنے والے اکاؤنٹ کی قسم
+Paid {0},ادا {0}
+Paint,رنگ
+Paragraph,پیراگراف
+Parent,مرکزی
+Parent Company,مرکزی کمپنی
+Parent Document Type,مرکزی دستاویز کی قسم
+Parent Element Selector,مرکزی عنصر منتخب کنندہ
+Parent Field,مرکزی فیلڈ
+Parent Icon,مرکزی آئیکن
+Parent Item Group,مرکزی آئٹم گروپ
+Parent Page,مرکزی صفحہ
+Parent Supplier Group,مرکزی سپلائر گروپ
+Parent Task,مرکزی کام
+Parent Task {0} is not a Template Task,مرکزی کام {0} ٹیمپلیٹ کام نہیں
+Parent Task {0} must be a Group Task,مرکزی کام {0} گروپ کام ہونا چاہیے
+Parent Warehouse,مرکزی گودام
+Partial,کچھ حصہ
+Partially Ordered,جزوی آرڈر شدہ
+Partially Paid,جزوی ادا شدہ
+Partially Received,جزوی وصول شدہ
+Participants,شرکاء
+Partly Billed,جزوی بل شدہ
+Partly Paid,جزوی ادا شدہ
+Partnership,شراکت داری
+Party,فریق
+Party Account Currency,فریق کے اکاؤنٹ کی کرنسی
+Party Bank Account,فریق کا بینک اکاؤنٹ
+Party Name,فریق کا نام
+Party Type,فریق کی قسم
+Party Type is mandatory,فریق کی قسم ضروری ہے
+Party can only be one of {0},فریق صرف {0} میں سے ایک ہو سکتا ہے
+Party is mandatory,فریق ضروری ہے
+Pass,پاس
+Pass with remarks,پاس، ریمارکس کے ساتھ
+Passive,غیر فعال
+Password,پاس ورڈ
+Password cannot be filtered,پاس ورڈ سے فلٹر نہیں ہو سکتا
+Password changed,پاس ورڈ تبدیل ہو گیا
+Password missing in Email Account,ای میل اکاؤنٹ میں پاس ورڈ نہیں
+Paste,پیسٹ کریں
+Paste the API key in Mimaar Settings.,معمار سیٹنگز میں API کی پیسٹ کریں۔
+Path,راستہ
+Pay,ادا کریں
+Pay only what is due,صرف واجب رقم ادا کریں
+Pay suppliers only against due invoices or a PO advance,سپلائرز کو صرف واجب انوائسز یا PO ایڈوانس کے مقابل ادائیگی
+Payable Account,واجب الادا اکاؤنٹ
+Payables,واجبات
+Payment,ادائیگی
+Payment Amount,ادائیگی کی رقم
+Payment Amount (Company Currency),ادائیگی کی رقم (کمپنی کرنسی)
+Payment Deductions or Loss,ادائیگی کی کٹوتیاں یا نقصان
+Payment Entry,ادائیگی انٹری
+Payment Entry Deduction,ادائیگی انٹری کی کٹوتی
+Payment Entry Reference,ادائیگی انٹری کا حوالہ
+Payment From / To,ادائیگی سے / کو
+Payment Order,ادائیگی کا آرڈر
+Payment Order Status,ادائیگی آرڈر کی صورتحال
+Payment Ordered,ادائیگی کا آرڈر دیا گیا
+Payment Period Based On Invoice Date,انوائس کی تاریخ پر مبنی ادائیگی کی مدت
+Payment Reconciliation,ادائیگی کا ملان
+Payment References,ادائیگی کے حوالے
+Payment Request,ادائیگی کی درخواست
+Payment Request Outstanding,ادائیگی کی درخواست واجب
+Payment Schedule,ادائیگی کا شیڈول
+Payment Schedules,ادائیگی کے شیڈول
+Payment Term,ادائیگی کی شرط
+Payment Term Outstanding,ادائیگی کی شرط واجب
+Payment Terms,ادائیگی کی شرائط
+Payment Terms Template,ادائیگی کی شرائط کا ٹیمپلیٹ
+Payment Type,ادائیگی کی قسم
+Payment term {0} not used in {1},ادائیگی کی شرط {0} {1} میں استعمال نہیں ہوئی
+Payment terms,ادائیگی کی شرائط
+Payments,ادائیگیاں
+Payments need a proof of payment,ادائیگی کے لیے ثبوت ضروری ہے
+Pending,باقی
+Pending Emails,زیر التوا ای میلز
+Pending Jobs,زیر التوا کام
+Pending Review,جائزے کے منتظر
+Pending SO Items For Purchase Request,خریداری درخواست کے لیے زیر التوا SO آئٹمز
+Per Received,فی وصول شدہ
+Per Transferred,فی منتقل شدہ
+Per-Company Accounts,فی کمپنی اکاؤنٹس
+Percentage,فیصد
+Permanent,مستقل
+Permanently Cancel {0}?,{0} مستقل منسوخ کریں؟
+Permanently Discard {0}?,{0} مستقل ترک کریں؟
+Permanently Submit {0}?,{0} مستقل جمع کریں؟
+Permanently delete {0}?,{0} مستقل حذف کریں؟
+Permission Error,اجازت کی خرابی
+Permission Level,اجازت کی سطح
+Permission added.,اجازت شامل ہو گئی۔
+Permission removed.,اجازت ہٹا دی گئی۔
+Permission updated.,اجازت اپ ڈیٹ ہو گئی۔
+Permissions,اجازتیں
+Permissions reset,اجازتیں ری سیٹ
+Personal,ذاتی
+Phone,فون
+Phone No,فون نمبر
+Photo,تصویر
+Photo 1,تصویر 1
+Photo 2,تصویر 2
+Photo 3,تصویر 3
+Photo 4,تصویر 4
+Photo after fixing,ٹھیک ہونے کے بعد کی تصویر
+Photo of the material,مٹیریل کی تصویر
+Photos,تصاویر
+Pick Columns,کالم منتخب کریں
+Pick a module,ماڈیول منتخب کریں
+Pick another title,کوئی اور عنوان منتخب کریں
+Pick something for it to open.,کھولنے کے لیے کچھ منتخب کریں۔
+Pie,پائی
+Pin,پن کریں
+Pink,گلابی
+Pinned,پن شدہ
+Plant Floor,پلانٹ فلور
+Plaster,پلستر
+Please Select a Supplier,براہ کرم سپلائر منتخب کریں
+Please Set Chart,براہ کرم چارٹ مقرر کریں
+Please Specify Account,براہ کرم اکاؤنٹ بتائیں
+Please add 'Supplier' role to user {0}.,براہ کرم یوزر {0} کو 'سپلائر' رول دیں۔
+Please add at least one naming series.,براہ کرم کم از کم ایک نام سازی سیریز شامل کریں۔
+Please attach a file first.,براہ کرم پہلے فائل منسلک کریں۔
+Please create Card first,براہ کرم پہلے کارڈ بنائیں
+Please create chart first,براہ کرم پہلے چارٹ بنائیں
+Please enable pop-ups,براہ کرم پاپ اپس کی اجازت دیں
+Please enter Write Off Account,براہ کرم رائٹ آف اکاؤنٹ لکھیں
+Please enter a valid URL,براہ کرم درست URL لکھیں
+Please enter a valid Write Off Account,براہ کرم درست رائٹ آف اکاؤنٹ لکھیں
+Please enter quantity for item {0},براہ کرم آئٹم {0} کی مقدار لکھیں
+Please enter {0} first,براہ کرم پہلے {0} لکھیں
+Please save before attaching.,منسلک کرنے سے پہلے محفوظ کریں۔
+Please save the report first,براہ کرم پہلے رپورٹ محفوظ کریں
+Please select Apply Discount On,براہ کرم رعایت کس پر لاگو ہو، منتخب کریں
+Please select Category first,براہ کرم پہلے کیٹیگری منتخب کریں
+Please select Charge Type first,براہ کرم پہلے چارج کی قسم منتخب کریں
+Please select Document Type first.,براہ کرم پہلے دستاویز کی قسم منتخب کریں۔
+Please select X and Y fields,براہ کرم X اور Y فیلڈز منتخب کریں
+Please select a Company,براہ کرم کمپنی منتخب کریں
+Please select a Company first.,براہ کرم پہلے کمپنی منتخب کریں۔
+Please select a Document Type first,براہ کرم پہلے دستاویز کی قسم منتخب کریں
+Please select a Report first,براہ کرم پہلے رپورٹ منتخب کریں
+Please select a Supplier,براہ کرم سپلائر منتخب کریں
+Please select a Warehouse,براہ کرم گودام منتخب کریں
+Please select a file first.,براہ کرم پہلے فائل منتخب کریں۔
+Please select a transaction.,براہ کرم لین دین منتخب کریں۔
+Please select a valid csv file with data,براہ کرم ڈیٹا والی درست csv فائل منتخب کریں
+Please select at least one row to fix,درست کرنے کے لیے کم از کم ایک لائن منتخب کریں
+Please select at least one schedule.,کم از کم ایک شیڈول منتخب کریں۔
+Please select the Warehouse first,براہ کرم پہلے گودام منتخب کریں
+Please select {0} first,براہ کرم پہلے {0} منتخب کریں
+Please set account in Warehouse {0},براہ کرم گودام {0} میں اکاؤنٹ مقرر کریں
+Please set default {0} in Company {1},براہ کرم کمپنی {1} میں ڈیفالٹ {0} مقرر کریں
+Please set filters,براہ کرم فلٹرز مقرر کریں
+Please set recurring after saving,محفوظ کرنے کے بعد دہرائی مقرر کریں
+Please set the document name,براہ کرم دستاویز کا نام مقرر کریں
+Please specify,براہ کرم واضح کریں
+Please specify Company to proceed,آگے بڑھنے کے لیے کمپنی بتائیں
+Please try again,براہ کرم دوبارہ کوشش کریں
+Plumbing pressure test,پلمبنگ پریشر ٹیسٹ
+Polling,پولنگ
+Popover Element,پاپ اوور عنصر
+Popover or Modal Description,پاپ اوور یا ونڈو کی تفصیل
+Portal,حصہ
+Portal Users,پورٹل یوزرز
+Portrait,عمودی
+Position,مقام
+Possible Supplier,ممکنہ سپلائر
+Postal,ڈاک
+Postal Code,پوسٹل کوڈ
+Posting Date,پوسٹنگ کی تاریخ
+Posting Date cannot be future date,پوسٹنگ کی تاریخ مستقبل کی نہیں ہو سکتی
+Posting Time,پوسٹنگ کا وقت
+Prefer not to say,بتانا نہیں چاہتے
+Preferences,ترجیحات
+Preferred Billing Address,ترجیحی بلنگ پتہ
+Preferred Shipping Address,ترجیحی ترسیلی پتہ
+Prefix,سابقہ
+Prepared report render failed,تیار شدہ رپورٹ دکھانے میں ناکامی
+Preparing Report,رپورٹ تیار ہو رہی ہے
+Prevent RFQs,RFQs روکیں
+Preview,پیش منظر
+Preview Email,ای میل کا پیش منظر
+Preview Fields,پیش منظر کے فیلڈز
+Preview on {0},{0} پر پیش منظر
+Preview: {0},پیش منظر: {0}
+Previous,پچھلا
+Previous Document,پچھلی دستاویز
+Previous Submission,پچھلا جمع شدہ
+Previous page,پچھلا صفحہ
+Price,قیمت
+Price ({0}),قیمت ({0})
+Price List,قیمت کی فہرست
+Price List Currency,قیمت فہرست کی کرنسی
+Price List Exchange Rate,قیمت فہرست کی شرح تبادلہ
+Price List Rate,قیمت فہرست کا ریٹ
+Price List Rate (Company Currency),قیمت فہرست کا ریٹ (کمپنی کرنسی)
+Price Per Unit ({0}),فی یونٹ قیمت ({0})
+Price per Unit (Stock UOM),فی یونٹ قیمت (اسٹاک یونٹ)
+Prices HTML,قیمتیں HTML
+Prices a supplier offered you.,سپلائر کی پیش کردہ قیمتیں۔
+Pricing,قیمتیں
+Pricing Rules,قیمت کے اصول
+Primary,بنیادی
+Primary Address,بنیادی پتہ
+Primary Address Details,بنیادی پتے کی تفصیل
+Primary Address Preview,بنیادی پتے کا پیش منظر
+Primary Address and Contact,بنیادی پتہ اور رابطہ
+Primary Contact,بنیادی رابطہ
+Primary Contact Details,بنیادی رابطے کی تفصیل
+Primary Email,بنیادی ای میل
+Primary Mobile,بنیادی موبائل
+Primary Phone,بنیادی فون
+Print,پرنٹ
+Print Documents,دستاویزات پرنٹ کریں
+Print Format,پرنٹ فارمیٹ
+Print Format not found,پرنٹ فارمیٹ نہیں ملا
+Print Formats,پرنٹ فارمیٹس
+Print Heading,پرنٹ سرخی
+Print Language,پرنٹ کی زبان
+Print Sent to the printer!,پرنٹ پرنٹر کو بھیج دیا گیا!
+Print Settings,پرنٹ سیٹنگز
+Print document,دستاویز پرنٹ کریں
+Print format,پرنٹ فارمیٹ
+Printed on {0},{0} کو پرنٹ کیا گیا
+Printing Details,پرنٹنگ کی تفصیل
+Printing Settings,پرنٹنگ سیٹنگز
+Priority,ترجیح
+Private,ذاتی
+Private Files (MB),ذاتی فائلیں (MB)
+"Problems, delays, instructions",مسائل، تاخیر، ہدایات
+Proceed Anyway,پھر بھی آگے بڑھیں
+Process Loss,عمل میں ضیاع
+Process Loss Qty,ضائع شدہ مقدار
+Process Payment Reconciliation,ادائیگی کا ملان کریں
+Processing,عمل جاری ہے
+Procurement,خریداری
+Procurement Trace,خریداری کا سراغ
+Procurement Tracker,خریداری ٹریکر
+Procurement trace,خریداری کا سراغ
+Product Bundle,پروڈکٹ بنڈل
+Prof,پروفیسر
+Profile,پروفائل
+Profit and Loss,نفع و نقصان
+Profitability,منافع
+Profitability Analysis,منافع کا تجزیہ
+Progress,پیش رفت
+Project,پروجیکٹ
+Project Collaboration Invitation,پروجیکٹ میں شرکت کی دعوت
+Project Name,پروجیکٹ کا نام
+Project Summary,پروجیکٹ کا خلاصہ
+Project Summary for {0},{0} کا پروجیکٹ خلاصہ
+Project Template,پروجیکٹ ٹیمپلیٹ
+Project Template {0} is disabled,پروجیکٹ ٹیمپلیٹ {0} غیر فعال ہے
+Project Type,پروجیکٹ کی قسم
+Project Update,پروجیکٹ اپ ڈیٹ
+Project will be accessible on the website to these users,یہ یوزرز ویب سائٹ پر پروجیکٹ دیکھ سکیں گے
+Project wise Stock Tracking,پروجیکٹ وار اسٹاک ٹریکنگ
+Projected On Hand,متوقع موجود
+Projected Qty,متوقع مقدار
+Projects,پروجیکٹس
+Projects Manager,پروجیکٹس منیجر
+Projects Settings,پروجیکٹس سیٹنگز
+Projects User,پروجیکٹس یوزر
+Promotional Scheme,پروموشنل اسکیم
+Proof needed,ثبوت ضروری ہے
+Proof of payment,ادائیگی کا ثبوت
+Prospect,ممکنہ گاہک
+Prospects Engaged But Not Converted,رابطہ شدہ لیکن تبدیل نہ ہونے والے ممکنہ گاہک
+Protect,محفوظ کریں
+Provisional Expense Account,عارضی خرچ کا اکاؤنٹ
+Public,عوامی
+Public Files (MB),عوامی فائلیں (MB)
+Publish,شائع کریں
+Published,شائع شدہ
+Purchase,خریداری
+Purchase Analytics,خریداری کا تجزیہ
+Purchase Defaults,خریداری ڈیفالٹس
+Purchase Expense,خریداری کا خرچ
+Purchase Expense Account,خریداری خرچ کا اکاؤنٹ
+Purchase Invoice,پرچیز انوائس
+Purchase Invoice Advance,پرچیز انوائس ایڈوانس
+Purchase Invoice Item,پرچیز انوائس آئٹم
+Purchase Invoice Settings,پرچیز انوائس سیٹنگز
+Purchase Invoice Trends,پرچیز انوائس کے رجحانات
+Purchase Invoices,پرچیز انوائسز
+Purchase Order,پرچیز آرڈر
+Purchase Order Analysis,پرچیز آرڈر کا تجزیہ
+Purchase Order Item,پرچیز آرڈر آئٹم
+Purchase Order Item Supplied,پرچیز آرڈر کا فراہم کردہ آئٹم
+Purchase Order Required,پرچیز آرڈر ضروری
+Purchase Order Required for item {},آئٹم {} کے لیے پرچیز آرڈر ضروری
+Purchase Order Trends,پرچیز آرڈر کے رجحانات
+Purchase Order {0} is not submitted,پرچیز آرڈر {0} جمع نہیں ہوا
+Purchase Orders,پرچیز آرڈرز
+Purchase Receipt,پرچیز رسید
+Purchase Receipt Detail,پرچیز رسید کی تفصیل
+Purchase Receipt Item,پرچیز رسید آئٹم
+Purchase Receipt Item Supplied,پرچیز رسید کا فراہم کردہ آئٹم
+Purchase Receipt No,پرچیز رسید نمبر
+Purchase Receipt Required,پرچیز رسید ضروری
+Purchase Receipt Required for item {},آئٹم {} کے لیے پرچیز رسید ضروری
+Purchase Receipt Trends,پرچیز رسید کے رجحانات
+Purchase Receipt Trends ,پرچیز رسید کے رجحانات
+Purchase Receipt {0} is not submitted,پرچیز رسید {0} جمع نہیں ہوئی
+Purchase Register,خریداری رجسٹر
+Purchase Return,خریداری واپسی
+Purchase Tax Template,خریداری ٹیکس ٹیمپلیٹ
+Purchase Tax Withholding Category,خریداری ٹیکس کٹوتی کیٹیگری
+Purchase Taxes and Charges,خریداری ٹیکس اور چارجز
+Purchase Taxes and Charges Template,خریداری ٹیکس اور چارجز کا ٹیمپلیٹ
+Purchase order,خریداری آرڈر
+Purchase order is locked,پرچیز آرڈر لاک ہے
+Purchase orders,پرچیز آرڈرز
+Purchase orders only from a final (locked) quotation,پرچیز آرڈر صرف حتمی (لاک) کوٹیشن سے
+Purchasing,خریداری
+Purple,جامنی
+Purpose,مقصد
+Purpose must be one of {0},مقصد {0} میں سے ایک ہونا چاہیے
+Qty,مقدار
+Qty Change,مقدار میں تبدیلی
+Qty as Per Stock UOM,اسٹاک یونٹ کے مطابق مقدار
+Qty as per Stock UOM,اسٹاک یونٹ کے مطابق مقدار
+Qty in Stock UOM,اسٹاک یونٹ میں مقدار
+Qty to Be Consumed,استعمال ہونے والی مقدار
+Qty to Disassemble,الگ کرنے کی مقدار
+Qty to Fetch,حاصل کرنے کی مقدار
+Quality,معیار
+Quality Action,معیاری اقدام
+Quality Feedback,معیار پر رائے
+Quality Goal,معیار کا ہدف
+Quality Manager,کوالٹی منیجر
+Quality Meeting,معیار کی میٹنگ
+Quality Procedure,معیار کا طریقہ کار
+Quality Review,معیار کا جائزہ
+Quantities filled in from the document. Count what actually arrived and correct them.,مقدار دستاویز سے بھری گئی۔ جو اصل میں آیا اسے گن کر درست کریں۔
+Quantities updated successfully.,مقداریں کامیابی سے اپ ڈیٹ ہو گئیں۔
+Quantity,مقدار
+Quantity & Stock,مقدار اور اسٹاک
+Quantity (A - B),مقدار (A - B)
+Quantity and Rate,مقدار اور ریٹ
+Quantity and Warehouse,مقدار اور گودام
+Quantity must be greater than zero.,مقدار صفر سے زیادہ ہونی چاہیے۔
+Quantity to Scan,اسکین کرنے کی مقدار
+Quarterly,سہ ماہی
+Query Report,سوال رپورٹ
+Queue,قطار
+Queue Status,قطار کی صورتحال
+Queues,قطاریں
+Queuing {0} for Submission,{0} جمع کرنے کے لیے قطار میں
+Quick List,فوری فہرست
+Quick List Filter,فوری فہرست فلٹر
+Quick Lists,فوری فہرستیں
+Quick Stock Balance,فوری اسٹاک بیلنس
+Quotation,کوٹیشن
+Quotation Number,کوٹیشن نمبر
+Quotation Trends,کوٹیشن کے رجحانات
+Quotation {0} is locked as final. No more revisions can be made.,کوٹیشن {0} حتمی کے طور پر لاک ہے۔ مزید ریویژن نہیں ہو سکتا۔
+Quotations,کوٹیشنز
+Quote Status,کوٹیشن کی صورتحال
+Quoting must be between 0 and 3,کوٹنگ 0 سے 3 کے درمیان ہونی چاہیے
+RFQ and Purchase Order Settings,RFQ اور پرچیز آرڈر سیٹنگز
+Random,اچانک
+Rate,ریٹ
+Rate (Company Currency),ریٹ (کمپنی کرنسی)
+Rate With Margin,مارجن کے ساتھ ریٹ
+Rate With Margin (Company Currency),مارجن کے ساتھ ریٹ (کمپنی کرنسی)
+Rate and Amount,ریٹ اور رقم
+Rate at which supplier's currency is converted to company's base currency,وہ شرح جس پر سپلائر کی کرنسی کمپنی کی بنیادی کرنسی میں بدلی جاتی ہے
+Rate of Stock UOM,اسٹاک یونٹ کا ریٹ
+Rates,ریٹس
+Rating,درجہ
+Raw Material Item Code,خام مال کا آئٹم کوڈ
+Raw Materials,خام مال
+Raw Materials Consumed,استعمال شدہ خام مال
+Raw Materials Missing,خام مال موجود نہیں
+Raw Materials Supplied,فراہم کردہ خام مال
+Raw Materials Supplied Cost,فراہم کردہ خام مال کی لاگت
+Raw Printing Settings,براہ راست پرنٹنگ سیٹنگز
+Re-Run in Console,کنسول میں دوبارہ چلائیں
+Re-open,دوبارہ کھولیں
+Re: {0},جواب: {0}
+Read,پڑھیں
+Read mode,پڑھنے کا موڈ
+Reading the document…,کاغذ پڑھا جا رہا ہے…
+"Reads quotations, delivery notes and bills (printed or handwritten, English or Urdu).",کوٹیشنز، ڈیلیوری نوٹس اور بل پڑھتا ہے (چھپے ہوئے یا ہاتھ سے لکھے، انگریزی یا اردو)۔
+Realtime (SocketIO),براہ راست (SocketIO)
+Reason,وجہ
+Reason For Putting On Hold,روکنے کی وجہ
+Reason for Hold,روکنے کی وجہ
+Rebuild,دوبارہ بنائیں
+Rebuild Tree,درخت دوبارہ بنائیں
+Receivables,قابل وصول رقوم
+Receive,وصول کریں
+Receive goods,سامان وصول کریں
+Received,وصول
+Received Amount,وصول شدہ رقم
+Received Amount (Company Currency),وصول شدہ رقم (کمپنی کرنسی)
+Received Amount After Tax,ٹیکس کے بعد وصول شدہ رقم
+Received Amount After Tax (Company Currency),ٹیکس کے بعد وصول شدہ رقم (کمپنی کرنسی)
+Received Qty,وصول شدہ مقدار
+Received Qty in Stock UOM,اسٹاک یونٹ میں وصول شدہ مقدار
+Received Quantity,وصول شدہ مقدار
+Received Stock Entries,وصول شدہ اسٹاک انٹریز
+Received and Accepted,وصول اور قبول شدہ
+Received at site,سائٹ پر وصول
+Received by,وصول کنندہ
+Received {0},وصول شدہ {0}
+Receiver's photo,وصول کنندہ کی تصویر
+Receiver's photo needed,وصول کنندہ کی تصویر ضروری ہے
+Receiving at site,سائٹ پر وصولی
+Receiving needs the delivery note / bill scan,وصولی کے لیے ڈیلیوری نوٹ / بل کا اسکین ضروری ہے
+Receiving needs the receiver's photo,وصولی کے لیے وصول کنندہ کی تصویر ضروری ہے
+Recipient & Status,وصول کنندہ اور صورتحال
+Reconcile Effect On,ملان کا اثر
+Reconcile on Advance Payment Date,ایڈوانس ادائیگی کی تاریخ پر ملان
+Reconciliation Date,ملان کی تاریخ
+Recorded by,درج کرنے والا
+Records you add will appear here.,آپ کے شامل کردہ ریکارڈ یہاں نظر آئیں گے۔
+Red,سرخ
+Redo,دوبارہ کریں
+Redo last action,آخری اقدام دوبارہ کریں
+Reference,حوالہ
+Reference Date,حوالے کی تاریخ
+Reference Doc,حوالہ دستاویز
+Reference Document,حوالہ دستاویز
+Reference Document Type,حوالہ دستاویز کی قسم
+Reference Exchange Rate,حوالہ شرح تبادلہ
+Reference Name,حوالہ کا نام
+Reference No,حوالہ نمبر
+Reference Purchase Receipt,حوالہ پرچیز رسید
+Reference Report,حوالہ رپورٹ
+Reference Row,حوالہ لائن
+Reference Row #,حوالہ لائن #
+Reference Type,حوالہ کی قسم
+References,حوالے
+Refresh,تازہ کریں
+Refresh List,فہرست ریفریش کریں
+Refresh to see changes,تبدیلیاں دیکھنے کے لیے ریفریش کریں
+Refreshing,ریفریش ہو رہا ہے
+Register supplier,سپلائر رجسٹر کریں
+Registers,رجسٹرز
+Registration Details,رجسٹریشن کی تفصیل
+Rejected,رد
+Rejected Qty,مسترد مقدار
+Rejected Quantity,مسترد مقدار
+Rejected Warehouse,مسترد گودام
+Related,متعلقہ
+Related Reports,متعلقہ رپورٹس
+Release,جاری کریں
+Release Date,اجرا کی تاریخ
+Release date must be in the future,اجرا کی تاریخ مستقبل کی ہونی چاہیے
+Release to work,کام کے لیے اجرا
+Release to work: only what is in the store can be released. Enter who receives it.,کام کے لیے اجرا: صرف وہی دیا جا سکتا ہے جو اسٹور میں ہے۔ لکھیں کہ کون وصول کر رہا ہے۔
+Released to,کس کو دیا
+Released to (mistri or group head),کس کو دیا (مستری یا گروپ ہیڈ)
+Reload,دوبارہ لوڈ کریں
+Reload List,فہرست دوبارہ لوڈ کریں
+Reload Report,رپورٹ دوبارہ لوڈ کریں
+Reload Tree,درخت دوبارہ لوڈ کریں
+Remarks,ریمارکس
+Remind At,یاد دہانی کا وقت
+Remind Me,مجھے یاد دلائیں
+Remind Me In,مجھے یاد دلائیں اتنی دیر بعد
+Reminder set at {0},یاد دہانی {0} پر مقرر
+Remove,ہٹائیں
+Remove Default,ڈیفالٹ ہٹائیں
+Remove Filter,فلٹر ہٹائیں
+Remove Permission,اجازت ہٹائیں
+Remove column,کالم ہٹائیں
+Remove formatting,فارمیٹنگ ہٹائیں
+Remove this role's permission on {0}?,{0} پر اس رول کی اجازت ہٹائیں؟
+Removed Roles,ہٹائے گئے رولز
+Removed from global search,عالمی تلاش سے ہٹا دیا گیا
+Rename,نام بدلیں
+Rename Entry,اندراج کا نام بدلیں
+Rename Tool,نام بدلنے کا ٹول
+Rename {0},{0} کا نام بدلیں
+Reopen,دوبارہ کھولیں
+Reorder Level,دوبارہ آرڈر کی سطح
+Reorder Qty,دوبارہ آرڈر کی مقدار
+Reorder level based on Warehouse,گودام کی بنیاد پر دوبارہ آرڈر کی سطح
+Repack,دوبارہ پیک کریں
+Repeat,دہرائیں
+Repeat On,دہرانے کا دن
+Repeat Till,کب تک دہرائیں
+Repeat this Event,یہ ایونٹ دہرائیں
+Repeats {0},{0} دہراتا ہے
+Replaced / cancelled,تبدیل / منسوخ
+Replaced by revision {0}.,ریویژن {0} سے تبدیل۔
+Replied,جواب دیا
+Reply,جواب دیں
+Report,رپورٹ
+Report Date,رپورٹ کی تاریخ
+Report Description,رپورٹ کی تفصیل
+Report Name,رپورٹ کا نام
+Report Settings,رپورٹ سیٹنگز
+Report Type,رپورٹ کی قسم
+Report View,رپورٹ ویو
+Report bug,خرابی کی رپورٹ کریں
+"Report initiated, click to view status",رپورٹ شروع ہو گئی، صورتحال دیکھنے کے لیے کلک کریں
+Report updated successfully,رپورٹ کامیابی سے اپ ڈیٹ ہو گئی
+Report was not saved (there were errors),رپورٹ محفوظ نہیں ہوئی (خرابیاں تھیں)
+Report {0},رپورٹ {0}
+Report {0} deleted,رپورٹ {0} حذف ہو گئی
+Report {0} is disabled,رپورٹ {0} غیر فعال ہے
+Report {0} saved,رپورٹ {0} محفوظ ہو گئی
+Report:,رپورٹ:
+Reporting & Sharing,رپورٹنگ اور شیئرنگ
+Reporting Currency,رپورٹنگ کرنسی
+Reports,رپورٹس
+Reports already in Queue,رپورٹس پہلے سے قطار میں
+Repost Accounting Ledger,اکاؤنٹنگ لیجر دوبارہ پوسٹ کریں
+Repost Item Valuation,آئٹم ویلیوایشن دوبارہ پوسٹ کریں
+Repost Payment Ledger,ادائیگی لیجر دوبارہ پوسٹ کریں
+Reposting entries created: {0},دوبارہ پوسٹنگ انٹریز بن گئیں: {0}
+Represents Company,کمپنی کی نمائندگی
+Reqd by date,ضرورت کی تاریخ
+Request Timed Out,درخواست کا وقت ختم
+Request Timeout,درخواست کا وقت ختم
+Request for Quotation,کوٹیشن کی درخواست (RFQ)
+Request for Quotation Item,RFQ آئٹم
+Request for Quotation Supplier,RFQ سپلائر
+Requested Items To Be Transferred,منتقلی کے لیے درخواست شدہ آئٹمز
+Requested Items to Order and Receive,آرڈر اور وصولی کے لیے درخواست شدہ آئٹمز
+Requests for quotation,کوٹیشن کی درخواستیں
+Required By,ضرورت کی تاریخ
+Required Date,ضرورت کی تاریخ
+Required Qty,ضروری مقدار
+"Reselect, if the chosen address is edited after save",محفوظ کرنے کے بعد پتہ بدلا ہو تو دوبارہ منتخب کریں
+"Reselect, if the chosen contact is edited after save",محفوظ کرنے کے بعد رابطہ بدلا ہو تو دوبارہ منتخب کریں
+Reserve Warehouse,محفوظ گودام
+Reserved Stock,مخصوص اسٹاک
+Reset,ری سیٹ
+Reset Chart,چارٹ ری سیٹ کریں
+Reset Dashboard Customizations,ڈیش بورڈ کی تخصیص ری سیٹ کریں
+Reset Fields,فیلڈز ری سیٹ کریں
+Reset for everyone,سب کے لیے ری سیٹ
+Reset sorting,ترتیب ری سیٹ کریں
+Reset to Standard,معیاری پر ری سیٹ
+Reset to default,ڈیفالٹ پر ری سیٹ
+Resizing preview...,پیش منظر کا سائز بدل رہا ہے...
+Responsible person,ذمہ دار شخص
+Responsible supplier,ذمہ دار سپلائر
+Rest of the day,باقی دن
+Restore,بحال کریں
+Restore again,دوبارہ بحال کریں
+Restored,بحال ہو گیا
+Restored with limits,حدود کے ساتھ بحال
+Restrict IP,IP محدود کریں
+Restrict Removal,ہٹانے پر پابندی
+Restrict to Domain,ڈومین تک محدود
+Restrictions,پابندیاں
+Result,نتیجہ
+Resume,دوبارہ شروع کریں
+Retain Sample,نمونہ رکھیں
+Retry,دوبارہ کوشش کریں
+Return,واپس
+Return / Debit Note,واپسی / ڈیبٹ نوٹ
+Return Against Purchase Invoice,پرچیز انوائس کے مقابل واپسی
+Return Against Purchase Receipt,پرچیز رسید کے مقابل واپسی
+Return Issued,واپسی جاری
+Return Purchase Invoice cannot be held.,واپسی پرچیز انوائس روکی نہیں جا سکتی۔
+Return Qty,واپسی کی مقدار
+Return Qty from Rejected Warehouse,مسترد گودام سے واپسی کی مقدار
+Return of Components,اجزاء کی واپسی
+Returned Qty,واپس شدہ مقدار
+Returned Qty in Stock UOM,اسٹاک یونٹ میں واپس شدہ مقدار
+Returns,واپسی
+Reuse email templates when emailing {0}.,{0} کو ای میل کرتے وقت ای میل ٹیمپلیٹس دوبارہ استعمال کریں۔
+Review,جائزہ
+Review Date,جائزے کی تاریخ
+Revise Budget,بجٹ پر نظرثانی کریں
+Revision,نظرثانی
+Revision Of,نظرثانی برائے
+Revision cancelled,نظرثانی منسوخ
+Revision note needed,ریویژن نوٹ ضروری ہے
+"Revision {0} of {1}. Write what changed, then submit to confirm.",{1} کا ریویژن {0}۔ لکھیں کیا بدلا، پھر تصدیق کے لیے جمع کریں۔
+Right,دائیں
+Right Bottom,دائیں نیچے
+Right Center,دائیں درمیان
+Role,کام
+Role Permissions Manager,رول اجازت منیجر
+Role Profiles,رول پروفائلز
+Role allowed to override stop action,روکنے کے اقدام کو بائی پاس کرنے کی اجازت والا رول
+Roles,رولز
+Roles & Permissions,رولز اور اجازتیں
+Root records can't be deleted,بنیادی ریکارڈ حذف نہیں ہو سکتے
+Root records can't be renamed,بنیادی ریکارڈ کا نام نہیں بدل سکتا
+Round Off,گولائی
+Round Off Account,گولائی کا اکاؤنٹ
+Round Off Cost Center,گولائی کا لاگت مرکز
+Rounded Total,گول کل رقم
+Rounded Total (Company Currency),گول کل رقم (کمپنی کرنسی)
+Rounding Adjustment,گولائی کی ایڈجسٹمنٹ
+Rounding Adjustment (Company Currency,گولائی کی ایڈجسٹمنٹ (کمپنی کرنسی
+Route,راستہ
+Route History,راستوں کی تاریخ
+Route Options,راستے کے اختیارات
+Route Signature,راستے کا دستخط
+Row,لائن
+Row #{0},لائن #{0}
+Row #{0}:,لائن #{0}:
+Row #{0}: Finished Good must be {1},لائن #{0}: تیار مال {1} ہونا چاہیے
+Row #{0}: Item added,لائن #{0}: آئٹم شامل ہو گیا
+Row #{0}: Please set reorder quantity,لائن #{0}: براہ کرم دوبارہ آرڈر کی مقدار مقرر کریں
+Row #{0}: Qty increased by {1},لائن #{0}: مقدار {1} بڑھ گئی
+Row {0} ({1}): a purchase order is raised only from the supplier's final quotation. Open the locked quotation and use Create → Purchase Order.,لائن {0} ({1}): پرچیز آرڈر صرف سپلائر کی حتمی کوٹیشن سے بنتا ہے۔ لاک شدہ کوٹیشن کھولیں اور بنائیں → پرچیز آرڈر استعمال کریں۔
+Row {0} ({1}): goods are received only against a purchase order.,لائن {0} ({1}): سامان صرف پرچیز آرڈر کے مقابل وصول ہوتا ہے۔
+Row {0} ({1}): supplier invoices are recorded only against a purchase order.,لائن {0} ({1}): سپلائر کی انوائس صرف پرچیز آرڈر کے مقابل درج ہوتی ہے۔
+Row {0}: quantity must be more than 0.,لائن {0}: مقدار 0 سے زیادہ ہونی چاہیے۔
+Row {0}: quotation {1} is from another supplier.,لائن {0}: کوٹیشن {1} کسی اور سپلائر کی ہے۔
+Row {0}: quotation {1} is not locked as final.,لائن {0}: کوٹیشن {1} حتمی کے طور پر لاک نہیں۔
+Row {0}: rate must be more than 0.,لائن {0}: ریٹ 0 سے زیادہ ہونا چاہیے۔
+Row {0}: rate {1} is above the quoted rate {2}.,لائن {0}: ریٹ {1} کوٹیشن کے ریٹ {2} سے زیادہ ہے۔
+"Rs {0} of this payment is not set against any invoice. Suppliers are paid only against invoices that are due, or as an advance against a purchase order.",اس ادائیگی کے {0} روپے کسی انوائس کے مقابل نہیں۔ سپلائرز کو صرف واجب انوائسز کے مقابل، یا پرچیز آرڈر پر ایڈوانس کے طور پر ادائیگی ہوتی ہے۔
+Rules for configuring series,سیریز ترتیب دینے کے اصول
+SCIO Detail,SCIO تفصیل
+SCO Supplied Item,SCO فراہم کردہ آئٹم
+SLA is on hold since {0},SLA {0} سے رکا ہوا ہے
+SMS Center,SMS مرکز
+SQL Output,SQL نتیجہ
+Safety Stock,حفاظتی اسٹاک
+Salutation,خطاب
+Sample Quantity,نمونے کی مقدار
+Sample Retention Stock Entry,نمونہ رکھنے کی اسٹاک انٹری
+Sample Retention Warehouse,نمونہ رکھنے کا گودام
+Sample Retention Warehouse Missing,نمونہ رکھنے کا گودام موجود نہیں
+Sample Size,نمونے کا سائز
+Saturday,ہفتہ
+Save,محفوظ کریں
+Save As,اس نام سے محفوظ کریں
+Save Customizations,تخصیص محفوظ کریں
+Save Filters,فلٹرز محفوظ کریں
+Save Layout,لے آؤٹ محفوظ کریں
+Save Report,رپورٹ محفوظ کریں
+Save filters,فلٹرز محفوظ کریں
+Save on Completion,مکمل ہونے پر محفوظ کریں
+Save the Project before duplicating it,نقل بنانے سے پہلے پروجیکٹ محفوظ کریں
+Save the document to attach files.,فائلیں منسلک کرنے کے لیے دستاویز محفوظ کریں۔
+Save the document.,دستاویز محفوظ کریں۔
+Saved,محفوظ ہو گیا
+Saved Reports,محفوظ رپورٹس
+Saving,محفوظ ہو رہا ہے
+Saving Changes...,تبدیلیاں محفوظ ہو رہی ہیں...
+Saving your language and region,آپ کی زبان اور علاقہ محفوظ ہو رہا ہے
+Saving...,محفوظ ہو رہا ہے...
+Saving…,محفوظ ہو رہا ہے…
+Scan,اسکین
+Scan Barcode,بار کوڈ اسکین کریں
+Scan a quotation,کوٹیشن اسکین کریں
+Scan attached. Enter the bill number and quantities.,اسکین لگ گیا۔ بل نمبر اور مقدار لکھیں۔
+Scan attached. Enter the delivery note number and quantities.,اسکین لگ گیا۔ ڈیلیوری نوٹ نمبر اور مقدار لکھیں۔
+Scan barcode for item {0},آئٹم {0} کا بار کوڈ اسکین کریں
+Scan or photograph the supplier's bill.,سپلائر کا بل اسکین کریں یا تصویر لیں۔
+Scan or photograph the supplier's delivery note or bill.,سپلائر کا ڈیلیوری نوٹ یا بل اسکین کریں یا تصویر لیں۔
+Scan the bill,بل اسکین کریں
+Scan the delivery note / bill,ڈیلیوری نوٹ / بل اسکین کریں
+Scan the supplier's document,سپلائر کی دستاویز اسکین کریں
+Scanned Quantity,اسکین شدہ مقدار
+Schedule,شیڈول
+"Schedule (tasks, Gantt)",شیڈول (کام، گینٹ)
+Schedule Conflict,شیڈول میں ٹکراؤ
+Schedule Date,شیڈول کی تاریخ
+Schedule Name,شیڈول کا نام
+Schedule Send,شیڈول پر بھیجیں
+Schedule Send At,بھیجنے کا وقت
+Schedule email,ای میل شیڈول کریں
+Schedule task,شیڈول کا کام
+Scheduled,طے شدہ
+Scheduled Job Type,شیڈول کام کی قسم
+Scheduler,شیڈولر
+Scheduler Status,شیڈولر کی صورتحال
+Scope,کام کا دائرہ
+Scrap,اسکریپ
+Script,اسکرپٹ
+Search,تلاش
+Search Bar,تلاش بار
+Search Priorities,تلاش کی ترجیحات
+Search Results,تلاش کے نتائج
+"Search an item, supplier, quotation, purchase order, delivery note, bill or payment number. Each purchase order is shown with everything linked to it.",آئٹم، سپلائر، کوٹیشن، پرچیز آرڈر، ڈیلیوری نوٹ، بل یا ادائیگی نمبر تلاش کریں۔ ہر پرچیز آرڈر اپنے ساتھ جڑی ہر چیز کے ساتھ دکھایا جاتا ہے۔
+Search by filename or extension,فائل کے نام یا ایکسٹینشن سے تلاش کریں
+Search by label or field name,لیبل یا فیلڈ کے نام سے تلاش کریں
+Search fields,تلاش کے فیلڈز
+Search fields updated.,تلاش کے فیلڈز اپ ڈیٹ ہو گئے۔
+Search for anything,کچھ بھی تلاش کریں
+Search for {0},{0} تلاش کریں
+Search or type a command,تلاش کریں یا کمانڈ لکھیں
+Search values...,قدریں تلاش کریں...
+Searching ...,تلاش ہو رہی ہے ...
+Second Email,دوسری ای میل
+Second proof (receipt from the supplier),دوسرا ثبوت (سپلائر کی رسید)
+Seconds,سیکنڈ
+Section,سیکشن
+Section Break,سیکشن بریک
+Security Settings,سیکیورٹی سیٹنگز
+See all Activity,تمام سرگرمی دیکھیں
+Seen,دیکھا گیا
+Seen By,دیکھنے والے
+Seen By Table,دیکھنے والوں کی ٹیبل
+Select All,سب منتخب کریں
+Select Alternate Item,متبادل آئٹم منتخب کریں
+Select Attachments,اٹیچمنٹس منتخب کریں
+Select Attribute Values,خصوصیات کی قدریں منتخب کریں
+Select Billing Address,بلنگ کا پتہ منتخب کریں
+Select Column,کالم منتخب کریں
+Select Columns,کالم منتخب کریں
+Select Country,ملک منتخب کریں
+Select Currency,کرنسی منتخب کریں
+Select Dashboard,ڈیش بورڈ منتخب کریں
+Select Date Range,تاریخ کی حد منتخب کریں
+Select Default Supplier,ڈیفالٹ سپلائر منتخب کریں
+Select Dispatch Address ,روانگی کا پتہ منتخب کریں
+Select Field,فیلڈ منتخب کریں
+Select Field...,فیلڈ منتخب کریں...
+Select Fields,فیلڈز منتخب کریں
+Select Fields (Up to {0}),فیلڈز منتخب کریں ({0} تک)
+Select Filters,فلٹرز منتخب کریں
+Select Finished Good,تیار مال منتخب کریں
+Select Group By...,گروپ بلحاظ منتخب کریں...
+Select Language,زبان منتخب کریں
+Select List View,فہرست ویو منتخب کریں
+Select Page,صفحہ منتخب کریں
+Select Payment Schedule,ادائیگی کا شیڈول منتخب کریں
+Select Possible Supplier,ممکنہ سپلائر منتخب کریں
+Select Print Format,پرنٹ فارمیٹ منتخب کریں
+Select Report,رپورٹ منتخب کریں
+Select Shipping Address,ترسیلی پتہ منتخب کریں
+Select Supplier Address,سپلائر کا پتہ منتخب کریں
+Select Time Zone,ٹائم زون منتخب کریں
+Select a group {0} first.,پہلے گروپ {0} منتخب کریں۔
+Select an Image,تصویر منتخب کریں
+Select an Item Group.,آئٹم گروپ منتخب کریں۔
+Select at least one attribute value.,کم از کم ایک خصوصیت کی قدر منتخب کریں۔
+Select at least one field,کم از کم ایک فیلڈ منتخب کریں
+Select atleast 1 record for printing,پرنٹ کے لیے کم از کم 1 ریکارڈ منتخب کریں
+Select attachments,اٹیچمنٹس منتخب کریں
+Select company first,پہلے کمپنی منتخب کریں
+Select list item,فہرست کا آئٹم منتخب کریں
+Select multiple list items,فہرست کے متعدد آئٹمز منتخب کریں
+Select records for assignment,تفویض کے لیے ریکارڈ منتخب کریں
+Select records for removing assignment,تفویض ہٹانے کے لیے ریکارڈ منتخب کریں
+Select two versions to view the diff.,فرق دیکھنے کے لیے دو ورژن منتخب کریں۔
+Select {0},{0} منتخب کریں
+Self approval is not allowed,خود منظوری کی اجازت نہیں
+Sell,فروخت کریں
+Selling,فروخت
+Selling Settings,فروخت کی سیٹنگز
+Send,بھیجیں
+Send Attached Files,منسلک فائلیں بھیجیں
+Send Document Print,دستاویز کا پرنٹ بھیجیں
+Send Email,ای میل بھیجیں
+Send Emails to Suppliers,سپلائرز کو ای میلز بھیجیں
+Send Me A Copy of Outgoing Emails,جانے والی ای میلز کی کاپی مجھے بھیجیں
+Send Notifications For Documents Followed By Me,میری فالو کی گئی دستاویزات کی اطلاعات بھیجیں
+Send Notifications For Email Threads,ای میل سلسلوں کی اطلاعات بھیجیں
+Send Read Receipt,پڑھنے کی رسید بھیجیں
+Send SMS,SMS بھیجیں
+Send Welcome Email,خوش آمدید ای میل بھیجیں
+Send an email reminder in the morning,صبح ای میل یاد دہانی بھیجیں
+Send me a copy,مجھے ایک کاپی بھیجیں
+Send me a copy of outgoing emails,جانے والی ای میلز کی کاپی مجھے بھیجیں
+Send notifications for email threads,ای میل سلسلوں کی اطلاعات بھیجیں
+Send read receipt,پڑھنے کی رسید بھیجیں
+Sender,بھیجنے والا
+Sent/Received Email,بھیجی/وصول شدہ ای میل
+Sequence Id,ترتیب نمبر
+Serialized,سیریل شدہ
+Series,سیریز
+Series added,سیریز شامل ہو گئی
+Series already exists,سیریز پہلے سے موجود ہے
+Series is mandatory,سیریز ضروری ہے
+Series removed,سیریز ہٹا دی گئی
+Series updated,سیریز اپ ڈیٹ ہو گئی
+Server Error,سرور کی خرابی
+Service End Date,سروس کی اختتامی تاریخ
+Service Level Agreement,سروس لیول معاہدہ
+Service Start Date,سروس کی آغاز تاریخ
+Service Stop Date,سروس روکنے کی تاریخ
+Services,سروسز
+Session Defaults,سیشن ڈیفالٹس
+Session Defaults Saved,سیشن ڈیفالٹس محفوظ ہو گئے
+Session Expired,سیشن ختم ہو گیا
+Sessions,سیشنز
+Set,مقرر کریں
+Set Accepted Warehouse,قبول شدہ گودام مقرر کریں
+Set Advances and Allocate (FIFO),ایڈوانس مقرر کریں اور تقسیم کریں (FIFO)
+Set Basic Rate Manually,بنیادی ریٹ خود مقرر کریں
+Set Chart,چارٹ مقرر کریں
+Set Default Supplier,ڈیفالٹ سپلائر مقرر کریں
+Set Dropship Items Delivered Quantity,ڈراپ شپ آئٹمز کی ترسیل شدہ مقدار مقرر کریں
+Set Dynamic Filters,متحرک فلٹرز مقرر کریں
+Set Filters,فلٹرز مقرر کریں
+Set Filters for {0},{0} کے لیے فلٹرز مقرر کریں
+Set From Warehouse,گودام سے مقرر کریں
+Set Level,سطح مقرر کریں
+Set New Password,نیا پاس ورڈ مقرر کریں
+Set New Release Date,اجرا کی نئی تاریخ مقرر کریں
+Set Number of Backups,بیک اپس کی تعداد مقرر کریں
+Set Opening Stock,ابتدائی اسٹاک مقرر کریں
+Set Project Status,پروجیکٹ کی صورتحال مقرر کریں
+Set Project and all Tasks to status {0}?,پروجیکٹ اور تمام کاموں کی صورتحال {0} کریں؟
+Set Quantity,مقدار مقرر کریں
+Set Reserve Warehouse,محفوظ گودام مقرر کریں
+Set Source Warehouse,ماخذ گودام مقرر کریں
+Set Target Warehouse,منزل گودام مقرر کریں
+Set all private,سب ذاتی کریں
+Set all public,سب عوامی کریں
+Set as Completed,مکمل کے طور پر مقرر کریں
+Set as Default,ڈیفالٹ کے طور پر مقرر کریں
+Set as Lost,ناکام کے طور پر مقرر کریں
+Set as Open,کھلا کے طور پر مقرر کریں
+Set as Primary,بنیادی کے طور پر مقرر کریں
+Set as default,ڈیفالٹ کے طور پر مقرر کریں
+Set by Item Tax Template,آئٹم ٹیکس ٹیمپلیٹ سے مقرر
+Set valuation rate for rejected Materials,مسترد مٹیریل کا ویلیوایشن ریٹ مقرر کریں
+Set {0} in {1} to finish this step.,یہ مرحلہ مکمل کرنے کے لیے {1} میں {0} مقرر کریں۔
+Set {0}…,{0} مقرر کریں…
+Sets 'Source Warehouse' in each row of the items table.,آئٹمز ٹیبل کی ہر لائن میں 'ماخذ گودام' مقرر کرتا ہے۔
+Sets 'Target Warehouse' in each row of the items table.,آئٹمز ٹیبل کی ہر لائن میں 'منزل گودام' مقرر کرتا ہے۔
+Setting,سیٹنگ
+Setting out,نشان دہی (سیٹنگ آؤٹ)
+Setting things up,ترتیب دی جا رہی ہے
+Setting up Global Search documents.,عالمی تلاش کی دستاویزات ترتیب دی جا رہی ہیں۔
+Setting up your apps,آپ کی ایپس ترتیب دی جا رہی ہیں
+Settings,سیٹنگز
+Setup Auto Email,خودکار ای میل ترتیب دیں
+Setup a multi-step workflow for {0}.,{0} کے لیے کئی مراحل کا ورک فلو ترتیب دیں۔
+Share,شیئر کریں
+Share Management,شیئرز کا انتظام
+Share With,کے ساتھ شیئر کریں
+Share this document with,یہ دستاویز ان کے ساتھ شیئر کریں
+Share usage data to help us improve,بہتری کے لیے استعمال کا ڈیٹا شیئر کریں
+Share {0} with,{0} ان کے ساتھ شیئر کریں
+Shared,شیئر شدہ
+Shared by WhatsApp link{0},واٹس ایپ لنک سے شیئر کیا گیا{0}
+Sharing,شیئرنگ
+Shelf Life In Days,دنوں میں قابل استعمال مدت
+Ship this off by default,اسے ڈیفالٹ طور پر بند بھیجیں
+Ship with the app,ایپ کے ساتھ بھیجیں
+Shipping,ترسیل
+Shipping Address,ترسیلی پتہ
+Shipping Address Details,ترسیلی پتے کی تفصیل
+Shipping Address Template,ترسیلی پتے کا ٹیمپلیٹ
+Shop,دکان
+Shortcut,شارٹ کٹ
+Shortcuts,شارٹ کٹس
+Show,دکھائیں
+Show Absolute Datetime in Timeline,ٹائم لائن میں مکمل تاریخ و وقت دکھائیں
+Show All,سب دکھائیں
+Show Alternate UOM Balance,متبادل یونٹ بیلنس دکھائیں
+Show Arrow,تیر دکھائیں
+Show Assigned To,تفویض شدہ دکھائیں
+Show Board,بورڈ دکھائیں
+Show Cumulative Amount,مجموعی رقم دکھائیں
+Show Dashboard,ڈیش بورڈ دکھائیں
+Show Dimension Wise Stock,ڈائمینشن وار اسٹاک دکھائیں
+Show First Document Tour,پہلی دستاویز کا تعارف دکھائیں
+Show Form Tour,فارم کا تعارف دکھائیں
+Show Full Form?,پورا فارم دکھائیں؟
+Show Full Number,پورا نمبر دکھائیں
+Show Future Payments,مستقبل کی ادائیگیاں دکھائیں
+Show GL Balance,GL بیلنس دکھائیں
+Show Labels,لیبل دکھائیں
+Show Links,لنکس دکھائیں
+Show My Space,میری جگہ دکھائیں
+Show Percentage Stats,فیصد اعداد دکھائیں
+Show Processlist,عمل کی فہرست دکھائیں
+Show Remarks,ریمارکس دکھائیں
+Show Stock Ageing Data,اسٹاک کی عمر کا ڈیٹا دکھائیں
+Show Tags,ٹیگز دکھائیں
+Show Tags on Cards,کارڈز پر ٹیگز دکھائیں
+Show Totals,کل دکھائیں
+Show Tour,تعارف دکھائیں
+Show Values over Chart,چارٹ پر قدریں دکھائیں
+Show Variant Attributes,ورائنٹ کی خصوصیات دکھائیں
+Show Variants,ورائنٹس دکھائیں
+Show Weekends,ہفتہ وار چھٹیاں دکھائیں
+Show absolute datetime in timeline,ٹائم لائن میں مکمل تاریخ و وقت دکھائیں
+Show all (including disabled),سب دکھائیں (غیر فعال سمیت)
+Show all activity,تمام سرگرمی دکھائیں
+Show dashboard,ڈیش بورڈ دکھائیں
+Show full form instead of a quick entry modal,فوری اندراج کے بجائے پورا فارم دکھائیں
+Show keyboard shortcuts,کی بورڈ شارٹ کٹس دکھائیں
+Show more,مزید دکھائیں
+Show more details,مزید تفصیل دکھائیں
+Show navigation buttons,نیویگیشن بٹن دکھائیں
+Show pay button in Purchase Order portal,پرچیز آرڈر پورٹل میں ادائیگی کا بٹن دکھائیں
+Show search bar,تلاش بار دکھائیں
+Show sidebar,سائیڈ بار دکھائیں
+Show timeline,ٹائم لائن دکھائیں
+Show view switcher,ویو تبدیل کرنے والا دکھائیں
+Showing only Numeric fields from Report,رپورٹ سے صرف عددی فیلڈز دکھائے جا رہے ہیں
+Showing {0},{0} دکھائے جا رہے ہیں
+Showing {0} of {1},{1} میں سے {0} دکھائے جا رہے ہیں
+Showing {0} of {1} columns.,{1} میں سے {0} کالم دکھائے جا رہے ہیں۔
+Showing {0} of {1} rows.,{1} میں سے {0} لائنیں دکھائی جا رہی ہیں۔
+Shuttering,شٹرنگ
+Sidebar,سائیڈ بار
+Sidebar Item,سائیڈ بار آئٹم
+Sidebar Item Group,سائیڈ بار آئٹم گروپ
+Sidebar Item Group Link,سائیڈ بار آئٹم گروپ لنک
+Sidebar Items,سائیڈ بار آئٹمز
+Sidebar Menu,سائیڈ بار مینو
+Sidebar Moved,سائیڈ بار منتقل ہو گیا
+Sidebar Position,سائیڈ بار کی جگہ
+Sidebar is no longer shipped with {0},سائیڈ بار اب {0} کے ساتھ نہیں آتا
+Sidebar reset for everyone,سب کے لیے سائیڈ بار ری سیٹ
+Sidebar reset to the site's,سائیڈ بار سائٹ کے مطابق ری سیٹ
+Sidebar saved to its app,سائیڈ بار اپنی ایپ میں محفوظ ہو گیا
+Sidebar updated,سائیڈ بار اپ ڈیٹ ہو گیا
+Sidebar updated for everyone,سب کے لیے سائیڈ بار اپ ڈیٹ ہو گیا
+Simultaneous Sessions,بیک وقت سیشنز
+Single DocTypes cannot be renamed,سنگل DocTypes کا نام نہیں بدل سکتا
+Single Variant,ایک ورائنٹ
+Site,سائٹ
+Site Diary,سائٹ ڈائری
+Site Inspection,سائٹ معائنہ
+Site Inspection Action,اصلاحی اقدام
+Site Inspection Check,معائنے کی جانچ
+Site Snag,سائٹ کی خرابی
+Site diary,سائٹ ڈائری
+Site store,سائٹ اسٹور
+Size,سائز
+Size (MB),سائز (MB)
+Skip,چھوڑیں
+Skipped,چھوڑ دیا گیا
+Snag,خرابی (سنیگ)
+Snags,خرابیاں (سنیگز)
+SocketIO Ping Check,SocketIO پنگ جانچ
+SocketIO Transport Mode,SocketIO ٹرانسپورٹ موڈ
+Solid,ٹھوس
+Some cards were saved in another column,کچھ کارڈ دوسرے کالم میں محفوظ ہوئے
+Some checks are not OK: add the corrective actions.,کچھ جانچ ٹھیک نہیں: اصلاحی اقدامات شامل کریں۔
+Something went wrong,کچھ غلط ہو گیا
+Sort,ترتیب
+Sort Ascending,بڑھتی ترتیب میں
+Sort Descending,گھٹتی ترتیب میں
+Sort Field,ترتیب کا فیلڈ
+Sort Order,ترتیب
+Source,ماخذ
+Source Code,سورس کوڈ
+Source Document Name,ماخذ دستاویز کا نام
+Source Document Type,ماخذ دستاویز کی قسم
+Source Exchange Rate,ماخذ شرح تبادلہ
+Source Name,ماخذ کا نام
+Source Text,ماخذ متن
+Source Warehouse,ماخذ گودام
+Source Warehouse Address,ماخذ گودام کا پتہ
+Source Warehouse Address Link,ماخذ گودام کے پتے کا لنک
+Spacer,خالی جگہ
+Split view,تقسیم شدہ ویو
+Sr,سینئر
+Standard,عام
+Standard Cost,معیاری لاگت
+Standard Not Set,معیاری مقرر نہیں
+Standard Report,معیاری رپورٹ
+Standard Reports cannot be deleted,معیاری رپورٹس حذف نہیں ہو سکتیں
+Standard Reports cannot be edited,معیاری رپورٹس میں تبدیلی نہیں ہو سکتی
+Standard Selling Rate,معیاری فروخت ریٹ
+Standard Template,معیاری ٹیمپلیٹ
+Start,آغاز
+Start Closed,بند شروع کریں
+Start Date,آغاز کی تاریخ
+Start Date Field,آغاز کی تاریخ کا فیلڈ
+Start date of current invoice's period,موجودہ انوائس کی مدت کی آغاز تاریخ
+Start with # to search by tag,ٹیگ سے تلاش کے لیے # سے شروع کریں
+Starts on,شروع ہوتا ہے
+State/Province,صوبہ
+Stats,اعداد و شمار
+Stats Time Interval,اعداد و شمار کا وقفہ
+Status,حالت
+Status must be Cancelled or Completed,صورتحال منسوخ یا مکمل ہونی چاہیے
+Steel before concrete,کنکریٹ سے پہلے سریا
+Step,مرحلہ
+Step {0} of {1},مرحلہ {0} از {1}
+Steps,مراحل
+Sticky,چپکا ہوا
+Stock,اسٹاک
+Stock Adjustment,اسٹاک ایڈجسٹمنٹ
+Stock Adjustment Account,اسٹاک ایڈجسٹمنٹ اکاؤنٹ
+Stock Ageing,اسٹاک کی عمر
+Stock Analytics,اسٹاک کا تجزیہ
+Stock Balance,اسٹاک بیلنس
+Stock Entry,اسٹاک انٹری
+Stock Entry (Outward GIT),اسٹاک انٹری (باہر جانے والا راستے میں سامان)
+Stock Entry Child,اسٹاک انٹری ذیلی
+Stock Entry Detail,اسٹاک انٹری کی تفصیل
+Stock Entry Type,اسٹاک انٹری کی قسم
+Stock Expense,اسٹاک کا خرچ
+Stock Items,اسٹاک آئٹمز
+Stock Ledger,اسٹاک لیجر
+Stock Ledger Entries of Cancelled Vouchers,منسوخ واؤچرز کی اسٹاک لیجر انٹریز
+Stock Ledger Entry,اسٹاک لیجر انٹری
+Stock Ledger Invariant Check,اسٹاک لیجر کی جانچ
+Stock Ledger Variance,اسٹاک لیجر کا فرق
+Stock Levels,اسٹاک کی سطحیں
+Stock Levels HTML,اسٹاک کی سطحیں HTML
+Stock Manager,اسٹاک منیجر
+Stock Movement,اسٹاک کی نقل و حرکت
+Stock Projected Qty,متوقع اسٹاک مقدار
+Stock Qty,اسٹاک مقدار
+Stock Received But Not Billed,وصول شدہ اسٹاک جس کا بل نہیں آیا
+Stock Reconciliation,اسٹاک کا ملان
+Stock Reconciliations,اسٹاک کے ملان
+Stock Reposting,اسٹاک کی دوبارہ پوسٹنگ
+Stock Reposting Settings,اسٹاک دوبارہ پوسٹنگ سیٹنگز
+Stock Reservation,اسٹاک کی بکنگ
+Stock Settings,اسٹاک سیٹنگز
+Stock UOM,اسٹاک یونٹ
+Stock Uom,اسٹاک یونٹ
+Stock Update Not Allowed,اسٹاک اپ ڈیٹ کی اجازت نہیں
+Stock User,اسٹاک یوزر
+Stock Value Difference,اسٹاک کی مالیت کا فرق
+Stock account where inventory value for this item will be tracked,اسٹاک اکاؤنٹ جہاں اس آئٹم کی انوینٹری کی مالیت درج ہوگی
+Stock balance,اسٹاک بیلنس
+Stock movements,اسٹاک کی آمد و رفت
+Stop,روکیں
+Stopped,رکا ہوا
+Storage Usage (MB),اسٹوریج کا استعمال (MB)
+Storage Usage By Table,ٹیبل کے لحاظ سے اسٹوریج
+Stores,اسٹور
+Stores - {0},اسٹور - {0}
+Strikethrough,کٹی لکیر
+Strong,نمایاں
+Sub-contracting,ذیلی ٹھیکہ
+Subject,موضوع
+Subject Field,موضوع کا فیلڈ
+Submit,جمع کریں
+Submit (confirm) the quotation before locking it as final.,حتمی لاک کرنے سے پہلے کوٹیشن جمع (تصدیق) کریں۔
+Submit Action Failed,جمع کرنے کا اقدام ناکام
+Submit a {0} to finish this step.,یہ مرحلہ مکمل کرنے کے لیے {0} جمع کریں۔
+Submit it to finish this step.,یہ مرحلہ مکمل کرنے کے لیے اسے جمع کریں۔
+Submit this document to confirm,تصدیق کے لیے یہ دستاویز جمع کریں
+Submit your Quotation,اپنی کوٹیشن جمع کریں
+Submit {0} documents?,{0} دستاویزات جمع کریں؟
+Submitted,جمع شدہ
+Submitting,جمع ہو رہا ہے
+Submitting {0},{0} جمع ہو رہا ہے
+Submitting...,جمع ہو رہا ہے...
+Subscript,زیریں
+Subsidiary,ذیلی کمپنی
+Subtle,ہلکا
+Success,کامیاب
+Successful Transactions,کامیاب لین دین
+Successful: {0} to {1},کامیاب: {0} سے {1}
+Successfully Set Supplier,سپلائر کامیابی سے مقرر ہو گیا
+Successfully updated translations,ترجمے کامیابی سے اپ ڈیٹ ہو گئے
+Sum,مجموعہ
+Sum of {0},{0} کا مجموعہ
+Summary,خلاصہ
+Sunday,اتوار
+Superscript,بالائی
+Supplied Items,فراہم کردہ آئٹمز
+Supplied Qty,فراہم کردہ مقدار
+Supplier,سپلائر
+Supplier Account Statement,سپلائر اکاؤنٹ اسٹیٹمنٹ
+Supplier Address,سپلائر کا پتہ
+Supplier Address Details,سپلائر کے پتے کی تفصیل
+Supplier Addresses And Contacts,سپلائرز کے پتے اور رابطے
+Supplier Contact,سپلائر کا رابطہ
+Supplier Defaults,سپلائر ڈیفالٹس
+Supplier Delivery Note,سپلائر کا ڈیلیوری نوٹ
+Supplier Details,سپلائر کی تفصیل
+Supplier Group,سپلائر گروپ
+Supplier Group Name,سپلائر گروپ کا نام
+Supplier Info,سپلائر کی معلومات
+Supplier Invoice,سپلائر انوائس
+Supplier Invoice Date,سپلائر انوائس کی تاریخ
+Supplier Invoice No,سپلائر انوائس نمبر
+Supplier Lead Time (days),سپلائر کا ترسیل کا وقت (دن)
+Supplier Ledger,سپلائر لیجر
+Supplier Name,سپلائر کا نام
+Supplier Naming By,سپلائر کی نام سازی بلحاظ
+Supplier Part No,سپلائر پارٹ نمبر
+Supplier Part Number,سپلائر پارٹ نمبر
+Supplier Portal Users,سپلائر پورٹل یوزرز
+Supplier Quotation,سپلائر کوٹیشن
+Supplier Quotation Comparison,سپلائر کوٹیشن کا موازنہ
+Supplier Quotation Item,سپلائر کوٹیشن آئٹم
+Supplier Quotation {0} Created,سپلائر کوٹیشن {0} بن گئی
+Supplier Scorecard,سپلائر اسکور کارڈ
+Supplier Scorecard Criteria,سپلائر اسکور کارڈ کے معیار
+Supplier Scorecard Standing,سپلائر اسکور کارڈ کی درجہ بندی
+Supplier Scorecard Variable,سپلائر اسکور کارڈ متغیر
+Supplier Type,سپلائر کی قسم
+Supplier Warehouse,سپلائر گودام
+Supplier accounts,سپلائرز کے اکاؤنٹس
+Supplier invoices,سپلائر انوائسز
+Supplier invoices need the bill scan,سپلائر انوائس کے لیے بل کا اسکین ضروری ہے
+Supplier quotations,سپلائر کوٹیشنز
+Supplier statement,سپلائر اسٹیٹمنٹ
+Supplier whose work is inspected,سپلائر جس کے کام کا معائنہ ہو رہا ہے
+Supplier {0} not found in {1},سپلائر {0} {1} میں نہیں ملا
+Supplier's document (scan),سپلائر کی دستاویز (اسکین)
+"Supplier's tax identification number (e.g. PAN, VAT, GST)",سپلائر کا ٹیکس شناختی نمبر (مثلاً NTN، STRN)
+Supplier's terms,سپلائر کی شرائط
+Suppliers,سپلائرز
+Suppliers & buying,سپلائرز اور خریداری
+Supply terms,سپلائی کی شرائط
+Support,سپورٹ
+Support Settings,سپورٹ سیٹنگز
+Support Team,سپورٹ ٹیم
+Supported Variables:,معاون متغیرات:
+Swimlanes,لینز
+Swimlanes (Group By),لینز (گروپ بلحاظ)
+Switch Camera,کیمرہ بدلیں
+Switch Theme,تھیم بدلیں
+Switch theme,تھیم بدلیں
+Switch to CRM,CRM پر جائیں
+Switch to Frappe CRM,Frappe CRM پر جائیں
+Switch to Helpdesk,ہیلپ ڈیسک پر جائیں
+Switching Camera,کیمرہ بدل رہا ہے
+Symbol,علامت
+System Console,سسٹم کنسول
+System Health Report,سسٹم کی صحت کی رپورٹ
+System Health Report Errors,سسٹم کی صحت کی رپورٹ کی خرابیاں
+System Health Report Failing Jobs,سسٹم کی صحت کی رپورٹ کے ناکام کام
+System Health Report Queue,سسٹم کی صحت کی رپورٹ کی قطار
+System Health Report Tables,سسٹم کی صحت کی رپورٹ کی ٹیبلز
+System Health Report Workers,سسٹم کی صحت کی رپورٹ کے ورکرز
+System Manager,سسٹم منیجر
+System Manager privileges required.,سسٹم منیجر کے اختیارات ضروری ہیں۔
+System managers are allowed by default,سسٹم منیجرز کو ڈیفالٹ اجازت ہے
+TDS / withholding tax category applied when paying this supplier,اس سپلائر کو ادائیگی پر لاگو ٹیکس کٹوتی کیٹیگری
+TDS Deducted,TDS کٹوتی
+Tab,ٹیب
+Table,ٹیبل
+Table updated,ٹیبل اپ ڈیٹ ہو گئی
+Table {0} cannot be empty,ٹیبل {0} خالی نہیں ہو سکتی
+Tag,ٹیگ
+Tag Link,ٹیگ لنک
+Tags,ٹیگز
+Take Photo,تصویر لیں
+Take the photo of the person receiving the goods.,سامان وصول کرنے والے کی تصویر لیں۔
+Target Exchange Rate,منزل شرح تبادلہ
+Target Warehouse,منزل گودام
+Target Warehouse Address,منزل گودام کا پتہ
+Target Warehouse Address Link,منزل گودام کے پتے کا لنک
+Target date,ہدف کی تاریخ
+Task,کام
+Task Completion,کام کی تکمیل
+Task Depends On,کام انحصار
+Task Description,کام کی تفصیل
+Task Progress,کام کی پیش رفت
+Task Status,کام کی صورتحال
+Task Type,کام کی قسم
+Task Weight,کام کا وزن
+Task list,کاموں کی فہرست
+Tax,ٹیکس
+Tax Amount After Discount Amount,رعایت کے بعد ٹیکس کی رقم
+Tax Breakup,ٹیکس کی تفصیل
+Tax Category,ٹیکس کیٹیگری
+Tax ID,ٹیکس ID (NTN)
+Tax Id,ٹیکس ID (NTN)
+Tax Identification,ٹیکس شناخت
+Tax Rate,ٹیکس ریٹ
+Tax Rule,ٹیکس کا اصول
+Tax Template,ٹیکس ٹیمپلیٹ
+Tax Withholding Category,ٹیکس کٹوتی کیٹیگری
+Tax Withholding Entries,ٹیکس کٹوتی انٹریز
+Tax Withholding Entry,ٹیکس کٹوتی انٹری
+Tax Withholding Group,ٹیکس کٹوتی گروپ
+Taxes,ٹیکس
+Taxes and Charges,ٹیکس اور چارجز
+Taxes and Charges Added,شامل کیے گئے ٹیکس اور چارجز
+Taxes and Charges Added (Company Currency),شامل کیے گئے ٹیکس اور چارجز (کمپنی کرنسی)
+Taxes and Charges Calculation,ٹیکس اور چارجز کا حساب
+Taxes and Charges Deducted,منہا کیے گئے ٹیکس اور چارجز
+Taxes and Charges Deducted (Company Currency),منہا کیے گئے ٹیکس اور چارجز (کمپنی کرنسی)
+Telephony Call Type,ٹیلی فون کال کی قسم
+Template,ٹیمپلیٹ
+Template Task,ٹیمپلیٹ کام
+Templates,ٹیمپلیٹس
+Temporarily on Hold,عارضی طور پر روکا گیا
+Terms,شرائط
+Terms & Conditions,شرائط و ضوابط
+Terms Template,شرائط کا ٹیمپلیٹ
+Terms agreed,طے شدہ شرائط
+Terms and Conditions,شرائط و ضوابط
+Terms and Conditions Content,شرائط و ضوابط کا متن
+Territory,علاقہ
+Territory Target Variance Based On Item Group,آئٹم گروپ کی بنیاد پر علاقائی ہدف کا فرق
+Test Job ID,ٹیسٹ جاب ID
+Testing & verification,ٹیسٹنگ اور تصدیق
+Text color,متن کا رنگ
+Text direction,متن کی سمت
+Text style,متن کا انداز
+The AI couldn't read this document. Try a clearer photo.,AI یہ دستاویز نہیں پڑھ سکا۔ زیادہ صاف تصویر لیں۔
+The AI service refused the request ({0}). Check the API key and model in Mimaar Settings.,AI سروس نے درخواست رد کر دی ({0})۔ معمار سیٹنگز میں API کی اور ماڈل چیک کریں۔
+The CSV format is case sensitive,CSV فارمیٹ میں بڑے چھوٹے حروف کا فرق ہے
+The card was saved in another column,کارڈ دوسرے کالم میں محفوظ ہوا
+The diary date can't be in the future.,ڈائری کی تاریخ مستقبل کی نہیں ہو سکتی۔
+The dock as this arrangement leaves it.,اس ترتیب کے بعد ڈاک ایسا ہوگا۔
+The document has been assigned to {0},دستاویز {0} کو تفویض کر دی گئی
+"The document mentions {0}, not {1}. Check it is the right purchase order.",دستاویز میں {0} لکھا ہے، {1} نہیں۔ چیک کریں کہ یہ صحیح پرچیز آرڈر ہے۔
+The document shows tax {0}% and other charges {1}. Add them in the Taxes and Charges table.,دستاویز میں ٹیکس {0}% اور دیگر چارجز {1} ہیں۔ انہیں ٹیکس اور چارجز کی ٹیبل میں شامل کریں۔
+The file is too large to read (over 15 MB).,فائل پڑھنے کے لیے بہت بڑی ہے (15 MB سے زیادہ)۔
+The terms of purchase order {0} don't include an advance.,پرچیز آرڈر {0} کی شرائط میں ایڈوانس شامل نہیں۔
+The total written on the bill is {0}; at the purchase order rates the received quantities come to {1}. Check before submitting.,بل پر لکھا کل {0} ہے؛ پرچیز آرڈر کے ریٹ پر وصول شدہ مقدار {1} بنتی ہے۔ جمع کرنے سے پہلے چیک کریں۔
+The {0} contains Unit Price Items.,{0} میں فی یونٹ قیمت والے آئٹمز ہیں۔
+Their no.,ان کا نمبر
+Their quotation no.,ان کی کوٹیشن نمبر
+Theme,تھیم
+Theme Changed,تھیم بدل گیا
+Theme and layout preferences.,تھیم اور لے آؤٹ کی ترجیحات۔
+There are no upcoming events for you.,آپ کے لیے کوئی آنے والا ایونٹ نہیں۔
+There is already a section called {0}.,{0} نام کا سیکشن پہلے سے موجود ہے۔
+"There is no task called ""{}""","""{}"" نام کا کوئی کام نہیں"
+There was an error saving filters,فلٹرز محفوظ کرنے میں خرابی
+There were errors,خرابیاں تھیں
+This Month,اس مہینے
+This Quarter,اس سہ ماہی
+This Week,اس ہفتے
+This Year,اس سال
+This app has nothing to arrange,اس ایپ میں ترتیب دینے کو کچھ نہیں
+This cannot be undone,یہ واپس نہیں ہو سکتا
+This chart couldn't load,یہ چارٹ لوڈ نہیں ہو سکا
+This document can't be shared.,یہ دستاویز شیئر نہیں ہو سکتی۔
+This is a snapshot report generated {0}.,یہ {0} کو بنائی گئی اسنیپ شاٹ رپورٹ ہے۔
+This module has nothing to arrange,اس ماڈیول میں ترتیب دینے کو کچھ نہیں
+This month,اس مہینے
+This quotation is locked as final. It can't be cancelled or revised.,یہ کوٹیشن حتمی کے طور پر لاک ہے۔ منسوخ یا تبدیل نہیں ہو سکتی۔
+This report was generated {0}.,یہ رپورٹ {0} کو بنائی گئی۔
+This supplier will be auto-selected in new purchase transactions,یہ سپلائر نئی خریداری میں خود منتخب ہوگا
+Thumbnail URL,چھوٹی تصویر کا URL
+Thursday,جمعرات
+Tiles and marble,ٹائلیں اور ماربل
+Time,وقت
+Time Interval,وقت کا وقفہ
+Time Series,وقت کا سلسلہ
+Time Series Based On,وقت کے سلسلے کی بنیاد
+Time Zone,ٹائم زون
+Time {0} must be in format: {1},وقت {0} اس فارمیٹ میں ہونا چاہیے: {1}
+Timeline,ٹائم لائن
+Timeseries,وقت کا سلسلہ
+Timesheet,ٹائم شیٹ
+Timesheet Billing Summary,ٹائم شیٹ بلنگ کا خلاصہ
+Timespan,مدت
+Tip: Try the new dropdown console using,مشورہ: نیا ڈراپ ڈاؤن کنسول آزمائیں
+Title,عنوان
+Title Field,عنوان کا فیلڈ
+To,تک
+To Bill,بل باقی
+To Date,تاریخ تک
+To Do,کرنے کے کام
+To Fiscal Year,مالی سال تک
+To Pay,ادائیگی باقی
+To Receive,وصولی باقی
+To Receive and Bill,وصولی اور بل باقی
+To Time,وقت تک
+To a group of users,یوزرز کے گروپ کو
+To everyone,سب کو
+To print output use <code>print(text)</code>,نتیجہ پرنٹ کرنے کے لیے <code>print(text)</code> استعمال کریں
+To version,ورژن تک
+ToDo,کرنے کا کام
+Today,آج
+Toggle Awesomebar,تلاش بار کھولیں/بند کریں
+Toggle Chart,چارٹ دکھائیں/چھپائیں
+Toggle Full Width,پوری چوڑائی
+Toggle Grid View,گرڈ ویو دکھائیں/چھپائیں
+Toggle Sidebar,سائیڈ بار دکھائیں/چھپائیں
+Toggle Theme,تھیم بدلیں
+Toggle sidebar,سائیڈ بار دکھائیں/چھپائیں
+Tomorrow,کل (آنے والا)
+Too Many Documents,بہت زیادہ دستاویزات
+Tools,اوزار
+Top,اوپر
+Top Center,اوپر درمیان
+Top Errors,بڑی خرابیاں
+Top Right,اوپر دائیں
+Total,کل
+Total (Company Currency),کل (کمپنی کرنسی)
+Total Actual,کل اصل
+Total Additional Costs,کل اضافی لاگت
+Total Advance,کل ایڈوانس
+Total Advance Paid,کل ادا شدہ ایڈوانس
+Total Advance Paid: {0},کل ادا شدہ ایڈوانس: {0}
+Total Advance Received,کل وصول شدہ ایڈوانس
+Total Advance Received: {0},کل وصول شدہ ایڈوانس: {0}
+Total Allocated Amount,کل مختص رقم
+Total Allocated Amount (Company Currency),کل مختص رقم (کمپنی کرنسی)
+Total Amount,کل رقم
+Total Background Workers,کل پس منظر ورکرز
+Total Billable Amount (via Timesheet),کل قابل بل رقم (ٹائم شیٹ سے)
+Total Budget,کل بجٹ
+Total Consumed Material Cost,استعمال شدہ مٹیریل کی کل لاگت
+Total Costing Amount (via Timesheet),کل لاگت (ٹائم شیٹ سے)
+Total Errors (last 1 day),کل خرابیاں (پچھلا 1 دن)
+Total Expenses booked through,کل اخراجات اس کے ذریعے درج
+Total Images,کل تصاویر
+Total Incoming Value (Receipt),کل آمد مالیت (وصولی)
+Total Invoiced Amount,کل انوائس شدہ رقم
+Total Net Weight,کل خالص وزن
+Total Outgoing Emails,کل جانے والی ای میلز
+Total Outgoing Value (Consumption),کل اخراج مالیت (استعمال)
+Total Outstanding,کل واجب الادا
+Total Outstanding Amount,کل واجب الادا رقم
+Total Paid Amount,کل ادا شدہ رقم
+Total Projected Qty,کل متوقع مقدار
+Total Purchase Cost (via Purchase Invoice),کل خریداری لاگت (پرچیز انوائس سے)
+Total Quantity,کل مقدار
+Total Supplied Qty,کل فراہم کردہ مقدار
+Total Taxes and Charges,کل ٹیکس اور چارجز
+Total Taxes and Charges (Company Currency),کل ٹیکس اور چارجز (کمپنی کرنسی)
+Total Unpaid,کل غیر ادا شدہ
+Total Unpaid: {0},کل غیر ادا شدہ: {0}
+Total Users,کل یوزرز
+Total Value Difference (Incoming - Outgoing),کل مالیت کا فرق (آمد - اخراج)
+Total Variance,کل فرق
+Total Weight,کل وزن
+Total hours: {0},کل گھنٹے: {0}
+Total {0}. Please quote {1} on every delivery note and invoice.,کل {0}۔ براہ کرم ہر ڈیلیوری نوٹ اور انوائس پر {1} لکھیں۔
+Totals,مجموعے
+Totals (Company Currency),مجموعے (کمپنی کرنسی)
+Totals Row,مجموعے کی لائن
+Traceability,سراغ رسانی
+Track Steps,مراحل کا ریکارڈ
+Transaction,لین دین
+Transaction Date,لین دین کی تاریخ
+Transaction Deletion Record,لین دین حذف کرنے کا ریکارڈ
+Transaction ID,لین دین ID
+Transaction Settings,لین دین کی سیٹنگز
+Transaction reference no {0} dated {1},لین دین حوالہ نمبر {0} بتاریخ {1}
+Transactions,لین دین
+Transfer,منتقلی
+Transfer Status,منتقلی کی صورتحال
+Transferred,منتقل شدہ
+Transferred Qty,منتقل شدہ مقدار
+Transfers,منتقلیاں
+Transgender,ٹرانس جینڈر
+Transit,راستے میں
+Transit Entry,راستے کی انٹری
+Translate Data,ڈیٹا کا ترجمہ
+Translate values,قدروں کا ترجمہ
+Translate {0},{0} کا ترجمہ
+Translations,ترجمے
+Transporter,ٹرانسپورٹر
+Transporter Name,ٹرانسپورٹر کا نام
+Tree,درخت
+Tree Details,درخت کی تفصیل
+Tree View,درخت ویو
+Tree view is not available for {0},{0} کے لیے درخت ویو دستیاب نہیں
+Trial Balance,ٹرائل بیلنس
+Trial Balance for Party,فریق کا ٹرائل بیلنس
+Trigger primary action,بنیادی اقدام چلائیں
+Try Again,دوبارہ کوشش کریں
+Try a different search.,کچھ اور تلاش کریں۔
+Tuesday,منگل
+Twice Daily,دن میں دو بار
+Type,قسم
+Type Name,قسم کا نام
+Type a reply / comment,جواب / تبصرہ لکھیں
+Type of Payment,ادائیگی کی قسم
+Type something...,کچھ لکھیں...
+Type {0} or more characters for results.,نتائج کے لیے {0} یا زیادہ حروف لکھیں۔
+UI Tour,UI تعارف
+UOM,یونٹ
+UOM Conversion Details,یونٹ تبدیلی کی تفصیل
+UOM Conversion Factor,یونٹ تبدیلی کا عامل
+UOM Name,یونٹ کا نام
+Un-following document {0},دستاویز {0} کو فالو کرنا بند
+UnReconcile,ملان ختم کریں
+UnReconcile Allocations,تقسیم کا ملان ختم کریں
+Unable to load attachments.,اٹیچمنٹس لوڈ نہیں ہو سکیں۔
+Unable to load camera.,کیمرہ لوڈ نہیں ہو سکا۔
+Unable to load: {0},لوڈ نہیں ہو سکا: {0}
+Unable to update event,ایونٹ اپ ڈیٹ نہیں ہو سکا
+Unallocated,غیر مختص
+Unallocated Amount,غیر مختص رقم
+Unbilled Orders,بغیر بل کے آرڈرز
+Unblock Invoice,انوائس بحال کریں
+Unchanged,بغیر تبدیلی
+Underline,خط کشیدہ
+Undo,واپس لیں
+Undo last action,آخری اقدام واپس لیں
+Unfollow,فالو بند کریں
+Unhandled Emails,غیر نمٹائی ای میلز
+Unit,اکائی
+Unit of Measure (UOM),پیمائش کا یونٹ
+Unknown Column: {0},نامعلوم کالم: {0}
+Unlink {0},{0} کا لنک ختم کریں
+Unlink {0} {1} from {2}?,{0} {1} کو {2} سے الگ کریں؟
+Unmark as Standard,معیاری کا نشان ہٹائیں
+Unpaid,ادا نہیں
+Unpin,پن ہٹائیں
+Unpublish,اشاعت ختم کریں
+Unrealized Profit / Loss Account,غیر حقیقی نفع / نقصان کا اکاؤنٹ
+Unreconcile Payment,ادائیگی کا ملان ختم کریں
+Unreconciled,بغیر ملان
+Unselect All,سب سے انتخاب ہٹائیں
+Unset Matched Payment Request,ملتی ادائیگی کی درخواست ہٹائیں
+Unset as Primary,بنیادی کا نشان ہٹائیں
+Unsubscribed,ان سبسکرائب
+Unsupported file format: {0},غیر معاون فائل فارمیٹ: {0}
+Unzipped {0} files,{0} فائلیں نکالی گئیں
+Unzipping files...,فائلیں نکالی جا رہی ہیں...
+Upcoming Events for Today,آج کے آنے والے ایونٹس
+Upcoming events,آنے والے ایونٹس
+Update,تبدیل کریں
+Update Auto Repeat Reference,خودکار دہرائی کا حوالہ اپ ڈیٹ کریں
+Update Available,اپ ڈیٹ دستیاب
+Update Billed Amount in Purchase Order,پرچیز آرڈر میں بل شدہ رقم اپ ڈیٹ کریں
+Update Billed Amount in Purchase Receipt,پرچیز رسید میں بل شدہ رقم اپ ڈیٹ کریں
+Update Costing and Billing,لاگت اور بلنگ اپ ڈیٹ کریں
+Update Items,آئٹمز اپ ڈیٹ کریں
+Update Outstanding for Self,اپنا واجب الادا اپ ڈیٹ کریں
+Update Password,پاس ورڈ اپ ڈیٹ کریں
+Update Rate and Availability,ریٹ اور دستیابی اپ ڈیٹ کریں
+Update Rate as per Last Purchase,آخری خریداری کے مطابق ریٹ اپ ڈیٹ کریں
+Update Settings,سیٹنگز اپ ڈیٹ کریں
+Update Stock,اسٹاک اپ ڈیٹ کریں
+Update Translations,ترجمے اپ ڈیٹ کریں
+Update Value,قدر اپ ڈیٹ کریں
+Update {0} records,{0} ریکارڈ اپ ڈیٹ کریں
+Update {0} rows,{0} لائنیں اپ ڈیٹ کریں
+Updated,اپ ڈیٹ ہو گیا
+Updated Successfully,کامیابی سے اپ ڈیٹ ہو گیا
+Updated To A New Version 🎉,نئے ورژن پر اپ ڈیٹ ہو گیا 🎉
+Updated successfully,کامیابی سے اپ ڈیٹ ہو گیا
+Updated {0},{0} اپ ڈیٹ ہو گیا
+Updating,اپ ڈیٹ ہو رہا ہے
+Updating Variants...,ورائنٹس اپ ڈیٹ ہو رہے ہیں...
+Updating global search,عالمی تلاش اپ ڈیٹ ہو رہی ہے
+Updating related fields...,متعلقہ فیلڈز اپ ڈیٹ ہو رہے ہیں...
+Updating search index,تلاش کا انڈیکس اپ ڈیٹ ہو رہا ہے
+Updating {0},{0} اپ ڈیٹ ہو رہا ہے
+Upload,اپ لوڈ کریں
+Upload Failed,اپ لوڈ ناکام
+Upload Photo,تصویر اپ لوڈ کریں
+Upload file,فائل اپ لوڈ کریں
+Upload {0} files,{0} فائلیں اپ لوڈ کریں
+Urgent,فوری
+Use % for any non empty value.,کسی بھی غیر خالی قدر کے لیے % استعمال کریں۔
+Use Company Default Round Off Cost Center,کمپنی کا ڈیفالٹ گولائی لاگت مرکز استعمال کریں
+Use HTML editor,HTML ایڈیٹر استعمال کریں
+Use Report Chart,رپورٹ کا چارٹ استعمال کریں
+Use Transaction Date Exchange Rate,لین دین کی تاریخ کی شرح تبادلہ استعمال کریں
+Use ampersand to match multiple terms,کئی الفاظ ملانے کے لیے & استعمال کریں
+Use template,ٹیمپلیٹ استعمال کریں
+Used,استعمال
+Used for inter-company transactions,کمپنیوں کے درمیان لین دین کے لیے
+User,صارف
+User Changed,یوزر بدل گیا
+User Details,یوزر کی تفصیل
+User Emails,یوزر کی ای میلز
+User Id,یوزر ID
+User Menu,یوزر مینو
+User Permissions,یوزر اجازتیں
+User Type,یوزر کی قسم
+User permission added,یوزر اجازت شامل ہو گئی
+User permission already exists,یوزر اجازت پہلے سے موجود ہے
+Username,یوزر نام
+Users,یوزرز
+Utilization,استعمال
+Valid Till,تک درست
+Valid Upto,تک درست
+Valid until,کب تک قابل قبول
+Validate Field,فیلڈ کی جانچ
+Valuation,قدر کاری
+Valuation (I - K),قدر کاری (I - K)
+Valuation Field Type,قدر کاری فیلڈ کی قسم
+Valuation Method,قدر کاری کا طریقہ
+Valuation Rate,ویلیوایشن ریٹ
+Valuation Rate cannot be negative.,ویلیوایشن ریٹ منفی نہیں ہو سکتا۔
+Valuation Type,قدر کاری کی قسم
+Valuation and Total,قدر کاری اور کل
+Value,مالیت
+Value (G - D),مالیت (G - D)
+Value Based On,قدر کی بنیاد
+Value Changes,قدر میں تبدیلیاں
+Value Too Long,قدر بہت لمبی ہے
+Value cannot be changed for {0},{0} کی قدر تبدیل نہیں ہو سکتی
+Value cannot be negative for,قدر منفی نہیں ہو سکتی
+Value cannot be negative for {0}: {1},{0} کی قدر منفی نہیں ہو سکتی: {1}
+Value for {0} cannot be a list,{0} کی قدر فہرست نہیں ہو سکتی
+Value to Validate,جانچنے کی قدر
+Value too big,قدر بہت بڑی ہے
+Variance,فرق
+Variant,ورائنٹ
+Variant Attribute Error,ورائنٹ خصوصیت کی خرابی
+Variant Attributes,ورائنٹ کی خصوصیات
+Variant Based On,ورائنٹ کی بنیاد
+Variant Based On cannot be changed,ورائنٹ کی بنیاد تبدیل نہیں ہو سکتی
+Variant Details Report,ورائنٹ تفصیل کی رپورٹ
+Variant Items,ورائنٹ آئٹمز
+Variant Of,کا ورائنٹ
+Variant creation has been queued.,ورائنٹ بنانا قطار میں ہے۔
+Variants,ورائنٹس
+Vehicle Date,گاڑی کی تاریخ
+Vehicle Number,گاڑی نمبر
+Vehicle no.,گاڑی نمبر
+Verified,تصدیق شدہ
+Verify,تصدیق کریں
+Verify Password,پاس ورڈ کی تصدیق کریں
+Version Updated,ورژن اپ ڈیٹ ہو گیا
+View,صرف دیکھنا
+View All,سب دیکھیں
+View All Prices,تمام قیمتیں دیکھیں
+View Audit Trail,تبدیلیوں کا ریکارڈ دیکھیں
+View Docs,دستاویزات دیکھیں
+View Documentation,رہنمائی دیکھیں
+View Full Log,پورا ریکارڈ دیکھیں
+View List,فہرست دیکھیں
+View Report,رپورٹ دیکھیں
+View Stock Balance,اسٹاک بیلنس دیکھیں
+View Stock Ledger,اسٹاک لیجر دیکھیں
+View Switcher,ویو تبدیل کرنے والا
+View {0},{0} دیکھیں
+Visibility,نظر آنا
+Visible,نظر آنے والا
+Visit,دورہ
+Visit Desktop,ڈیسک ٹاپ پر جائیں
+Visit Frappe Support Portal,Frappe سپورٹ پورٹل پر جائیں
+"Visitors (consultant, engineer, client)",آنے والے (کنسلٹنٹ، انجینئر، کلائنٹ)
+Voice Call Settings,وائس کال سیٹنگز
+Voucher #,واؤچر #
+Voucher No,واؤچر نمبر
+Voucher Type,واؤچر کی قسم
+Waiting,منتظر
+Warehouse,گودام
+Warehouse Contact Info,گودام کے رابطے کی معلومات
+Warehouse Defaults,گودام ڈیفالٹس
+Warehouse Detail,گودام کی تفصیل
+Warehouse Name,گودام کا نام
+Warehouse Settings,گودام سیٹنگز
+Warehouse Type,گودام کی قسم
+Warehouse Wise Stock Balance,گودام وار اسٹاک بیلنس
+Warehouse and Reference,گودام اور حوالہ
+Warehouse {0} does not exist,گودام {0} موجود نہیں
+Warehouses,گودام
+Warn,خبردار کریں
+Warn RFQs,RFQs پر خبردار کریں
+Warning,انتباہ
+Warning: Account changed for warehouse,انتباہ: گودام کا اکاؤنٹ بدل گیا
+Warranty Claim,وارنٹی کلیم
+Warranty Period (in days),وارنٹی کی مدت (دنوں میں)
+Waterproofing,واٹر پروفنگ
+We couldn't finish setting things up,ہم ترتیب مکمل نہیں کر سکے
+We couldn't finish setting up your apps,ہم آپ کی ایپس کی ترتیب مکمل نہیں کر سکے
+Weak,کمزور
+Weather,موسم
+Web Page URL,ویب صفحے کا URL
+Web address,ویب ایڈریس
+Website,ویب سائٹ
+Websocket,ویب ساکٹ
+Wednesday,بدھ
+Week,ہفتہ
+Week of the year,سال کا ہفتہ
+Weekly,ہفتہ وار
+Weekly Time to send,ہفتہ وار بھیجنے کا وقت
+Weight,وزن
+Weight Per Unit,فی یونٹ وزن
+Weight UOM,وزن کا یونٹ
+What changed in this revision,اس ریویژن میں کیا بدلا
+What it opens,یہ کیا کھولتا ہے
+What we owe suppliers,سپلائرز کو واجب رقم
+WhatsApp,واٹس ایپ
+WhatsApp: {0},واٹس ایپ: {0}
+Which timestamp to show in the card footer.,کارڈ کے فٹر میں کون سا وقت دکھائیں۔
+Width,چوڑائی
+Width (px),چوڑائی (px)
+Width in pixels,چوڑائی پکسلز میں
+Will also apply for variants,ورائنٹس پر بھی لاگو ہوگا
+Will also apply for variants unless overridden,ورائنٹس پر بھی لاگو ہوگا جب تک تبدیل نہ کیا جائے
+With Letter head,لیٹر ہیڈ کے ساتھ
+Woodwork,لکڑی کا کام
+Work,کام
+Work area,کام کا شعبہ
+Work done today,آج کا کام
+Workers can't be negative.,مزدوروں کی تعداد منفی نہیں ہو سکتی۔
+Workers on site,سائٹ پر مزدور
+Workflow,ورک فلو
+Workflow Evaluation Error,ورک فلو جانچ میں خرابی
+Workflow State not set,ورک فلو کی حالت مقرر نہیں
+Workflow Status,ورک فلو کی صورتحال
+Working,کام کر رہا ہے
+Working...,کام جاری ہے...
+Workspaces,ورک اسپیسز
+Write,لکھیں
+Write Off,رائٹ آف
+Write Off Account,رائٹ آف اکاؤنٹ
+Write Off Amount,رائٹ آف رقم
+Write Off Amount (Company Currency),رائٹ آف رقم (کمپنی کرنسی)
+Write Off Cost Center,رائٹ آف لاگت مرکز
+Write Off Difference Amount,فرق کی رقم رائٹ آف کریں
+"Write what changed in this revision (price, discount or items).",لکھیں اس ریویژن میں کیا بدلا (قیمت، رعایت یا آئٹمز)۔
+Write {0} into {1} so the app ships it?,{0} کو {1} میں لکھیں تاکہ ایپ اسے ساتھ لائے؟
+Writeoff,رائٹ آف
+Wrong Fetch From value,"غلط ""حاصل کریں از"" قدر"
+X Axis Field,X محور کا فیلڈ
+X Field,X فیلڈ
+XMLHttpRequest Error,XMLHttpRequest خرابی
+Y Axis,Y محور
+Y Axis Fields,Y محور کے فیلڈز
+Y Field,Y فیلڈ
+Year,سال
+Year in 2 digits,سال 2 ہندسوں میں
+Year in 4 digits,سال 4 ہندسوں میں
+Yearly,سالانہ
+Yellow,پیلا
+Yes,ہاں
+Yesterday,کل (گزشتہ)
+You,آپ
+You Liked,آپ نے پسند کیا
+You added 1 row to {0},آپ نے {0} میں 1 لائن شامل کی
+You added {0} rows to {1},آپ نے {1} میں {0} لائنیں شامل کیں
+You are impersonating {0}.,آپ {0} کے طور پر کام کر رہے ہیں۔
+You are not allowed to create columns,آپ کو کالم بنانے کی اجازت نہیں
+You are not allowed to print this report,آپ کو یہ رپورٹ پرنٹ کرنے کی اجازت نہیں
+You are not permitted to access {0}.,آپ کو {0} تک رسائی کی اجازت نہیں۔
+You attached {0},آپ نے {0} منسلک کیا
+You cancelled this document,آپ نے یہ دستاویز منسوخ کی
+You cancelled this document {1},آپ نے یہ دستاویز منسوخ کی {1}
+You changed the value of {0},آپ نے {0} کی قدر بدلی
+You changed the value of {0} {1},آپ نے {0} کی قدر بدلی {1}
+You changed the values for {0},آپ نے {0} کی قدریں بدلیں
+You changed the values for {0} {1},آپ نے {0} کی قدریں بدلیں {1}
+You changed {0} to {1},آپ نے {0} کو {1} کیا
+You created this,آپ نے یہ بنایا
+You created this document,آپ نے یہ دستاویز بنائی
+You created this document {0},آپ نے یہ دستاویز بنائی {0}
+You don't have access to Report: {0},آپ کو رپورٹ تک رسائی نہیں: {0}
+You don't have permission to print: {0},آپ کو پرنٹ کی اجازت نہیں: {0}
+You don't have permission to view this.,آپ کو یہ دیکھنے کی اجازت نہیں۔
+You have no new notifications,آپ کے لیے کوئی نئی اطلاع نہیں
+You last edited this,آخری تبدیلی آپ نے کی
+You last edited this document,اس دستاویز میں آخری تبدیلی آپ نے کی
+You must add atleast one link.,کم از کم ایک لنک شامل کریں۔
+You need to create these first:,پہلے یہ بنانے ہوں گے:
+You removed 1 row from {0},آپ نے {0} سے 1 لائن ہٹائی
+You removed attachment {0},آپ نے اٹیچمنٹ {0} ہٹائی
+You removed {0} rows from {1},آپ نے {1} سے {0} لائنیں ہٹائیں
+You submitted this document,آپ نے یہ دستاویز جمع کی
+You submitted this document {0},آپ نے یہ دستاویز جمع کی {0}
+You viewed this,آپ نے یہ دیکھا
+You will be redirected to:,آپ کو یہاں بھیجا جائے گا:
+You will receive a copy of this email,آپ کو اس ای میل کی کاپی ملے گی
+You will receive a read receipt,آپ کو پڑھنے کی رسید ملے گی
+You'll use these details to sign in.,آپ یہ تفصیل لاگ ان کے لیے استعمال کریں گے۔
+You're all set.,سب تیار ہے۔
+Your Layouts,آپ کے لے آؤٹس
+Your PDF is ready for download,آپ کا PDF ڈاؤن لوڈ کے لیے تیار ہے
+Your exported report: {0},آپ کی ایکسپورٹ کی گئی رپورٹ: {0}
+ZIP Code,پوسٹل کوڈ
+Zero quantity,صفر مقدار
+Zero-Quantity Line Items,صفر مقدار والی لائنیں
+Zoom,زوم
+[Action taken by {0}],[اقدام {0} نے کیا]
+added {0} row(s) to {1},{1} میں {0} لائن(یں) شامل کیں
+advance,ایڈوانس
+and,اور
+and {0} more,اور {0} مزید
+app ships this off,ایپ اسے بند بھیجتی ہے
+ascending,بڑھتی ترتیب
+auto,خودکار
+blue,نیلا
+by Role,رول کے لحاظ سے
+cancelled this document,نے یہ دستاویز منسوخ کی
+cannot be greater than 100,100 سے زیادہ نہیں ہو سکتا
+card,کارڈ
+changed {0},{0} بدلا
+chart,چارٹ
+cleared {0},{0} صاف کیا
+commented,نے تبصرہ کیا
+custom block,حسب ضرورت بلاک
+cyan,ہلکا نیلا
+darkgrey,گہرا سلیٹی
+dated {0},بتاریخ {0}
+delivery note number,ڈیلیوری نوٹ نمبر
+delivery note scan,ڈیلیوری نوٹ کا اسکین
+descending,گھٹتی ترتیب
+"e.g. cement, PO-0003, challan 4471",مثلاً سیمنٹ، PO-0003، چالان 4471
+edited {0} by {1},{1} نے {0} میں ترمیم کی
+email inbox,ای میل ان باکس
+empty,خالی
+export,ایکسپورٹ
+fieldname on the document e.g.,دستاویز کا فیلڈ نام مثلاً
+found,ملا
+grand total,کل رقم
+gray,سلیٹی
+green,سبز
+grey,گرے
+hours,گھنٹے
+hub,مرکز
+is disabled,غیر فعال ہے
+is enabled,فعال ہے
+its app,اس کی ایپ
+just now,ابھی ابھی
+label,لیبل
+merged {0} into {1},{0} کو {1} میں ملایا
+new,نیا
+none,کوئی نہیں
+now,ابھی
+number card,نمبر کارڈ
+of,میں سے
+or,یا
+orange,نارنجی
+other charges,دیگر چارجز
+paid to,کو ادا کیا
+pink,گلابی
+purple,جامنی
+quick list,فوری فہرست
+received from,سے وصول کیا
+receiver's photo,وصول کنندہ کی تصویر
+red,سرخ
+removed {0} row(s) from {1},{1} سے {0} لائن(یں) ہٹائیں
+renamed from {0} to {1},نام {0} سے {1} کیا
+result,نتیجہ
+results,نتائج
+row,لائن
+rows,لائنیں
+scheduled,طے شدہ
+set {0} to,{0} مقرر کیا
+set {0} to {1} in row #{2},لائن #{2} میں {0} کو {1} مقرر کیا
+short,کم
+shortcut,شارٹ کٹ
+since last month,پچھلے مہینے سے
+since last week,پچھلے ہفتے سے
+since last year,پچھلے سال سے
+since yesterday,کل سے
+submitted this document,نے یہ دستاویز جمع کی
+tax,ٹیکس
+the app,ایپ
+the site's,سائٹ کا
+this form,یہ فارم
+to close,بند کرنے کے لیے
+to navigate,جانے کے لیے
+to open Awesome Bar,تلاش بار کھولنے کے لیے
+to open Global Search,عالمی تلاش کھولنے کے لیے
+to select,منتخب کرنے کے لیے
+updated {0},{0} اپ ڈیٹ کیا
+use % as wildcard,% کو کچھ بھی کے لیے استعمال کریں
+value,قدر
+values separated by commas,کوما سے الگ قدریں
+variance,فرق
+via {0},{0} کے ذریعے
+what the apps ship,ایپس کیا ساتھ لاتی ہیں
+widget,ویجیٹ
+yellow,پیلا
+yesterday,کل
+{0} (Copy),{0} (کاپی)
+{0} (New Builder),{0} (نیا بلڈر)
+{0} Chart,{0} چارٹ
+{0} Dashboard,{0} ڈیش بورڈ
+{0} Fields,{0} فیلڈز
+{0} Liked,{0} نے پسند کیا
+{0} List,{0} فہرست
+{0} List View Settings,{0} فہرست ویو سیٹنگز
+{0} Map,{0} نقشہ
+{0} Name,{0} نام
+{0} Naming Series,{0} نام سازی سیریز
+{0} Permission for {1},{1} کے لیے {0} اجازت
+{0} Report,{0} رپورٹ
+{0} Reports,{0} رپورٹس
+{0} Settings,{0} سیٹنگز
+{0} Tree,{0} درخت
+{0} Web page views,{0} ویب صفحہ ویوز
+{0} added,{0} شامل ہو گیا
+{0} added 1 row to {1},{0} نے {1} میں 1 لائن شامل کی
+{0} added {1} rows to {2},{0} نے {2} میں {1} لائنیں شامل کیں
+{0} already exists. Select another name,{0} پہلے سے موجود ہے۔ کوئی اور نام منتخب کریں
+{0} already holds an advance of {1}.,{0} کے پاس پہلے سے {1} کا ایڈوانس ہے۔
+{0} are currently {1},{0} اس وقت {1} ہیں
+{0} assigned a new task {1} {2} to you,{0} نے آپ کو نیا کام {1} {2} تفویض کیا
+{0} assigned {1}: {2},{0} نے تفویض کیا {1}: {2}
+{0} attached {1},{0} نے {1} منسلک کیا
+{0} blocks,{0} بلاکس
+{0} cancelled this document,{0} نے یہ دستاویز منسوخ کی
+{0} cancelled this document {1},{0} نے یہ دستاویز منسوخ کی {1}
+{0} changed the value of {1},{0} نے {1} کی قدر بدلی
+{0} changed the value of {1} {2},{0} نے {1} کی قدر بدلی {2}
+{0} changed the values for {1},{0} نے {1} کی قدریں بدلیں
+{0} changed the values for {1} {2},{0} نے {1} کی قدریں بدلیں {2}
+{0} changed {1} to {2},{0} نے {1} کو {2} کیا
+{0} contains {1},{0} میں {1} شامل ہے
+{0} created successfully,{0} کامیابی سے بن گیا
+{0} created this,{0} نے یہ بنایا
+{0} created this document,{0} نے یہ دستاویز بنائی
+{0} created this document {1},{0} نے یہ دستاویز بنائی {1}
+{0} days ago,{0} دن پہلے
+{0} does not contain {1},{0} میں {1} شامل نہیں
+{0} does not exist,{0} موجود نہیں
+{0} entered twice {1} in Item Taxes,{0} نے آئٹم ٹیکس میں {1} دو بار لکھا
+{0} equals {1},{0} برابر ہے {1}
+{0} from {1} to {2},{0} {1} سے {2}
+{0} from {1} to {2} in row #{3},لائن #{3} میں {0} {1} سے {2}
+{0} hours,{0} گھنٹے
+{0} hours ago,{0} گھنٹے پہلے
+{0} is a descendant of {1},{0}، {1} کی اولاد ہے
+{0} is after {1},{0}، {1} کے بعد ہے
+{0} is already on the sidebar,{0} پہلے سے سائیڈ بار پر ہے
+{0} is an ancestor of {1},{0}، {1} کا جد ہے
+{0} is back to standard,{0} واپس معیاری ہو گیا
+{0} is before {1},{0}، {1} سے پہلے ہے
+{0} is between {1},{0}، {1} کے درمیان ہے
+{0} is between {1} and {2},{0}، {1} اور {2} کے درمیان ہے
+{0} is currently {1},{0} اس وقت {1} ہے
+{0} is disabled,{0} غیر فعال ہے
+{0} is enabled,{0} فعال ہے
+{0} is equal to {1},{0} برابر ہے {1} کے
+{0} is greater than or equal to {1},{0}، {1} سے زیادہ یا برابر ہے
+{0} is greater than {1},{0}، {1} سے زیادہ ہے
+{0} is less than or equal to {1},{0}، {1} سے کم یا برابر ہے
+{0} is less than {1},{0}، {1} سے کم ہے
+{0} is like {1},{0}، {1} جیسا ہے
+{0} is not a descendant of {1},{0}، {1} کی اولاد نہیں
+{0} is not a module.,{0} ماڈیول نہیں۔
+{0} is not a stock Item,{0} اسٹاک آئٹم نہیں
+{0} is not a valid Accounting Dimension.,{0} درست اکاؤنٹنگ ڈائمینشن نہیں۔
+{0} is not a valid field of {1},{0}، {1} کا درست فیلڈ نہیں
+{0} is not an ancestor of {1},{0}، {1} کا جد نہیں
+{0} is not an app on this site.,{0} اس سائٹ پر ایپ نہیں۔
+{0} is not equal to {1},{0} برابر نہیں {1} کے
+{0} is not like {1},{0}، {1} جیسا نہیں
+{0} is not one of {1},{0}، {1} میں سے نہیں
+{0} is not set,{0} مقرر نہیں
+{0} is now standard and exported to {1}.,{0} اب معیاری ہے اور {1} میں ایکسپورٹ ہو گیا۔
+{0} is on hold till {1},{0}، {1} تک روکا گیا ہے
+{0} is on or after {1},{0}، {1} کو یا بعد میں ہے
+{0} is on or before {1},{0}، {1} کو یا پہلے ہے
+{0} is one of {1},{0}، {1} میں سے ایک ہے
+{0} is required,{0} ضروری ہے
+{0} is required.,{0} ضروری ہے۔
+{0} is set,{0} مقرر ہے
+{0} is within {1},{0}، {1} کے اندر ہے
+{0} is {1},{0} {1} ہے
+{0} items selected,{0} آئٹمز منتخب
+{0} last edited this,{0} نے آخری تبدیلی کی
+{0} last edited this document,اس دستاویز میں آخری تبدیلی {0} نے کی
+{0} liked,{0} نے پسند کیا
+{0} minutes ago,{0} منٹ پہلے
+{0} missing,{0} موجود نہیں
+{0} months ago,{0} مہینے پہلے
+{0} more not shown,{0} مزید نہیں دکھائے گئے
+{0} moved under {1},{0} کو {1} کے نیچے منتقل کیا
+{0} must be after {1},{0}، {1} کے بعد ہونا چاہیے
+{0} must be beginning with '{1}',{0} کا آغاز '{1}' سے ہونا چاہیے
+{0} must be equal to '{1}',{0} برابر ہونا چاہیے '{1}' کے
+{0} must be greater than zero.,{0} صفر سے زیادہ ہونا چاہیے۔
+{0} must be none of {1},{0}، {1} میں سے کوئی نہ ہو
+{0} must be one of {1},{0}، {1} میں سے ایک ہونا چاہیے
+{0} must be set first,پہلے {0} مقرر کریں
+{0} must be unique,{0} منفرد ہونا چاہیے
+{0} must be {1} {2},{0} کو {1} {2} ہونا چاہیے
+{0} not allowed to be renamed,{0} کا نام بدلنے کی اجازت نہیں
+{0} of {1},{1} میں سے {0}
+{0} of {1} ({2} rows with children),{1} میں سے {0} ({2} لائنیں ذیلی کے ساتھ)
+{0} of {1} cards could not be moved,{1} میں سے {0} کارڈ منتقل نہیں ہو سکے
+{0} of {1} done · {2} skipped,{1} میں سے {0} مکمل · {2} چھوڑے گئے
+{0} of {1} steps done,{1} میں سے {0} مراحل مکمل
+{0} removed 1 row from {1},{0} نے {1} سے 1 لائن ہٹائی
+{0} removed attachment {1},{0} نے اٹیچمنٹ {1} ہٹائی
+{0} removed their assignment.,{0} نے اپنی تفویض ختم کی۔
+{0} removed {1} rows from {2},{0} نے {2} سے {1} لائنیں ہٹائیں
+{0} restricted document,{0} محدود دستاویز
+{0} restricted documents,{0} محدود دستاویزات
+{0} results found,{0} نتائج ملے
+{0} role changes,{0} رول تبدیلیاں
+{0} row #{1}:,{0} لائن #{1}:
+{0} rows from {1},{1} سے {0} لائنیں
+{0} rows to {1},{1} میں {0} لائنیں
+{0} saved successfully,{0} کامیابی سے محفوظ ہو گیا
+{0} selected,{0} منتخب
+{0} self assigned this task: {1},{0} نے یہ کام خود لیا: {1}
+{0} submitted this document,{0} نے یہ دستاویز جمع کی
+{0} submitted this document {1},{0} نے یہ دستاویز جمع کی {1}
+{0} suppliers added,{0} سپلائرز شامل کیے گئے
+{0} to {1},{0} سے {1}
+{0} unlinked,{0} کا لنک ختم
+{0} unread notifications,{0} نہ پڑھی اطلاعات
+{0} updated,{0} اپ ڈیٹ ہو گیا
+{0} values selected,{0} قدریں منتخب
+{0} variants created.,{0} ورائنٹس بن گئے۔
+{0} viewed this,{0} نے یہ دیکھا
+{0} weeks ago,{0} ہفتے پہلے
+{0} years ago,{0} سال پہلے
+{0} {1} Manually,{0} {1} خود
+{0} {1} added,{0} {1} شامل ہو گیا
+{0} {1} added to Dashboard {2},{0} {1} ڈیش بورڈ {2} میں شامل ہو گیا
+{0} {1} already exists,{0} {1} پہلے سے موجود ہے
+{0} {1} does not exist,{0} {1} موجود نہیں
+{0} {1} has already been fully paid.,{0} {1} کی پوری ادائیگی ہو چکی ہے۔
+{0} {1} is not associated with {2} {3},{0} {1} کا {2} {3} سے تعلق نہیں
+{0} {1} is not linked to Supplier {2},{0} {1} سپلائر {2} سے منسلک نہیں
+{0} {1} is on hold,{0} {1} روکا ہوا ہے
+{0} {1} must be submitted,{0} {1} جمع ہونا چاہیے
+{0} {1} not found,{0} {1} نہیں ملا
+{0} {1} via CSV File,CSV فائل سے {0} {1}
+{0}% received. The order stays open until everything has arrived.,{0}% وصول ہو گیا۔ سب کچھ آنے تک آرڈر کھلا رہے گا۔
+"{0}, Row {1}",{0}، لائن {1}
+"{0}, list item {1} of {2}",{0}، فہرست آئٹم {1} از {2}
+"{0}: billed {1}, but only {2} received and not yet billed.",{0}: بل {1} کا ہے، لیکن صرف {2} وصول ہوا اور ابھی بل نہیں ہوا۔
+{0}: pre-upgrade edits restored,{0}: اپ گریڈ سے پہلے کی تبدیلیاں بحال
+{0}: remove invalid value(s) {1},{0}: غلط قدر(یں) ہٹائیں {1}
+"{0}: the document shows {1}, more than is still to come ({2}).",{0}: دستاویز میں {1} ہے، جو باقی آنے والی مقدار ({2}) سے زیادہ ہے۔
+{0}: {1} did not match any results.,{0}: {1} کا کوئی نتیجہ نہیں ملا۔
+{0}: {1} must be less than {2},{0}: {1}، {2} سے کم ہونا چاہیے
+{0}: {1} vs {2},{0}: {1} بمقابلہ {2}
+{1} saved,{1} محفوظ ہو گیا
+{count} cell copied,{count} خانہ کاپی ہوا
+{count} cells copied,{count} خانے کاپی ہوئے
+{count} row selected,{count} لائن منتخب
+{count} rows selected,{count} لائنیں منتخب
+{} Complete,{} مکمل
+← Back to upload files,← فائلیں اپ لوڈ کرنے پر واپس
+"A submitted purchase order is locked: its items, quantities and rates can't be changed. For a change, get a revised quotation from the supplier and raise a new purchase order; close this one if it is no longer needed.","جمع شدہ پرچیز آرڈر لاک ہے: اس کے آئٹم، مقدار اور ریٹ نہیں بدلے جا سکتے۔ تبدیلی کے لیے سپلائر سے نئی کوٹیشن لیں اور نیا پرچیز آرڈر بنائیں؛ اگر یہ آرڈر اب ضروری نہیں تو اسے بند کر دیں۔"
+"Is Subcontracted","ذیلی ٹھیکے پر"
+"13 digits, e.g. 42101-1234567-1",13 ہندسے، مثلاً 42101-1234567-1
+Absent,غیر حاضر
+Add the workers first.,پہلے کارکن شامل کریں۔
+Applied,درخواست دی گئی
+Attendance,حاضری
+Attendance for {0} is already marked in {1}. Open that one and add the workers there.,{0} کی حاضری {1} میں پہلے سے لگی ہوئی ہے۔ وہی کھولیں اور کارکن اسی میں شامل کریں۔
+Attendance needs the team photo and the phone's location,حاضری کے لیے ٹیم کی تصویر اور فون کی لوکیشن ضروری ہے
+Blocked,روکا گیا
+Bring data from the old Mimaar app,پرانی معمار ایپ سے ڈیٹا لائیں
+Bringing the data across stopped with an error. Nothing half-done was kept; see Error Log.,ڈیٹا منتقل کرتے ہوئے خرابی آ گئی۔ ادھورا کچھ محفوظ نہیں ہوا؛ Error Log دیکھیں۔
+Bringing the data across. This takes a minute or two; a message appears here when it is done.,ڈیٹا منتقل ہو رہا ہے۔ ایک دو منٹ لگیں گے؛ مکمل ہونے پر یہاں پیغام آئے گا۔
+Builder staff,بلڈر کا عملہ
+CNIC,شناختی کارڈ
+CNIC back,شناختی کارڈ (پیچھے)
+CNIC expiry,شناختی کارڈ کی میعاد
+CNIC front,شناختی کارڈ (سامنے)
+"CNIC must have 13 digits, e.g. 42101-1234567-1.",شناختی کارڈ نمبر میں 13 ہندسے ہونے چاہئیں، مثلاً 42101-1234567-1۔
+Card not recognised: {0},کارڈ پہچانا نہیں گیا: {0}
+Card scanned,کارڈ اسکین ہوا
+Carpenter,بڑھئی
+"Choose the data file exported from the old Mimaar app (mimaar-data.json). Items, budget, schedule, suppliers and payment plans are added; anything already here is left alone, so it is safe to do again.",پرانی معمار ایپ سے نکالی گئی ڈیٹا فائل (mimaar-data.json) منتخب کریں۔ آئٹم، بجٹ، شیڈول، سپلائر اور ادائیگی کے پلان شامل ہوں گے؛ جو پہلے سے موجود ہے وہ نہیں بدلے گا، اس لیے دوبارہ کرنا محفوظ ہے۔
+Claude,Claude
+Consultant,کنسلٹنٹ
+Contractor,ٹھیکیدار
+Contractor / supplier,ٹھیکیدار / سپلائر
+Daily wage,دیہاڑی
+Data brought across,ڈیٹا منتقل ہو گیا
+Data not brought across,ڈیٹا منتقل نہیں ہوا
+Days worked,کام کے دن
+Days worked and wages,کام کے دن اور اجرت
+Electrician,الیکٹریشن
+Emergency contact (name and number),ہنگامی رابطہ (نام اور نمبر)
+Entry card,داخلہ کارڈ
+Entry card expiry,داخلہ کارڈ کی میعاد
+Face photo,چہرے کی تصویر
+Father's name,والد کا نام
+Gemini,Gemini
+Group head,جمعدار
+Group head / gang,جمعدار / ٹولی
+Half day,آدھا دن
+Helper,مزدور / ہیلپر
+Identity and verification,شناخت اور تصدیق
+Labour,لیبر
+Labour Attendance Summary,لیبر حاضری کا خلاصہ
+Location (from the phone),لوکیشن (فون سے)
+Location needed,لوکیشن ضروری ہے
+"Location not available: allow location for this site, then press Update location again.","لوکیشن نہیں ملی: اس سائٹ کو لوکیشن کی اجازت دیں، پھر دوبارہ ""لوکیشن اپ ڈیٹ کریں"" دبائیں۔"
+Location updated,لوکیشن اپ ڈیٹ ہو گئی
+Marked by,حاضری لگانے والا
+Mason,مستری (راج)
+Mimaar Accountant,معمار اکاؤنٹنٹ
+Mimaar Owner,معمار مالک
+Mimaar Site Supervisor,معمار سائٹ سپروائزر
+Mimaar Store Keeper,معمار اسٹور کیپر
+Mistri,مستری
+Not done,نہیں ہوئی
+Painter,رنگ ساز
+Plumber,پلمبر
+Police verification,پولیس تصدیق
+Police verification document,پولیس تصدیق کی دستاویز
+Police verification: {0},پولیس تصدیق: {0}
+Present,حاضر
+Print site card,سائٹ کارڈ پرنٹ کریں
+Row {0}: {1} is entered twice.,قطار {0}: {1} دو بار درج ہے۔
+Row {0}: {1} is marked {2} in the worker register and can't be marked present.,قطار {0}: کارکنوں کے رجسٹر میں {1} کی حیثیت {2} ہے، اسے حاضر نہیں لگایا جا سکتا۔
+"Scan each worker's site card, or add them by hand.",ہر کارکن کا سائٹ کارڈ اسکین کریں، یا ہاتھ سے شامل کریں۔
+"Scan each worker's site card, take the team photo, then Submit.",ہر کارکن کا سائٹ کارڈ اسکین کریں، ٹیم کی تصویر لیں، پھر جمع کریں۔
+Scan site cards,سائٹ کارڈ اسکین کریں
+Site Attendance,سائٹ حاضری
+Site Attendance Row,سائٹ حاضری قطار
+Site Supervisor,سائٹ سپروائزر
+Site Worker,سائٹ کارکن
+Site Worker Card,سائٹ کارکن کارڈ
+Society entry card no. (e.g. Bahria Town),سوسائٹی داخلہ کارڈ نمبر (مثلاً بحریہ ٹاؤن)
+Started,شروع ہو گیا
+Steel fixer,سریا بندھائی والا
+Supervisor,سپروائزر
+Supplier staff,سپلائر کا عملہ
+Take a clear photo of the face. It is printed on the site card.,چہرے کی صاف تصویر لیں۔ یہ سائٹ کارڈ پر چھپے گی۔
+Take the team photo before submitting the attendance.,حاضری جمع کرنے سے پہلے ٹیم کی تصویر لیں۔
+Team photo,ٹیم کی تصویر
+Team photo needed,ٹیم کی تصویر ضروری ہے
+"The phone's location is needed. Allow location for this site in the browser or app, then press Update location.","فون کی لوکیشن ضروری ہے۔ براؤزر یا ایپ میں اس سائٹ کو لوکیشن کی اجازت دیں، پھر ""لوکیشن اپ ڈیٹ کریں"" دبائیں۔"
+This CNIC is already registered for {0} ({1}).,یہ شناختی کارڈ پہلے سے {0} ({1}) کے نام درج ہے۔
+This is not the data file from the old Mimaar app.,یہ پرانی معمار ایپ کی ڈیٹا فائل نہیں ہے۔
+This phone or browser can't give the location.,یہ فون یا براؤزر لوکیشن نہیں دے سکتا۔
+Tile and marble,ٹائل اور ماربل
+Time in,آنے کا وقت
+Trade,ہنر
+Update location,لوکیشن اپ ڈیٹ کریں
+Verified by,تصدیق کنندہ
+Verified on,تصدیق کی تاریخ
+Wages,اجرت
+Welder,ویلڈر
+Worker,کارکن
+Workers,کارکن
+Workers and site cards,کارکن اور سائٹ کارڈ
+Your data from the old Mimaar app has been brought across.,پرانی معمار ایپ سے آپ کا ڈیٹا منتقل ہو گیا ہے۔
+{0} expired on {1},{0} کی میعاد {1} کو ختم ہو گئی
+{0} is already marked.,{0} کی حاضری پہلے ہی لگ چکی ہے۔
+{0} is {1} in the worker register: not allowed on site.,کارکنوں کے رجسٹر میں {0} کی حیثیت {1} ہے: سائٹ پر آنے کی اجازت نہیں۔
+{0}: present. Check the face matches.,{0}: حاضر۔ چہرہ ملا کر دیکھیں۔
+Left the site,سائٹ چھوڑ گیا
+Site card,سائٹ کارڈ
+"Show this card at the gate and when marking attendance. If found, please return to the site office.",یہ کارڈ گیٹ پر اور حاضری لگاتے وقت دکھائیں۔ اگر کسی کو ملے تو سائٹ آفس واپس کریں۔

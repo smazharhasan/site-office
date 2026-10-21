@@ -1,0 +1,171 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-22 18:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mimaar",
+ "name": "Mimaar Settings",
+ "owner": "Administrator",
+ "modified": "2026-10-22 18:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "ai_section",
+   "fieldtype": "Section Break",
+   "label": "AI document reading"
+  },
+  {
+   "fieldname": "ai_provider",
+   "fieldtype": "Select",
+   "label": "AI provider",
+   "options": "Off\nGemini\nClaude",
+   "default": "Off",
+   "description": "Reads quotations, delivery notes and bills (printed or handwritten, English or Urdu)."
+  },
+  {
+   "fieldname": "ai_api_key",
+   "fieldtype": "Password",
+   "label": "API key",
+   "depends_on": "eval:doc.ai_provider!='Off'",
+   "description": "Kept encrypted on the server. Only the owner can see this page."
+  },
+  {
+   "fieldname": "ai_model",
+   "fieldtype": "Data",
+   "label": "Model (leave empty for the default)",
+   "depends_on": "eval:doc.ai_provider!='Off'"
+  },
+  {
+   "fieldname": "rules_section",
+   "fieldtype": "Section Break",
+   "label": "Controls"
+  },
+  {
+   "fieldname": "po_needs_final_quotation",
+   "fieldtype": "Check",
+   "label": "Purchase orders only from a final (locked) quotation",
+   "default": "1"
+  },
+  {
+   "fieldname": "lock_submitted_po",
+   "fieldtype": "Check",
+   "label": "A submitted purchase order can't be cancelled or revised",
+   "default": "1"
+  },
+  {
+   "fieldname": "require_dn_scan",
+   "fieldtype": "Check",
+   "label": "Receiving needs the delivery note / bill scan",
+   "default": "1"
+  },
+  {
+   "fieldname": "require_receiver_photo",
+   "fieldtype": "Check",
+   "label": "Receiving needs the receiver's photo",
+   "default": "1"
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "require_bill_scan",
+   "fieldtype": "Check",
+   "label": "Supplier invoices need the bill scan",
+   "default": "1"
+  },
+  {
+   "fieldname": "require_payment_proof",
+   "fieldtype": "Check",
+   "label": "Payments need a proof of payment",
+   "default": "1"
+  },
+  {
+   "fieldname": "pay_only_due",
+   "fieldtype": "Check",
+   "label": "Pay suppliers only against due invoices or a PO advance",
+   "default": "1"
+  },
+  {
+   "fieldname": "require_attendance_photo",
+   "fieldtype": "Check",
+   "label": "Attendance needs the team photo and the phone's location",
+   "default": "1"
+  },
+  {
+   "fieldname": "share_section",
+   "fieldtype": "Section Break",
+   "label": "Sharing"
+  },
+  {
+   "fieldname": "share_link_days",
+   "fieldtype": "Int",
+   "label": "Days a shared PDF link stays valid",
+   "default": "30"
+  },
+  {
+   "fieldname": "country_code",
+   "fieldtype": "Data",
+   "label": "Country dialling code for WhatsApp",
+   "default": "92"
+  },
+  {
+   "fieldname": "project_section",
+   "fieldtype": "Section Break",
+   "label": "Project"
+  },
+  {
+   "fieldname": "default_project",
+   "fieldtype": "Link",
+   "label": "Main project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "site_warehouse",
+   "fieldtype": "Link",
+   "label": "Site store",
+   "options": "Warehouse"
+  }
+ ],
+ "field_order": [
+  "ai_section",
+  "ai_provider",
+  "ai_api_key",
+  "ai_model",
+  "rules_section",
+  "po_needs_final_quotation",
+  "lock_submitted_po",
+  "require_dn_scan",
+  "require_receiver_photo",
+  "col1",
+  "require_bill_scan",
+  "require_payment_proof",
+  "pay_only_due",
+  "require_attendance_photo",
+  "share_section",
+  "share_link_days",
+  "country_code",
+  "project_section",
+  "default_project",
+  "site_warehouse"
+ ],
+ "links": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "row_format": "Dynamic",
+ "issingle": 1,
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "print": 1,
+   "email": 1,
+   "share": 1
+  }
+ ],
+ "track_changes": 1
+}

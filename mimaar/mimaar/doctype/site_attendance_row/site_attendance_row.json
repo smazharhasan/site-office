@@ -1,0 +1,104 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-22 18:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mimaar",
+ "name": "Site Attendance Row",
+ "owner": "Administrator",
+ "modified": "2026-10-22 18:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "worker",
+   "fieldtype": "Link",
+   "label": "Worker",
+   "options": "Site Worker",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "worker_name",
+   "fieldtype": "Data",
+   "label": "Name",
+   "fetch_from": "worker.full_name",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 3
+  },
+  {
+   "fieldname": "trade",
+   "fieldtype": "Data",
+   "label": "Trade",
+   "fetch_from": "worker.trade",
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Attendance",
+   "options": "Present\nHalf day\nAbsent",
+   "default": "Present",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "time_in",
+   "fieldtype": "Time",
+   "label": "Time in",
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "photo",
+   "fieldtype": "Attach Image",
+   "label": "Photo",
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "contractor",
+   "fieldtype": "Link",
+   "label": "Contractor",
+   "options": "Supplier",
+   "fetch_from": "worker.contractor",
+   "read_only": 1
+  },
+  {
+   "fieldname": "daily_wage",
+   "fieldtype": "Currency",
+   "label": "Daily wage",
+   "fetch_from": "worker.daily_wage",
+   "read_only": 1
+  },
+  {
+   "fieldname": "scanned",
+   "fieldtype": "Check",
+   "label": "Card scanned",
+   "read_only": 1
+  }
+ ],
+ "field_order": [
+  "worker",
+  "worker_name",
+  "trade",
+  "status",
+  "time_in",
+  "photo",
+  "contractor",
+  "daily_wage",
+  "scanned"
+ ],
+ "links": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "row_format": "Dynamic",
+ "istable": 1,
+ "editable_grid": 1,
+ "permissions": []
+}

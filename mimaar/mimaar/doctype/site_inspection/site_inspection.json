@@ -1,0 +1,250 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-22 18:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mimaar",
+ "name": "Site Inspection",
+ "owner": "Administrator",
+ "modified": "2026-10-22 18:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "reqd": 1,
+   "default": "Today",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "task",
+   "fieldtype": "Link",
+   "label": "Schedule task",
+   "options": "Task"
+  },
+  {
+   "fieldname": "inspection_type",
+   "fieldtype": "Select",
+   "label": "Inspection",
+   "reqd": 1,
+   "in_list_view": 1,
+   "options": "Setting out\nExcavation\nFoundation\nSteel before concrete\nShuttering\nConcrete pour\nBlockwork\nPlaster\nElectrical conduits\nPlumbing pressure test\nWaterproofing\nTiles and marble\nPaint\nWoodwork\nAluminium and glass\nFinal handover\nOther"
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location / area",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Supplier whose work is inspected",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "inspector",
+   "fieldtype": "Data",
+   "label": "Inspected by"
+  },
+  {
+   "fieldname": "result",
+   "fieldtype": "Select",
+   "label": "Result",
+   "options": "\nPass\nPass with remarks\nFail",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "check_section",
+   "fieldtype": "Section Break",
+   "label": "Checklist"
+  },
+  {
+   "fieldname": "checks",
+   "fieldtype": "Table",
+   "label": "Checks",
+   "options": "Site Inspection Check"
+  },
+  {
+   "fieldname": "cap_section",
+   "fieldtype": "Section Break",
+   "label": "Corrective action plan",
+   "description": "Each row becomes a snag with the responsible supplier and target date when the inspection is submitted."
+  },
+  {
+   "fieldname": "actions",
+   "fieldtype": "Table",
+   "label": "Corrective actions",
+   "options": "Site Inspection Action"
+  },
+  {
+   "fieldname": "photo_section",
+   "fieldtype": "Section Break",
+   "label": "Photos"
+  },
+  {
+   "fieldname": "photo_1",
+   "fieldtype": "Attach Image",
+   "label": "Photo 1"
+  },
+  {
+   "fieldname": "col2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "photo_2",
+   "fieldtype": "Attach Image",
+   "label": "Photo 2"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "options": "Site Inspection",
+   "read_only": 1,
+   "no_copy": 1,
+   "print_hide": 1
+  }
+ ],
+ "field_order": [
+  "date",
+  "project",
+  "task",
+  "inspection_type",
+  "col1",
+  "location",
+  "supplier",
+  "inspector",
+  "result",
+  "check_section",
+  "checks",
+  "cap_section",
+  "actions",
+  "photo_section",
+  "photo_1",
+  "col2",
+  "photo_2",
+  "remarks",
+  "amended_from"
+ ],
+ "links": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "row_format": "Dynamic",
+ "autoname": "INS-.#####",
+ "is_submittable": 1,
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 1,
+   "cancel": 1,
+   "amend": 0
+  },
+  {
+   "role": "Purchase Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 1,
+   "cancel": 0,
+   "amend": 0
+  },
+  {
+   "role": "Projects Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 1,
+   "cancel": 0,
+   "amend": 0
+  },
+  {
+   "role": "Stock Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 1,
+   "cancel": 0,
+   "amend": 0
+  },
+  {
+   "role": "Projects User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 1,
+   "cancel": 0,
+   "amend": 0
+  },
+  {
+   "role": "Stock User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Purchase User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  }
+ ],
+ "track_changes": 1
+}
