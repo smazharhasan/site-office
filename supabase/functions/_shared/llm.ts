@@ -36,13 +36,14 @@ export async function aiConfig(projectId?: string): Promise<AiConfig | null> {
 const refused = (status: number) => status === 401 || status === 403 ? "The AI key was refused. Check it in Project settings → AI." : status === 404 ? "That AI model name was not found. Check it in Project settings → AI." : status === 429 ? "The AI service is busy or the account has run out of credit. Try again later." : `AI request failed (${status})`;
 
 /** Ask the configured AI. Returns plain text. Throws HttpError(503, "no-key") when AI is off. */
-export async function generate(projectId: string | undefined, parts: Part[], opts: { maxTokens?: number; tier?: Tier; cfg?: AiConfig } = {}): Promise<string> {
+export async function generate(projectId: string | undefined, parts: Part[], opts: { maxTokens?: number; tier?: Tier; cfg?: AiConfig; search?: boolean } = {}): Promise<string> {
   const cfg = opts.cfg || await aiConfig(projectId); if (!cfg) throw new HttpError(503, "no-key");
   const model = opts.tier === "complex" ? cfg.complex : opts.tier === "fast" ? cfg.fast : cfg.model; const max = opts.maxTokens || 2000;
   if (cfg.provider === "gemini") {
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
       method: "POST", headers: { "x-goog-api-key": cfg.key, "content-type": "application/json" },
       body: JSON.stringify({ contents: [{ role: "user", parts: parts.map((p) => "text" in p ? { text: p.text } : "image" in p ? { inline_data: { mime_type: p.image.mime, data: p.image.data } } : { inline_data: { mime_type: "application/pdf", data: p.pdf.data } }) }],
+        ...(opts.search ? { tools: [{ google_search: {} }] } : {}),
         generationConfig: { maxOutputTokens: Math.max(max * 3, 8192) } }),
     });
     if (!res.ok) throw new HttpError(502, refused(res.status));
@@ -51,7 +52,7 @@ export async function generate(projectId: string | undefined, parts: Part[], opt
   }
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST", headers: { "x-api-key": cfg.key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model, max_tokens: max, messages: [{ role: "user", content: parts.map((p) => "text" in p ? { type: "text", text: p.text } : "image" in p ? { type: "image", source: { type: "base64", media_type: p.image.mime, data: p.image.data } } : { type: "document", source: { type: "base64", media_type: "application/pdf", data: p.pdf.data } }) }] }),
+    body: JSON.stringify({ model, max_tokens: max, ...(opts.search ? { tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 3 }] } : {}), messages: [{ role: "user", content: parts.map((p) => "text" in p ? { type: "text", text: p.text } : "image" in p ? { type: "image", source: { type: "base64", media_type: p.image.mime, data: p.image.data } } : { type: "document", source: { type: "base64", media_type: "application/pdf", data: p.pdf.data } }) }] }),
   });
   if (!res.ok) throw new HttpError(502, refused(res.status));
   const out = await res.json();
