@@ -3,7 +3,7 @@
     "name": "Mimaar",
     "slug": "site-office",
     "scheme": "siteoffice",
-    "version": "1.5.0",
+    "version": "1.6.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "android": {
@@ -18,7 +18,7 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      "versionCode": 10500,
+      "versionCode": 10600,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive.png",
         "backgroundColor": "#0f6f5c"
