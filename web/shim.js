@@ -31,7 +31,13 @@
   .so-err{color:var(--bad,#b3261e);font-size:13px;min-height:1em}.so-ok{color:var(--good,#2f7d32);font-size:13px}
   .so-brand{display:flex;gap:10px;align-items:center}.so-mark{width:40px;height:40px;border-radius:8px;background:var(--accent,#0f6f5c);color:#fff;display:grid;place-items:center;font-weight:800;font-family:var(--f-display,system-ui)}
   .so-row{display:flex;gap:8px;flex-wrap:wrap}.so-row>*{flex:1}.so-link{background:none;border:0;color:var(--accent,#0f6f5c);cursor:pointer;font:inherit;font-size:13px;padding:0;text-align:left}
-  .so-plist{display:flex;flex-direction:column;gap:8px}.so-plist button{text-align:left}`;
+  .so-plist{display:flex;flex-direction:column;gap:8px}
+  .so-card-btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:52px;font-size:16px}
+  .so-or{display:flex;align-items:center;gap:10px;color:var(--muted,#62655f);font-size:12.5px}.so-or::before,.so-or::after{content:"";flex:1;border-top:1px solid var(--line,#ddd)}
+  .so-cam{position:relative;border-radius:16px;overflow:hidden;background:#000;aspect-ratio:3/4;max-height:52vh}.so-cam video{width:100%;height:100%;object-fit:cover;display:block}
+  .so-frame{position:absolute;inset:18% 14%;border:3px solid rgba(255,255,255,.9);border-radius:18px;box-shadow:0 0 0 999px rgba(0,0,0,.35)}
+  .so-dots{display:flex;gap:12px;justify-content:center;margin:6px 0}.so-dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink,#1d2021)}.so-dots i.on{background:var(--ink,#1d2021)}
+  .so-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;direction:ltr}.so-pad button{font:600 22px var(--f-display,system-ui);min-height:60px;border-radius:16px;border:1px solid var(--line,#d9d6cf);background:var(--panel,#fff);color:var(--ink,#1d2021);cursor:pointer}.so-pad button:active{background:var(--sunk,#eee)}.so-plist button{text-align:left}`;
   document.head.append(css);
   let ov = null;
   const show = html => { if (!ov) { ov = document.createElement("div"); ov.className = "so-ov"; document.body.append(ov); } ov.innerHTML = `<div class="so-card"><div class="so-brand"><div class="so-mark">M</div><div style="flex:1"><b style="font-family:var(--f-display,system-ui);font-size:17px">Mimaar <span style="font-weight:400;font-size:12px;opacity:.7">v__APP_VERSION__</span></b><p>Construction site office · معمار</p></div><button class="so-btn plain" id="soLang" type="button" style="padding:6px 10px">${ls.get("v31.lang") === "ur" ? "English" : "اردو"}</button></div>${html}</div>`; return ov; };
@@ -40,6 +46,8 @@
 
   function loginScreen(resolve, msg) {
     const o = show(`<h1>Sign in</h1>${msg ? `<p class="so-ok">${esc(msg)}</p>` : ""}
+      <button class="so-btn so-card-btn" id="soCard"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2.2"/><path d="M5.8 16c.6-1.6 1.8-2.4 3.2-2.4s2.6.8 3.2 2.4M14.5 9.5h4M14.5 12.5h4"/></svg><span>Sign in with site card</span></button>
+      <div class="so-or"><span>or with email</span></div>
       <label>Email<input id="soE" type="email" autocomplete="username"></label>
       <label>Password<input id="soP" type="password" autocomplete="current-password"></label>
       <div class="so-err" id="soErr"></div>
@@ -55,11 +63,60 @@
     };
     o.querySelector("#soIn").onclick = go; o.querySelector("#soP").onkeydown = e => { if (e.key === "Enter") go(); };
     o.querySelector("#soUp").onclick = () => signupScreen(resolve);
+    o.querySelector("#soCard").onclick = () => cardScreen(resolve);
     o.querySelector("#soForgot").onclick = async () => {
       const email = o.querySelector("#soE").value.trim(); if (!email) { o.querySelector("#soErr").textContent = "Type your email above first."; return; }
       const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: HOME });
       o.querySelector("#soErr").textContent = error ? errText(error) : "Check your email for the reset link.";
     };
+  }
+  /* ---------- sign in with the site card: scan the QR, then type the PIN ---------- */
+  let camStream = null; const camStop = () => { if (camStream) { camStream.getTracks().forEach(t => t.stop()); camStream = null; } };
+  const loadJsQR = () => window.jsQR ? Promise.resolve() : new Promise((res, rej) => { const s = document.createElement("script"); s.src = "https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"; s.onload = res; s.onerror = () => rej(new Error("The scanner couldn't load. Check the internet.")); document.head.append(s); });
+  async function cardLogin(qr, pin) {
+    const r = await fetch(`${URL_}/functions/v1/card-login`, { method: "POST", headers: { "content-type": "application/json", apikey: ANON, Authorization: "Bearer " + ANON }, body: JSON.stringify({ action: "login", qr, pin }) });
+    const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || "Sign-in failed. Try again.");
+    let v = await sb.auth.verifyOtp({ token_hash: d.token_hash, type: "magiclink" });
+    if (v.error) v = await sb.auth.verifyOtp({ token_hash: d.token_hash, type: "email" });
+    if (v.error) throw new Error(errText(v.error));
+    if (d.project_id) ls.set("so.project", d.project_id);
+    if (NATIVE) post({ type: "cardsession", access_token: v.data.session.access_token, refresh_token: v.data.session.refresh_token });
+  }
+  function cardScreen(resolve) {
+    const o = show(`<h1>Sign in with site card</h1><p>Hold your site card's QR code inside the frame.</p>
+      <div class="so-cam"><video id="soV" playsinline muted autoplay></video><div class="so-frame"></div></div>
+      <div class="so-err" id="soErr"></div>
+      <button class="so-btn plain" id="soBack">Use email instead</button>`);
+    const err = m => { o.querySelector("#soErr").textContent = m; };
+    o.querySelector("#soBack").onclick = () => { camStop(); loginScreen(resolve); };
+    (async () => {
+      try { await loadJsQR(); camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false }); }
+      catch (e) { err(/Permission|NotAllowed/i.test(String(e && (e.name || e.message))) ? "Allow the camera for this app, then try again." : (e.message || "The camera couldn't open.")); return; }
+      const V = o.querySelector("#soV"); if (!V) return camStop(); V.srcObject = camStream; await V.play().catch(() => {});
+      const C = document.createElement("canvas");
+      const loop = () => { if (!camStream || !document.body.contains(V)) return camStop();
+        if (V.videoWidth) { const w = Math.min(800, V.videoWidth), h = Math.round(V.videoHeight * w / V.videoWidth); C.width = w; C.height = h; const x = C.getContext("2d", { willReadFrequently: true }); x.drawImage(V, 0, 0, w, h);
+          const q = window.jsQR(x.getImageData(0, 0, w, h).data, w, h); const data = q && String(q.data || "");
+          if (data && data.startsWith("MIM2|")) { camStop(); if (navigator.vibrate) navigator.vibrate(60); return pinScreen(resolve, data); }
+          if (data && /^(MIM1|V31)\|/.test(data)) err("This card is for attendance only. Ask the owner for your new card with sign-in."); }
+        requestAnimationFrame(loop); };
+      loop();
+    })();
+  }
+  function pinScreen(resolve, qr) {
+    let pin = "";
+    const o = show(`<h1>Enter your PIN</h1><p>Card found. Type the PIN the owner gave you.</p>
+      <div class="so-dots" id="soDots"></div><div class="so-err" id="soErr"></div>
+      <div class="so-pad">${[1, 2, 3, 4, 5, 6, 7, 8, 9, "", 0, "⌫"].map(k => k === "" ? "<span></span>" : `<button data-k="${k}">${k}</button>`).join("")}</div>
+      <button class="so-btn" id="soGo" disabled>Sign in</button>
+      <button class="so-btn plain" id="soBack">Scan again</button>`);
+    const dots = () => { o.querySelector("#soDots").innerHTML = Array.from({ length: Math.max(4, pin.length) }, (_, i) => `<i class="${i < pin.length ? "on" : ""}"></i>`).join(""); o.querySelector("#soGo").disabled = pin.length < 4; };
+    const go = async () => { const b = o.querySelector("#soGo"); b.disabled = true; o.querySelector("#soErr").textContent = "";
+      try { await cardLogin(qr, pin); start(resolve); } catch (e) { pin = ""; dots(); o.querySelector("#soErr").textContent = e.message; } };
+    o.querySelectorAll("[data-k]").forEach(b => b.onclick = () => { const k = b.dataset.k; if (k === "⌫") pin = pin.slice(0, -1); else if (pin.length < 6) pin += k; dots(); if (pin.length === 6) go(); });
+    o.querySelector("#soGo").onclick = go; o.querySelector("#soBack").onclick = () => cardScreen(resolve);
+    document.onkeydown = e => { if (!document.body.contains(o)) { document.onkeydown = null; return; } if (/^\d$/.test(e.key) && pin.length < 6){ pin += e.key; dots(); } if (e.key === "Backspace"){ pin = pin.slice(0, -1); dots(); } if (e.key === "Enter" && pin.length >= 4) go(); };
+    dots();
   }
   function signupScreen(resolve) {
     const o = show(`<h1>Create an owner account</h1><p>For the person who owns the project. Staff don't sign up here.</p>
@@ -174,6 +231,7 @@
 
   /* ---------- user ---------- */
   let teamCache = null;
+  window.SO.card = async (body) => { const { data, error } = await sb.functions.invoke("card-login", { body: Object.assign({ project_id: SO.project.id }, body) }); if (error) { let m = error.message; try { m = (await error.context.json()).error || m; } catch (e) {} throw new Error(m); } return data; };
   const team = async (body) => { const { data, error } = await sb.functions.invoke("team", { body: Object.assign({ project_id: SO.project.id }, body) }); if (error) { let m = error.message; try { m = (await error.context.json()).error || m; } catch (e) {} throw new Error(m); } return data; };
   const teamList = async () => { if (teamCache) return teamCache; try { teamCache = (await team({ action: "list" })).members || []; } catch (e) { teamCache = []; } setTimeout(() => { teamCache = null; }, 30000); return teamCache; };
   const avatar = name => "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="64" height="64" fill="#dcefe9"/><text x="32" y="41" font-family="Arial" font-size="26" font-weight="700" text-anchor="middle" fill="#0f6f5c">${esc((name || "?").trim().charAt(0).toUpperCase())}</text></svg>`);
@@ -251,7 +309,7 @@
   window.SO.brand = c => {
     const name = (c && c.name) || (SO.project && SO.project.name) || "Site Office"; const sub = (c && (c.plot || c.address)) || (SO.project && SO.project.address) || "";
     const b = document.querySelector(".brand b"), sm = document.querySelector(".brand small"), mk = document.querySelector(".brand .mark");
-    if (b) b.innerHTML = 'Mimaar <span class="ver">v__APP_VERSION__</span>'.replace("v__APP_VERSION__", "v" + ("__APP_VERSION__".startsWith("__") ? "1.3.0" : "__APP_VERSION__")); if (sm) sm.textContent = name + (sub ? " · " + sub : ""); if (mk) mk.textContent = "M";
+    if (b) b.innerHTML = 'Mimaar <span class="ver">v__APP_VERSION__</span>'.replace("v__APP_VERSION__", "v" + ("__APP_VERSION__".startsWith("__") ? "1.4.0" : "__APP_VERSION__")); if (sm) sm.textContent = name + (sub ? " · " + sub : ""); if (mk) mk.textContent = "M";
     document.title = name + " · Mimaar";
   };
   document.addEventListener("click", e => { if (e.target.closest("#soLang")){ ls.set("v31.lang", ls.get("v31.lang") === "ur" ? "en" : "ur"); location.reload(); } });

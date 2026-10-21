@@ -43,6 +43,8 @@ export default function Login() {
             <Text style={{ color: c.ink, fontSize: 28, fontWeight: "800", marginTop: 6 }}>{ur ? "معمار" : "Mimaar"}</Text>
             <Text style={{ color: c.muted, textAlign: "center" }}>{t("Construction site office")}</Text>
           </View>
+          {mode === "in" ? <Button title="Sign in with site card" onPress={() => router.push("/card-login")} /> : null}
+          {mode === "in" ? <Text style={{ color: c.muted, textAlign: "center" }}>{t("or with email")}</Text> : null}
           <View style={{ backgroundColor: c.panel, borderRadius: 20, padding: 18, gap: 14, borderWidth: 1, borderColor: c.line }}>
             <Text style={{ color: c.ink, fontSize: 18, fontWeight: "700" }}>{t(mode === "in" ? "Sign in" : "Create the owner's account")}</Text>
             <Text style={{ color: c.muted }}>{t(mode === "in" ? "Sign in with the email and password the owner gave you." : "You'll set up the project next and add your staff from inside the app.")}</Text>

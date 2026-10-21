@@ -9,6 +9,7 @@ const DEFAULT_URL = "https://bctdsetigzdamxjduxgb.supabase.co";
 const DEFAULT_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjdGRzZXRpZ3pkYW14amR1eGdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MDA4ODksImV4cCI6MjEwNzk3Njg4OX0.Rn6AuNwHpVnMdYxJKO06qstvTCOBE-JKh1Dk1Sf01Yg";
 
 export const SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL || extra.supabaseUrl || DEFAULT_URL;
+export const SUPABASE_ANON = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || extra.supabaseAnonKey || DEFAULT_ANON;
 export const supabase = createClient(
   SUPABASE_URL,
   process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || extra.supabaseAnonKey || DEFAULT_ANON,

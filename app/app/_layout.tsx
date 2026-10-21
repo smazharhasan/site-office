@@ -16,8 +16,8 @@ function Gate() {
     return () => sub.remove();
   }, []);
   if (!ready) return null;
-  if (!session && path !== "/login") return <Redirect href="/login" />;
-  if (session && path === "/login") return <Redirect href="/" />;
+  if (!session && path !== "/login" && path !== "/card-login") return <Redirect href="/login" />;
+  if (session && (path === "/login" || path === "/card-login")) return <Redirect href="/" />;
   return <Stack screenOptions={{ headerShown: false }} />;
 }
 
