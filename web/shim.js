@@ -231,6 +231,14 @@
 
   /* ---------- user ---------- */
   let teamCache = null;
+  const fnErr = async error => { let m = error.message; try { m = (await error.context.json()).error || m; } catch (e) {} return new Error(m); };
+  // background AI checks for the owner: fire and forget, nothing comes back to site staff
+  window.SO.aiWatch = (col, id, note) => { try { sb.functions.invoke("ai-watch", { body: { project_id: SO.project.id, col, id, note } }).catch(() => {}); } catch (e) {} };
+  window.SO.aiRerun = async () => { const { data, error } = await sb.functions.invoke("ai-watch", { body: { project_id: SO.project.id, action: "rerun" } }); if (error) throw await fnErr(error); return data; };
+  window.SO.face = async (person_id, image) => { const { data, error } = await sb.functions.invoke("ai-watch", { body: { project_id: SO.project.id, action: "face", person_id, image } }); if (error) return { match: "unclear" }; return data; };
+  const geoMem = {};
+  window.SO.geocode = async (lat, lng) => { const k = lat.toFixed(4) + "," + lng.toFixed(4); if (geoMem[k]) return geoMem[k]; const c = ls.get("geo." + k); if (c) return (geoMem[k] = c);
+    const { data, error } = await sb.functions.invoke("geocode", { body: { lat, lng } }); if (error || !data || !data.address) return ""; ls.set("geo." + k, data.address); return (geoMem[k] = data.address); };
   window.SO.card = async (body) => { const { data, error } = await sb.functions.invoke("card-login", { body: Object.assign({ project_id: SO.project.id }, body) }); if (error) { let m = error.message; try { m = (await error.context.json()).error || m; } catch (e) {} throw new Error(m); } return data; };
   const team = async (body) => { const { data, error } = await sb.functions.invoke("team", { body: Object.assign({ project_id: SO.project.id }, body) }); if (error) { let m = error.message; try { m = (await error.context.json()).error || m; } catch (e) {} throw new Error(m); } return data; };
   const teamList = async () => { if (teamCache) return teamCache; try { teamCache = (await team({ action: "list" })).members || []; } catch (e) { teamCache = []; } setTimeout(() => { teamCache = null; }, 30000); return teamCache; };
@@ -309,7 +317,7 @@
   window.SO.brand = c => {
     const name = (c && c.name) || (SO.project && SO.project.name) || "Site Office"; const sub = (c && (c.plot || c.address)) || (SO.project && SO.project.address) || "";
     const b = document.querySelector(".brand b"), sm = document.querySelector(".brand small"), mk = document.querySelector(".brand .mark");
-    if (b) b.innerHTML = 'Mimaar <span class="ver">v__APP_VERSION__</span>'.replace("v__APP_VERSION__", "v" + ("__APP_VERSION__".startsWith("__") ? "1.4.0" : "__APP_VERSION__")); if (sm) sm.textContent = name + (sub ? " · " + sub : ""); if (mk) mk.textContent = "M";
+    if (b) b.innerHTML = 'Mimaar <span class="ver">v__APP_VERSION__</span>'.replace("v__APP_VERSION__", "v" + ("__APP_VERSION__".startsWith("__") ? "1.5.0" : "__APP_VERSION__")); if (sm) sm.textContent = name + (sub ? " · " + sub : ""); if (mk) mk.textContent = "M";
     document.title = name + " · Mimaar";
   };
   document.addEventListener("click", e => { if (e.target.closest("#soLang")){ ls.set("v31.lang", ls.get("v31.lang") === "ur" ? "en" : "ur"); location.reload(); } });
