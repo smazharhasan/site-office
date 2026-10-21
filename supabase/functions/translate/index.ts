@@ -4,6 +4,9 @@
 import { admin, caller, handler, HttpError, json, membership } from "../_shared/common.ts";
 import { aiConfig, generate, jsonIn } from "../_shared/llm.ts";
 
+// only Latin and Urdu/Arabic letters (the AI sometimes slips in a letter from another script)
+const OK_SCRIPT = /^[\u0000-\u024F\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF\u200C-\u206F\u2190-\u21FF\s]+$/;
+
 Deno.serve(handler(async (req) => {
   const user = await caller(req);
   const b = await req.json().catch(() => ({}));
@@ -13,7 +16,7 @@ Deno.serve(handler(async (req) => {
   const cfg = await aiConfig(b.project_id); if (!cfg) throw new HttpError(501, "AI is not switched on yet");
   const text = await generate(b.project_id, [{ text: `These values were typed into a construction project app in Pakistan (names of people and companies, roles, trades, items, addresses, places and short notes). Write each value in the OTHER language: English into natural, simple Urdu in Urdu script; Urdu into simple English. Names of people, companies, roads and places: write the same name in the other script (transliterate), do not translate its meaning. Keep numbers, sizes, codes and units (12mm, 60x60, Rs, sft, PO-001) as they are. Reply with only JSON: {"t": [[value, translation], ...]}\n${JSON.stringify(texts)}` }], { cfg, maxTokens: 4000, tier: "fast" });
   const out = jsonIn<{ t?: unknown[] }>(text, false); const pairs: Record<string, string> = {};
-  for (const x of out.t || []) if (Array.isArray(x) && texts.includes(String(x[0])) && x[1] && String(x[1]).trim() && String(x[1]).length <= 400) pairs[String(x[0])] = String(x[1]).trim();
+  for (const x of out.t || []) if (Array.isArray(x) && texts.includes(String(x[0])) && x[1] && String(x[1]).trim() && String(x[1]).length <= 400 && OK_SCRIPT.test(String(x[1]))) pairs[String(x[0])] = String(x[1]).trim();
   if (Object.keys(pairs).length) {
     const db = admin();
     const { data: row } = await db.from("app_records").select("data").eq("project_id", b.project_id).eq("col", "config").eq("id", "i18n").maybeSingle();

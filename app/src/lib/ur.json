@@ -3023,5 +3023,7 @@
 "Budget {0}k": "بجٹ {0} ہزار",
 "(prospect)": "(ممکنہ)",
 "(supplier)": "(سپلائر)",
-"(builder)": "(بلڈر)"
+"(builder)": "(بلڈر)",
+"In Urdu, English names (partners, suppliers, codes) now use the same clean font as the rest of the app instead of the Urdu font's own English letters": "اردو میں انگریزی نام (شراکت دار، سپلائرز، کوڈ) اب باقی ایپ والے صاف فونٹ میں نظر آتے ہیں",
+"AI translations that slip in letters from another language are rejected": "اے آئی کے وہ ترجمے رد کر دیے جاتے ہیں جن میں کسی دوسری زبان کے حروف آ جائیں"
 }
