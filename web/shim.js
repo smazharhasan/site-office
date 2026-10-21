@@ -30,6 +30,7 @@
   .so-btn.plain{background:transparent;color:var(--ink,#1d2021);border-color:var(--line,#d9d6cf)}.so-btn[disabled]{opacity:.6}
   .so-err{color:var(--bad,#b3261e);font-size:13px;min-height:1em}.so-ok{color:var(--good,#2f7d32);font-size:13px}
   .so-brand{display:flex;gap:10px;align-items:center}.so-mark{width:40px;height:40px;border-radius:8px;background:var(--accent,#0f6f5c);color:#fff;display:grid;place-items:center;font-weight:800;font-family:var(--f-display,system-ui)}
+  .so-mode{display:flex;flex-direction:column;gap:8px;margin-bottom:6px}.so-opt{display:flex!important;flex-direction:row!important;gap:10px;align-items:flex-start;border:1px solid #d6d3cc;border-radius:10px;padding:10px;font-weight:400;font-size:13px;cursor:pointer}.so-opt input{width:auto!important;margin-top:3px}.so-opt:has(input:checked){border-color:var(--accent,#0f6f5c);background:#eef6f3}
   .so-row{display:flex;gap:8px;flex-wrap:wrap}.so-row>*{flex:1}.so-link{background:none;border:0;color:var(--accent,#0f6f5c);cursor:pointer;font:inherit;font-size:13px;padding:0;text-align:left}
   .so-plist{display:flex;flex-direction:column;gap:8px}
   .so-card-btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:52px;font-size:16px}
@@ -135,7 +136,8 @@
   }
   function setupScreen(resolve) {
     const o = show(`<h1>Set up your project</h1><p>One project per site. You become its owner.</p>
-      <label>Your name or company (client)<input id="soOrg"></label><label>Project name<input id="soName" placeholder="e.g. Villa 31"></label>
+      <div class="so-mode"><b>This system is for</b><label class="so-opt"><input type="radio" name="soMode" value="owner" checked><span><b>For the owner</b><br>I am building my own house or building. The builder, consultants and suppliers are my partners.</span></label><label class="so-opt"><input type="radio" name="soMode" value="builder"><span><b>For the builder</b><br>I am the builder / contractor. The client, sub-contractors and suppliers are my partners.</span></label></div>
+      <label>Your name or company<input id="soOrg"></label><label>Project name<input id="soName" placeholder="e.g. House on Plot 12"></label>
       <label>Site address<input id="soAddr"></label><div class="so-row"><label>Start date<input id="soStart" type="date"></label><label>Months<input id="soM" type="number" value="18"></label></div>
       <button class="so-btn plain" id="soHere">Use my current location (stand on the plot)</button>
       <div class="so-row"><label>Latitude<input id="soLat"></label><label>Longitude<input id="soLng"></label></div>
@@ -144,10 +146,11 @@
     o.querySelector("#soHere").onclick = () => navigator.geolocation.getCurrentPosition(p => { o.querySelector("#soLat").value = p.coords.latitude.toFixed(6); o.querySelector("#soLng").value = p.coords.longitude.toFixed(6); }, () => { o.querySelector("#soErr").textContent = "Allow location access to use this."; }, { enableHighAccuracy: true });
     o.querySelector("#soGo").onclick = async () => {
       const v = id => o.querySelector(id).value.trim(); const er = o.querySelector("#soErr"); if (!v("#soName")) { er.textContent = "Enter the project name."; return; }
-      const og = await sb.from("organizations").insert({ name: v("#soOrg") || v("#soName"), kind: "client" }).select("id").single(); if (og.error) { er.textContent = errText(og.error); return; }
+      const mode = (o.querySelector('input[name="soMode"]:checked') || {}).value === "builder" ? "builder" : "owner";
+      const og = await sb.from("organizations").insert({ name: v("#soOrg") || v("#soName"), kind: mode === "builder" ? "builder" : "client" }).select("id").single(); if (og.error) { er.textContent = errText(og.error); return; }
       const p = await sb.from("projects").insert({ org_id: og.data.id, name: v("#soName"), address: v("#soAddr") || null, start_date: v("#soStart") || null, contract_months: Number(v("#soM")) || 18, site_lat: v("#soLat") ? Number(v("#soLat")) : null, site_lng: v("#soLng") ? Number(v("#soLng")) : null, site_radius_m: 300 }).select("id").single();
       if (p.error) { er.textContent = errText(p.error); return; }
-      await sb.from("app_records").insert({ project_id: p.data.id, col: "config", id: "project", data: { name: v("#soName"), address: v("#soAddr"), plot: v("#soAddr"), startDate: v("#soStart"), months: Number(v("#soM")) || 18, contractor: "" } });
+      await sb.from("app_records").insert({ project_id: p.data.id, col: "config", id: "project", data: { name: v("#soName"), address: v("#soAddr"), plot: v("#soAddr"), startDate: v("#soStart"), months: Number(v("#soM")) || 18, contractor: "", mode, company: v("#soOrg") } });
       ls.set("so.project", p.data.id); start(resolve);
     };
   }
@@ -237,6 +240,10 @@
   window.SO.aiRerun = async () => { const { data, error } = await sb.functions.invoke("ai-watch", { body: { project_id: SO.project.id, action: "rerun" } }); if (error) throw await fnErr(error); return data; };
   window.SO.face = async (person_id, image) => { const { data, error } = await sb.functions.invoke("ai-watch", { body: { project_id: SO.project.id, action: "face", person_id, image } }); if (error) return { match: "unclear" }; return data; };
   const geoMem = {};
+  const fnCall = async (name, body) => { const { data, error } = await sb.functions.invoke(name, { body: Object.assign({ project_id: SO.project.id }, body) }); if (error) { let m = error.message; try { m = (await error.context.json()).error || m; } catch (e) {} const x = new Error(m); throw x; } return data; };
+  window.SO.aiSettings = (action, body) => fnCall("ai-settings", Object.assign({ action }, body || {}));
+  window.SO.translate = async texts => (await fnCall("translate", { texts })).pairs || {};
+  window.SO.resetAI = () => { samplePromise = null; };
   window.SO.geocode = async (lat, lng) => { const k = lat.toFixed(4) + "," + lng.toFixed(4); if (geoMem[k]) return geoMem[k]; const c = ls.get("geo." + k); if (c) return (geoMem[k] = c);
     const { data, error } = await sb.functions.invoke("geocode", { body: { lat, lng } }); if (error || !data || !data.address) return ""; ls.set("geo." + k, data.address); return (geoMem[k] = data.address); };
   window.SO.card = async (body) => { const { data, error } = await sb.functions.invoke("card-login", { body: Object.assign({ project_id: SO.project.id }, body) }); if (error) { let m = error.message; try { m = (await error.context.json()).error || m; } catch (e) {} throw new Error(m); } return data; };
@@ -262,6 +269,7 @@
   }
   async function makeSample() {
     const { data } = await sb.functions.invoke("ai", { body: { project_id: SO.project.id, status: true } }).catch(() => ({ data: null }));
+    window.SO.aiOn = !!(data && data.enabled); window.SO.aiProvider = data && data.provider || null;
     if (!data || !data.enabled) return null;
     const s = async (prompt, opts) => { const text = await aiCall(prompt, opts, false); if (opts && opts.onText) opts.onText({ text }); return text; };
     s.json = (prompt, opts) => aiCall(prompt, opts, true);
@@ -317,7 +325,7 @@
   window.SO.brand = c => {
     const name = (c && c.name) || (SO.project && SO.project.name) || "Site Office"; const sub = (c && (c.plot || c.address)) || (SO.project && SO.project.address) || "";
     const b = document.querySelector(".brand b"), sm = document.querySelector(".brand small"), mk = document.querySelector(".brand .mark");
-    if (b) b.innerHTML = 'Mimaar <span class="ver">v__APP_VERSION__</span>'.replace("v__APP_VERSION__", "v" + ("__APP_VERSION__".startsWith("__") ? "1.6.0" : "__APP_VERSION__")); if (sm) sm.textContent = name + (sub ? " · " + sub : ""); if (mk) mk.textContent = "M";
+    if (b) b.innerHTML = 'Mimaar <span class="ver">v__APP_VERSION__</span>'.replace("v__APP_VERSION__", "v" + ("__APP_VERSION__".startsWith("__") ? "1.7.0" : "__APP_VERSION__")); if (sm) sm.textContent = name + (sub ? " · " + sub : ""); if (mk) mk.textContent = "M";
     document.title = name + " · Mimaar";
   };
   document.addEventListener("click", e => { if (e.target.closest("#soLang")){ ls.set("v31.lang", ls.get("v31.lang") === "ur" ? "en" : "ur"); location.reload(); } });

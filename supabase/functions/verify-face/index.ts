@@ -3,6 +3,7 @@
 // moves the attendance row from 'pending' to 'verified' or 'flagged'.
 import { admin, b64, caller, download, handler, HttpError, json, membership } from "../_shared/common.ts";
 import { askJson, img } from "../_shared/claude.ts";
+import { aiConfig } from "../_shared/llm.ts";
 
 interface Match { samePerson: "yes" | "no" | "unclear"; confidence: "low" | "medium" | "high"; livePhoto: "yes" | "no" | "unclear"; peopleInPhoto: number; notes: string }
 
@@ -21,7 +22,7 @@ Deno.serve(handler(async (req) => {
     await db.from("attendance").update({ status: "flagged", flags }).eq("id", a.id);
     return json({ status: "flagged", flags });
   }
-  if (!Deno.env.get("ANTHROPIC_API_KEY")) {   // AI not switched on yet: rely on the badge, GPS, time and phone checks only
+  if (!(await aiConfig(a.project_id))) {   // AI not switched on yet: rely on the badge, GPS, time and phone checks only
     const status = a.status === "pending" ? "verified" : a.status;
     await db.from("attendance").update({ status, face_match: { checked: false, notes: "Face check is off (no AI key)" } }).eq("id", a.id);
     return json({ status, flags, face_match: null });
@@ -33,7 +34,7 @@ Deno.serve(handler(async (req) => {
   const m = await askJson<Match>(
     "Image 1 is the registered photo of a construction worker. Image 2 was just taken at the site gate to mark attendance. Decide whether they show the same person. Also say whether image 2 is a live photo of a real person on a construction site (not a photo of a screen, a printout or a photo of a photo), and count the people visible in it.",
     `{"samePerson": "yes"|"no"|"unclear", "confidence": "low"|"medium"|"high", "livePhoto": "yes"|"no"|"unclear", "peopleInPhoto": number, "notes": string}`,
-    [img(b64(reg)), img(b64(now))], 400,
+    [img(b64(reg)), img(b64(now))], 400, a.project_id,
   );
   if (m.samePerson === "no") flags.push("face_mismatch");
   if (m.samePerson === "unclear" || m.confidence === "low") flags.push("face_unclear");

@@ -28,7 +28,7 @@ Deno.serve(handler(async (req) => {
     } else {
       record = `Water tanker ${r.tanker_no}, ${r.gallons} gallons, ${r.water_type}, cost Rs ${r.cost ?? "?"}, bill no. ${r.bill_no || "?"}.`;
     }
-    const ai = await askJson(`You are checking a scanned bill at a house construction site in Karachi, Pakistan. Read the bill and compare it with the record: ${record} Flag differences in quantity, rate or total, a missing shop name or date, signs of overwriting or tampering, and rates far above the budget.`, BILL_SHAPE, [img(b64(bill))], 1500);
+    const ai = await askJson(`You are checking a scanned bill at a construction site in Pakistan. Read the bill and compare it with the record: ${record} Flag differences in quantity, rate or total, a missing shop name or date, signs of overwriting or tampering, and rates far above the budget.`, BILL_SHAPE, [img(b64(bill))], 1500, r.project_id);
     await db.from(table).update({ ai }).eq("id", id);
     return json({ ai });
   }
@@ -38,10 +38,10 @@ Deno.serve(handler(async (req) => {
     if (!c) throw new HttpError(404, "Contract not found");
     const m = await membership(c.project_id, user.id);
     if (m.role !== "owner") throw new HttpError(403, "Only the owner can analyse contracts");
-    const ctx = `You are a senior construction contracts adviser in Pakistan reviewing a ${c.type} contract "${c.title}" for the owner of ${c.projects?.name} (${c.projects?.address || ""}; ${c.projects?.description || ""}). List both parties' obligations fairly, the money, the timeline and the risks to the owner, using Pakistani practice (PEC conditions, Bahria Town by-laws). Quote clause numbers where you can.`;
+    const ctx = `You are a senior construction contracts adviser in Pakistan reviewing a ${c.type} contract "${c.title}" for the owner of ${c.projects?.name} (${c.projects?.address || ""}; ${c.projects?.description || ""}). List both parties' obligations fairly, the money, the timeline and the risks to the owner, using Pakistani practice (PEC conditions, the local building authority's by-laws). Quote clause numbers where you can.`;
     let ai;
-    if (c.file_path && c.file_path.toLowerCase().endsWith(".pdf")) ai = await askJson(ctx, CONTRACT_SHAPE, [pdf(b64(await download("contracts", c.file_path)))], 4000);
-    else if (c.text_content) ai = await askJson(`${ctx}\n\nCONTRACT TEXT:\n${String(c.text_content).slice(0, 150000)}`, CONTRACT_SHAPE, [], 4000);
+    if (c.file_path && c.file_path.toLowerCase().endsWith(".pdf")) ai = await askJson(ctx, CONTRACT_SHAPE, [pdf(b64(await download("contracts", c.file_path)))], 4000, c.project_id);
+    else if (c.text_content) ai = await askJson(`${ctx}\n\nCONTRACT TEXT:\n${String(c.text_content).slice(0, 150000)}`, CONTRACT_SHAPE, [], 4000, c.project_id);
     else throw new HttpError(400, "Upload the contract PDF first");
     await db.from("contracts").update({ ai }).eq("id", id);
     return json({ ai });

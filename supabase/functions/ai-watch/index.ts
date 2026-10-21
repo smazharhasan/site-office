@@ -3,22 +3,19 @@
 //   { project_id, action: "face", person_id, image }  → { match: "yes" | "no" | "unclear" } (used during the card scan)
 //   { project_id, action: "rerun" }       owner: run every check that is still waiting (e.g. after the AI key was added)
 import { admin, caller, handler, HttpError, json, membership } from "../_shared/common.ts";
+import { generate, jsonIn, type Part } from "../_shared/llm.ts";
 
 const WATCH = ["grns", "issues", "water", "tank", "pettycash", "attendance", "camera", "logs", "counts", "returns"];
-type Img = { type: "image"; source: { type: "base64"; media_type: string; data: string } };
-const imgOf = (s: string): Img | null => { const m = String(s || "").match(/^data:(image\/[a-z+]+);base64,(.+)$/); return m ? { type: "image", source: { type: "base64", media_type: m[1], data: m[2] } } : null; };
+type Img = Part;
+const imgOf = (s: string): Img | null => { const m = String(s || "").match(/^data:(image\/[a-z+]+);base64,(.+)$/); return m ? { image: { mime: m[1], data: m[2] } } : null; };
 const strip = (o: Record<string, unknown>) => JSON.parse(JSON.stringify(o, (_k, v) => typeof v === "string" && v.startsWith("data:") ? "[photo]" : v));
 function photosIn(d: Record<string, unknown>): Img[] {
   const out: Img[] = []; const walk = (v: unknown) => { if (out.length >= 4) return; if (typeof v === "string") { const i = imgOf(v); if (i) out.push(i); } else if (v && typeof v === "object") Object.values(v).forEach(walk); };
   walk(d); return out;
 }
-async function claude(content: unknown[], maxTokens = 900): Promise<Record<string, unknown>> {
-  const key = Deno.env.get("ANTHROPIC_API_KEY"); if (!key) throw new HttpError(503, "no-key");
-  const res = await fetch("https://api.anthropic.com/v1/messages", { method: "POST", headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-    body: JSON.stringify({ model: Deno.env.get("ANTHROPIC_MODEL") || "claude-sonnet-5-5", max_tokens: maxTokens, messages: [{ role: "user", content }] }) });
-  if (!res.ok) throw new HttpError(502, `AI request failed (${res.status})`);
-  const out = await res.json(); const text = (out.content || []).filter((x: { type: string }) => x.type === "text").map((x: { text: string }) => x.text).join("");
-  const m = text.match(/\{[\s\S]*\}/); if (!m) throw new HttpError(502, "AI returned no JSON"); return JSON.parse(m[0]);
+let PROJ = "";
+async function claude(content: Part[], maxTokens = 900): Promise<Record<string, unknown>> {
+  return jsonIn<Record<string, unknown>>(await generate(PROJ, content, { maxTokens }), false);
 }
 const ASK: Record<string, string> = {
   grns: "This is a goods-received record at a house construction site in Pakistan, with photos of the delivered goods and/or the delivery note (challan). Check: does the material in the photos match the item entered; does the quantity look consistent with what was entered; do numbers on the challan (quantity, vehicle, date) match the record; any sign of short delivery, wrong grade/brand, or a photo that is not of this delivery (old photo, photo of a screen).",
@@ -46,11 +43,11 @@ async function check(db: ReturnType<typeof admin>, project_id: string, col: stri
   const wid = `${col}_${id}`;
   if (!imgs.length) { await db.from("app_records").upsert({ project_id, col: "aiwatch", id: wid, data: { ...base, verdict: "unclear", severity: "medium", summary: "No photo was attached, so nothing could be checked.", checks: [] } }); return; }
   try {
-    const r = await claude([...imgs.slice(0, 4), { type: "text", text: `${ASK[col] || "Check that the photos match this record."}\n\nThe record as entered by site staff:\n${JSON.stringify(strip(d)).slice(0, 6000)}${note ? `\n\nNote from the supervisor: ${note}` : ""}\n\nBe strict but fair: say "mismatch" only for a real discrepancy, "unclear" if the photo can't show it. Reply with only JSON of this shape:\n${SHAPE}` }]);
+    const r = await claude([...imgs.slice(0, 4), { text: `${ASK[col] || "Check that the photos match this record."}\n\nThe record as entered by site staff:\n${JSON.stringify(strip(d)).slice(0, 6000)}${note ? `\n\nNote from the supervisor: ${note}` : ""}\n\nBe strict but fair: say "mismatch" only for a real discrepancy, "unclear" if the photo can't show it. Reply with only JSON of this shape:\n${SHAPE}` }]);
     await db.from("app_records").upsert({ project_id, col: "aiwatch", id: wid, data: { ...base, ...r, status: r.verdict === "ok" ? "Clear" : "Open" } });
   } catch (e) {
-    const waiting = e instanceof HttpError && e.message === "no-key";
-    await db.from("app_records").upsert({ project_id, col: "aiwatch", id: wid, data: { ...base, verdict: "pending", severity: "low", summary: waiting ? "Waiting: AI is not switched on yet." : "Check failed; it will be retried.", status: "Pending" } });
+    const waiting = e instanceof HttpError && e.message === "no-key"; const why = e instanceof Error ? e.message : "";
+    await db.from("app_records").upsert({ project_id, col: "aiwatch", id: wid, data: { ...base, verdict: "pending", severity: "low", summary: waiting ? "Waiting: AI is not switched on yet." : `Check failed; it will be retried. ${why}`.trim(), status: "Pending" } });
   }
 }
 
@@ -58,13 +55,13 @@ Deno.serve(handler(async (req) => {
   const user = await caller(req);
   const b = await req.json().catch(() => ({}));
   const me = await membership(b.project_id, user.id);
-  const db = admin();
+  const db = admin(); PROJ = b.project_id;
   if (b.action === "face") {
     const shot = imgOf(String(b.image || "")); if (!shot) throw new HttpError(400, "No photo");
     const { data: docs } = await db.from("app_records").select("data").eq("project_id", b.project_id).eq("col", "peopleDocs").filter("data->>personId", "eq", String(b.person_id)).filter("data->>kind", "eq", "photo").limit(1);
     const reg = docs && docs[0] && imgOf(String((docs[0].data as Record<string, unknown>).img || ""));
     if (!reg) return json({ match: "unclear", reason: "no registered photo" });
-    try { const r = await claude([reg, shot, { type: "text", text: `The first photo is the registered photo of a construction worker; the second was just taken live at the site gate. Is it the same person? Is the second a live photo of a real person (not a photo of a screen or a printed photo)? Reply with only JSON: {"samePerson": "yes" | "no" | "unclear", "live": "yes" | "no" | "unclear"}` }], 200);
+    try { const r = await claude([reg, shot, { text: `The first photo is the registered photo of a construction worker; the second was just taken live at the site gate. Is it the same person? Is the second a live photo of a real person (not a photo of a screen or a printed photo)? Reply with only JSON: {"samePerson": "yes" | "no" | "unclear", "live": "yes" | "no" | "unclear"}` }], 200);
       const match = r.samePerson === "no" || r.live === "no" ? "no" : r.samePerson === "yes" ? "yes" : "unclear"; return json({ match });
     } catch (_e) { return json({ match: "unclear" }); }
   }
