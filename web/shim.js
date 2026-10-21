@@ -184,7 +184,7 @@
   const cache = {}; const listeners = {}; let loaded = null;
   // Money fields live in separate "…Money" records so the server can hide prices from people who
   // only handle quantities. The app still sees one record: they are merged here and split on save.
-  const SPLIT = { pos: ["posMoney", ["unitPrice", "payProof", "paidRef", "payMethod", "paidDate", "listRate", "lineDiscPct"]], grns: ["grnsMoney", ["rate", "amount"]], materials: ["materialsMoney", ["budgetRate", "monthlyBudget"]], water: ["waterMoney", ["cost"]], risks: ["risksMoney", ["costImpact"]], people: ["peopleMoney", ["wage"]], changes: ["changesMoney", ["cost"]], selections: ["selectionsMoney", ["allowance", "chosenPrice", "options"]] };
+  const SPLIT = { pos: ["posMoney", ["unitPrice", "payProof", "paidRef", "payMethod", "paidDate", "listRate", "lineDiscPct"]], podocs: ["podocsMoney", ["rates", "lineDisc", "discPct", "discAmt", "taxPct", "freight", "total"]], grns: ["grnsMoney", ["rate", "amount"]], materials: ["materialsMoney", ["budgetRate", "monthlyBudget"]], water: ["waterMoney", ["cost"]], risks: ["risksMoney", ["costImpact"]], people: ["peopleMoney", ["wage"]], changes: ["changesMoney", ["cost"]], selections: ["selectionsMoney", ["allowance", "chosenPrice", "options"]] };
   const PARENT = Object.fromEntries(Object.entries(SPLIT).map(([c, [m]]) => [m, c]));
   const merged = (col, id, data) => { const sp = SPLIT[col]; const m = sp && cache[sp[0]] && cache[sp[0]][id]; if (!m) return data; const o = Object.assign({}, data); sp[1].forEach(k => { if (m[k] !== undefined) o[k] = m[k]; }); return o; };
   const snap = col => ({ docs: Object.entries(cache[col] || {}).map(([id, data]) => ({ id, data: () => merged(col, id, data) })) });
@@ -326,7 +326,7 @@
   window.SO.brand = c => {
     const name = (c && c.name) || (SO.project && SO.project.name) || "Site Office"; const sub = (c && (c.plot || c.address)) || (SO.project && SO.project.address) || "";
     const b = document.querySelector(".brand b"), sm = document.querySelector(".brand small"), mk = document.querySelector(".brand .mark");
-    if (b) b.innerHTML = 'Mimaar <span class="ver">v__APP_VERSION__</span>'.replace("v__APP_VERSION__", "v" + ("__APP_VERSION__".startsWith("__") ? "1.9.0" : "__APP_VERSION__")); if (sm) sm.textContent = name + (sub ? " · " + sub : ""); if (mk) mk.textContent = "M";
+    if (b) b.innerHTML = 'Mimaar <span class="ver">v__APP_VERSION__</span>'.replace("v__APP_VERSION__", "v" + ("__APP_VERSION__".startsWith("__") ? "1.10.0" : "__APP_VERSION__")); if (sm) sm.textContent = name + (sub ? " · " + sub : ""); if (mk) mk.textContent = "M";
     document.title = name + " · Mimaar";
   };
   document.addEventListener("click", e => { if (e.target.closest("#soLang")){ ls.set("v31.lang", ls.get("v31.lang") === "ur" ? "en" : "ur"); location.reload(); } });
