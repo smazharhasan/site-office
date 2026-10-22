@@ -4,13 +4,22 @@
 // The build picks one with APP_VARIANT=erp.
 const fs = require("fs");
 const path = require("path");
+const { withAndroidManifest } = require("expo/config-plugins");
+
+// Mimaar ERP also opens the laptop test set-up on the Wi-Fi (http://192.168.x.x:8081),
+// so plain http must be allowed; the cloud site itself is always https.
+const allowHttp = (cfg) => withAndroidManifest(cfg, (c) => {
+  const app = c.modResults.manifest.application[0];
+  app.$["android:usesCleartextTraffic"] = "true";
+  return c;
+});
 
 module.exports = ({ config }) => {
   if (process.env.APP_VARIANT !== "erp") return { ...config, extra: { ...config.extra, variant: "classic" } };
   const version = fs.readFileSync(path.join(__dirname, "..", "ERP_VERSION"), "utf8").trim();
   const [a, b, c] = version.split(".").map(Number);
   const blue = "#1d3b6e";
-  return {
+  return allowHttp({
     ...config,
     name: "Mimaar ERP",
     scheme: "mimaarerp",
@@ -23,5 +32,5 @@ module.exports = ({ config }) => {
     },
     splash: { ...config.splash, backgroundColor: blue },
     extra: { ...config.extra, variant: "erp" },
-  };
+  });
 };
