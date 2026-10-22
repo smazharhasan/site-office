@@ -1100,7 +1100,7 @@ Download Report,رپورٹ ڈاؤن لوڈ کریں
 Downtime Analysis,بندش کا تجزیہ
 Downtime Entry,بندش کی انٹری
 Dr,ڈیبٹ
-Draft,کچا
+Draft,ڈرافٹ
 "Draft: change it as needed, every saved version is kept in the activity below. Submit to lock it; only a locked purchase order can be sent.",ڈرافٹ: ضرورت کے مطابق تبدیل کریں، ہر محفوظ ورژن نیچے سرگرمی میں رہتا ہے۔ لاک کرنے کے لیے جمع کریں؛ صرف لاک شدہ پرچیز آرڈر بھیجا جا سکتا ہے۔
 Drafts,ڈرافٹس
 Drag,گھسیٹیں
@@ -4245,8 +4245,8 @@ yesterday,کل
 {count} rows selected,{count} لائنیں منتخب
 {} Complete,{} مکمل
 ← Back to upload files,← فائلیں اپ لوڈ کرنے پر واپس
-"A submitted purchase order is locked: its items, quantities and rates can't be changed. For a change, get a revised quotation from the supplier and raise a new purchase order; close this one if it is no longer needed.","جمع شدہ پرچیز آرڈر لاک ہے: اس کے آئٹم، مقدار اور ریٹ نہیں بدلے جا سکتے۔ تبدیلی کے لیے سپلائر سے نئی کوٹیشن لیں اور نیا پرچیز آرڈر بنائیں؛ اگر یہ آرڈر اب ضروری نہیں تو اسے بند کر دیں۔"
-"Is Subcontracted","ذیلی ٹھیکے پر"
+"A submitted purchase order is locked: its items, quantities and rates can't be changed. For a change, get a revised quotation from the supplier and raise a new purchase order; close this one if it is no longer needed.",جمع شدہ پرچیز آرڈر لاک ہے: اس کے آئٹم، مقدار اور ریٹ نہیں بدلے جا سکتے۔ تبدیلی کے لیے سپلائر سے نئی کوٹیشن لیں اور نیا پرچیز آرڈر بنائیں؛ اگر یہ آرڈر اب ضروری نہیں تو اسے بند کر دیں۔
+Is Subcontracted,ذیلی ٹھیکے پر
 "13 digits, e.g. 42101-1234567-1",13 ہندسے، مثلاً 42101-1234567-1
 Absent,غیر حاضر
 Add the workers first.,پہلے کارکن شامل کریں۔
@@ -4352,3 +4352,313 @@ Your data from the old Mimaar app has been brought across.,پرانی معمار
 Left the site,سائٹ چھوڑ گیا
 Site card,سائٹ کارڈ
 "Show this card at the gate and when marking attendance. If found, please return to the site office.",یہ کارڈ گیٹ پر اور حاضری لگاتے وقت دکھائیں۔ اگر کسی کو ملے تو سائٹ آفس واپس کریں۔
+1. Supplier's delivery note (challan),1۔ سپلائر کا چالان
+2. What arrived,2۔ کیا آیا
+3. Who received it,3۔ کس نے وصول کیا
+"A locked purchase order can't be changed or cancelled. Check the quantities, rates and terms first.",لاک کیا گیا پرچیز آرڈر بدلا یا منسوخ نہیں ہو سکتا۔ پہلے مقدار، ریٹ اور شرائط چیک کر لیں۔
+AI filled {0} lines. Check them against what you see.,AI نے {0} لائنیں بھر دیں۔ جو سامان سامنے ہے اس سے ملا کر چیک کریں۔
+AI reading is off. The owner can turn it on in Mimaar Settings.,AI سے پڑھنا بند ہے۔ مالک اسے Mimaar Settings میں چالو کر سکتا ہے۔
+Add a check,چیک شامل کریں
+Add a problem,مسئلہ شامل کریں
+Add at least one item and its quantity.,کم از کم ایک آئٹم اور اس کی مقدار شامل کریں۔
+Add by name,نام سے شامل کریں
+Add item from the store,اسٹور سے آئٹم شامل کریں
+Add line,لائن شامل کریں
+Advance,ایڈوانس
+Advance (%),ایڈوانس (%)
+Advance on {0},{0} پر ایڈوانس
+Advances agreed,طے شدہ ایڈوانس
+"After confirming, this quotation can't be changed; a change is a new revision.",تصدیق کے بعد یہ کوٹیشن بدلی نہیں جا سکتی؛ تبدیلی کے لیے نئی ریویژن بنے گی۔
+Against,کس کے بدلے
+All clear,سب ٹھیک ہے
+All received,سب وصول ہو گیا
+Amount (Rs),رقم (روپے)
+At most,زیادہ سے زیادہ
+Attendance submitted,حاضری جمع ہو گئی
+Bank transfer,بینک ٹرانسفر
+Bill date,بل کی تاریخ
+Bill no.,بل نمبر
+Bill recorded,بل درج ہو گیا
+Bills and payments,بل اور ادائیگیاں
+Bills due now,ابھی واجب بل
+Bills recorded against goods received show here.,وصول شدہ سامان کے بل یہاں نظر آئیں گے۔
+Bills to pay,ادا کرنے والے بل
+Budget lines,بجٹ کی مدیں
+CNIC expired on {0},شناختی کارڈ کی میعاد {0} کو ختم ہو گئی
+Call {0},{0} پر کال کریں
+Cancelled.,منسوخ۔
+Cash,نقد
+"Check it, then lock it. Only a locked purchase order can be sent to the supplier.",اسے چیک کریں، پھر لاک کریں۔ صرف لاک شدہ پرچیز آرڈر سپلائر کو بھیجا جا سکتا ہے۔
+"Check the lines and terms, then confirm. A confirmed quotation can't be changed.",لائنیں اور شرائط چیک کریں، پھر تصدیق کریں۔ تصدیق شدہ کوٹیشن بدلی نہیں جا سکتی۔
+Checked and closed,چیک کر کے بند
+Cheque,چیک
+Choose (optional),منتخب کریں (اختیاری)
+Choose the catalogue item for every line (or add it as a new item).,ہر لائن کے لیے فہرست سے آئٹم منتخب کریں (یا نیا آئٹم شامل کریں)۔
+Choose the item,آئٹم منتخب کریں
+Choose the supplier.,سپلائر منتخب کریں۔
+Choose the worker,مزدور منتخب کریں
+Cloudy,ابر آلود
+Cold,سردی
+Confirm quotation,کوٹیشن کی تصدیق کریں
+Connect a phone,فون جوڑیں
+Corrective actions (each becomes a snag),درستی کے اقدامات (ہر ایک خرابی بن جائے گی)
+Couldn't load this,یہ کھل نہیں سکا
+Deliveries expected,متوقع ڈیلیوری
+Delivery note no.,چالان نمبر
+Diary,ڈائری
+Diary saved,ڈائری محفوظ ہو گئی
+Double-click 'Connect a phone' in the Mimaar ERP folder on this laptop. It shows the address and QR code for the phone.,اس لیپ ٹاپ پر Mimaar ERP فولڈر میں 'Connect a phone' پر ڈبل کلک کریں۔ یہ فون کے لیے پتا اور QR کوڈ دکھائے گا۔
+Draft saved,ڈرافٹ محفوظ ہو گیا
+Due now,ابھی واجب
+Dust storm,آندھی
+Earlier updates,پچھلی اپ ڈیٹس
+Edit quotation {0},کوٹیشن {0} میں ترمیم
+Edit worker,مزدور میں ترمیم
+Email or user name,ای میل یا یوزر نیم
+Enter the quantity received for at least one item.,کم از کم ایک آئٹم کی وصول شدہ مقدار درج کریں۔
+Entry card expired on {0},انٹری کارڈ کی میعاد {0} کو ختم ہو گئی
+Everything still due arrived,باقی سب سامان آ گیا
+Expired card,کارڈ کی میعاد ختم
+Fill in the marked fields.,نشان زدہ خانے بھریں۔
+Fix by,کب تک ٹھیک ہو
+Fixed and closed,ٹھیک اور بند
+Getting the location…,لوکیشن لی جا رہی ہے…
+Goods received,سامان وصول ہو گیا
+Goods received against purchase orders show here.,پرچیز آرڈر کے بدلے وصول شدہ سامان یہاں نظر آئے گا۔
+Goods received: record the bill,سامان وصول ہوا: بل درج کریں
+Inspection submitted,معائنہ جمع ہو گیا
+Item from the store,اسٹور سے آئٹم
+Items in store,اسٹور میں آئٹم
+Late,تاخیر
+Levels and lines are correct,لیول اور لائنیں درست ہیں
+"Location not available: allow location for Mimaar, then try again.",لوکیشن دستیاب نہیں: Mimaar کو لوکیشن کی اجازت دیں، پھر دوبارہ کوشش کریں۔
+Location not taken yet,ابھی لوکیشن نہیں لی گئی
+Lock,لاک کریں
+Lock purchase order,پرچیز آرڈر لاک کریں
+Locked,لاک ہو گیا
+Locked as final. Raise the purchase order from it.,حتمی کے طور پر لاک۔ اسی سے پرچیز آرڈر بنائیں۔
+Locked purchase orders waiting for delivery appear here.,ڈیلیوری کے منتظر لاک شدہ پرچیز آرڈر یہاں نظر آئیں گے۔
+"Locked. {0}% received, {1}% billed.",لاک۔ {0}% وصول، {1}% کا بل آ گیا۔
+Make a revision,ریویژن بنائیں
+Making the PDF…,PDF بن رہی ہے…
+Mark attendance,حاضری لگائیں
+Material leaves the store only against a name: the mistri or group head who takes it.,سامان اسٹور سے صرف کسی کے نام پر نکلتا ہے: وہ مستری یا گروپ ہیڈ جو اسے لے جائے۔
+Material quality is right,میٹیریل کا معیار درست ہے
+Movements,آمد و رفت
+My account,میرا اکاؤنٹ
+Name of the new item,نئے آئٹم کا نام
+Needed by,کب تک چاہیے
+Needs your attention,آپ کی توجہ درکار ہے
+New diary entry,ڈائری کا نیا اندراج
+New inspection,نیا معائنہ
+New item: {0},نیا آئٹم: {0}
+New quotation,نئی کوٹیشن
+New supplier,نیا سپلائر
+New: {0},نیا: {0}
+No advances waiting,کوئی ایڈوانس باقی نہیں
+No bills to record,درج کرنے کو کوئی بل نہیں
+No budget yet,ابھی کوئی بجٹ نہیں
+No connection to Mimaar. Check the internet (or Wi-Fi) and try again.,Mimaar سے رابطہ نہیں ہو سکا۔ انٹرنیٹ (یا وائی فائی) چیک کریں اور دوبارہ کوشش کریں۔
+No entries yet,ابھی کوئی اندراج نہیں
+No inspections yet,ابھی کوئی معائنہ نہیں
+No movements yet,ابھی کوئی آمد و رفت نہیں
+No one marked yet,ابھی کسی کی حاضری نہیں لگی
+No open snags,کوئی کھلی خرابی نہیں
+No orders yet,ابھی کوئی آرڈر نہیں
+No payments yet,ابھی کوئی ادائیگی نہیں
+No purchase orders yet,ابھی کوئی پرچیز آرڈر نہیں
+No quotations yet,ابھی کوئی کوٹیشن نہیں
+No schedule yet,ابھی کوئی شیڈول نہیں
+No suppliers yet,ابھی کوئی سپلائر نہیں
+No workers yet,ابھی کوئی مزدور نہیں
+Not in the list: add as a new item,فہرست میں نہیں: نیا آئٹم شامل کریں
+Not saved,محفوظ نہیں ہوا
+Nothing in the store yet,اسٹور میں ابھی کچھ نہیں
+Nothing is waiting for you right now.,اس وقت آپ کا کوئی کام زیر التوا نہیں۔
+Nothing released yet,ابھی کچھ جاری نہیں ہوا
+Nothing to pay,ادا کرنے کو کچھ نہیں
+Nothing to receive,وصول کرنے کو کچھ نہیں
+On schedule,شیڈول کے مطابق
+On site today,آج سائٹ پر
+On the paper: {0},کاغذ پر: {0}
+"On the phone, open the Mimaar ERP app, tap 'Scan the QR on the laptop' and point it here. The phone and this laptop must be on the same Wi-Fi.",فون پر Mimaar ERP ایپ کھولیں، 'لیپ ٹاپ کا QR اسکین کریں' دبائیں اور کیمرہ یہاں کریں۔ فون اور یہ لیپ ٹاپ ایک ہی وائی فائی پر ہوں۔
+Open PDF,PDF کھولیں
+Open purchase order {0},پرچیز آرڈر {0} کھولیں
+Open snags,کھلی خرابیاں
+Open the full ERPNext (office),مکمل ERPNext کھولیں (دفتر)
+Over,زیادہ
+Paid by,ادائیگی کا طریقہ
+Paid recently,حالیہ ادائیگیاں
+Paid to suppliers,سپلائرز کو ادا کیا
+Pay a supplier,سپلائر کو ادائیگی
+Pay advance (up to {0}),ایڈوانس ادا کریں ({0} تک)
+Pay by (due date),کب تک ادا کرنا ہے
+Pay {0},{0} کو ادائیگی
+Pay {0} to {1}?,{1} کو {0} ادا کریں؟
+Payment saved,ادائیگی محفوظ ہو گئی
+Photo of the bill,بل کی تصویر
+Photo of the delivery note,چالان کی تصویر
+Photo of the material going out,باہر جانے والے سامان کی تصویر
+Photo of the person receiving,وصول کرنے والے کی تصویر
+Photo of the problem,مسئلے کی تصویر
+Planned,منصوبہ
+Please sign in again.,براہ کرم دوبارہ سائن ان کریں۔
+Problem found,مسئلہ ملا
+Progress photo,پیش رفت کی تصویر
+Progress saved,پیش رفت محفوظ ہو گئی
+Purchase order drafted,پرچیز آرڈر کا ڈرافٹ بن گیا
+Purchase orders are raised from a final quotation.,پرچیز آرڈر حتمی کوٹیشن سے بنتے ہیں۔
+Quick actions,فوری کام
+Rain,بارش
+Raise the purchase order,پرچیز آرڈر بنائیں
+Rate (Rs),ریٹ (روپے)
+Read by AI. Check every line against the paper before saving.,AI نے پڑھا ہے۔ محفوظ کرنے سے پہلے ہر لائن کاغذ سے ملا کر چیک کریں۔
+Read the quantities with AI,AI سے مقدار پڑھیں
+Reading the delivery note…,چالان پڑھا جا رہا ہے…
+Reading the quotation…,کوٹیشن پڑھی جا رہی ہے…
+Received from {0},{0} سے وصول
+Record bill,بل درج کریں
+Record the bill,بل درج کریں
+Register a worker,مزدور رجسٹر کریں
+Register each worker to print their site card.,ہر مزدور کو رجسٹر کریں تاکہ اس کا سائٹ کارڈ پرنٹ ہو سکے۔
+Register {0} as a new supplier,{0} کو نئے سپلائر کے طور پر رجسٹر کریں
+Release material,سامان جاری کریں
+Released,جاری ہو گیا
+Released recently,حال ہی میں جاری
+Released to {0},{0} کو جاری
+Replaced by a newer revision.,نئی ریویژن نے اس کی جگہ لے لی۔
+Report a snag,خرابی رپورٹ کریں
+Revision made: change it and confirm again,ریویژن بن گئی: اس میں تبدیلی کریں اور دوبارہ تصدیق کریں
+"Salaam, {0}",السلام علیکم، {0}
+Save diary,ڈائری محفوظ کریں
+Save draft,ڈرافٹ محفوظ کریں
+Save progress,پیش رفت محفوظ کریں
+Save snag,خرابی محفوظ کریں
+Save supplier,سپلائر محفوظ کریں
+Save worker,مزدور محفوظ کریں
+Saving the photo…,تصویر محفوظ ہو رہی ہے…
+Scan each worker's site card.,ہر مزدور کا سائٹ کارڈ اسکین کریں۔
+Scan site card,سائٹ کارڈ اسکین کریں
+Scan the supplier's quotation to start.,شروع کرنے کے لیے سپلائر کی کوٹیشن اسکین کریں۔
+Scan the worker's site card,مزدور کا سائٹ کارڈ اسکین کریں
+Search by name or CNIC,نام یا شناختی کارڈ سے تلاش کریں
+Search items,آئٹم تلاش کریں
+Search suppliers,سپلائر تلاش کریں
+Send account statement,اکاؤنٹ اسٹیٹمنٹ بھیجیں
+"Send it to the supplier on WhatsApp, or open the PDF.",اسے سپلائر کو واٹس ایپ پر بھیجیں، یا PDF کھولیں۔
+Send purchase order,پرچیز آرڈر بھیجیں
+Send to supplier (WhatsApp / PDF),سپلائر کو بھیجیں (واٹس ایپ / PDF)
+Sign in,سائن ان
+Sign in to your project,اپنے پروجیکٹ میں سائن ان کریں
+Sign out,سائن آؤٹ
+Site is clean and safe,سائٹ صاف اور محفوظ ہے
+Site staff,سائٹ اسٹاف
+Site supervisor,سائٹ سپروائزر
+Snag reported,خرابی رپورٹ ہو گئی
+Snag updated,خرابی اپ ڈیٹ ہو گئی
+Something went wrong. Try again.,کچھ غلط ہو گیا۔ دوبارہ کوشش کریں۔
+Spent (billed),خرچ (بل آ چکے)
+Still due: {0} {1},ابھی باقی: {0} {1}
+Store keeper,اسٹور کیپر
+Submit attendance,حاضری جمع کریں
+Submit inspection,معائنہ جمع کریں
+Sunny,دھوپ
+Supplier name,سپلائر کا نام
+Supplier saved,سپلائر محفوظ ہو گیا
+Supplier's quotation,سپلائر کی کوٹیشن
+Supplier's receipt (optional),سپلائر کی رسید (اختیاری)
+Take photo,تصویر لیں
+Take the photo of the delivery note first.,پہلے چالان کی تصویر لیں۔
+Team photo and location,ٹیم کی تصویر اور لوکیشن
+The final quotation can't be revised again. The purchase order is raised from it.,حتمی کوٹیشن میں دوبارہ ریویژن نہیں ہو سکتی۔ پرچیز آرڈر اسی سے بنتا ہے۔
+The photo couldn't be saved. Try again.,تصویر محفوظ نہیں ہو سکی۔ دوبارہ کوشش کریں۔
+The project's tasks appear here.,پروجیکٹ کے کام یہاں نظر آئیں گے۔
+The purchase order is now {0}% received.,پرچیز آرڈر اب {0}% وصول ہو چکا ہے۔
+Today's attendance is submitted.,آج کی حاضری جمع ہو چکی ہے۔
+Transaction / cheque no.,ٹرانزیکشن / چیک نمبر
+"Transfer screenshot, cheque or receipt",ٹرانسفر کا اسکرین شاٹ، چیک یا رسید
+Try again,دوبارہ کوشش کریں
+Type a quotation,کوٹیشن ٹائپ کریں
+Type the number on the site card (or the CNIC).,سائٹ کارڈ پر لکھا نمبر (یا شناختی کارڈ نمبر) لکھیں۔
+Very hot,شدید گرمی
+"What changed (price, discount or items)?",کیا بدلا (قیمت، رعایت یا آئٹم)؟
+What changed: {0},کیا بدلا: {0}
+What is wrong,کیا خرابی ہے
+What must be done,کیا کرنا ہے
+What was checked,کیا چیک کیا
+What was done,کیا کام ہوا
+"When the price is agreed, lock it as final. To change anything, make a revision.",قیمت طے ہو جائے تو اسے حتمی لاک کریں۔ کچھ بدلنا ہو تو ریویژن بنائیں۔
+Where,کہاں
+Who will fix it,کون ٹھیک کرے گا
+Work done,مکمل کام
+Work done now (%),اب تک مکمل کام (%)
+Work matches the drawing,کام ڈرائنگ کے مطابق ہے
+Work started,کام شروع ہو گیا
+Worker saved,مزدور محفوظ ہو گیا
+"Workers, suppliers, items, orders…",مزدور، سپلائر، آئٹم، آرڈر…
+Write what happened on site today.,لکھیں آج سائٹ پر کیا ہوا۔
+Wrong user name or password.,یوزر نیم یا پاس ورڈ غلط ہے۔
+You can pay at most {0} here.,یہاں زیادہ سے زیادہ {0} ادا ہو سکتے ہیں۔
+bill {0},بل {0}
+by {0},{0} تک
+can be paid,ادا ہو سکتا ہے
+challan {0},چالان {0}
+crore,کروڑ
+due {0},واجب {0}
+"e.g. 30% advance, 60% on delivery, 10% after testing",مثلاً 30% ایڈوانس، 60% ڈیلیوری پر، 10% ٹیسٹنگ کے بعد
+e.g. first floor slab,مثلاً پہلی منزل کا لینٹر
+e.g. ground floor kitchen,مثلاً گراؤنڈ فلور کچن
+from {0},{0} سے
+in store: {0} {1},اسٹور میں: {0} {1}
+in {0},{0} میں
+lac,لاکھ
+needed by {0},{0} تک چاہیے
+ordered {0} · received {1},آرڈر {0} · وصول {1}
+ordered {0} · spent {1},آرڈر {0} · خرچ {1}
+paid {0},ادا {0}
+pay these first,یہ پہلے ادا کریں
+purchase orders,پرچیز آرڈر
+received,وصول
+revision {0},ریویژن {0}
+to fix,ٹھیک کرنی ہیں
+to pay,ادا کرنا ہے
+{0} advance,{0} ایڈوانس
+{0} ordered,{0} کا آرڈر
+{0} present · {1} half day,{0} حاضر · {1} آدھا دن
+{0} running late,{0} میں تاخیر
+{0} still to pay,{0} ابھی ادا کرنے ہیں
+{0} workers,{0} مزدور
+{0} workers registered,{0} مزدور رجسٹرڈ
+{0}% advance on {1},{1} پر {0}% ایڈوانس
+{0}% received so far,اب تک {0}% وصول
+Choose English or Urdu.,انگریزی یا اردو منتخب کریں۔
+Confirm quotation {0} from {1},{1} کی کوٹیشن {0} کی تصدیق کریں
+Delivery expected: {0} from {1} ({2}% received),ڈیلیوری متوقع: {1} سے {0} ({2}% وصول)
+Enter the transaction or cheque number.,ٹرانزیکشن یا چیک نمبر درج کریں۔
+"Line {0}: choose the item, or add it as a new item.",لائن {0}: آئٹم منتخب کریں، یا نیا آئٹم شامل کریں۔
+"Lock the agreed quotation {0} ({1}) as final, or revise it",طے شدہ کوٹیشن {0} ({1}) کو حتمی لاک کریں، یا ریویژن بنائیں
+"No bank account is set up. Pay in cash, or ask the owner to add the bank account in ERPNext.",کوئی بینک اکاؤنٹ سیٹ نہیں۔ نقد ادا کریں، یا مالک سے کہیں کہ ERPNext میں بینک اکاؤنٹ شامل کرے۔
+Only a draft quotation can be changed. Revise it to make a new version.,صرف ڈرافٹ کوٹیشن بدلی جا سکتی ہے۔ نیا ورژن بنانے کے لیے ریویژن بنائیں۔
+Pay only against a bill or a purchase order advance.,ادائیگی صرف بل یا پرچیز آرڈر کے ایڈوانس کے بدلے ہو سکتی ہے۔
+Pay {0}: bill {1} ({2}),{0} کو ادائیگی: بل {1} ({2})
+Progress {0}%,پیش رفت {0}%
+Purchase order {0} ({1}) is a draft: check it and lock it,پرچیز آرڈر {0} ({1}) ڈرافٹ ہے: چیک کر کے لاک کریں
+Raise the purchase order from final quotation {0} ({1}),حتمی کوٹیشن {0} ({1}) سے پرچیز آرڈر بنائیں
+Received at {0},{0} پر وصول ہوا
+Record the supplier's bill for goods received {0} ({1}),وصول شدہ سامان {0} ({1}) کا سپلائر بل درج کریں
+Running late: {0} ({1}% done),تاخیر: {0} ({1}% مکمل)
+Snag past its target date: {0},مقررہ تاریخ گزر گئی: {0}
+This can't be shared.,یہ شیئر نہیں ہو سکتا۔
+Today's attendance is already submitted.,آج کی حاضری پہلے ہی جمع ہو چکی ہے۔
+You don't have access to this. Ask the owner.,آپ کو اس کی رسائی نہیں۔ مالک سے پوچھیں۔
+entry card,انٹری کارڈ
+{0}: {1} expired,{0}: {1} کی میعاد ختم
+status:Open,کھلی
+status:Fixed,ٹھیک ہو گئی
+status:Draft,ڈرافٹ
+status:Overdue,تاخیر
+Replaced,تبدیل شدہ
+Still open,ابھی کھلی
+Left to spend,باقی بجٹ
+Change site address,سائٹ کا پتہ بدلیں
+The app will ask for the site address again.,ایپ دوبارہ سائٹ کا پتہ پوچھے گی۔

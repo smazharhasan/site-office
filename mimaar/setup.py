@@ -119,6 +119,7 @@ def _single(doctype, values):
 
 def apply_settings():
 	"""The ERPNext settings that carry the owner's rules. Safe to run again."""
+	bank_account()
 	_single("Buying Settings", {"po_required": "Yes", "pr_required": "Yes", "maintain_same_rate": 1, "maintain_same_rate_action": "Stop", "supp_master_name": "Supplier Name", "allow_multiple_items": 1, "over_order_allowance": 0, "bill_for_rejected_quantity_in_purchase_invoice": 0})
 	_single("Stock Settings", {"allow_negative_stock": 0, "over_delivery_receipt_allowance": 0, "item_naming_by": "Item Code", "stock_uom": "Nos"})
 	_single("Accounts Settings", {"over_billing_allowance": 0, "check_supplier_invoice_uniqueness": 1, "unlink_payment_on_cancellation_of_invoice": 0, "automatically_fetch_payment_terms": 0})
@@ -165,6 +166,26 @@ def role_profiles():
 					doc.append("roles", {"role": r}).db_insert()  # no re-save: that queues a job on every user
 		else:
 			frappe.get_doc({"doctype": "Role Profile", "role_profile": name, "roles": [{"role": r} for r in roles]}).insert(ignore_permissions=True)
+
+
+def bank_account():
+	"""A bank ledger so suppliers can be paid by transfer or cheque (cash is there already)."""
+	for co in frappe.get_all("Company", fields=["name", "abbr", "default_bank_account"]):
+		acc = co.default_bank_account or frappe.db.get_value("Account", {"company": co.name, "account_type": "Bank", "is_group": 0})
+		if not acc:
+			parent = frappe.db.get_value("Account", {"company": co.name, "account_type": "Bank", "is_group": 1}) or frappe.db.get_value("Account", {"company": co.name, "account_name": "Bank Accounts", "is_group": 1})
+			if not parent:
+				continue
+			acc = frappe.get_doc({"doctype": "Account", "account_name": "Bank", "parent_account": parent, "company": co.name, "account_type": "Bank", "is_group": 0}).insert(ignore_permissions=True).name
+		if not co.default_bank_account:
+			frappe.db.set_value("Company", co.name, "default_bank_account", acc)
+		for mode in ("Wire Transfer", "Cheque", "Bank Draft"):
+			if not frappe.db.exists("Mode of Payment", mode):
+				continue
+			m = frappe.get_doc("Mode of Payment", mode)
+			if not any(a.company == co.name for a in m.accounts):
+				m.append("accounts", {"company": co.name, "default_account": acc})
+				m.save(ignore_permissions=True)
 
 
 def enable_urdu():

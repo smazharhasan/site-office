@@ -87,15 +87,25 @@ The two versions are separate Android apps that sit side by side; both are on
 https://github.com/smazharhasan/site-office/releases/latest
 
 - **Mimaar.apk**: the current Mimaar app, unchanged.
-- **Mimaar-ERP.apk** (blue icon): opens Mimaar ERP. The first time it asks for the site
+- **Mimaar-ERP.apk** (blue icon): the Mimaar field app on ERPNext, in the same colourful
+  design as before (big buttons, English and Urdu). The first time it asks for the site
   address: type `villa31.frappe.cloud` and press **Open**, sign in, and allow the camera
-  and location.
+  and location. Photos come from the live camera only, each with its GPS position.
+
+The field app is also at `https://villa31.frappe.cloud/field` in any phone browser. It has
+the dashboard, schedule and progress photos, site diary, inspections and snags, stock,
+receiving (with AI reading of the delivery note), releasing material, attendance with site
+cards, workers, suppliers, quotations, purchase orders, bills, payments and the budget.
+Each person sees only what their role allows; the owner and accountant can still open the
+full ERPNext from **My account**.
 
 ## 9a. On the laptop
 
 Mimaar ERP also runs on a Mac with Docker Desktop: the "Mimaar ERP" folder on the Desktop
 has Install / Start / Stop / Update / Back up buttons, and the site opens at
-http://localhost:8081. It uses the image `ghcr.io/smazharhasan/mimaar-erpnext:16`, built
+http://localhost:8081 (the field app at http://localhost:8081/field). To try the phone app
+against the laptop, put both on the same Wi-Fi, double-click **Connect a phone** and scan the
+QR code it shows from the Mimaar ERP app. It uses the image `ghcr.io/smazharhasan/mimaar-erpnext:16`, built
 from this branch by GitHub Actions.
 
 ## 10. E-mail
