@@ -1,4 +1,4 @@
-# Builds the Android APK and the web app on every change, with no setup on your side.
+# Builds the two Android apps (Mimaar, Mimaar ERP) and the web app on every change, with no setup on your side.
 #  - APK:  attached to the "latest" release  → https://github.com/<you>/<repo>/releases/latest
 #  - Web:  pushed to the gh-pages branch (Settings → Pages → Branch: gh-pages)        → https://<you>.github.io/<repo>/
 name: Build apps
@@ -10,17 +10,20 @@ concurrency: { group: build, cancel-in-progress: true }
 
 jobs:
   android:
+    # Two apps from one code base: "Mimaar" (the current app) and "Mimaar ERP" (opens the ERPNext site).
+    strategy:
+      matrix:
+        include:
+          - { variant: classic, apk: Mimaar, verfile: VERSION }
+          - { variant: erp, apk: Mimaar-ERP, verfile: ERP_VERSION }
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: app } }
+    env: { APP_VARIANT: "${{ matrix.variant }}" }
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
       - name: Read the version
-        run: echo "VER=$(cat ../VERSION)" >> $GITHUB_ENV
-      - name: Mark the first release (1.0.0) in the history
-        env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
-        run: |
-          gh release view v1.0.0 >/dev/null 2>&1 || gh release create v1.0.0 --target "$(git rev-parse 313ea63)" --title "Mimaar 1.0.0" --notes "First release, before the Mimaar name (Villa 31 Site Office)." || true
+        run: echo "VER=$(cat ../${{ matrix.verfile }})" >> $GITHUB_ENV
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: npm, cache-dependency-path: app/package-lock.json }
       - uses: actions/setup-java@v4
@@ -34,20 +37,52 @@ jobs:
           else cp signing/site-office.keystore android/app/debug.keystore; fi
       - name: Build release APK
         run: cd android && ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
-      - run: cp android/app/build/outputs/apk/release/app-release.apk ../Mimaar.apk && cp ../Mimaar.apk ../Mimaar-${{ env.VER }}.apk
+      - run: mkdir -p ../out && cp android/app/build/outputs/apk/release/app-release.apk ../out/${{ matrix.apk }}.apk && cp ../out/${{ matrix.apk }}.apk ../out/${{ matrix.apk }}-${{ env.VER }}.apk
+      - uses: actions/upload-artifact@v4
+        with: { name: "${{ matrix.variant }}", path: out/ }
+
+  release:
+    needs: android
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/download-artifact@v4
+        with: { path: out, merge-multiple: true }
+      - name: Read the versions
+        run: |
+          echo "VER=$(cat VERSION)" >> $GITHUB_ENV
+          echo "ERPVER=$(cat ERP_VERSION)" >> $GITHUB_ENV
+      - name: Mark the first release (1.0.0) in the history
+        env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: |
+          gh release view v1.0.0 >/dev/null 2>&1 || gh release create v1.0.0 --target "$(git rev-parse 313ea63)" --title "Mimaar 1.0.0" --notes "First release, before the Mimaar name (Villa 31 Site Office)." || true
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
           name: Mimaar (latest)
-          body: "Download **Mimaar.apk** on the Android phone and open it to install. Version ${{ env.VER }}, built from ${{ github.sha }}."
-          files: Mimaar.apk
+          body: |
+            Two apps; install either or both on the Android phone (they sit side by side):
+            - **Mimaar.apk**: the current Mimaar app, version ${{ env.VER }}.
+            - **Mimaar-ERP.apk**: Mimaar ERP (ERPNext), version ${{ env.ERPVER }}; asks for your site address the first time.
+            Built from ${{ github.sha }}.
+          files: |
+            out/Mimaar.apk
+            out/Mimaar-ERP.apk
           make_latest: true
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.VER }}
           name: Mimaar ${{ env.VER }}
           body: "Mimaar ${{ env.VER }}. Built from ${{ github.sha }}."
-          files: Mimaar-${{ env.VER }}.apk
+          files: out/Mimaar-${{ env.VER }}.apk
+          make_latest: false
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: erp-v${{ env.ERPVER }}
+          name: Mimaar ERP ${{ env.ERPVER }}
+          body: "Mimaar ERP (Android) ${{ env.ERPVER }}: opens your Mimaar ERP site. Built from ${{ github.sha }}."
+          files: out/Mimaar-ERP-${{ env.ERPVER }}.apk
           make_latest: false
 
   web:

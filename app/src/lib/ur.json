@@ -3631,5 +3631,7 @@
 "Open your project": "اپنا پروجیکٹ کھولیں",
 "Use the old Mimaar app (until the move is finished)": "پرانی معمار ایپ استعمال کریں (منتقلی مکمل ہونے تک)",
 "Change site address": "سائٹ کا پتہ بدلیں",
-"On the phone, Mimaar asks once for the camera and location (for scans, photos and attendance); PDFs from the site download to the phone": "فون پر معمار ایک بار کیمرہ اور لوکیشن کی اجازت مانگتا ہے (اسکین، تصاویر اور حاضری کے لیے)؛ سائٹ کی PDF فائلیں فون میں ڈاؤن لوڈ ہوتی ہیں"
+"On the phone, Mimaar asks once for the camera and location (for scans, photos and attendance); PDFs from the site download to the phone": "فون پر معمار ایک بار کیمرہ اور لوکیشن کی اجازت مانگتا ہے (اسکین، تصاویر اور حاضری کے لیے)؛ سائٹ کی PDF فائلیں فون میں ڈاؤن لوڈ ہوتی ہیں",
+"Mimaar and Mimaar ERP are now two separate apps that sit side by side on the phone: this app opens Mimaar as before, and Mimaar ERP opens the ERPNext version": "معمار اور معمار ERP اب دو الگ ایپس ہیں جو فون پر ساتھ ساتھ رہتی ہیں: یہ ایپ پہلے کی طرح معمار کھولتی ہے، اور معمار ERP، ERPNext والا ورژن کھولتی ہے",
+"Both versions are kept up to date while you decide which one to use": "فیصلہ ہونے تک دونوں ورژن اپ ڈیٹ رکھے جائیں گے"
 }

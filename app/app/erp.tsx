@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, BackHandler, Linking, Platform, Text, View } from "react-native";
-import { router } from "expo-router";
 import { WebView } from "react-native-webview";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -55,7 +54,6 @@ export default function Erp() {
       {msg ? <Banner kind="bad" text={msg} /> : null}
       <View style={{ gap: 10, marginTop: 10 }}>
         <Button title="Open" onPress={connect} busy={busy} />
-        <Button title="Use the old Mimaar app (until the move is finished)" kind="plain" onPress={() => router.push("/home")} />
       </View>
     </Screen>
   );
