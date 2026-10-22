@@ -172,3 +172,35 @@ def enable_urdu():
 		frappe.db.set_value("Language", "ur", "enabled", 1)
 	else:
 		frappe.get_doc({"doctype": "Language", "language_code": "ur", "language_name": "اردو", "enabled": 1}).insert(ignore_permissions=True)
+
+
+def local_site(data_file=None, company="Villa 31", abbr="V31"):
+	"""One-step set-up for a laptop or test site: the setup wizard with Pakistan defaults
+	(the owner signs in as Administrator), then the project data from the old app's file.
+	Safe to run again.
+
+	    bench --site <site> execute mimaar.setup.local_site --kwargs "{'data_file': '/data/mimaar-data.json'}"
+	"""
+	import json
+	import os
+
+	if not frappe.is_setup_complete():
+		from frappe.desk.page.setup_wizard.setup_wizard import setup_complete
+
+		frappe.local.lang = "en"
+		result = setup_complete({
+			"language": "English", "country": "Pakistan", "timezone": "Asia/Karachi", "currency": "PKR",
+			"full_name": "Owner", "company_name": company, "company_abbr": abbr, "chart_of_accounts": "Standard",
+			"fy_start_date": "2026-07-01", "fy_end_date": "2027-06-30", "setup_demo": 0,
+		})
+		if (result or {}).get("status") != "ok":
+			raise Exception(f"Setup wizard did not finish: {result}")
+		frappe.db.commit()
+		print("Set-up done:", company)
+	if data_file and os.path.exists(data_file):
+		from mimaar.migration.old_app import run
+
+		run(data=json.load(open(data_file, encoding="utf-8")))
+	elif data_file:
+		print("No data file at", data_file)
+	frappe.db.commit()
