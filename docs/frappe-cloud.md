@@ -83,13 +83,20 @@ left). Each person gets an e-mail to set their password.
 
 ## 9. Phones
 
-1. Download **Mimaar.apk** from https://github.com/smazharhasan/site-office/releases/latest
-   and install it over the old app.
-2. The first time it asks for the site address: type `villa31.frappe.cloud` and press **Open**.
-3. Sign in, and allow the camera and location when asked.
+The two versions are separate Android apps that sit side by side; both are on
+https://github.com/smazharhasan/site-office/releases/latest
 
-The old app stays reachable from that first screen (**Use the old Mimaar app**) until the
-move is finished.
+- **Mimaar.apk**: the current Mimaar app, unchanged.
+- **Mimaar-ERP.apk** (blue icon): opens Mimaar ERP. The first time it asks for the site
+  address: type `villa31.frappe.cloud` and press **Open**, sign in, and allow the camera
+  and location.
+
+## 9a. On the laptop
+
+Mimaar ERP also runs on a Mac with Docker Desktop: the "Mimaar ERP" folder on the Desktop
+has Install / Start / Stop / Update / Back up buttons, and the site opens at
+http://localhost:8081. It uses the image `ghcr.io/smazharhasan/mimaar-erpnext:16`, built
+from this branch by GitHub Actions.
 
 ## 10. E-mail
 
