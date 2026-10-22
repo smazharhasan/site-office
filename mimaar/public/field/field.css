@@ -84,6 +84,7 @@ html[dir="rtl"] .ctile{box-shadow:inset 1px -1px 0 color-mix(in srgb,var(--line)
 .lmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .lmain b{font-weight:600;font-size:14.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .lsub{font-size:12.5px;color:var(--muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+html[lang="ur"] .lsub{line-height:2;-webkit-line-clamp:3}
 .lend{flex:none;max-width:44%;text-align:end;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
 .lend b{font:600 14.5px var(--f-display);white-space:nowrap}
 .lch{width:16px;height:16px;color:var(--muted);flex:none}
