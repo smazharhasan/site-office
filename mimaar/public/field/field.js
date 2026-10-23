@@ -357,7 +357,7 @@ const pickWorker = () => picker(t("Choose the worker"), (q) => api("workers", { 
 /* ---------- layout ---------- */
 const TABS = [["dash", "Dashboard", "dash"], ["build", "Construction", "house"], ["+", "", "plus"], ["store", "Stores", "box"], ["more", "More", "menu"]];
 const PETTY = () => { const c = C(); return c.owner || c.money || c.site || c.store; };
-const TOP_OF = { dash: "dash", build: "build", store: "store", receive: "store", item: "store" };
+const TOP_OF = { dash: "dash", build: "build", store: "store", receive: "store", item: "store", money: "more", ask: "more" };
 function layout() {
   document.documentElement.lang = S.lang; document.documentElement.dir = S.lang === "ur" ? "rtl" : "ltr";
   $("#app").innerHTML = `<header class="top" id="top"></header><main class="content" id="content"></main>
@@ -404,7 +404,7 @@ const GLOBAL = {
     if (PETTY()) A.push(["Petty cash expense", "pay", "pettyexp", "k3"], ["Pay by site card", "cash", "paycard", "k8"]);
     if (c.site) A.push(["Site diary", "log", "diary", "k7"], ["Report a snag", "alert", "snag", "k4"], ["Progress photo", "cam", "build/schedule", "k5"]);
     if (c.buy) A.push(["Scan a quotation", "ai", "scanquote", "k6"]);
-    if (c.money) A.push(["Pay a supplier", "pay", "bills", "k8"]);
+    if (c.money) A.push(["Pay a supplier", "pay", "money/bills", "k8"]);
     const sh = sheet(t("Quick actions"), `<div class="qa-grid">${A.map(([l, ic, to, tc], i) => `<button class="qa" data-q="${i}"><span class="qa-i" style="--tc:var(--${tc})">${icon(ic)}</span><span>${esc(t(l))}</span></button>`).join("")}</div>`);
     sh.addEventListener("click", (e) => {
       const b = e.target.closest("[data-q]"); if (!b) return; const to = A[+b.dataset.q][2]; closeSheet();
@@ -446,56 +446,94 @@ const GLOBAL = {
 /* ================================================================== dashboard */
 VIEWS.dash = async (el) => {
   const b = S.b; setTop(t("Dashboard"));
-  const d = await api("dashboard"); const k = d.kpi; const c = C();
+  const d = await api("mimaar.dash.overview"); const T = d.tiles; const c = C();
   const tiles = [];
-  if (c.site) tiles.push(tile(t("Work done"), `${num(k.progress)}%`, k.late_tasks ? t("{0} running late", k.late_tasks) : t("On schedule"), "build/schedule", "k1"));
-  if (c.people) tiles.push(tile(t("On site today"), String(k.on_site), t("{0} workers registered", k.workers), "att", "k7"));
-  if (c.store || c.buy) tiles.push(tile(t("Deliveries expected"), String(k.to_receive), t("purchase orders"), "store/receive", "k2"));
-  if (c.store) tiles.push(tile(t("Items in store"), String(k.stock_items), t("in {0}", b.store || ""), "store/stock", "k3"));
-  if (c.site) tiles.push(tile(t("Open snags"), String(k.snags_open), t("to fix"), "build/snags", "k4"));
-  if (c.money) {
-    tiles.push(tile(t("Budget"), money(k.budget, 1), t("{0} ordered", money(k.committed, 1)), "budget", "k5"));
-    tiles.push(tile(t("Paid to suppliers"), money(k.paid, 1), t("{0} still to pay", money(k.due, 1)), "bills", "k6"));
-    tiles.push(tile(t("Bills due now"), money(k.due_now, 1), t("pay these first"), "bills", "k4"));
-  }
+  if (T.paid) tiles.push(tile(t("Paid to suppliers"), money(T.paid.paid, 1), t("of {0} ordered", money(T.paid.committed, 1)), "money/bills", "k1"));
+  if (T.budget) tiles.push(tile(t("Budget"), money(T.budget.budget, 1), t("{0} committed", money(T.budget.committed, 1)), "money/budget", "k2"));
+  if (T.stock) tiles.push(tile(t("Stock alerts"), String(T.stock.low + T.stock.out), T.stock.low + T.stock.out ? t("{0} low · {1} out", T.stock.low, T.stock.out) : t("all above re-order level"), "store/items", T.stock.low + T.stock.out ? "k4" : "k3"));
+  if (T.water) tiles.push(tile(t("Water today"), t("{0} gal", num(T.water.gallons)), t("{0} tankers · {1} gal this week", T.water.tankers, num(T.water.week)), "store/water", "k7"));
+  if (T.ncr) tiles.push(tile(t("Open NCRs"), String(T.ncr.open), t("{0} inspections waiting", T.ncr.waiting), "build/inspect", T.ncr.open ? "k4" : "k1"));
+  if (T.onsite) tiles.push(tile(t("On site now"), String(T.onsite.now), t("{0} came and left · {1} registered", T.onsite.left, T.onsite.registered), "att", "k7"));
+  if (T.snags) tiles.push(tile(t("Open snags"), String(T.snags.open), t("{0} overdue", T.snags.overdue), "build/snags", T.snags.overdue ? "k4" : "k6"));
+  if (T.petty) tiles.push(tile(t("Petty cash to check"), String(T.petty.waiting), money(T.petty.amount), "money/petty", "k3"));
+  if (T.photos) tiles.push(tile(t("Photos today"), String(T.photos.today), t("{0} checked by AI", T.photos.ai), "", "k5"));
   if (tiles.length % 2) tiles.push(`<span class="ctile" style="cursor:default"></span>`);
   const A = [];
   if (c.people) A.push(qa(t("Attendance by site card"), "card", "attcard", "k1"));
   if (c.store) A.push(qa(t("Receive goods"), "truck", "go_receive", "k2"), qa(t("Release to work"), "box", "release", "k3"), qa(t("Return to store"), "store", "ret", "k7"));
   if (c.store || c.site) A.push(qa(t("Water tanker"), "drop", "tanker", "k7"));
+  if (c.site) A.push(qa(t("Report progress"), "house", "go_build", "k5"), qa(t("Site diary"), "log", "diary", "k7"), qa(t("Report a snag"), "alert", "snag", "k4"));
   if (PETTY()) A.push(qa(t("Petty cash"), "cash", "go_petty", "k1"));
-  if (c.site) A.push(qa(t("Site diary"), "log", "diary", "k7"), qa(t("Report a snag"), "alert", "snag", "k4"));
   if (c.buy) A.push(qa(t("Scan a quotation"), "ai", "scanquote", "k6"));
   if (c.money) A.push(qa(t("Pay a supplier"), "pay", "go_bills", "k8"));
-  Object.assign(S.acts, { go_petty: () => go("petty"), tanker: () => tankerSheet(), go_receive: () => go("store/receive"), go_att: () => go("att"), go_bills: () => go("bills"), attcard: () => attendanceByCard(), ret: () => storeByCard("return"),
-    release: () => (S.b.rules.card_for_store ? storeByCard("issue") : releaseSheet()), diary: () => diarySheet(), snag: () => snagNewSheet(), scanquote: () => scanQuote() });
-  const acts = d.acts || [];
+  if (S.b.ai) A.push(qa(t("Ask the project"), "sparkle", "go_ask", "k5"));
+  Object.assign(S.acts, { go_petty: () => go("money/petty"), tanker: () => tankerSheet(), go_receive: () => go("store/receive"), go_att: () => go("att"), go_bills: () => go("money/bills"), go_build: () => go("build/progress"), go_ask: () => go("ask"),
+    attcard: () => attendanceByCard(), ret: () => storeByCard("return"), release: () => (S.b.rules.card_for_store ? storeByCard("issue") : releaseSheet()), diary: () => diarySheet(), snag: () => snagNewSheet(), scanquote: () => scanQuote() });
+  const G = {}; d.acts.forEach((a) => { (G[a.g] = G[a.g] || []).push(a); });
+  const GI = { Buying: "cart", Stores: "box", Money: "pay", Quality: "alert", Build: "house", People: "users", Water: "drop", Other: "alert" };
+  const att = d.acts.length ? Object.entries(G).map(([g, rows]) => `<div class="agrp"><div class="ag-h">${icon(GI[g] || "alert")}<b>${esc(t(g))}</b><span class="cnt">${rows.length}</span></div><div class="lst">${rows.slice(0, 6).map((a) => lrow({ act: "open", data: a.go.join("|"), title: a.t, dot: a.k })).join("")}${rows.length > 6 ? `<div class="more-rest" hidden>${rows.slice(6).map((a) => lrow({ act: "open", data: a.go.join("|"), title: a.t, dot: a.k })).join("")}</div>` : ""}</div>${rows.length > 6 ? `<button class="btn sm showall" data-showall="1">${esc(t("Show all ({0})", rows.length))}</button>` : ""}</div>`).join("") : empty(t("All clear"), t("Nothing is waiting for you right now."));
+  const P = d.panels; const parts = [];
+  if (P.paid && P.paid.length) {
+    const max = Math.max(1, ...P.paid.map((r) => Math.max(r.committed, r.paid)));
+    parts.push(fold("paid", t("Paid to suppliers"), `<div class="body hbars">${P.paid.map((r) => `<div class="hb2"><span>${esc(t(r.grp))}</span><i><b class="g" style="width:${(r.paid / max) * 100}%"></b><b class="c" style="width:${(Math.max(0, r.committed - r.paid) / max) * 100}%"></b></i><em>${esc(money(r.paid, 1))}</em></div>`).join("")}
+      <div class="legend"><span><i class="g"></i>${esc(t("Paid {0}", money(P.paid.reduce((a, r) => a + r.paid, 0), 1)))}</span><span><i class="c"></i>${esc(t("Still to pay {0}", money(P.paid.reduce((a, r) => a + Math.max(0, r.committed - r.paid), 0), 1)))}</span></div></div>`));
+  }
+  if (P.budget && P.budget.length) {
+    const max = Math.max(1, ...P.budget.map((r) => Math.max(r.budget, r.spent + r.committed)));
+    parts.push(fold("budget", t("Budget by category"), `<div class="body hbars">${P.budget.map((r) => `<div class="hb2" title="${esc(t("Budget {0} · spent {1} · committed {2}", money(r.budget, 1), money(r.spent, 1), money(r.committed, 1)))}"><span>${esc(t(r.category))}</span><i><b class="g" style="width:${(r.spent / max) * 100}%"></b><b class="b" style="width:${(r.committed / max) * 100}%"></b><s style="left:${(r.budget / max) * 100}%"></s></i><em>${esc(money(r.budget, 1))}</em></div>`).join("")}
+      <div class="legend"><span><i class="g"></i>${esc(t("Spent"))}</span><span><i class="b"></i>${esc(t("Committed, not yet paid"))}</span><span><i class="m"></i>${esc(t("Budget mark"))}</span></div></div>`));
+  }
+  if (P.labour) {
+    const max = Math.max(1, ...P.labour.map((r) => r.registered));
+    parts.push(fold("labour", t("Labour: registered vs present today"), P.labour.length ? `<div class="body hbars">${P.labour.map((r) => `<div class="hb2"><span>${esc(r.name)}</span><i><b class="g" style="width:${(r.present / max) * 100}%"></b><b class="r" style="width:${(Math.max(0, r.registered - r.present) / max) * 100}%"></b></i><em>${r.present}/${r.registered}</em></div>`).join("")}
+      <div class="legend"><span><i class="g"></i>${esc(t("Came today"))}</span><span><i class="r"></i>${esc(t("Registered, not here"))}</span></div></div>` : empty(t("No workers registered yet"))));
+  }
+  if (P.stages) {
+    const s = P.stages, n = s.counts || {};
+    parts.push(fold("stages", t("Stage status"), `<div class="body stack">${s.now ? `<button class="snow" data-go="build/progress"><span class="small muted">${esc(t("Now"))}</span><b>${esc(stTitle(s.now))}</b>${s.next ? `<span class="small muted">${esc(t("Next: {0} · {1}", stTitle(s.next), fdate(s.next.start)))}</span>` : ""}</button>` : ""}
+      <div class="bcounts">${[["done", "Done"], ["now", "Building now"], ["behind", "Behind plan"], ["soon", "Starts soon"], ["later", "Later"]].map(([k, l]) => `<button class="bc ${k}" data-go="build/progress"><b>${n[k] || 0}</b><span>${esc(t(l))}</span></button>`).join("")}</div>
+      ${s.phases.map((p) => `<div><div class="row" style="justify-content:space-between"><b>${esc(t(p.name))}</b><span class="small muted">${esc(`${fdate(p.start)} → ${fdate(p.end)}`)}</span></div>${stageBar({ built: p.built, reported: p.built, verified: p.built, planned: p.planned })}<span class="small muted">${esc(t("{0}% built · {1}% planned", num(p.built), num(p.planned)))}</span></div>`).join("")}</div>`, true));
+  }
+  if (P.released) {
+    const max = Math.max(1, ...P.released.count);
+    parts.push(fold("released", t("Material released, last 14 days"), `<div class="body"><div class="wbars">${P.released.days.map((day, i) => `<div class="wb"><div class="wbb"><span class="u" style="width:70%;height:${(P.released.count[i] / max) * 100}%"></span></div><em>${new Date(day + "T00:00:00").getDate()}</em></div>`).join("")}</div>
+      <div class="legend"><span><i class="u"></i>${esc(t("Releases from the store"))}</span></div></div>`));
+  }
   el.innerHTML = `<div class="hero"><span class="muted small">${esc(fdate(b.today))}</span><b>${esc(t("Salaam, {0}", (b.full_name || "").split(" ")[0]))}</b><span class="small muted">${esc(b.project_name || "")}</span></div>
     ${tiles.length ? `<div class="ctiles">${tiles.join("")}</div>` : ""}
-    ${A.length ? panel(t("Quick actions"), `<div class="body"><div class="qa-grid">${A.slice(0, 9).join("")}</div></div>`) : ""}
-    ${panel(t("Needs your attention"), acts.length ? `<div class="lst">${acts.slice(0, 25).map((a) => lrow({ act: "open", data: a.go.join("|"), title: a.t, dot: a.k })).join("")}</div>` : empty(t("All clear"), t("Nothing is waiting for you right now.")), acts.length ? `<span class="cnt">${acts.length}</span>` : "")}`;
+    ${A.length ? panel(t("Quick actions"), `<div class="body"><div class="qa-grid">${A.slice(0, 12).join("")}</div></div>`) : ""}
+    ${panel(t("Needs your attention"), `<div class="body stack" style="gap:6px">${att}</div>`, d.acts.length ? `<span class="cnt">${d.acts.length}</span>` : "")}
+    ${parts.join("")}`;
   S.acts.open = (v) => {
     const [kind, name] = v.split("|");
-    const map = { quote: `quote/${name}`, order: `order/${name}`, receive: `receive/${name}`, bill: "bills", billnew: "bills", snag: "build/snags", task: "build/schedule", worker: `worker/${name}` };
+    const map = { quote: `quote/${name}`, order: `order/${name}`, receive: `receive/${name}`, bill: "money/bills", billnew: "money/bills", snag: "build/snags", task: "build/progress", stage: "build/progress", worker: name ? `worker/${name}` : "people", water: "store/water", item: `item/${encodeURIComponent(name)}`, petty: "money/petty" };
+    if (kind === "petty" && name) { S.petty = S.petty || { full: !!T.petty }; return pcSheet(name); }
     go(map[kind] || "dash");
   };
 };
+/** A dashboard panel that opens and closes (remembered on this phone). */
+function fold(id, title, body, openDefault = false) {
+  let open = openDefault;
+  try { const v = localStorage.getItem(`mimaar.fold.${id}`); if (v != null) open = v === "1"; } catch (e) { /* no storage */ }
+  return `<section class="panel fold ${open ? "open" : ""}" data-fold="${id}"><header data-ftoggle="${id}"><h2>${esc(title)}</h2><span class="btn sm">${esc(open ? t("Close") : t("Open"))}</span>${icon("chev", "lch")}</header><div class="fbody">${body}</div></section>`;
+}
+document.addEventListener("click", (e) => {
+  const h = e.target.closest("[data-ftoggle]"); if (!h) return;
+  const p = h.closest(".fold"); const open = !p.classList.contains("open"); p.classList.toggle("open", open);
+  h.querySelector(".btn").textContent = open ? t("Close") : t("Open");
+  try { localStorage.setItem(`mimaar.fold.${h.dataset.ftoggle}`, open ? "1" : "0"); } catch (err) { /* no storage */ }
+});
 
 /* ================================================================== construction */
-VIEWS.build = async (el, [tab = "schedule"]) => {
+VIEWS.build = async (el, [tab = "progress"]) => {
+  tab = tab.split("?")[0];
+  if (tab === "schedule") tab = "progress";
   setTop(t("Construction"));
-  const tabs = [["schedule", "Schedule"], ["diary", "Diary"], ["inspect", "Inspections"], ["snags", "Snags"]];
+  const tabs = [["progress", "Build progress"], ["diary", "Diary"], ["inspect", "Inspections"], ["snags", "Snags"]];
   el.innerHTML = hubtabs("build", tabs, tab) + `<div id="pane" class="stack"><div class="spin"></div></div>`;
   const pane = $("#pane");
-  if (tab === "schedule") {
-    const rows = await api("tasks");
-    S.cache.tasks = rows;
-    const done = rows.filter((r) => r.status === "Completed").length;
-    pane.innerHTML = panel(t("Schedule"), rows.length ? `<div class="lst">${rows.map((r, i) => lrow({ act: "task", data: i, title: r.subject,
-      sub: `${esc(fdate(r.exp_start_date))} – ${esc(fdate(r.exp_end_date))}<span style="display:block;margin-top:6px">${bar(r.progress, r.late ? "late" : r.progress >= 100 ? "" : "mid")}</span>`,
-      end: `<b>${num(r.progress)}%</b>${r.late ? pill(t("Late"), "bad") : r.status === "Completed" ? pill(t("Done"), "good") : ""}` })).join("")}</div>` : empty(t("No schedule yet"), t("The project's tasks appear here.")), `<span class="cnt">${done}/${rows.length}</span>`);
-    S.acts.task = (i) => taskSheet(S.cache.tasks[+i]);
-  } else if (tab === "diary") {
+  if (tab === "progress") return buildPane(pane);
+  if (tab === "diary") {
     const rows = await api("diary");
     pane.innerHTML = `<button class="btn pri big wide" data-act="new">${icon("plus")}${esc(t("New diary entry"))}</button>` + panel(t("Site diary"), rows.length ? `<div class="lst">${rows.map((r) => `<div class="lrow static" style="flex-direction:column;align-items:stretch;gap:6px">
       <div class="row"><b>${esc(fdate(r.date))}</b><span class="spacer" style="flex:1"></span>${r.weather ? pill(t(r.weather), "info") : ""}${r.workers ? pill(t("{0} workers", r.workers)) : ""}</div>
@@ -521,25 +559,127 @@ VIEWS.build = async (el, [tab = "schedule"]) => {
   }
 };
 
-function taskSheet(task) {
-  const sh = sheet(task.subject, `<div class="form">
-    <div class="kv"><span>${esc(t("Planned"))}</span><b>${esc(fdate(task.exp_start_date))} – ${esc(fdate(task.exp_end_date))}</b><span>${esc(t("Status"))}</span><b>${esc(t(task.status))}</b></div>
-    ${bar(task.progress, task.late ? "late" : "mid")}
-    ${fld(t("Work done now (%)"), `${chips("p", ["0", "25", "50", "75", "100"].map((x) => [x, `${x}%`]), "")}${inp("progress", task.progress, "number", 'min="0" max="100"')}`, { req: true })}
-    ${fld(t("What was done"), area("note"))}
-    ${fld(t("Progress photo"), `<div class="shots">${shot("photo", t("Take photo"))}</div>`)}
-    <div data-hist class="small muted"></div></div>`, { footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(t("Save progress"))}</button>` });
+/* ---------------- build progress: stages by phase, report, verify, compare photos ---------------- */
+const stTitle = (s) => (s && S.lang === "ur" && s.title_ur ? s.title_ur : (s || {}).title || "");
+const SSTATE = { done: ["Done", "good"], now: ["In progress", "warn"], behind: ["Behind plan", "bad"], soon: ["Starts soon", "info"], later: ["Later", ""] };
+const sstate = (s) => pill(t(SSTATE[s.state][0]), SSTATE[s.state][1]);
+const stageBar = (s) => `<div class="sbar" role="img" aria-label="${esc(t("{0}% built, {1}% reported, {2}% planned", num(s.built), num(s.reported), num(s.planned)))}"><i class="rep" style="width:${Math.min(100, s.reported)}%"></i><i class="ver" style="width:${Math.min(100, s.verified || 0)}%"></i><b class="plan" style="left:${Math.min(100, s.planned)}%"></b></div>`;
+const buildLegend = () => `<div class="legend"><span><i class="g"></i>${esc(t("Built (verified)"))}</span><span><i class="a"></i>${esc(t("Reported"))}</span><span><i class="m"></i>${esc(t("Planned for today"))}</span></div>`;
+async function buildPane(pane) {
+  const d = await api("mimaar.build.stages");
+  S.build = d;
+  const all = d.phases.flatMap((p) => p.stages);
+  const opts = [["", t("All stages")], ["now", t("Building now")], ["behind", t("Behind plan")], ["soon", t("Starts soon")], ["done", t("Done")]].concat(d.phases.map((p) => ["ph:" + p.name, t(p.name)]));
+  const f = S.buildF || "";
+  pane.innerHTML = `<section class="panel plain"><div class="body bhero">
+      <div class="row" style="flex-wrap:nowrap;justify-content:space-between;align-items:flex-end"><div><span class="small muted">${esc(t("Whole project"))}</span><b class="big">${num(d.built)}%</b><span class="small muted">${esc(t("built · {0}% planned by today", num(d.planned)))}</span></div>
+        ${d.now ? `<div class="bnow"><span class="small muted">${esc(t("Now"))}</span><b>${esc(stTitle(d.now))}</b>${d.next ? `<span class="small muted">${esc(t("Next: {0} · {1}", stTitle(d.next), fdate(d.next.start)))}</span>` : ""}</div>` : ""}</div>
+      ${stageBar({ built: d.built, reported: d.built, verified: d.built, planned: d.planned })}
+      <div class="bcounts">${[["done", "Done"], ["now", "In progress"], ["behind", "Behind plan"], ["soon", "Starts soon"], ["later", "Later"]].map(([k, l]) => `<button data-act="bfilter" data-v="${k}" class="bc ${k}"><b>${(d.counts || {})[k] || 0}</b><span>${esc(t(l))}</span></button>`).join("")}</div></div></section>
+    ${buildLegend()}
+    <select name="f" class="pillsel" style="align-self:flex-start">${opts.map(([v, l]) => `<option value="${esc(v)}" ${v === f ? "selected" : ""}>${esc(l)}</option>`).join("")}</select>
+    <div data-list class="stack"></div>`;
+  const list = pane.querySelector("[data-list]"), fs = pane.querySelector("[name=f]");
+  const draw = () => {
+    const v = (S.buildF = fs.value);
+    const ok = (s, p) => !v || (v.startsWith("ph:") ? p.name === v.slice(3) : s.state === v);
+    const html = d.phases.map((p) => { const ss = p.stages.filter((s) => ok(s, p)); return ss.length ? `<div class="phead"><b>${esc(t(p.name))}</b><span class="cnt">${ss.length}</span><span class="small muted">${esc(t("{0}% built · {1}% planned", num(p.built), num(p.planned)))}</span></div>${ss.map(stageCard).join("")}` : ""; }).join("");
+    list.innerHTML = html || empty(t("Nothing here"), all.length ? "" : t("The project's stages appear here."));
+  };
+  fs.addEventListener("change", draw);
+  draw();
+  const find = (n) => all.find((s) => s.name === n);
+  Object.assign(S.acts, {
+    stoggle: (n) => { const c = list.querySelector(`.scard[data-st="${CSS.escape(n)}"]`); if (c) c.classList.toggle("open"); },
+    bfilter: (k) => { fs.value = k; draw(); list.scrollIntoView({ behavior: "smooth" }); },
+    sreport: (n) => progressSheet(find(n), "report"), sverify: (n) => progressSheet(find(n), "verify"), sphoto: (n) => stagePhotoSheet(find(n)),
+    scompare: (n) => compareSheet(find(n)), sdetail: (n) => stageDetail(find(n)),
+  });
+}
+function stageCard(s) {
+  const open = s.state === "now" || s.state === "behind";
+  const b = S.build || {};
+  return `<article class="scard ${open ? "open" : ""} ${s.state}" data-st="${esc(s.name)}">
+    <button class="sc-head" data-act="stoggle" data-v="${esc(s.name)}"><span class="sc-t"><b>${esc(stTitle(s))}</b><span class="small muted">${esc([s.code, `${fdate(s.start)} → ${fdate(s.end)}`].filter(Boolean).join(" · "))}</span></span>
+      <span class="sc-p"><b>${num(s.built)}%</b><span class="small muted">${esc(t("built"))}</span></span>${icon("chev", "lch")}</button>
+    <div class="sc-body">${stageBar(s)}
+      <div class="row small" style="gap:6px">${sstate(s)}<span class="muted">${esc(t("Reported {0}% · Planned {1}%", num(s.reported), num(s.planned)))}${s.verified != null ? ` · ${esc(t("Verified {0}%", num(s.verified)))}` : ""}</span></div>
+      ${s.photos.length ? `<div class="thumbs">${s.photos.map((p) => `<img src="${esc(p.url)}" alt="" loading="lazy" title="${esc(fdate(p.date))}">`).join("")}</div>` : ""}
+      <div class="sc-acts">${b.can_report ? `<button class="btn sm" data-act="sphoto" data-v="${esc(s.name)}">${icon("cam")}${esc(t("Photo"))}</button><button class="btn sm" data-act="sreport" data-v="${esc(s.name)}">${esc(t("Report progress"))}</button>` : ""}
+        ${b.can_verify ? `<button class="btn sm pri" data-act="sverify" data-v="${esc(s.name)}">${icon("check")}${esc(t("Verify"))}</button>` : ""}
+        ${s.photos.length > 1 ? `<button class="btn sm" data-act="scompare" data-v="${esc(s.name)}">${esc(t("Compare photos"))}</button>` : ""}<button class="btn sm" data-act="sdetail" data-v="${esc(s.name)}">${esc(t("Details"))}</button></div></div></article>`;
+}
+function progressSheet(s, kind) {
+  if (!s) return;
+  const verify = kind === "verify";
+  const start = verify ? (s.verified != null ? s.verified : s.reported) : s.reported;
+  const sh = sheet(verify ? t("Verify: {0}", stTitle(s)) : t("Report progress: {0}", stTitle(s)), `<div class="form">
+      ${stageBar(s)}<span class="small muted">${esc(t("Reported {0}% · Planned {1}%", num(s.reported), num(s.planned)))}${s.verified != null ? ` · ${esc(t("Verified {0}%", num(s.verified)))}` : ""}</span>
+      <div class="pctbox"><b data-pct>${num(start)}%</b><input type="range" name="pct" min="0" max="100" step="5" value="${Math.round(start / 5) * 5}" aria-label="${esc(t("Work done (%)"))}"></div>
+      <div class="chips" data-q>${[["+5", "+5%"], ["+10", "+10%"], ["25", "25%"], ["50", "50%"], ["75", "75%"], ["100", "100%"]].map(([v, l]) => `<button type="button" data-p="${v}">${l}</button>`).join("")}</div>
+      ${fld(verify ? t("What you checked on site") : t("What was done"), area("note", "", `placeholder="${esc(verify ? t("e.g. slab steel checked with the drawing, cover blocks in place") : t("e.g. columns cast on grid A and B"))}"`))}
+      ${fld(t("Photos of the work"), `<div class="shots">${shot("p1", t("Photo 1"))}${shot("p2", t("Photo 2"))}${shot("p3", t("Photo 3"))}</div>`, { req: !verify })}<input type="hidden" name="location"></div>`,
+    { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(verify ? t("Save check") : t("Save progress"))}</button>` });
   wireForm(sh);
-  sh.addEventListener("chip", (e) => { sh.querySelector("[name=progress]").value = e.detail; });
-  api("task_history", { name: task.name }).then((h) => {
-    if (h && h.length) sh.querySelector("[data-hist]").innerHTML = `<div class="b" style="margin-bottom:4px">${esc(t("Earlier updates"))}</div>` + h.slice(0, 6).map((c) => `<div style="padding:4px 0;border-bottom:1px solid var(--line)">${esc(fdate(String(c.creation).slice(0, 10)))}: ${c.content.replace(/<img[^>]*>/g, "📷").replace(/<br>/g, " ")}</div>`).join("");
-  }).catch(() => {});
+  const r = sh.querySelector("[name=pct]"), out = sh.querySelector("[data-pct]");
+  const upd = () => { out.textContent = r.value + "%"; };
+  r.addEventListener("input", upd);
+  sh.querySelector("[data-q]").addEventListener("click", (e) => { const b = e.target.closest("[data-p]"); if (!b) return; const v = b.dataset.p; r.value = v.startsWith("+") ? Math.min(100, +r.value + +v.slice(1)) : v; upd(); });
   sh.querySelector("[data-save]").onclick = async () => {
-    if (!need(sh, ["progress"])) return;
-    const v = vals(sh);
-    const r = await run(sh, () => api("task_progress", { name: task.name, progress: v.progress, note: v.note, photo: v.photo }), t("Progress saved"));
+    const v = vals(sh); const photos = [v.p1, v.p2, v.p3].filter(Boolean);
+    if (!verify && !photos.length && +v.pct > s.reported) { sheetError(sh, t("Take at least one photo of the work.")); return; }
+    const res = await run(sh, () => api(verify ? "mimaar.build.verify" : "mimaar.build.report", { task: s.name, pct: v.pct, note: v.note, photos, location: v.location }), verify ? t("Check saved") : t("Progress saved"));
+    if (res) { closeSheet(sh); render(); }
+  };
+}
+function stagePhotoSheet(s) {
+  if (!s) return;
+  const sh = sheet(t("Photo: {0}", stTitle(s)), `<div class="form">${fld(t("Photos of the work"), `<div class="shots">${shot("p1", t("Photo 1"))}${shot("p2", t("Photo 2"))}${shot("p3", t("Photo 3"))}</div>`, { req: true })}
+      ${fld(t("Note"), area("note"))}<input type="hidden" name="location"></div>`, { footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(t("Save"))}</button>` });
+  wireForm(sh);
+  sh.querySelector("[data-save]").onclick = async () => {
+    const v = vals(sh); const photos = [v.p1, v.p2, v.p3].filter(Boolean);
+    if (!photos.length) { sheetError(sh, t("Take the photo first.")); return; }
+    const r = await run(sh, () => api("mimaar.build.add_photo", { task: s.name, photos, note: v.note, location: v.location }), t("Saved"));
     if (r) { closeSheet(sh); render(); }
   };
+}
+async function stagePhotos(s) {
+  const d = await busy(api("mimaar.build.stage", { name: s.name }));
+  const ph = [];
+  d.updates.forEach((u) => [u.photo_1, u.photo_2, u.photo_3].filter(Boolean).forEach((url) => ph.push({ url, date: u.date, kind: u.kind, note: u.note })));
+  return { d, ph };
+}
+async function compareSheet(s) {
+  if (!s) return;
+  let x; try { x = await stagePhotos(s); } catch (e) { toast(e.message, "bad"); return; }
+  const ph = x.ph.slice().reverse(); // oldest first
+  if (ph.length < 2) { toast(t("Take at least two photos of this stage to compare."), "bad"); return; }
+  const opt = (sel) => ph.map((p, i) => `<option value="${i}" ${i === sel ? "selected" : ""}>${esc(`${fdate(p.date)} · ${t(p.kind)}`)}</option>`).join("");
+  const sh = sheet(t("Compare photos: {0}", stTitle(s)), `<div class="stack">
+      <div class="cmp2"><figure><select name="a">${opt(0)}</select><img data-a src="${esc(ph[0].url)}" alt="" class="zoomable"></figure><figure><select name="b">${opt(ph.length - 1)}</select><img data-b src="${esc(ph[ph.length - 1].url)}" alt="" class="zoomable"></figure></div>
+      ${S.b.ai ? `<button class="btn wide" data-ai="1">${icon("sparkle")}${esc(t("What changed? (AI)"))}</button>` : ""}<div data-res></div></div>`, { full: true });
+  const a = sh.querySelector("[name=a]"), b = sh.querySelector("[name=b]");
+  a.onchange = () => { sh.querySelector("[data-a]").src = ph[+a.value].url; sh.querySelector("[data-res]").innerHTML = ""; };
+  b.onchange = () => { sh.querySelector("[data-b]").src = ph[+b.value].url; sh.querySelector("[data-res]").innerHTML = ""; };
+  const ai = sh.querySelector("[data-ai]");
+  if (ai) ai.onclick = async () => {
+    try {
+      const r = await busy(api("mimaar.build.compare", { task: s.name, before: ph[+a.value].url, after: ph[+b.value].url }), t("The AI is comparing the photos…"));
+      sh.querySelector("[data-res]").innerHTML = `<div class="verdict ${(r.concerns || []).length ? "warn" : "good"}">${icon("sparkle")}<span>${esc(r.summary)}${r.estimate != null ? `<br><b>${esc(t("Looks about {0}% done", num(r.estimate)))}</b>` : ""}${(r.concerns || []).map((c) => `<br>⚠ ${esc(c)}`).join("")}</span></div>`;
+    } catch (e) { toast(e.message, "bad"); }
+  };
+}
+async function stageDetail(s) {
+  if (!s) return;
+  let x; try { x = await stagePhotos(s); } catch (e) { toast(e.message, "bad"); return; }
+  const u = x.d.updates;
+  sheet(stTitle(s), `<div class="stack">${stageBar(s)}${buildLegend()}
+      <div class="kvs"><div class="kv"><span>${esc(t("Planned"))}</span><b>${esc(`${fdate(s.start)} → ${fdate(s.end)}`)}</b></div><div class="kv"><span>${esc(t("Built"))}</span><b>${num(s.built)}%</b></div>
+        <div class="kv"><span>${esc(t("Reported"))}</span><b>${num(s.reported)}%</b></div><div class="kv"><span>${esc(t("Verified"))}</span><b>${s.verified != null ? `${num(s.verified)}% · ${esc(fdate(s.verified_on))}` : "—"}</b></div>
+        <div class="kv"><span>${esc(t("Planned for today"))}</span><b>${num(s.planned)}%</b></div>${s.days_left != null ? `<div class="kv"><span>${esc(t("Days to the planned finish"))}</span><b>${num(s.days_left)}</b></div>` : ""}</div>
+      ${panel(t("Updates"), u.length ? `<div class="lst">${u.map((x) => `<div class="lrow static" style="flex-direction:column;align-items:stretch;gap:6px"><div class="row" style="justify-content:space-between"><b>${esc(t(x.kind))}${x.pct != null && x.kind !== "Photo" ? ` · ${num(x.pct)}%` : ""}</b><span class="small muted">${esc([fdate(x.date), x.time, x.by].filter(Boolean).join(" · "))}</span></div>
+        ${x.note ? `<div class="small">${esc(x.note)}</div>` : ""}${[x.photo_1, x.photo_2, x.photo_3].filter(Boolean).length ? `<div class="thumbs">${[x.photo_1, x.photo_2, x.photo_3].filter(Boolean).map((p) => `<img src="${esc(p)}" alt="">`).join("")}</div>` : ""}</div>`).join("")}</div>` : empty(t("No updates yet")), "", "plain")}</div>`, { full: true });
 }
 
 function diarySheet() {
@@ -1199,10 +1339,11 @@ VIEWS.more = async (el) => {
   if (c.people) T.push(["Attendance", "users", "att", "k1"], ["People and access", "card", "people", "k7"]);
   if (c.suppliers) T.push(["Suppliers", "truck", "suppliers", "k2"]);
   if (c.buy) T.push(["Quotations", "log", "quotes", "k6"], ["Purchase orders", "cart", "orders", "k5"]);
-  if (c.money) T.push(["Bills and payments", "pay", "bills", "k8"], ["Budget", "budget", "budget", "k3"]);
+  if (c.money) T.push(["Money", "pay", "money/bills", "k8"], ["Budget", "budget", "money/budget", "k3"]);
   if (c.site) T.push(["Snags", "alert", "build/snags", "k4"], ["Site diary", "log", "build/diary", "k7"]);
   if (c.store || c.site) T.push(["Stock", "box", "store/items", "k3"], ["Water", "drop", "store/water", "k7"]);
-  if (PETTY()) T.push(["Petty cash", "cash", "petty", "k1"]);
+  if (PETTY()) T.push(["Petty cash", "cash", "money/petty", "k1"]);
+  if (S.b.ai) T.push(["Ask the project", "sparkle", "ask", "k5"]);
   T.push(["My settings", "gear", "settings", "k8"]);
   if (c.owner && !NATIVE && /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) T.push(["Connect a phone", "globe", "connect", "k2"]);
   el.innerHTML = `<button class="mo-me" data-go="settings"><span class="av">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc((b.full_name || "?").charAt(0))}</span><span><b>${esc(b.full_name)}</b><span class="small muted">${esc(b.project_name || "")}</span></span>${icon("chev", "lch")}</button>
@@ -1733,13 +1874,109 @@ function billSheet(r) {
 }
 
 /* ---------------- budget ---------------- */
+/* ---------------- Money > Budget (owner and project accountant) ---------------- */
+const lac = (n) => `${(Math.round(((+n || 0) / 1e5) * 10) / 10).toLocaleString("en-US")} ${t("lac")}`;
+const monthLbl = (m) => new Date(m + "-01T00:00:00").toLocaleDateString(S.lang === "ur" ? "ur-PK" : "en-GB", { month: "short", year: "2-digit" });
 VIEWS.budget = async (el) => {
   setTop(t("Budget"), true);
-  const rows = await api("budget");
-  const tb = rows.reduce((a, r) => a + r.budget, 0), ta = rows.reduce((a, r) => a + r.actual, 0), to = rows.reduce((a, r) => a + r.ordered, 0);
-  el.innerHTML = `<div class="ctiles">${tile(t("Budget"), money(tb, 1), "", "", "k5")}${tile(t("Ordered"), money(to, 1), tb ? `${num((to / tb) * 100)}%` : "", "", "k2")}${tile(t("Spent (billed)"), money(ta, 1), tb ? `${num((ta / tb) * 100)}%` : "", "", "k6")}${tile(t("Left to spend"), money(tb - Math.max(ta, to), 1), "", "", "k1")}</div>` +
-    panel(t("Budget lines"), rows.length ? `<div class="lst">${rows.map((r) => { const p = r.budget ? (Math.max(r.actual, r.ordered) / r.budget) * 100 : 0;
-      return lrow({ title: r.name || r.account, sub: `${esc(t("ordered {0} · spent {1}", money(r.ordered, 1), money(r.actual, 1)))}<span style="display:block;margin-top:6px">${bar(p, p > 100 ? "late" : "mid")}</span>`, end: `<b>${money(r.budget, 1)}</b>${p > 100 ? pill(t("Over"), "bad") : ""}`, chev: false }); }).join("")}</div>` : empty(t("No budget yet")));
+  const d = await api("mimaar.money.budget_overview");
+  S.budget = d;
+  const pc = (a) => (d.budget ? `${num(Math.round((a / d.budget) * 100))}% ${t("of budget")}` : "");
+  const tiles = [tile(t("Budgeted"), lac(d.budget), money(d.budget), "", "k5"), tile(t("Contracted (committed)"), lac(d.committed), pc(d.committed), "", "k2"),
+    tile(t("Paid"), lac(d.paid), pc(d.paid), "", "k1"), tile(t("Remaining"), lac(d.left), t("budget less paid · {0} still owed on contracts", lac(d.still_owed)), "", "k3")];
+  const maxp = Math.max(1, ...d.phases.map((p) => p.budget));
+  const cost = `<div class="body"><div class="pcost">${d.phases.map((p, i) => `<div class="pc"><span class="small"><i style="background:var(--k${(i % 8) + 1})"></i>${esc(t(p.phase))}</span><b>${esc(lac(p.budget))}</b><span class="small muted">${esc(t("{0}% of total", num(Math.round((p.budget / (d.budget || 1)) * 100))))}</span></div>`).join("")}
+    <div class="pc tot"><span class="small">${esc(t("Total project budget"))}</span><b>${esc(lac(d.budget))}</b><span class="small muted">${esc(money(d.budget))}</span></div></div>
+    <div class="row" style="margin-top:10px;gap:6px">${d.over ? pill(t("{0} over budget", d.over), "bad") : ""}${pill(t("{0} within budget", d.within), "good")}</div></div>`;
+  const cf = d.cash, maxc = Math.max(1, ...cf.months.map((m, i) => cf.scheduled[i] + cf.projected[i]));
+  const flow = cf.months.length ? `<div class="body"><div class="cfbars" role="img" aria-label="${esc(t("Projected cash flow, whole project"))}">${cf.months.map((m, i) => `<div class="cf" title="${esc(`${monthLbl(m)}: ${lac(cf.scheduled[i] + cf.projected[i])}`)}"><div class="cfb"><span class="s" style="height:${(cf.scheduled[i] / maxc) * 100}%"></span><span class="p" style="height:${(cf.projected[i] / maxc) * 100}%"></span></div>${i % 3 === 0 ? `<em>${esc(monthLbl(m))}</em>` : "<em></em>"}</div>`).join("")}</div>
+    <div class="legend"><span><i class="s"></i>${esc(t("Scheduled payments"))}</span><span><i class="p"></i>${esc(t("Projected purchases and labour (from budget)"))}</span></div>
+    <div class="ctiles" style="margin-top:12px">${tile(t("Total projected"), lac(d.total_projected), `${monthLbl(cf.months[0])} – ${monthLbl(cf.months[cf.months.length - 1])}`, "", "k5")}${d.busiest ? tile(t("Busiest month"), lac(d.busiest.amount), monthLbl(d.busiest.month), "", "k4") : ""}${d.heavy ? tile(t("Heavy quarter"), lac(d.heavy.amount), d.heavy.quarter, "", "k3") : ""}<span class="ctile" style="cursor:default"></span></div>
+    <p class="small muted" style="margin:10px 0 0">${esc(t("Payments still due on purchase orders are placed on their due dates. Budget not yet ordered is spread month by month over the stages it is needed for."))}</p></div>` : empty(t("Nothing to project yet"));
+  const lineRow = (x) => lrow({ act: "bline", data: x.account, title: x.name, sub: `${esc(t("committed {0} · paid {1}", money(x.committed, 1), money(x.paid, 1)))}<span style="display:block;margin-top:6px">${bar(x.budget ? (Math.max(x.committed, x.booked) / x.budget) * 100 : 0, x.over ? "late" : "mid")}</span>`,
+    end: `<b>${esc(money(x.budget, 1))}</b>${x.over ? pill(t("Over budget"), "bad") : pill(t("Within"), "good")}` });
+  el.innerHTML = `<div class="ctiles">${tiles.join("")}</div>
+    ${panel(t("Full project cost"), cost)}
+    ${panel(t("Projected cash flow, whole project (lac)"), flow)}
+    ${d.phases.map((p) => panel(t(p.phase), moreList(p.lines, lineRow, 6), `<span class="small muted">${esc(lac(p.budget))}</span>`)).join("")}
+    ${d.owner ? `<button class="btn pri big wide" data-act="addline">${icon("plus")}${esc(t("Budget line"))}</button>` : ""}
+    <p class="small muted" style="margin:0">${esc(t("Tap a line to see every order and payment behind it."))}</p>`;
+  S.acts.bline = (acc) => budgetLineSheet(acc, d);
+  S.acts.addline = () => addBudgetLine(d);
+};
+async function budgetLineSheet(acc, d) {
+  let r; try { r = await busy(api("mimaar.money.budget_line", { account: acc })); } catch (e) { toast(e.message, "bad"); return; }
+  const x = r.line;
+  const sh = sheet(x.name, `<div class="stack"><div class="ctiles">${tile(t("Budget"), money(x.budget, 1), t(x.category), "", "k5")}${tile(t("Committed"), money(x.committed, 1), "", "", "k2")}${tile(t("Paid"), money(x.paid, 1), "", "", "k1")}${tile(t("Left"), money(x.left, 1), x.over ? t("Over budget") : "", "", x.over ? "k4" : "k3")}</div>
+      ${d.owner ? fld(t("Category"), sel("category", d.categories, x.category, false)) : ""}
+      ${panel(t("Purchase orders"), r.orders.length ? `<div class="lst">${r.orders.map((o) => lrow({ go: `order/${o.name}`, title: o.supplier_name, sub: esc(`${o.name} · ${fdate(o.transaction_date)} · ${t("{0}% received · {1}% billed", num(o.per_received), num(o.per_billed))}`), end: `<b>${esc(money(o.amount, 1))}</b>` })).join("")}</div>` : empty(t("No orders yet")), "", "plain")}
+      ${panel(t("Booked in the accounts"), r.postings.length ? `<div class="lst">${r.postings.map((g) => lrow({ title: `${t(g.voucher_type)} · ${g.voucher_no}`, sub: esc([fdate(g.posting_date), (g.remarks || "").slice(0, 90)].filter(Boolean).join(" · ")), end: `<b>${esc(money(g.amount, 1))}</b>`, chev: false })).join("")}</div>` : empty(t("Nothing booked yet")), "", "plain")}</div>`, { full: true });
+  const cs = sh.querySelector("[name=category]");
+  if (cs) cs.onchange = async () => { try { await api("mimaar.money.budget_line_category", { account: acc, category: cs.value }); toast(t("Saved"), "good"); } catch (e) { toast(e.message, "bad"); } };
+}
+function addBudgetLine(d) {
+  const sh = sheet(t("New budget line"), `<div class="form">${fld(t("Budget line"), inp("name", "", "text", `placeholder="${esc(t("e.g. Solar panels"))}"`), { req: true })}
+      ${fld(t("Category"), sel("category", d.categories, "Finishing materials", false))}${fld(t("Amount (Rs)"), inp("amount", "", "number"), { req: true })}
+      <p class="small muted" style="margin:0">${esc(t("It is saved in the ERP as an expense account with its budget for the project."))}</p></div>`,
+    { footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(t("Save"))}</button>` });
+  sh.querySelector("[data-save]").onclick = async () => {
+    if (!need(sh, ["name", "amount"])) return;
+    const v = vals(sh);
+    const r = await run(sh, () => api("mimaar.money.budget_line_add", v), t("Budget line added"));
+    if (r) { closeSheet(sh); render(); }
+  };
+}
+
+/* ---------------- Ask the project (AI over the live records) ---------------- */
+function mdLite(s) {
+  const lines = esc(s || "").split(/\n/);
+  let html = "", list = false;
+  const inl = (x) => x.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+  for (const ln of lines) {
+    const m = ln.match(/^\s*[-•*]\s+(.*)$/);
+    if (m) { if (!list) { html += "<ul>"; list = true; } html += `<li>${inl(m[1])}</li>`; continue; }
+    if (list) { html += "</ul>"; list = false; }
+    const h = ln.match(/^\s*#{1,4}\s+(.*)$/);
+    if (h) html += `<h3>${inl(h[1])}</h3>`; else if (ln.trim()) html += `<p>${inl(ln)}</p>`;
+  }
+  return html + (list ? "</ul>" : "");
+}
+const ASK_SUGGEST = () => [t("Are we on schedule? What's behind?"), ...(C().money || C().owner ? [t("What do I owe the builder next and when?")] : []), t("Which materials need ordering this week?"),
+  t("Summarise this week's site diary and open NCRs"), t("Draft a weekly progress report for the owner"), t("How much cement and steel went out this week, and to whom?"), t("How much water came this week, and was any of it bad?")];
+VIEWS.ask = async (el) => {
+  setTop(t("Ask the project"), true);
+  if (!S.b.ai) { el.innerHTML = `<div class="banner warn">${esc(t("Ask the project needs the AI. The owner adds the Gemini key in Mimaar Settings."))}</div>`; return; }
+  S.askLog = S.askLog || [];
+  el.innerHTML = panel(t("Ask the project"), `<div class="body stack"><p class="small muted" style="margin:0">${esc(t("Questions are answered from this project's live records: schedule, payments, budget, buying, stock, water, attendance, inspections and the site diary."))}</p>
+      <div class="asks">${ASK_SUGGEST().map((q) => `<button class="btn sm" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div>
+      ${fld(t("Your question"), area("q", "", `placeholder="${esc(t("e.g. How much steel have we received against the estimate?"))}"`))}
+      <button class="btn pri big wide" data-act="ask">${icon("sparkle")}${esc(t("Ask"))}</button></div>`) + `<div data-ans class="stack"></div>`;
+  const box = el.querySelector("[data-ans]"), qa_ = el.querySelector("[name=q]");
+  const draw = () => { box.innerHTML = S.askLog.map((x) => `<section class="panel plain"><div class="body stack" style="gap:8px"><b class="askq">${esc(x.q)}</b><div class="md">${mdLite(x.a)}</div>
+      ${(x.f || []).length ? `<div class="asks">${x.f.map((q) => `<button class="btn sm" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div>` : ""}</div></section>`).reverse().join(""); };
+  const ask = async (q) => {
+    q = (q || "").trim(); if (q.length < 3) { toast(t("Write your question."), "bad"); return; }
+    try {
+      const r = await busy(api("mimaar.askai.ask", { question: q }), t("Looking through the project's records…"));
+      S.askLog.push({ q, a: r.answer, f: r.followups }); qa_.value = ""; draw(); box.scrollIntoView({ behavior: "smooth" });
+    } catch (e) { toast(e.message, "bad"); }
+  };
+  el.addEventListener("click", (e) => { const b = e.target.closest("[data-q]"); if (b) { qa_.value = b.dataset.q; ask(b.dataset.q); } });
+  S.acts.ask = () => ask(qa_.value);
+  draw();
+};
+
+/* ---------------- Money hub: payments, supplier accounts, budget, petty cash ---------------- */
+VIEWS.money = async (el, [tab = ""]) => {
+  const c = C(); const tabs = [];
+  if (c.money) tabs.push(["bills", "Payments"], ["suppliers", "Supplier accounts"], ["budget", "Budget"]);
+  else if (S.b && (c.owner)) tabs.push(["budget", "Budget"]);
+  if (PETTY()) tabs.push(["petty", "Petty cash"]);
+  if (!tabs.length) { el.innerHTML = `<div class="banner warn">${esc(t("You don't have access to this. Ask the owner."))}</div>`; return; }
+  if (!tabs.some((x) => x[0] === tab)) tab = tabs[0][0];
+  el.innerHTML = (tabs.length > 1 ? hubtabs("money", tabs, tab) : "") + `<div id="mpane" class="stack"><div class="spin"></div></div>`;
+  await VIEWS[tab]($("#mpane"), []);
+  setTop(t("Money"));
 };
 
 /* ---------------- connect a phone (laptop test set-up) ---------------- */

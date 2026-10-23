@@ -230,6 +230,8 @@ def task_progress(name, progress, note=None, photo=None):
 	t.check_permission("write")
 	p = max(0, min(100, flt(progress)))
 	t.progress = p
+	if t.meta.has_field("mimaar_reported"):
+		t.mimaar_reported = p
 	if p >= 100:
 		t.status = "Completed"
 		t.completed_on = t.completed_on or nowdate()

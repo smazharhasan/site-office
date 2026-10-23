@@ -19,6 +19,9 @@ EXTRA = (
 	"Underground", "Overhead", "Drums", "Direct use", "Sweet (construction & curing)", "Drinking", "Brackish (rejected)",
 	"Expense", "Cash given", "Cash returned", "Waiting for owner", "Approved", "Rejected", "Cash in hand", "Bank transfer", "Cheque",
 	"JazzCash / Easypaisa", "Raast", "Check", "Mismatch", "Not checked", "clear", "slightly turbid", "turbid", "not visible", "Match", "No match", "Unclear",
+	"Design", "Approvals", "Grey structure", "Finishing", "Handover", "Design & approvals", "Service charges", "Grey labour", "Grey materials", "Finishing labour",
+	"Finishing materials", "Contingency", "Site running costs", "Buying", "Stores", "Money", "Quality", "Build", "People", "Water", "Reported", "Photo", "Materials",
+	"Store issue", "Store return", "Receiving goods", "Petty cash", "Attendance", "Sign in",
 )
 
 

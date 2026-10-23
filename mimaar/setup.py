@@ -78,6 +78,22 @@ CUSTOM_FIELDS = {
 	],
 }
 
+PHASES = "Design\nApprovals\nGrey structure\nFinishing\nHandover"
+BUDGET_CATEGORIES = "\nDesign & approvals\nService charges\nGrey labour\nGrey materials\nFinishing labour\nFinishing materials\nContingency\nSite running costs\nOther"
+CUSTOM_FIELDS["Task"] = [
+	F("mimaar_section", "Section Break", "Build progress (Mimaar)", "description"),
+	F("mimaar_phase", "Select", "Phase", "mimaar_section", options=PHASES),
+	F("mimaar_reported", "Percent", "Reported (%)", "mimaar_phase", read_only=1, description="The latest progress reported from site."),
+	F("mimaar_col", "Column Break", "", "mimaar_reported"),
+	F("mimaar_verified", "Percent", "Verified by the owner's side (%)", "mimaar_col", read_only=1),
+	F("mimaar_verified_by", "Link", "Verified by", "mimaar_verified", options="User", read_only=1),
+	F("mimaar_verified_on", "Date", "Verified on", "mimaar_verified_by", read_only=1),
+]
+CUSTOM_FIELDS["Account"] = [
+	F("mimaar_budget_category", "Select", "Budget category (Mimaar)", "account_type", options=BUDGET_CATEGORIES,
+		description="Groups the budget lines on the phone (Design, Grey, Finishing, Contingency ...)."),
+]
+
 TRACKED = ["Supplier", "Supplier Quotation", "Request for Quotation", "Purchase Order", "Purchase Receipt", "Purchase Invoice", "Payment Entry", "Stock Entry", "Item", "Project", "Task", "Budget"]
 
 
@@ -128,6 +144,8 @@ def apply_settings():
 	bank_account()
 	water_setup()
 	petty_setup()
+	task_phases()
+	budget_categories()
 	_single("Buying Settings", {"po_required": "Yes", "pr_required": "Yes", "maintain_same_rate": 1, "maintain_same_rate_action": "Stop", "supp_master_name": "Supplier Name", "allow_multiple_items": 1, "over_order_allowance": 0, "bill_for_rejected_quantity_in_purchase_invoice": 0})
 	_single("Stock Settings", {"allow_negative_stock": 0, "over_delivery_receipt_allowance": 0, "item_naming_by": "Item Code", "stock_uom": "Nos"})
 	_single("Accounts Settings", {"over_billing_allowance": 0, "check_supplier_invoice_uniqueness": 1, "unlink_payment_on_cancellation_of_invoice": 0, "automatically_fetch_payment_terms": 0})
@@ -229,7 +247,9 @@ def local_site(data_file=None, company="Villa 31", abbr="V31"):
 	if data_file and os.path.exists(data_file):
 		from mimaar.migration.old_app import run
 
-		run(data=json.load(open(data_file, encoding="utf-8")))
+		data = json.load(open(data_file, encoding="utf-8"))
+		run(data=data)
+		keep_old_app_data(data)
 	elif data_file:
 		print("No data file at", data_file)
 	frappe.db.commit()
@@ -298,3 +318,83 @@ def petty_setup():
 		if not frappe.db.exists("Account", acc):
 			acc = frappe.get_doc({"doctype": "Account", "account_name": cat, "parent_account": grp, "company": co, "account_type": "Expense Account", "is_group": 0}).insert(ignore_permissions=True).name
 		frappe.get_doc({"doctype": "Petty Cash Category", "category_name": cat, "expense_account": acc, "is_active": 1, "for_wages": wages, "sort_order": i + 1}).insert(ignore_permissions=True)
+
+
+OLD_APP_FILE = "mimaar-old-app.json"
+
+
+def keep_old_app_data(data):
+	"""A copy of the old app's file in the site's private folder (not served on the web):
+	later updates use it to fill in details the first import did not keep (e.g. budget categories)."""
+	import json
+
+	keep = {k: data.get(k) for k in ("project", "budget", "milestones") if data.get(k) is not None}
+	with open(frappe.get_site_path("private", OLD_APP_FILE), "w", encoding="utf-8") as f:
+		json.dump(keep, f, ensure_ascii=False)
+
+
+def _old_app_data():
+	import json
+	import os
+
+	p = frappe.get_site_path("private", OLD_APP_FILE)
+	if os.path.exists(p):
+		try:
+			return json.load(open(p, encoding="utf-8"))
+		except ValueError:
+			return {}
+	return {}
+
+
+PHASE_OF_CODE = {"D": "Design", "A": "Approvals", "G": "Grey structure", "F": "Finishing", "H": "Handover"}
+PHASE_OF_NAME = {"design": "Design", "approval": "Approvals", "grey": "Grey structure", "finishing": "Finishing", "handover": "Handover"}
+
+
+def task_phases():
+	"""Each schedule stage gets its phase (from the stage code D1, G2 ... or the description)."""
+	if not frappe.db.has_column("Task", "mimaar_phase"):
+		return
+	for t in frappe.get_all("Task", filters={"mimaar_phase": ["in", ["", None]]}, fields=["name", "subject", "description"], limit_page_length=2000):
+		ph = None
+		desc = (t.description or "").lower()
+		for k, v in PHASE_OF_NAME.items():
+			if desc.startswith(k):
+				ph = v
+				break
+		if not ph and t.subject and len(t.subject) > 1 and t.subject[0] in PHASE_OF_CODE and t.subject[1].isdigit():
+			ph = PHASE_OF_CODE[t.subject[0]]
+		if ph:
+			frappe.db.set_value("Task", t.name, "mimaar_phase", ph, update_modified=False)
+
+
+def _guess_category(name):
+	n = (name or "").lower()
+	if "contingen" in n:
+		return "Contingency"
+	if "design" in n or "approval" in n or "consult" in n:
+		return "Design & approvals"
+	if "service charge" in n:
+		return "Service charges"
+	grey = any(w in n for w in ("grey", "steel", "cement", "block", "sand", "crush", "brick", "concrete", "excavat", "shutter"))
+	labour = any(w in n for w in ("labour", "labor", "polish work", "mason"))
+	if labour:
+		return "Grey labour" if grey else "Finishing labour"
+	return "Grey materials" if grey else "Finishing materials"
+
+
+def budget_categories():
+	"""Budget lines grouped for the phone: from the old app's file when there is one, else from the line's name."""
+	if not frappe.db.has_column("Account", "mimaar_budget_category"):
+		return
+	known = {b.get("name"): b.get("category") for b in (_old_app_data().get("budget") or [])}
+	pc = set(frappe.get_all("Petty Cash Category", pluck="expense_account")) if frappe.db.exists("DocType", "Petty Cash Category") else set()
+	opts = set(BUDGET_CATEGORIES.split("\n"))
+	accounts = set(frappe.db.sql_list("select distinct account from `tabBudget` where docstatus = 1")) | pc
+	for acc in accounts:
+		a = frappe.db.get_value("Account", acc, ["account_name", "mimaar_budget_category"], as_dict=True)
+		if not a or a.mimaar_budget_category:
+			continue
+		cat = "Site running costs" if acc in pc else known.get(a.account_name) or _guess_category(a.account_name)
+		if cat not in opts:
+			cat = "Other"
+		frappe.db.set_value("Account", acc, "mimaar_budget_category", cat, update_modified=False)
