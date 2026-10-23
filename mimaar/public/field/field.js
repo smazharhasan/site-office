@@ -95,7 +95,21 @@ function pickFile(capture) {
 }
 /** A photo. In the phone app: live camera only, stamped with GPS. In a browser: the live camera for
  *  face photos (opts.live), otherwise the phone's camera through the file picker. Returns {url, loc}. */
+function chooseSource(title) {
+  return new Promise((resolve) => {
+    let done = false;
+    const sh = sheet(title, `<div class="stack"><button class="btn big wide" data-c="cam">${icon("cam")}${esc(t("Take photo"))}</button><button class="btn big wide" data-c="file">${icon("photo")}${esc(t("Choose from the phone (screenshot or PDF)"))}</button></div>`);
+    sh.addEventListener("click", (e) => { const b = e.target.closest("[data-c]"); if (!b) return; done = true; closeSheet(sh); resolve(b.dataset.c); });
+    const obs = new MutationObserver(() => { if (!document.body.contains(sh) || sh.parentElement.classList.contains("closing")) { obs.disconnect(); if (!done) { done = true; resolve(null); } } }); obs.observe($("#sheetRoot"), { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+  });
+}
 async function takePhoto(title, opts = {}) {
+  if (opts.gallery) {
+    // proofs such as a transfer screenshot come from the phone's gallery or files
+    const how = await chooseSource(title);
+    if (!how) return null;
+    if (how === "file") { const f = await pickFile(false); if (!f) return null; return { url: await busy(upload(f), t("Saving the photo…")), loc: "" }; }
+  }
   if (NATIVE) {
     const r = await native("photo", { title: t(title), facing: opts.facing || "back", lang: S.lang });
     if (!r || r.cancelled || !r.data) return null;
@@ -286,7 +300,7 @@ function chips(name, options, value = "", cls = "") {
 }
 /** A photo slot: tap to take the photo; the file's address is kept in a hidden input. */
 function shot(name, label, url = "", opts = {}) {
-  return `<button type="button" class="shot ${url ? "has" : ""} ${opts.wide ? "wide" : ""}" data-shot="${name}" data-title="${esc(label)}" ${opts.facing ? `data-facing="${opts.facing}"` : ""} ${opts.facing === "front" ? 'data-live="1"' : ""}>${url ? `<img src="${esc(url)}" alt="">` : `${icon("cam")}<span>${esc(label)}${opts.req ? " *" : ""}</span>`}</button><input type="hidden" name="${name}" value="${esc(url)}">`;
+  return `<button type="button" class="shot ${url ? "has" : ""} ${opts.wide ? "wide" : ""}" data-shot="${name}" data-title="${esc(label)}" ${opts.facing ? `data-facing="${opts.facing}"` : ""} ${opts.facing === "front" ? 'data-live="1"' : ""} ${opts.gallery ? 'data-gallery="1"' : ""}>${url ? `<img src="${esc(url)}" alt="">` : `${icon("cam")}<span>${esc(label)}${opts.req ? " *" : ""}</span>`}</button><input type="hidden" name="${name}" value="${esc(url)}">`;
 }
 function wireForm(root) {
   if (root._wired) return; root._wired = true;
@@ -300,9 +314,9 @@ function wireForm(root) {
     if (s) {
       e.preventDefault();
       try {
-        const r = await takePhoto(s.dataset.title, { facing: s.dataset.facing, live: s.dataset.live === "1", face: s.dataset.live === "1" });
+        const r = await takePhoto(s.dataset.title, { facing: s.dataset.facing, live: s.dataset.live === "1", face: s.dataset.live === "1", gallery: s.dataset.gallery === "1" });
         if (!r) return;
-        const h = s.nextElementSibling; h.value = r.url; s.classList.add("has"); s.innerHTML = `<img src="${esc(r.url)}" alt="">`;
+        const h = s.nextElementSibling; h.value = r.url; s.classList.add("has"); s.innerHTML = /\.pdf$/i.test(r.url) ? `${icon("file")}<span>PDF</span>` : `<img src="${esc(r.url)}" alt="">`;
         if (r.loc) { const l = root.querySelector("[name=location]"); if (l && !l.value) { l.value = r.loc; const lt = root.querySelector("[data-loc]"); if (lt) lt.textContent = r.loc; } }
         s.dispatchEvent(new CustomEvent("photo", { bubbles: true, detail: r }));
       } catch (err) { toast(err.message, "bad"); }
@@ -1194,7 +1208,7 @@ function cashForm(d, giving, withHolder) {
     ${fld(giving ? t("Given by") : t("Returned by"), chips("method", METHODS, "Cash in hand"))}
     ${fld(t("Transfer / cheque / receipt no."), inp("reference"))}
     ${fld(t("Handed over in front of (witness)"), inp("witness"))}
-    ${fld(t("Proofs"), `<div class="shots">${shot("proof_1", t("Signed receipt or handover photo"))}${shot("proof_2", t("Transfer screenshot or cheque photo"))}${shot("proof_3", t("Proof 3 (optional)"))}</div>`)}
+    ${fld(t("Proofs"), `<div class="shots">${shot("proof_1", t("Signed receipt or handover photo"))}${shot("proof_2", t("Transfer screenshot or cheque photo"), "", { gallery: true })}${shot("proof_3", t("Proof 3 (optional)"), "", { gallery: true })}</div>`)}
     ${fld(t("Notes"), area("notes"))}</div>`;
 }
 async function giveCash(d) {
@@ -1347,7 +1361,7 @@ VIEWS.more = async (el) => {
   if (PETTY()) T.push(["Petty cash", "cash", "money/petty", "k1"]);
   if (S.b.ai) T.push(["Ask the project", "sparkle", "ask", "k5"]);
   T.push(["My settings", "gear", "settings", "k8"]);
-  if (c.owner && !NATIVE && /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) T.push(["Connect a phone", "globe", "connect", "k2"]);
+  if (c.owner && !NATIVE) T.push(["Connect a phone", "globe", "connect", "k2"]);
   el.innerHTML = `<button class="mo-me" data-go="settings"><span class="av">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc((b.full_name || "?").charAt(0))}</span><span><b>${esc(b.full_name)}</b><span class="small muted">${esc(b.project_name || "")}</span></span>${icon("chev", "lch")}</button>
     <div class="qa-grid">${T.map(([l, ic, to, tc]) => `<button class="qa" data-go="${to}"><span class="qa-i" style="--tc:var(--${tc})">${icon(ic)}</span><span>${esc(t(l))}</span></button>`).join("")}</div>`;
 };
@@ -1845,7 +1859,7 @@ function paySheet({ doctype, name, supplier_name, amount, title }) {
     ${fld(t("Amount (Rs)"), inp("amount", Math.round(amount * 100) / 100, "number"), { req: true })}
     ${fld(t("Paid by"), chips("mode", [["Cash", t("Cash")], ["Bank", t("Bank transfer")], ["Cheque", t("Cheque")]], "Cash"))}
     <div data-ref hidden class="two">${fld(t("Transaction / cheque no."), inp("reference_no"), { req: true })}${fld(t("Date"), inp("reference_date", today(), "date"))}</div>
-    ${fld(t("Proof of payment"), `<div class="shots">${shot("proof", t("Transfer screenshot, cheque or receipt"), "", { wide: true })}${shot("proof_2", t("Supplier's receipt (optional)"))}</div>`, { req: !!S.b.rules.require_payment_proof, name: "proof" })}
+    ${fld(t("Proof of payment"), `<div class="shots">${shot("proof", t("Transfer screenshot, cheque or receipt"), "", { wide: true, gallery: true })}${shot("proof_2", t("Supplier's receipt (optional)"), "", { gallery: true })}</div>`, { req: !!S.b.rules.require_payment_proof, name: "proof" })}
   </div>`, { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${icon("pay")}${esc(t("Pay"))}</button>` });
   wireForm(sh);
   sh.addEventListener("chip", (e) => { if (e.target.closest("[data-chips=mode]")) sh.querySelector("[data-ref]").hidden = e.detail === "Cash"; });
@@ -1984,11 +1998,13 @@ VIEWS.money = async (el, [tab = ""]) => {
 /* ---------------- connect a phone (laptop test set-up) ---------------- */
 VIEWS.connect = async (el) => {
   setTop(t("Connect a phone"), true);
-  const u = new URLSearchParams(location.hash.split("?")[1] || "").get("u") || "";
+  const local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  const u = new URLSearchParams(location.hash.split("?")[1] || "").get("u") || (local ? "" : location.host);
   let img = ""; if (u) { try { img = await api("qr", { text: u }); } catch (e) { /* */ } }
   el.innerHTML = panel(t("Connect a phone"), `<div class="body stack" style="align-items:center;text-align:center">
-    ${u ? `${img ? `<img src="${esc(img)}" alt="" style="width:240px;height:240px;background:#fff;padding:10px;border-radius:14px">` : ""}<b class="ltr" style="font-size:20px">${esc(u)}</b>
-      <span>${esc(t("On the phone, open the Mimaar ERP app, tap 'Scan the QR on the laptop' and point it here. The phone and this laptop must be on the same Wi-Fi."))}</span>`
+    ${u ? `${img ? `<img src="${esc(img)}" alt="" style="width:240px;height:240px;background:#fff;padding:10px;border-radius:14px">` : ""}<b class="ltr" style="font-size:20px;overflow-wrap:anywhere">${esc(u)}</b>
+      <span>${esc(local || /^\d+\.\d+\.\d+\.\d+(:\d+)?$/.test(u) ? t("On the phone, open the Mimaar ERP app, tap 'Scan the QR on the laptop' and point it here. The phone and this laptop must be on the same Wi-Fi.")
+        : t("On the phone, install and open the Mimaar ERP app, tap 'Scan the QR on the laptop' and point it at this code, or type the address above."))}</span>`
       : `<span>${esc(t("Double-click 'Connect a phone' in the Mimaar ERP folder on this laptop. It shows the address and QR code for the phone."))}</span>`}</div>`);
 };
 
