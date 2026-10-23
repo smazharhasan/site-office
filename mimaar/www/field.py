@@ -16,6 +16,9 @@ EXTRA = (
 	"Draft", "Completed", "Working", "Overdue", "Pending Review", "Cancelled", "To Receive and Bill", "To Receive", "To Bill", "To Pay",
 	"Labour", "Mistri", "Group head", "Supervisor", "Supplier staff", "Other", "Not done", "Applied", "Verified",
 	"Purchase Invoice", "Payment Entry", "Journal Entry", "Purchase Receipt", "Pass", "Pass with remarks", "Fail",
+	"Underground", "Overhead", "Drums", "Direct use", "Sweet (construction & curing)", "Drinking", "Brackish (rejected)",
+	"Expense", "Cash given", "Cash returned", "Waiting for owner", "Approved", "Rejected", "Cash in hand", "Bank transfer", "Cheque",
+	"JazzCash / Easypaisa", "Raast", "Check", "Mismatch", "Not checked", "clear", "slightly turbid", "turbid", "not visible", "Match", "No match", "Unclear",
 )
 
 
@@ -32,7 +35,7 @@ def _ur():
 	# every stretch between two quote marks (both pairings), so strings inside HTML templates are found too
 	words = set(re.findall(r'(?=("([^"\n]{2,200})"))', src))
 	words = {w[1] for w in words} | set(re.findall(r"`([^`$\n]{2,200})`", src)) | set(EXTRA) | {f"status:{x}" for x in EXTRA}
-	for dt in ("Item Group", "UOM"):
+	for dt in ("Item Group", "UOM", "Water Tank", "Petty Cash Category"):
 		words.update(frappe.get_all(dt, pluck="name"))
 	for dt, f in (("Site Inspection", "inspection_type"), ("Site Worker", "trade"), ("Site Worker", "worker_type"), ("Supplier", "mimaar_work_area")):
 		df = frappe.get_meta(dt).get_field(f)

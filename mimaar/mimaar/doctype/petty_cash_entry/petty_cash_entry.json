@@ -1,0 +1,318 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-23 15:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mimaar",
+ "name": "Petty Cash Entry",
+ "owner": "Administrator",
+ "modified": "2026-10-23 15:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "entry_type",
+   "fieldtype": "Select",
+   "label": "Entry",
+   "options": "Expense\nCash given\nCash returned",
+   "reqd": 1,
+   "default": "Expense",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "reqd": 1,
+   "default": "Today",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "holder",
+   "fieldtype": "Link",
+   "label": "Cash holder",
+   "options": "Site Worker",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "holder_name",
+   "fieldtype": "Data",
+   "label": "Cash holder name",
+   "fetch_from": "holder.full_name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount (Rs)",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Owner's check",
+   "options": "Waiting for owner\nApproved\nRejected",
+   "default": "Waiting for owner",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Link",
+   "label": "Spent on",
+   "options": "Petty Cash Category",
+   "depends_on": "eval:doc.entry_type=='Expense'"
+  },
+  {
+   "fieldname": "expense_account",
+   "fieldtype": "Link",
+   "label": "Budget line (expense account)",
+   "options": "Account",
+   "fetch_from": "category.expense_account",
+   "read_only": 1,
+   "depends_on": "eval:doc.entry_type=='Expense'"
+  },
+  {
+   "fieldname": "paid_to",
+   "fieldtype": "Data",
+   "label": "Paid to / shop",
+   "depends_on": "eval:doc.entry_type=='Expense'"
+  },
+  {
+   "fieldname": "paid_to_person",
+   "fieldtype": "Link",
+   "label": "Paid to (person on site)",
+   "options": "Site Worker",
+   "depends_on": "eval:doc.entry_type=='Expense'"
+  },
+  {
+   "fieldname": "bill_no",
+   "fieldtype": "Data",
+   "label": "Bill / receipt no.",
+   "depends_on": "eval:doc.entry_type=='Expense'"
+  },
+  {
+   "fieldname": "method",
+   "fieldtype": "Select",
+   "label": "Given by",
+   "options": "Cash in hand\nBank transfer\nCheque\nJazzCash / Easypaisa\nRaast",
+   "default": "Cash in hand",
+   "depends_on": "eval:doc.entry_type!='Expense'"
+  },
+  {
+   "fieldname": "reference",
+   "fieldtype": "Data",
+   "label": "Transfer / cheque / receipt no.",
+   "depends_on": "eval:doc.entry_type!='Expense'"
+  },
+  {
+   "fieldname": "witness",
+   "fieldtype": "Data",
+   "label": "Handed over in front of (witness)",
+   "depends_on": "eval:doc.entry_type!='Expense'"
+  },
+  {
+   "fieldname": "proofs_section",
+   "fieldtype": "Section Break",
+   "label": "Bill and proofs"
+  },
+  {
+   "fieldname": "bill_photo",
+   "fieldtype": "Attach Image",
+   "label": "Photo of the bill or receipt"
+  },
+  {
+   "fieldname": "proof_1",
+   "fieldtype": "Attach Image",
+   "label": "Proof 1: signed receipt or handover photo"
+  },
+  {
+   "fieldname": "col2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "proof_2",
+   "fieldtype": "Attach Image",
+   "label": "Proof 2: transfer screenshot or cheque photo"
+  },
+  {
+   "fieldname": "proof_3",
+   "fieldtype": "Attach Image",
+   "label": "Proof 3 (optional)"
+  },
+  {
+   "fieldname": "identity_check",
+   "fieldtype": "Link",
+   "label": "Face check",
+   "options": "Identity Check",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "What it was for / notes"
+  },
+  {
+   "fieldname": "check_section",
+   "fieldtype": "Section Break",
+   "label": "Owner's check"
+  },
+  {
+   "fieldname": "checked_by",
+   "fieldtype": "Link",
+   "label": "Checked by",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "checked_at",
+   "fieldtype": "Datetime",
+   "label": "Checked at",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "check_note",
+   "fieldtype": "Small Text",
+   "label": "Owner's note",
+   "read_only": 1
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Link",
+   "label": "Journal entry",
+   "options": "Journal Entry",
+   "read_only": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "water_tanker",
+   "fieldtype": "Link",
+   "label": "Water tanker",
+   "options": "Water Tanker",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "options": "Petty Cash Entry",
+   "read_only": 1,
+   "no_copy": 1,
+   "print_hide": 1
+  }
+ ],
+ "field_order": [
+  "entry_type",
+  "date",
+  "holder",
+  "holder_name",
+  "amount",
+  "status",
+  "col1",
+  "category",
+  "expense_account",
+  "paid_to",
+  "paid_to_person",
+  "bill_no",
+  "method",
+  "reference",
+  "witness",
+  "proofs_section",
+  "bill_photo",
+  "proof_1",
+  "col2",
+  "proof_2",
+  "proof_3",
+  "identity_check",
+  "notes",
+  "check_section",
+  "checked_by",
+  "checked_at",
+  "col3",
+  "check_note",
+  "journal_entry",
+  "project",
+  "water_tanker",
+  "amended_from"
+ ],
+ "links": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "row_format": "Dynamic",
+ "autoname": "PC-.YY.-.#####",
+ "title_field": "holder_name",
+ "is_submittable": 1,
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 1,
+   "cancel": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Accounts Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "submit": 1,
+   "cancel": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "print": 1,
+   "report": 1
+  },
+  {
+   "role": "Site Supervisor",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "if_owner": 1,
+   "print": 1
+  },
+  {
+   "role": "Stock User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "if_owner": 1,
+   "print": 1
+  }
+ ],
+ "track_changes": 1
+}

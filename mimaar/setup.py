@@ -74,6 +74,7 @@ CUSTOM_FIELDS = {
 		F("mimaar_photo", "Attach Image", "Photo", "mimaar_col"),
 		F("mimaar_identity_check", "Link", "Face check", "mimaar_photo", options="Identity Check", read_only=1),
 		F("mimaar_is_return", "Check", "Returned from work to the store", "mimaar_identity_check", read_only=1),
+		F("mimaar_water_ref", "Data", "Water tanker / tank reading", "mimaar_is_return", read_only=1),
 	],
 }
 
@@ -125,6 +126,8 @@ def _single(doctype, values):
 def apply_settings():
 	"""The ERPNext settings that carry the owner's rules. Safe to run again."""
 	bank_account()
+	water_setup()
+	petty_setup()
 	_single("Buying Settings", {"po_required": "Yes", "pr_required": "Yes", "maintain_same_rate": 1, "maintain_same_rate_action": "Stop", "supp_master_name": "Supplier Name", "allow_multiple_items": 1, "over_order_allowance": 0, "bill_for_rejected_quantity_in_purchase_invoice": 0})
 	_single("Stock Settings", {"allow_negative_stock": 0, "over_delivery_receipt_allowance": 0, "item_naming_by": "Item Code", "stock_uom": "Nos"})
 	_single("Accounts Settings", {"over_billing_allowance": 0, "check_supplier_invoice_uniqueness": 1, "unlink_payment_on_cancellation_of_invoice": 0, "automatically_fetch_payment_terms": 0})
@@ -230,3 +233,68 @@ def local_site(data_file=None, company="Villa 31", abbr="V31"):
 	elif data_file:
 		print("No data file at", data_file)
 	frappe.db.commit()
+
+
+def _main_company():
+	return frappe.db.get_single_value("Global Defaults", "default_company") or (frappe.get_all("Company", pluck="name", limit=1) or [None])[0]
+
+
+DEF_TANKS = [("Underground tank", "Underground", 5000), ("Overhead tank", "Overhead", 1000), ("Site drums / curing", "Drums", 500), ("Direct use on slab", "Direct use", 0)]
+
+
+def water_setup():
+	"""Water is kept as stock: the item Water (gallons) in its own store, and the site's tanks."""
+	co = _main_company()
+	if not co:
+		return
+	abbr = frappe.db.get_value("Company", co, "abbr")
+	if not frappe.db.get_single_value("Mimaar Settings", "water_warehouse"):
+		name = f"Water tanks - {abbr}"
+		if not frappe.db.exists("Warehouse", name):
+			parent = frappe.db.get_value("Warehouse", {"company": co, "is_group": 1}, "name")
+			name = frappe.get_doc({"doctype": "Warehouse", "warehouse_name": "Water tanks", "company": co, "parent_warehouse": parent, "is_group": 0}).insert(ignore_permissions=True).name
+		frappe.db.set_single_value("Mimaar Settings", "water_warehouse", name)
+	if not frappe.db.exists("UOM", "Gallon"):
+		frappe.get_doc({"doctype": "UOM", "uom_name": "Gallon"}).insert(ignore_permissions=True)
+	if not frappe.db.exists("Item", "WATER"):
+		group = "Site Consumables" if frappe.db.exists("Item Group", "Site Consumables") else frappe.db.get_value("Item Group", {"is_group": 0}, "name")
+		frappe.get_doc({"doctype": "Item", "item_code": "WATER", "item_name": "Water", "item_group": group, "stock_uom": "Gallon", "is_stock_item": 1,
+			"include_item_in_manufacturing": 0, "description": "Water from tankers, kept in the site's tanks (gallons)."}).insert(ignore_permissions=True)
+	if not frappe.db.count("Water Tank"):
+		for i, (name, kind, cap) in enumerate(DEF_TANKS):
+			frappe.get_doc({"doctype": "Water Tank", "tank_name": name, "kind": kind, "capacity_gallons": cap, "sort_order": i + 1, "is_active": 1}).insert(ignore_permissions=True)
+
+
+PC_CATEGORIES = [("Canteen & food", 0), ("Water tanker", 0), ("Transport & fuel", 0), ("Small tools & hardware", 0), ("Labour advance", 1),
+	("Repairs & maintenance", 0), ("Stationery & phone", 0), ("Other site expenses", 0)]
+
+
+def petty_setup():
+	"""Petty cash: one cash account for the cash held on site, and what it is spent on, each
+	booked to its own expense account (a budget line the owner sets in Accounting > Budget)."""
+	co = _main_company()
+	if not co:
+		return
+	abbr = frappe.db.get_value("Company", co, "abbr")
+	if not frappe.db.get_single_value("Mimaar Settings", "petty_cash_account"):
+		name = f"Petty Cash - {abbr}"
+		if not frappe.db.exists("Account", name):
+			parent = frappe.db.get_value("Account", {"company": co, "account_type": "Cash", "is_group": 1}, "name")
+			if not parent:
+				return
+			name = frappe.get_doc({"doctype": "Account", "account_name": "Petty Cash", "parent_account": parent, "company": co, "account_type": "Cash", "is_group": 0}).insert(ignore_permissions=True).name
+		frappe.db.set_single_value("Mimaar Settings", "petty_cash_account", name)
+	if frappe.db.count("Petty Cash Category"):
+		return
+	budgeted = frappe.db.get_value("Budget", {"company": co, "docstatus": 1}, "account")
+	top = (frappe.db.get_value("Account", budgeted, "parent_account") if budgeted else None) or frappe.db.get_value("Account", {"company": co, "account_name": "Direct Expenses", "is_group": 1}, "name")
+	if not top:
+		return
+	grp = f"Site running costs - {abbr}"
+	if not frappe.db.exists("Account", grp):
+		grp = frappe.get_doc({"doctype": "Account", "account_name": "Site running costs", "parent_account": top, "company": co, "is_group": 1, "root_type": "Expense"}).insert(ignore_permissions=True).name
+	for i, (cat, wages) in enumerate(PC_CATEGORIES):
+		acc = f"{cat} - {abbr}"
+		if not frappe.db.exists("Account", acc):
+			acc = frappe.get_doc({"doctype": "Account", "account_name": cat, "parent_account": grp, "company": co, "account_type": "Expense Account", "is_group": 0}).insert(ignore_permissions=True).name
+		frappe.get_doc({"doctype": "Petty Cash Category", "category_name": cat, "expense_account": acc, "is_active": 1, "for_wages": wages, "sort_order": i + 1}).insert(ignore_permissions=True)

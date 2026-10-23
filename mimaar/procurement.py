@@ -240,5 +240,5 @@ def pe_before_submit(doc, method=None):
 def se_before_submit(doc, method=None):
 	if skip(doc):
 		return
-	if doc.stock_entry_type == "Material Issue" and not (doc.get("mimaar_issued_to") or "").strip():
+	if doc.stock_entry_type == "Material Issue" and not doc.get("mimaar_water_ref") and not (doc.get("mimaar_issued_to") or "").strip():
 		frappe.throw(_("Enter who the material is released to (mistri or group head)."), title=_("Released to"))

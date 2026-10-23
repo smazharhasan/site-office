@@ -72,8 +72,18 @@ def _file_raw(file_url):
 	if isinstance(data, str):
 		data = data.encode()
 	name = (f.file_name or file_url).lower()
-	mime = "image/png" if name.endswith(".png") else "image/webp" if name.endswith(".webp") else "image/jpeg"
+	mime = "application/pdf" if name.endswith(".pdf") else "image/png" if name.endswith(".png") else "image/webp" if name.endswith(".webp") else "image/jpeg"
 	return mime, base64.b64encode(data).decode()
+
+
+def ask_many(prompt, file_urls, max_tokens=2048):
+	"""A check made by the server itself on a record's own photos (several images, one answer)."""
+	fake = frappe.conf.get("mimaar_fake_ai_file")
+	if fake:  # tests only
+		frappe.local.mimaar_last_prompt = prompt
+		with open(fake) as fh:
+			return json.load(fh)
+	return _call(prompt, [_file_raw(u) for u in file_urls if u], max_tokens=max_tokens)
 
 
 def _call(prompt, files, max_tokens=8192):

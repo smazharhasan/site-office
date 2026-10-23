@@ -356,7 +356,8 @@ const pickWorker = () => picker(t("Choose the worker"), (q) => api("workers", { 
 
 /* ---------- layout ---------- */
 const TABS = [["dash", "Dashboard", "dash"], ["build", "Construction", "house"], ["+", "", "plus"], ["store", "Stores", "box"], ["more", "More", "menu"]];
-const TOP_OF = { dash: "dash", build: "build", store: "store", receive: "store" };
+const PETTY = () => { const c = C(); return c.owner || c.money || c.site || c.store; };
+const TOP_OF = { dash: "dash", build: "build", store: "store", receive: "store", item: "store" };
 function layout() {
   document.documentElement.lang = S.lang; document.documentElement.dir = S.lang === "ur" ? "rtl" : "ltr";
   $("#app").innerHTML = `<header class="top" id="top"></header><main class="content" id="content"></main>
@@ -398,7 +399,9 @@ const GLOBAL = {
   quick() {
     const c = C(); const A = [];
     if (c.store) A.push(["Receive goods", "truck", "store/receive", "k2"], ["Release to work", "box", "release", "k3"], ["Return to store", "store", "return", "k7"]);
+    if (c.store || c.site) A.push(["Water tanker", "drop", "tanker", "k7"], ["Tank level", "tank", "tanklevel", "k2"]);
     if (c.people) A.push(["Attendance by site card", "card", "attcard", "k1"]);
+    if (PETTY()) A.push(["Petty cash expense", "pay", "pettyexp", "k3"], ["Pay by site card", "cash", "paycard", "k8"]);
     if (c.site) A.push(["Site diary", "log", "diary", "k7"], ["Report a snag", "alert", "snag", "k4"], ["Progress photo", "cam", "build/schedule", "k5"]);
     if (c.buy) A.push(["Scan a quotation", "ai", "scanquote", "k6"]);
     if (c.money) A.push(["Pay a supplier", "pay", "bills", "k8"]);
@@ -408,6 +411,10 @@ const GLOBAL = {
       if (to === "release") return S.b.rules.card_for_store ? storeByCard("issue") : releaseSheet();
       if (to === "return") return storeByCard("return");
       if (to === "attcard") return attendanceByCard();
+      if (to === "tanker") return tankerSheet();
+      if (to === "tanklevel") return readingSheet();
+      if (to === "pettyexp") return busy(api("mimaar.petty.overview")).then((d) => { S.petty = d; if (d.no_person) { toast(t("Your sign-in isn't linked to a person on site, so you can't hold petty cash. Ask the owner."), "bad"); return; } expenseSheet(d); }).catch((e) => toast(e.message, "bad"));
+      if (to === "paycard") return payByCard();
       if (to === "diary") return diarySheet();
       if (to === "snag") return snagNewSheet();
       if (to === "scanquote") return scanQuote();
@@ -427,7 +434,7 @@ const GLOBAL = {
         res.innerHTML = [
           grp(t("Workers"), (r.workers || []).map((w) => lrow({ go: `worker/${w.name}`, title: w.full_name, sub: esc(t(w.trade || "")), img: w.photo }))),
           grp(t("Suppliers"), (r.suppliers || []).map((s) => lrow({ go: `supplier/${s.name}`, title: s.supplier_name, sub: esc(t(s.mimaar_work_area || "")) }))),
-          grp(t("Items in store"), (r.items || []).map((s) => lrow({ go: `store/stock?${s.item_name}`, title: s.item_name, end: `<b>${num(s.qty)}</b><span class="small muted">${esc(s.uom)}</span>` }))),
+          grp(t("Items in store"), (r.items || []).map((s) => lrow({ go: `item/${encodeURIComponent(s.item_code)}`, title: s.item_name, end: `<b>${num(s.qty)}</b><span class="small muted">${esc(t(s.uom))}</span>` }))),
           grp(t("Purchase orders"), (r.orders || []).map((o) => lrow({ go: `order/${o.name}`, title: `${o.supplier_name}`, sub: esc(o.name) }))),
           grp(t("Quotations"), (r.quotes || []).map((o) => lrow({ go: `quote/${o.name}`, title: `${o.supplier_name}`, sub: esc(o.name) }))),
         ].join("") || empty(t("Nothing found"));
@@ -455,10 +462,12 @@ VIEWS.dash = async (el) => {
   const A = [];
   if (c.people) A.push(qa(t("Attendance by site card"), "card", "attcard", "k1"));
   if (c.store) A.push(qa(t("Receive goods"), "truck", "go_receive", "k2"), qa(t("Release to work"), "box", "release", "k3"), qa(t("Return to store"), "store", "ret", "k7"));
+  if (c.store || c.site) A.push(qa(t("Water tanker"), "drop", "tanker", "k7"));
+  if (PETTY()) A.push(qa(t("Petty cash"), "cash", "go_petty", "k1"));
   if (c.site) A.push(qa(t("Site diary"), "log", "diary", "k7"), qa(t("Report a snag"), "alert", "snag", "k4"));
   if (c.buy) A.push(qa(t("Scan a quotation"), "ai", "scanquote", "k6"));
   if (c.money) A.push(qa(t("Pay a supplier"), "pay", "go_bills", "k8"));
-  Object.assign(S.acts, { go_receive: () => go("store/receive"), go_att: () => go("att"), go_bills: () => go("bills"), attcard: () => attendanceByCard(), ret: () => storeByCard("return"),
+  Object.assign(S.acts, { go_petty: () => go("petty"), tanker: () => tankerSheet(), go_receive: () => go("store/receive"), go_att: () => go("att"), go_bills: () => go("bills"), attcard: () => attendanceByCard(), ret: () => storeByCard("return"),
     release: () => (S.b.rules.card_for_store ? storeByCard("issue") : releaseSheet()), diary: () => diarySheet(), snag: () => snagNewSheet(), scanquote: () => scanQuote() });
   const acts = d.acts || [];
   el.innerHTML = `<div class="hero"><span class="muted small">${esc(fdate(b.today))}</span><b>${esc(t("Salaam, {0}", (b.full_name || "").split(" ")[0]))}</b><span class="small muted">${esc(b.project_name || "")}</span></div>
@@ -626,24 +635,43 @@ function snagSheet(s) {
 }
 
 /* ================================================================== stores */
-VIEWS.store = async (el, [tab = "stock"]) => {
-  setTop(t("Stores"));
-  const tabs = [["stock", "Stock"], ["receive", "Receive"], ["release", "Release"], ["moves", "Movements"]];
-  el.innerHTML = hubtabs("store", tabs, tab.split("?")[0]) + `<div id="pane" class="stack"><div class="spin"></div></div>`;
-  const pane = $("#pane");
+/* ================================================================== stores & water */
+/* category pictures: an item without its own photo shows its category's picture */
+const ART = [[/power tool|machin/i, "drill", "k5"], [/cement/i, "bag", "k2"], [/block|brick/i, "bricks", "k3"], [/sand|crush|aggregate|bajri/i, "pile", "k3"],
+  [/steel|rebar|sarya/i, "bars", "k4"], [/ready.?mix/i, "mixer", "k2"], [/plumb|pipe/i, "pipe", "k7"], [/sanitary|kitchen|tap\b/i, "tap", "k7"], [/light/i, "bulb", "k3"],
+  [/electric|cable|switch|breaker/i, "bolt", "k3"], [/alumin|glass|window/i, "window", "k2"], [/door/i, "door", "k5"], [/shutter|formwork/i, "planks", "k5"],
+  [/wood|board|ply/i, "planks", "k3"], [/tile|marble|stone|granite/i, "tiles", "k6"], [/paint|wall treat|putty/i, "bucket", "k6"], [/termite/i, "bug", "k4"],
+  [/waterproof|admix|chemical|curing/i, "drop", "k7"], [/gypsum|ceiling/i, "board", "k5"], [/\bms\b|railing/i, "rail", "k5"], [/access|ladder|scaffold/i, "ladder", "k6"],
+  [/measur|level/i, "ruler", "k8"], [/safety|ppe|helmet|glove/i, "helmet", "k3"], [/canteen|food|tea|sugar/i, "cup", "k1"], [/fuel|lubric|diesel|petrol/i, "fuel", "k4"],
+  [/binding|fixing|wire|nail/i, "coil", "k4"], [/cutting|grind|disc/i, "disc", "k8"], [/hand tool|tools|hardware|equipment/i, "wrench", "k8"]];
+function artFor(group, name) {
+  for (const [re, ic, k] of ART) if (re.test(group || "")) return [ic, k];
+  for (const [re, ic, k] of ART) if (re.test(name || "")) return [ic, k];
+  return ["box", "k5"];
+}
+function ithumb(r, big) {
+  if (r.image) return `<img class="ith ${big ? "big zoomable" : ""}" src="${esc(r.image)}" alt="" loading="lazy">`;
+  const [ic, k] = artFor(r.group, r.name);
+  return `<span class="ith ${big ? "big" : ""}" style="--tc:var(--${k})"><svg class="art"><use href="#c-${ic}"/></svg></span>`;
+}
+/** A long list shows its first rows and a "Show all" button. */
+function moreList(rows, render, n = 8) {
+  return `<div class="lst">${rows.slice(0, n).map(render).join("")}${rows.length > n ? `<div class="more-rest" hidden>${rows.slice(n).map(render).join("")}</div>` : ""}</div>${rows.length > n ? `<button class="btn sm showall" data-showall="1">${esc(t("Show all ({0})", rows.length))}</button>` : ""}`;
+}
+document.addEventListener("click", (e) => { const b = e.target.closest("[data-showall]"); if (!b) return; const r = b.previousElementSibling && b.previousElementSibling.querySelector(".more-rest"); if (r) r.hidden = false; b.remove(); });
+const ISTATE = { none: ["Not received yet", ""], out: ["Out of stock", "bad"], low: ["Running low", "warn"], in: ["In store", "good"] };
+const istate = (s) => pill(t((ISTATE[s] || ISTATE.none)[0]), (ISTATE[s] || ISTATE.none)[1]);
+
+VIEWS.store = async (el, [tab = "items"]) => {
   tab = tab.split("?")[0];
-  if (tab === "stock") {
-    const q0 = decodeURIComponent((location.hash.split("?")[1] || ""));
-    pane.innerHTML = `<div class="fld search">${icon("search")}<input name="q" value="${esc(q0)}" placeholder="${esc(t("Search items"))}" autocomplete="off"></div><div data-list></div>`;
-    const list = pane.querySelector("[data-list]"), q = pane.querySelector("[name=q]"); let tm = null;
-    const show = async () => {
-      const d = await api("stock", { q: q.value.trim() });
-      const groups = {}; d.rows.forEach((r) => { (groups[r.item_group] = groups[r.item_group] || []).push(r); });
-      list.innerHTML = d.rows.length ? Object.entries(groups).map(([g, rows]) => panel(t(g), `<div class="lst">${rows.map((r) => lrow({ title: r.item_name, sub: esc(r.item_code), end: `<b>${num(r.qty)}</b><span class="small muted">${esc(t(r.uom))}</span>${r.low ? pill(t("Low"), "bad") : ""}`, chev: false })).join("")}</div>`, `<span class="cnt">${rows.length}</span>`)).join("") : empty(t("Nothing in the store yet"), t("Goods received against purchase orders show here."));
-    };
-    q.addEventListener("input", () => { clearTimeout(tm); tm = setTimeout(show, 300); });
-    await show();
-  } else if (tab === "receive") {
+  if (tab === "stock") tab = "items";
+  setTop(t("Stores & water"));
+  const tabs = [["items", "Items"], ["receive", "Receive"], ["release", "Release"], ["water", "Water"], ["moves", "Movements"]];
+  el.innerHTML = hubtabs("store", tabs, tab) + `<div id="pane" class="stack"><div class="spin"></div></div>`;
+  const pane = $("#pane");
+  if (tab === "items") return storeItems(pane);
+  if (tab === "water") return waterPane(pane);
+  if (tab === "receive") {
     const rows = await api("to_receive");
     pane.innerHTML = panel(t("Deliveries expected"), rows.length ? `<div class="lst">${rows.map((r) => lrow({ go: `receive/${r.name}`, ic: "truck", title: r.supplier_name, sub: `${esc(r.name)} · ${esc(t("needed by {0}", fdate(r.schedule_date)))}<span style="display:block;margin-top:6px">${bar(r.per_received, "mid")}</span>`, end: `<b>${num(r.per_received)}%</b><span class="small muted">${esc(t("received"))}</span>` })).join("")}</div>` : empty(t("Nothing to receive"), t("Locked purchase orders waiting for delivery appear here.")), `<span class="cnt">${rows.length}</span>`);
   } else if (tab === "release") {
@@ -662,8 +690,426 @@ VIEWS.store = async (el, [tab = "stock"]) => {
 const moveRow = (x) => lrow({ ic: x.kind === "in" ? "truck" : x.kind === "back" ? "store" : "box", title: `${x.kind === "in" ? t("Received from {0}", x.who || "") : x.kind === "back" ? t("Returned by {0}", x.who || "") : t("Released to {0}", x.who || "")}${x.face ? " ✓" : ""}`,
   sub: esc(x.items.map((i) => `${i.item_name} ${num(i.qty)} ${t(i.uom)}`).join(", ")) + `<span style="display:block">${esc([fdate(x.date), x.ref, x.name].filter(Boolean).join(" · "))}</span>`, chev: false });
 
-function releaseSheet() {
-  S.rel = [];
+/* every item as a card, with search, category and state filters */
+async function storeItems(pane) {
+  const q0 = decodeURIComponent(location.hash.split("?")[1] || "");
+  const d = await api("mimaar.stores.items");
+  const R = d.rows; const st = (S.storeF = S.storeF || { g: "" });
+  const n = (f) => R.filter(f).length;
+  const tops = {};
+  R.forEach((r) => { const k = r.top || r.group; tops[k] = tops[k] || {}; tops[k][r.group] = (tops[k][r.group] || 0) + 1; });
+  const opt = (v, l, c) => `<option value="${esc(v)}" ${st.g === v ? "selected" : ""}>${esc(l)} (${c})</option>`;
+  const filt = `<select name="g" class="pillsel" aria-label="${esc(t("Show"))}">${opt("", t("All"), R.length)}${opt("s:in", t("In store"), n((r) => r.qty > 0))}${opt("s:low", t("Running low or out"), n((r) => r.state === "low" || r.state === "out"))}${opt("s:order", t("On order"), n((r) => r.on_order > 0))}${opt("s:none", t("Not received yet"), n((r) => r.state === "none"))}
+    ${Object.keys(tops).sort((a, b) => t(a).localeCompare(t(b))).map((top) => `<optgroup label="${esc(t(top))}">${Object.entries(tops[top]).sort((a, b) => t(a[0]).localeCompare(t(b[0]))).map(([g, c]) => opt("g:" + g, t(g), c)).join("")}</optgroup>`).join("")}</select>`;
+  pane.innerHTML = `<div class="fld search">${icon("search")}<input name="q" value="${esc(q0)}" placeholder="${esc(t("Search any item"))}" autocomplete="off"></div>
+    <div class="row">${S.b.ai ? `<button class="btn sm" data-act="identify">${icon("cam")}${esc(t("Identify from a photo"))}</button>` : ""}${d.new_item ? `<button class="btn sm pri" style="flex:0 0 auto" data-act="newitem">${icon("plus")}${esc(t("Item"))}</button>` : ""}</div>
+    <div class="row" style="flex-wrap:nowrap">${filt}<span class="small muted" data-n style="flex:none"></span></div><div class="ilist" data-list></div>`;
+  const list = pane.querySelector("[data-list]"), q = pane.querySelector("[name=q]"), g = pane.querySelector("[name=g]");
+  const show = () => {
+    const s = q.value.trim().toLowerCase(); st.g = g.value;
+    const ok = (r) => !st.g || (st.g === "s:in" ? r.qty > 0 : st.g === "s:none" ? r.state === "none" : st.g === "s:low" ? r.state === "low" || r.state === "out" : st.g === "s:order" ? r.on_order > 0 : st.g === "g:" + r.group);
+    const rows = R.filter((r) => ok(r) && (!s || r.name.toLowerCase().includes(s) || r.code.toLowerCase().includes(s) || t(r.group).toLowerCase().includes(s)));
+    list.innerHTML = rows.length ? rows.map(icard).join("") : empty(t("Nothing found"), s ? t("Try another word, or identify the item from a photo.") : "");
+    pane.querySelector("[data-n]").textContent = rows.length === R.length ? "" : t("{0} of {1}", rows.length, R.length);
+  };
+  let tm = null;
+  q.addEventListener("input", () => { clearTimeout(tm); tm = setTimeout(show, 150); });
+  g.addEventListener("change", show);
+  S.acts.identify = () => identifyItem();
+  S.acts.newitem = () => itemSheet();
+  show();
+}
+const icard = (r) => `<button class="icard" data-go="item/${encodeURIComponent(r.code)}">${ithumb(r)}<span class="im"><b>${esc(r.name)}</b><span class="small muted">${esc(t(r.group))}</span>
+  <span class="iq"><b>${num(r.qty)}</b> ${esc(t(r.uom))}</span>${r.on_order > 0 ? `<span class="small muted">${esc(t("{0} on order", num(r.on_order)))}</span>` : ""}</span><span class="ie">${istate(r.state)}</span></button>`;
+
+/* one item: figures, actions, orders to come, movements */
+VIEWS.item = async (el, [code]) => {
+  setTop(t("Stores & water"), true); setTab("store");
+  const d = await api("mimaar.stores.item", { code });
+  const c = C(); const showMoney = d.value != null;
+  const stat = (l, v, cls = "", unit = "") => `<div class="istat ${cls}"><span>${esc(l)}</span><b>${v}</b>${unit ? `<em>${esc(unit)}</em>` : ""}</div>`;
+  el.innerHTML = `<section class="panel plain"><div class="body"><div class="row" style="flex-wrap:nowrap;align-items:flex-start;gap:14px">${ithumb(d, true)}
+      <div style="flex:1;min-width:0"><div class="row" style="flex-wrap:nowrap;justify-content:space-between;align-items:flex-start"><h2 class="ititle">${esc(d.name)}</h2>${istate(d.state)}</div>
+      <span class="small muted">${esc([t(d.group), t(d.uom)].join(" · "))}</span>${d.description ? `<p class="small" style="margin:6px 0 0">${esc(d.description)}</p>` : ""}</div></div>
+    <div class="istats">${stat(t("In store"), num(d.qty), "main", t(d.uom))}${stat(t("Received"), num(d.received))}${stat(t("Released"), num(d.released))}${stat(t("Returned"), num(d.returned))}${stat(t("On order"), num(d.on_order))}${showMoney ? stat(t("Value in store"), esc(money(d.value || 0, 1))) : stat(t("Warn at"), d.reorder ? num(d.reorder) : "—")}</div>
+    <div class="row" style="margin-top:12px">${c.store ? `<button class="btn pri" data-act="rel">${icon("box")}${esc(t("Release to work"))}</button><button class="btn" data-act="ret">${icon("store")}${esc(t("Return to store"))}</button>${d.orders.length ? `<button class="btn" data-act="recv">${icon("truck")}${esc(t("Receive"))}</button>` : ""}` : ""}${d.can_edit ? `<button class="btn" data-act="edit">${icon("pencil")}${esc(t("Edit item"))}</button>` : ""}</div></div></section>
+    ${d.orders.length ? panel(t("Coming on order"), moreList(d.orders, (o) => lrow({ go: `receive/${o.name}`, ic: "truck", title: o.supplier_name, sub: esc(`${o.name} · ${t("needed by {0}", fdate(o.schedule_date))}`), end: `<b>${num(o.pending)}</b><span class="small muted">${esc(t(d.uom))}</span>` }), 3), `<span class="cnt">${d.orders.length}</span>`) : ""}
+    ${panel(t("Stock movements"), d.moves.length ? moreList(d.moves, (m) => imove(m, d.uom), 10) : empty(t("No movement yet")), d.moves.length ? `<span class="cnt">${d.moves.length}</span>` : "")}`;
+  const it = { item_code: d.code, item_name: d.name, uom: d.uom, qty: d.qty };
+  S.acts.rel = () => (S.b.rules.card_for_store ? storeByCard("issue", [it]) : releaseSheet([it]));
+  S.acts.ret = () => storeByCard("return", [it]);
+  S.acts.recv = () => go(d.orders.length === 1 ? `receive/${d.orders[0].name}` : "store/receive");
+  S.acts.edit = () => itemSheet(d);
+};
+const imove = (m, uom) => lrow({ ic: m.kind === "in" ? "truck" : m.kind === "back" ? "store" : "box",
+  title: `${m.kind === "in" ? t("Received from {0}", m.who || "") : m.kind === "back" ? t("Returned by {0}", m.who || "") : m.kind === "out" ? t("Released to {0}", m.who || "") : t("Stock adjusted")}${m.face ? " ✓" : ""}`,
+  sub: esc([fdate(m.date), m.time, m.ref, m.name].filter(Boolean).join(" · ")), end: `<b class="${m.kind === "out" ? "neg" : "pos"}" dir="ltr">${m.kind === "out" ? "−" : "+"}${num(m.qty)}</b><span class="small muted">${esc(t(uom))}</span>`, chev: false });
+
+/* identify an item from a photo (AI), then open it or add it */
+async function identifyItem() {
+  let p;
+  try { p = await takePhoto(t("Photo of the item")); } catch (e) { toast(e.message, "bad"); return; }
+  if (!p) return;
+  let r;
+  try { r = await busy(api("mimaar.stores.identify", { file_url: p.url }), t("The AI is looking at the photo…")); } catch (e) { toast(e.message, "bad"); return; }
+  const sh = sheet(t("Identify from a photo"), `<div class="stack"><div class="row" style="flex-wrap:nowrap;gap:12px;align-items:flex-start"><img class="ith big zoomable" src="${esc(p.url)}" alt="">
+      <div style="min-width:0"><b>${esc(r.what || t("Not sure what this is"))}</b>${r.count ? `<span class="small muted" style="display:block">${esc(t("About {0} visible", r.count))}</span>` : ""}</div></div>
+    ${r.matches.length ? panel(t("In the store list"), `<div class="lst">${r.matches.map((m) => lrow({ go: `item/${encodeURIComponent(m.code)}`, title: m.name, sub: esc(m.why || ""), end: pill(`${m.confidence}%`, m.confidence >= 70 ? "good" : "warn") })).join("")}</div>`, "", "plain") : `<div class="banner warn">${esc(t("This doesn't match any item in the store list."))}</div>`}
+    ${C().new_item ? `<button class="btn wide" data-new="1">${icon("plus")}${esc(r.suggested.name ? t("Add as a new item: {0}", r.suggested.name) : t("Add as a new item"))}</button>` : ""}</div>`, { full: true });
+  const nb = sh.querySelector("[data-new]");
+  if (nb) nb.onclick = () => { closeSheet(sh); itemSheet({ name: r.suggested.name, item_group: r.suggested.group, uom: r.suggested.uom, image: p.url }); };
+}
+
+/* add or edit a store item */
+async function itemSheet(d = {}) {
+  const isNew = !d.code;
+  let groups;
+  try { groups = await busy(api("mimaar.stores.groups")); } catch (e) { toast(e.message, "bad"); return; }
+  const units = ["Nos", "Bag", "Kg", "Tonne", "Cubic Foot", "Square Foot", "Foot", "Litre", "Gallon", "Set", "Roll", "Coil", "Box", "Pair", "Lot", "Truck Load"];
+  const unit = units.find((u) => u.toLowerCase() === String(d.uom || "").toLowerCase()) || "Nos";
+  const topsList = [...new Set(groups.map((g) => g.top))];
+  const gsel = `<select name="item_group"><option value=""></option>${topsList.map((top) => `<optgroup label="${esc(t(top || "Other"))}">${groups.filter((g) => g.top === top).map((g) => `<option value="${esc(g.name)}" ${g.name === d.item_group ? "selected" : ""}>${esc(t(g.label))}</option>`).join("")}</optgroup>`).join("")}</select>`;
+  const sh = sheet(isNew ? t("New item") : t("Edit item"), `<div class="form">
+      <div class="shots">${shot("image", t("Photo of the item"), d.image || "")}</div>
+      ${fld(t("Item name"), inp("item_name", d.name || ""), { req: true })}
+      ${fld(t("Category"), gsel, { req: true })}
+      ${isNew ? fld(t("Unit"), sel("uom", units, unit, false)) : ""}
+      ${fld(t("Warn when the store has this much or less"), inp("reorder", d.reorder || "", "number"), { hint: t("Leave empty for no warning.") })}
+      ${fld(t("Description"), area("description", d.description || ""))}</div>`,
+    { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(t("Save"))}</button>` });
+  wireForm(sh);
+  sh.querySelector("[data-save]").onclick = async () => {
+    if (!need(sh, ["item_name", "item_group"])) return;
+    const v = vals(sh); v.code = d.code || "";
+    const r = await run(sh, () => api("mimaar.stores.item_save", { data: v }), t("Saved"));
+    if (r) { closeSheet(sh); go(`item/${encodeURIComponent(r)}`); }
+  };
+}
+
+/* ---------------- water: tank levels, tankers ---------------- */
+const VERD = { Verified: "good", Check: "warn", Mismatch: "bad", "Not checked": "" };
+const verdictPill = (v) => (v ? pill(v === "Verified" ? t("AI ✓") : v === "Mismatch" ? t("AI: mismatch") : v === "Check" ? t("AI: check") : t("AI: not checked"), VERD[v] || "") : "");
+const REJ = "Brackish (rejected)";
+async function waterPane(pane) {
+  const d = await api("mimaar.water.overview");
+  S.water = d;
+  const gauge = (k) => (k.kind === "Direct use" ? "" : `<button class="gauge" data-act="read" data-v="${esc(k.name)}"><span class="small b">${esc(t(k.name))}</span>
+    <span class="tankv"><i style="height:${k.level == null ? 0 : Math.max(0, Math.min(100, k.level))}%"></i><b>${k.level == null ? "—" : num(k.level) + "%"}</b></span>
+    <span class="small">${k.level == null ? esc(t("No reading yet")) : esc(t("≈ {0} gal", num(Math.round(k.gallons))))}</span>
+    <span class="small muted">${k.date ? esc([fdate(k.date), k.time].filter(Boolean).join(" ")) : esc(t("{0} gal tank", num(k.capacity)))}${k.ai_level != null ? ` · ${esc(t("AI {0}%", num(k.ai_level)))}` : ""}</span></button>`);
+  const span = (x) => t("{0} gal", num(x.gallons)) + (x.cost ? ` · ${money(x.cost, 1)}` : "");
+  const tiles = [tile(t("Tankers today"), String(d.today.count), span(d.today), "", "k7"), tile(t("This week"), String(d.week.count), span(d.week), "", "k2"),
+    tile(t("This month"), String(d.month.count), span(d.month), "", "k5"), tile(t("Water quality"), d.bad ? t("{0} bad", d.bad) : t("OK"), d.bad ? t("TDS above {0} or rejected", num(d.tds_limit)) : t("No tanker above {0} ppm", num(d.tds_limit)), "", d.bad ? "k4" : "k1")];
+  const maxv = Math.max(1, ...d.used, ...d.received);
+  const chart = `<div class="wbars" role="img" aria-label="${esc(t("Water received and used, last 14 days"))}">${d.days.map((day, i) => `<div class="wb"><div class="wbb"><span class="r" style="height:${(d.received[i] / maxv) * 100}%"></span><span class="u" style="height:${(d.used[i] / maxv) * 100}%"></span></div><em>${new Date(day + "T00:00:00").getDate()}</em></div>`).join("")}</div>
+    <div class="legend"><span><i class="r"></i>${esc(t("Received (gallons)"))}</span><span><i class="u"></i>${esc(t("Used (from tank levels)"))}</span></div>`;
+  const unread = d.tanks.filter((k) => k.kind !== "Direct use" && !d.read_today.includes(k.name));
+  pane.innerHTML = `<div class="ctiles">${tiles.join("")}</div>
+    <div class="row"><button class="btn pri big" data-act="tanker">${icon("truck")}${esc(t("Tanker received"))}</button><button class="btn big" data-act="read">${icon("tank")}${esc(t("Level reading"))}</button></div>
+    ${unread.length ? `<div class="banner warn">${esc(t("Today's level not read yet: {0}", unread.map((k) => t(k.name)).join(", ")))}</div>` : ""}
+    ${panel(t("Tank levels now"), `<div class="body"><div class="gauges">${d.tanks.map(gauge).join("")}</div><p class="small muted" style="margin:10px 0 0">${esc(t("In the tanks about {0} gallons · in the books {1} gallons", num(Math.round(d.in_tanks)), num(Math.round(d.in_books))))}</p></div>`, d.owner ? `<button class="btn sm" data-act="tanks">${icon("gear")}${esc(t("Tanks"))}</button>` : "")}
+    ${panel(t("Water received and used, last 14 days"), `<div class="body">${chart}</div>`)}
+    ${panel(t("Tanker log"), d.tankers.length ? moreList(d.tankers, tankerRow, 8) : empty(t("No tankers logged"), t("Log each tanker at the gate with its number plate, size, TDS reading and a photo.")), `<span class="cnt">${d.tankers.length}</span>`)}
+    ${panel(t("Tank readings"), d.readings.length ? moreList(d.readings, readingRow, 6) : empty(t("No readings yet"), t("Photograph the inside of the tank through the manhole each morning; the AI estimates the level from the photo.")))}`;
+  S.acts.tanker = () => tankerSheet(d);
+  S.acts.read = (v) => readingSheet(d, v);
+  S.acts.tanks = () => tanksSheet(d);
+  S.acts.wtk = (name) => tankerDetail(d.tankers.find((x) => x.name === name));
+  S.acts.wtr = (name) => readingDetail(d.readings.find((x) => x.name === name));
+}
+const badWater = (r) => r.water_type === REJ || +r.tds_ppm > ((S.water && S.water.tds_limit) || 1000);
+const tankerRow = (r) => lrow({ act: "wtk", data: r.name, img: r.tanker_photo, ic: r.tanker_photo ? null : "truck", title: `${r.vehicle_no} · ${t("{0} gal", num(r.gallons))}`,
+  sub: esc([fdate(r.date), r.time, r.supplier_text, r.water_type === REJ ? t("Rejected") : r.tds_ppm ? `TDS ${r.tds_ppm}` : "", r.received_by_name].filter(Boolean).join(" · ")),
+  end: `${badWater(r) ? pill(t("Bad water"), "bad") : ""}${verdictPill(r.ai_verdict)}` });
+const readingRow = (r) => lrow({ act: "wtr", data: r.name, img: r.photo, ic: r.photo ? null : "tank", title: `${t(r.tank)} · ${num(r.level_pct)}%`,
+  sub: esc([fdate(r.date), r.time, r.ai_level_pct != null ? t("AI {0}%", num(r.ai_level_pct)) : "", r.ai_clarity ? t(r.ai_clarity) : ""].filter(Boolean).join(" · ")), end: verdictPill(r.ai_verdict) });
+
+function tankerForm(box, d) {
+  const tanks = d.tanks.map((k) => [k.name, t(k.name)]);
+  const first = (d.tanks.find((k) => k.kind === "Underground") || d.tanks[0] || {}).name || "";
+  const money_ = C().money || C().owner;
+  box.innerHTML = `<div class="form">
+    ${fld(t("Tanker vehicle no."), inp("vehicle_no", "", "text", 'autocapitalize="characters" placeholder="TLA-123"'), { req: true })}
+    ${fld(t("Water supplier / hydrant"), inp("supplier_text"))}
+    ${fld(t("Tanker size (gallons)"), `${chips("gal", [["1000", "1,000"], ["2000", "2,000"], ["3000", "3,000"], ["5000", "5,000"]], "")}<input name="gallons" type="number" inputmode="decimal" step="any" style="margin-top:8px" placeholder="${esc(t("or type the size"))}">`, { req: true })}
+    ${fld(t("Water"), chips("water_type", ["Sweet (construction & curing)", "Drinking", REJ], "Sweet (construction & curing)"))}
+    ${fld(t("TDS reading (ppm)"), inp("tds_ppm", "", "number"), { hint: t("Above {0} ppm is not fit for concrete or curing.", num(d.tds_limit)) })}
+    <div data-f="emptied_into">${fld(t("Emptied into"), sel("emptied_into", tanks, first, false))}</div>
+    ${fld(t("Cost (Rs)"), inp("cost", "", "number"), { hint: money_ ? "" : t("Fill in when you pay it from petty cash.") })}
+    <label class="checkrow"><input type="checkbox" name="paid_from_petty_cash"><span>${esc(t("Paid in cash from petty cash"))}</span></label>
+    ${fld(t("Photos"), `<div class="shots">${shot("tanker_photo", t("Tanker with number plate"), "", { req: true })}${shot("bill_scan", t("Tanker bill / slip"), "", { req: true })}${shot("tds_photo", t("TDS meter or water sample"))}</div>`, { req: true })}
+    ${fld(t("Tanker bill / slip no."), inp("bill_no"))}
+    ${fld(t("Notes"), area("notes"))}<input type="hidden" name="location">
+    <button type="button" class="btn wide" data-verify="1">${icon("sparkle")}${esc(t("Verify with AI"))}</button><div data-ai></div></div>`;
+  wireForm(box);
+  box.addEventListener("chip", (e) => {
+    const g = e.target.closest("[data-chips]"); if (!g) return;
+    if (g.dataset.chips === "gal") box.querySelector("[name=gallons]").value = e.detail;
+    if (g.dataset.chips === "water_type") box.querySelector('[data-f="emptied_into"]').hidden = e.detail === REJ;
+  });
+  box.querySelector("[name=gallons]").addEventListener("input", () => $$('[data-chips="gal"] button', box).forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.cv === box.querySelector("[name=gallons]").value))));
+  box.querySelector("[data-verify]").onclick = () => verifyTanker(box);
+}
+async function verifyTanker(box) {
+  const v = vals(box); const out = box.querySelector("[data-ai]");
+  if (!v.tanker_photo) { toast(t("Take a photo of the tanker with its number plate."), "bad"); return; }
+  try {
+    const r = await busy(api("mimaar.water.verify_draft", { data: v }), t("The AI is checking the photos…"));
+    const k = VERD[r.verdict] || "warn";
+    out.innerHTML = `<div class="verdict ${k || "warn"}" style="margin-top:8px">${icon(r.verdict === "Verified" ? "check" : "alert")}<span><b>${esc(t(r.verdict))}</b> ${esc(r.summary || "")}
+      ${r.plate ? `<br>${esc(t("Number plate: {0}", r.plate))}` : ""}${r.gallons ? `<br>${esc(t("Tanker size about {0} gallons", num(r.gallons)))}` : ""}${r.tds ? `<br>${esc(t("TDS on the meter: {0}", r.tds))}` : ""}</span></div>`;
+  } catch (e) { out.innerHTML = `<div class="banner bad" style="margin-top:8px">${esc(e.message)}</div>`; }
+}
+async function tankerSave(box, check) {
+  const v = vals(box);
+  if (!v.vehicle_no || !(+v.gallons > 0)) throw new UserError(t("Enter the tanker number and its size in gallons."));
+  if (!v.tanker_photo) throw new UserError(t("Take a photo of the tanker with its number plate."));
+  if (v.water_type !== REJ && !v.bill_scan) throw new UserError(t("Scan the tanker's bill or slip."));
+  v.paid_from_petty_cash = v.paid_from_petty_cash ? 1 : 0;
+  if (v.paid_from_petty_cash && !(+v.cost > 0)) throw new UserError(t("Enter the cost paid from petty cash."));
+  const r = await api("mimaar.water.tanker_save", { data: v, check });
+  (r.warnings || []).forEach((w) => toast(w, "bad"));
+  return r;
+}
+async function tankerSheet(d) {
+  d = d || (await busy(api("mimaar.water.overview")));
+  if (S.b.rules.card_for_receiving) {
+    const r = await cardFlow({ title: t("Water tanker: receiver's site card"), action: "Receiving goods",
+      step3: { label: "Tanker", ok: t("Save"), render(box) { tankerForm(box, d); }, submit(st, box) { return tankerSave(box, st.check.check); } } });
+    if (r) { toast(t("Tanker saved"), "good"); if (location.hash.includes("water")) render(); }
+    return;
+  }
+  const sh = sheet(t("New water tanker"), `<div data-f></div>`, { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(t("Save"))}</button>` });
+  const box = sh.querySelector("[data-f]"); tankerForm(box, d);
+  sh.querySelector("[data-save]").onclick = async () => { const r = await run(sh, () => tankerSave(box, null), t("Tanker saved")); if (r) { closeSheet(sh); if (location.hash.includes("water")) render(); } };
+}
+async function readingSheet(d, tank) {
+  d = d || (await busy(api("mimaar.water.overview")));
+  const tanks = d.tanks.filter((k) => k.kind !== "Direct use");
+  if (!tanks.length) { toast(t("No tanks yet. The owner adds them under Tanks."), "bad"); return; }
+  const cur = tank && tanks.some((k) => k.name === tank) ? tank : (tanks.find((k) => !d.read_today.includes(k.name)) || tanks[0]).name;
+  const info = (n) => tanks.find((k) => k.name === n) || {};
+  const sh = sheet(t("Tank level reading"), `<div class="form">
+      ${fld(t("Tank"), chips("tank", tanks.map((k) => [k.name, t(k.name)]), cur))}
+      <div class="lvl"><span class="tankv big"><i style="height:50%"></i><b data-pct>50%</b></span><div class="stack" style="flex:1;gap:8px">
+        <input type="range" name="level_pct" min="0" max="100" step="5" value="50" aria-label="${esc(t("Level (% full)"))}">
+        <div class="chips" data-q>${[0, 25, 50, 75, 100].map((v) => `<button type="button" data-lv="${v}">${v}%</button>`).join("")}</div>
+        <span class="small" data-gal></span><span class="small muted" data-last></span></div></div>
+      ${fld(t("Photo inside the tank"), `<div class="shots">${shot("photo", t("Photo through the manhole"), "", { req: true, wide: true })}</div>`, { req: true })}
+      ${fld(t("Notes (cleanliness, leaks)"), area("notes"))}<input type="hidden" name="location"></div>`,
+    { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(t("Save"))}</button>` });
+  wireForm(sh);
+  const range = sh.querySelector("[name=level_pct]");
+  const upd = () => {
+    const v = +range.value; const k = info(sh.querySelector("[name=tank]").value);
+    sh.querySelector(".tankv i").style.height = v + "%"; sh.querySelector("[data-pct]").textContent = v + "%";
+    sh.querySelector("[data-gal]").textContent = k.capacity ? t("≈ {0} of {1} gallons", num(Math.round((k.capacity * v) / 100)), num(k.capacity)) : t("The owner sets this tank's size under Tanks.");
+    sh.querySelector("[data-last]").textContent = k.level != null ? t("Last reading: {0}% on {1}", num(k.level), fdate(k.date)) : t("No reading yet");
+  };
+  const startAt = () => { const k = info(sh.querySelector("[name=tank]").value); range.value = k.level != null ? Math.round(k.level / 5) * 5 : 50; upd(); };
+  range.addEventListener("input", upd);
+  sh.addEventListener("chip", startAt);
+  sh.querySelector("[data-q]").addEventListener("click", (e) => { const b = e.target.closest("[data-lv]"); if (b) { range.value = b.dataset.lv; upd(); } });
+  startAt();
+  sh.querySelector("[data-save]").onclick = async () => {
+    const v = vals(sh);
+    if (!v.photo) { sheetError(sh, t("Take a photo inside the tank (through the manhole).")); return; }
+    const r = await run(sh, () => api("mimaar.water.reading_save", { tank: v.tank, level_pct: v.level_pct, photo: v.photo, notes: v.notes, location: v.location }));
+    if (!r) return;
+    closeSheet(sh);
+    toast(r.used > 0 ? t("Saved. Water used since the last reading: about {0} gallons", num(Math.round(r.used))) : t("Saved"), "good");
+    if (r.warning) toast(r.warning, "warn");
+    if (location.hash.includes("water")) render();
+  };
+}
+function tanksSheet(d) {
+  const kinds = ["Underground", "Overhead", "Drums", "Direct use"];
+  const sh = sheet(t("Tanks"), `<div class="form">${d.tanks.map((k, i) => `<div class="line" data-skip="1"><div class="lt"><b>${esc(t(k.name))}</b><span class="small muted">${esc(t(k.kind))}</span></div>
+      <div class="two">${fld(t("Size (gallons)"), `<input data-cap="${i}" type="number" inputmode="decimal" value="${esc(k.capacity || "")}">`)}${fld(t("In use"), `<select data-use="${i}"><option value="1" selected>${esc(t("Yes"))}</option><option value="0">${esc(t("No"))}</option></select>`)}</div></div>`).join("")}
+      ${panel(t("Add a tank"), `<div class="body form">${fld(t("Tank name"), inp("tank_name", "", "text", `placeholder="${esc(t("e.g. Second overhead tank"))}"`))}<div class="two">${fld(t("Kind"), sel("kind", kinds, "Overhead", false))}${fld(t("Size (gallons)"), inp("capacity_gallons", "", "number"))}</div></div>`, "", "plain")}</div>`,
+    { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(t("Save"))}</button>` });
+  sh.querySelector("[data-save]").onclick = async () => {
+    const jobs = [];
+    d.tanks.forEach((k, i) => {
+      const cap = +sh.querySelector(`[data-cap="${i}"]`).value || 0, use = sh.querySelector(`[data-use="${i}"]`).value;
+      if (cap !== +k.capacity || use === "0") jobs.push({ name: k.name, kind: k.kind, capacity_gallons: cap, is_active: +use });
+    });
+    const v = vals(sh);
+    if (v.tank_name) jobs.push({ tank_name: v.tank_name, kind: v.kind, capacity_gallons: +v.capacity_gallons || 0, is_active: 1 });
+    const r = await run(sh, async () => { for (const j of jobs) await api("mimaar.water.tank_save", { data: j }); return true; }, t("Saved"));
+    if (r) { closeSheet(sh); render(); }
+  };
+}
+const photoFig = (src, cap) => (src ? `<figure class="pfig"><img src="${esc(src)}" alt="" class="zoomable"><figcaption>${esc(cap)}</figcaption></figure>` : "");
+function aiBox(verdict, summary, extra = "") {
+  if (!verdict) return `<div class="banner">${esc(t("The AI check runs after saving when an AI key is set in Mimaar Settings."))}</div>`;
+  return `<div class="verdict ${VERD[verdict] || "warn"}">${icon(verdict === "Verified" ? "check" : "alert")}<span><b>${esc(t(verdict))}</b> ${esc(summary || "")}${extra}</span></div>`;
+}
+function tankerDetail(r) {
+  if (!r) return;
+  const kv = (l, v) => (v || v === 0 ? `<div class="kv"><span>${esc(l)}</span><b>${esc(v)}</b></div>` : "");
+  const sh = sheet(`${r.vehicle_no} · ${t("{0} gal", num(r.gallons))}`, `<div class="stack">
+      <div class="pfigs">${photoFig(r.tanker_photo, t("Tanker with number plate"))}${photoFig(r.tds_photo, t("TDS meter or water sample"))}${photoFig(r.bill_scan, t("Tanker bill / slip"))}</div>
+      <div class="kvs">${kv(t("Date"), `${fdate(r.date)} ${r.time || ""}`)}${kv(t("Water"), t(r.water_type))}${kv(t("TDS reading (ppm)"), r.tds_ppm || "—")}${kv(t("Emptied into"), r.emptied_into ? t(r.emptied_into) : "")}
+        ${kv(t("Water supplier / hydrant"), r.supplier_text)}${kv(t("Received by"), r.received_by_name)}${kv(t("Tanker bill / slip no."), r.bill_no)}${r.cost != null && r.cost ? kv(t("Cost (Rs)"), money(r.cost)) : ""}</div>
+      ${badWater(r) ? `<div class="banner bad">${esc(r.water_type === REJ ? t("Rejected at the gate (brackish water).") : t("TDS above {0} ppm: not fit for concrete or curing.", num(S.water.tds_limit)))}</div>` : ""}
+      <div data-ai>${aiBox(r.ai_verdict, r.ai_summary)}</div>
+      ${S.b.ai ? `<button class="btn" data-re="1">${icon("sparkle")}${esc(t("Check again with AI"))}</button>` : ""}</div>`, { full: true });
+  const b = sh.querySelector("[data-re]");
+  if (b) b.onclick = async () => { try { const x = await busy(api("mimaar.water.recheck", { doctype: "Water Tanker", name: r.name }), t("The AI is checking the photos…")); sh.querySelector("[data-ai]").innerHTML = aiBox(x.ai_verdict, x.ai_summary); } catch (e) { toast(e.message, "bad"); } };
+}
+function readingDetail(r) {
+  if (!r) return;
+  const sh = sheet(`${t(r.tank)} · ${num(r.level_pct)}%`, `<div class="stack"><div class="pfigs">${photoFig(r.photo, t("Photo inside the tank"))}</div>
+      <div class="kvs"><div class="kv"><span>${esc(t("Date"))}</span><b>${esc(`${fdate(r.date)} ${r.time || ""}`)}</b></div><div class="kv"><span>${esc(t("Level (% full)"))}</span><b>${num(r.level_pct)}% · ${esc(t("≈ {0} gal", num(Math.round(r.gallons || 0))))}</b></div>
+      ${r.ai_level_pct != null ? `<div class="kv"><span>${esc(t("AI estimate (% full)"))}</span><b>${num(r.ai_level_pct)}%</b></div>` : ""}${r.ai_clarity ? `<div class="kv"><span>${esc(t("Water clarity"))}</span><b>${esc(t(r.ai_clarity))}</b></div>` : ""}${r.notes ? `<div class="kv"><span>${esc(t("Notes"))}</span><b>${esc(r.notes)}</b></div>` : ""}</div>
+      <div data-ai>${aiBox(r.ai_verdict, r.ai_summary)}</div>${S.b.ai ? `<button class="btn" data-re="1">${icon("sparkle")}${esc(t("Check again with AI"))}</button>` : ""}</div>`, { full: true });
+  const b = sh.querySelector("[data-re]");
+  if (b) b.onclick = async () => { try { const x = await busy(api("mimaar.water.recheck", { doctype: "Water Tank Reading", name: r.name }), t("The AI is checking the photo…")); sh.querySelector("[data-ai]").innerHTML = aiBox(x.ai_verdict, x.ai_summary); } catch (e) { toast(e.message, "bad"); } };
+}
+
+/* ================================================================== petty cash */
+const PCST = { "Waiting for owner": "warn", Approved: "good", Rejected: "bad" };
+const METHODS = ["Cash in hand", "Bank transfer", "Cheque", "JazzCash / Easypaisa", "Raast"];
+VIEWS.petty = async (el) => {
+  setTop(t("Petty cash"), true);
+  const d = await api("mimaar.petty.overview");
+  S.petty = d;
+  if (d.no_person) { el.innerHTML = `<div class="banner warn">${esc(t("Your sign-in isn't linked to a person on site, so you can't hold petty cash. Ask the owner."))}</div>`; return; }
+  const tiles = [tile(t("Cash in hand"), money(d.in_hand), d.full ? t("with all cash holders") : t("with you"), "", "k1"), tile(t("Spent this month"), money(d.spent_month), t("{0} bills", d.bills_month), "", "k3"),
+    tile(t("Waiting for owner"), String(d.waiting), money(d.waiting_amount), "", "k4")];
+  if (tiles.length % 2) tiles.push(`<span class="ctile" style="cursor:default"></span>`);
+  const waiting = d.entries.filter((e) => e.docstatus === 0 && e.status === "Waiting for owner");
+  const maxc = Math.max(1, ...d.by_category.map((x) => x[1]));
+  el.innerHTML = `<p class="small muted" style="margin:0">${esc(t("Cash kept on site for small daily costs. Every expense needs a bill photo; the owner checks it."))}</p>
+    <div class="ctiles">${tiles.join("")}</div>
+    <div class="row"><button class="btn pri" data-act="exp">${icon("plus")}${esc(t("Expense"))}</button><button class="btn" data-act="paycard">${icon("card")}${esc(t("Pay by site card"))}</button>
+      ${d.can_give ? `<button class="btn" data-act="give">${icon("cash")}${esc(t("Give cash"))}</button>` : ""}<button class="btn" data-act="back">${icon("refresh")}${esc(t("Return cash"))}</button></div>
+    ${d.full && waiting.length ? panel(t("Waiting for your check"), `<div class="lst">${waiting.map(pcRow).join("")}</div>`, `<span class="cnt">${waiting.length}</span>`) : ""}
+    ${d.full ? panel(t("Cash holders"), d.holders.length ? `<div class="lst">${d.holders.map((h) => lrow({ title: h.holder_name, sub: esc(t("Given {0} · spent {1} · returned {2}", money(h.given), money(+h.spent + +h.waiting), money(h.returned))), end: `<b>${esc(money(h.in_hand))}</b><span class="small muted">${esc(t("in hand"))}</span>`, chev: false })).join("")}</div>` : empty(t("No cash given yet"), t("The owner records cash handed to a supervisor with Give cash."))) : ""}
+    ${panel(t("Spent this month by type"), d.by_category.length ? `<div class="body hbars">${d.by_category.map(([c, v]) => `<div class="hb"><span>${esc(t(c))}</span><i><b style="width:${(v / maxc) * 100}%"></b></i><em>${esc(money(v))}</em></div>`).join("")}</div>` : empty(t("Nothing spent this month")))}
+    ${d.full ? panel(t("Budget lines for petty cash"), `<div class="lst">${d.categories.map((c) => lrow({ act: C().owner ? "budget" : null, data: c.name, title: t(c.name),
+      sub: c.has_budget ? esc(t("Budget {0} · booked {1} · waiting {2}", money(c.budget, 1), money(c.used, 1), money(c.waiting, 1))) : esc(t("No budget yet")),
+      end: c.has_budget ? `<b class="${c.left < 0 ? "neg" : ""}">${esc(money(c.left, 1))}</b><span class="small muted">${esc(t("left"))}</span>` : pill(C().owner ? t("+ Budget") : t("No budget"), C().owner ? "pri" : "warn"), chev: false })).join("")}</div>`) : ""}
+    ${panel(t("Entries"), d.entries.length ? moreList(d.entries, pcRow, 10) : empty(t("No petty cash entries yet"), t("Record each small expense with its bill photo.")), `<span class="cnt">${d.entries.length}</span>`)}`;
+  Object.assign(S.acts, { exp: () => expenseSheet(d), paycard: () => payByCard(d), give: () => giveCash(d), back: () => returnCash(d), pc: (n) => pcSheet(n), budget: (c) => budgetSheet(c) });
+};
+const pcRow = (e) => lrow({ act: "pc", data: e.name, img: e.bill_photo || e.proof_1, ic: e.bill_photo || e.proof_1 ? null : e.entry_type === "Expense" ? "pay" : "cash",
+  title: `${t(e.entry_type)} · ${money(e.amount)}`, sub: esc([fdate(e.date), e.entry_type === "Expense" ? t(e.category || "") : t(e.method || ""), e.paid_to, S.petty && S.petty.full ? e.holder_name : ""].filter(Boolean).join(" · ")),
+  end: `${e.face ? pill(e.face === "Match" ? t("Face ✓") : ST(e.face), e.face === "Match" ? "good" : "warn") : ""}${pill(ST(e.status), PCST[e.status])}` });
+const holderSel = (d, label) => (d.full && d.holder_list.length ? fld(label, sel("holder", d.holder_list.map((h) => [h.name, h.full_name]), d.me || "", true), { req: true }) : "");
+const catSel = (d, wages) => {
+  const cats = d.categories.slice().sort((a, b) => (wages ? b.for_wages - a.for_wages : 0));
+  const first = wages ? (cats.find((c) => c.for_wages) || {}).name || "" : "";
+  return sel("category", cats.map((c) => [c.name, t(c.name) + (!c.has_budget ? ` · ${t("no budget")}` : c.over ? ` · ${t("over budget")}` : "")]), first, !wages);
+};
+function budgetNote(box, d) {
+  const out = box.querySelector("[data-bud]"); const c = d.categories.find((x) => x.name === box.querySelector("[name=category]").value);
+  if (!out) return;
+  if (!c) { out.innerHTML = ""; return; }
+  if (!c.has_budget) { out.innerHTML = `<div class="banner bad">${esc(d.rules.budget ? t("There is no budget for {0} yet. Ask the owner to add it before spending.", t(c.name)) : t("There is no budget for {0} yet.", t(c.name)))}</div>`; return; }
+  out.innerHTML = d.full ? `<div class="banner ${c.left < 0 ? "bad" : "good"}">${esc(t("Budget {0} · left {1}", money(c.budget, 1), money(c.left, 1)))}</div>` : c.over ? `<div class="banner warn">${esc(t("This line is over its budget. The owner will see it."))}</div>` : "";
+}
+function expenseSheet(d) {
+  const sh = sheet(t("Petty cash expense"), `<div class="form">
+      ${holderSel(d, t("Paid from cash held by"))}
+      ${fld(t("Amount (Rs)"), inp("amount", "", "number"), { req: true })}
+      ${fld(t("Spent on"), catSel(d, false), { req: true })}<div data-bud></div>
+      ${fld(t("Paid to / shop"), inp("paid_to"), { req: true })}
+      ${fld(t("Bill / receipt no."), inp("bill_no"))}
+      ${fld(t("Photo of the bill or receipt"), `<div class="shots">${shot("bill_photo", t("Bill or receipt"), "", { req: !!d.rules.bill, wide: true })}</div>`, { req: !!d.rules.bill })}
+      ${fld(t("What it was for"), area("notes"))}</div>`,
+    { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(t("Save"))}</button>` });
+  wireForm(sh);
+  sh.querySelector("[name=category]").addEventListener("change", () => budgetNote(sh, d));
+  sh.querySelector("[data-save]").onclick = async () => {
+    if (!need(sh, ["amount", "category", "paid_to"].concat(d.full && d.holder_list.length ? ["holder"] : []))) return;
+    const v = vals(sh);
+    if (d.rules.bill && !v.bill_photo) { sheetError(sh, t("Take a photo of the bill or receipt.")); return; }
+    const r = await run(sh, () => api("mimaar.petty.entry_save", { data: Object.assign(v, { entry_type: "Expense" }) }));
+    if (r) { closeSheet(sh); toast(r.status === "Approved" ? t("Saved and booked") : t("Saved: waiting for the owner's check"), "good"); render(); }
+  };
+}
+async function payByCard(d) {
+  d = d || (await busy(api("mimaar.petty.overview")));
+  const r = await cardFlow({ title: t("Pay from petty cash by site card"), action: "Petty cash", step3: { label: "Payment", ok: t("Pay"),
+    render(box) {
+      box.innerHTML = `<div class="form">${holderSel(d, t("Paid from cash held by"))}${fld(t("Amount (Rs)"), inp("amount", "", "number"), { req: true })}
+        ${fld(t("Spent on"), catSel(d, true), { req: true })}<div data-bud></div>${fld(t("What it was for"), area("notes", "", `placeholder="${esc(t("e.g. wage advance for this week"))}"`))}</div>`;
+      wireForm(box); box.querySelector("[name=category]").addEventListener("change", () => budgetNote(box, d)); budgetNote(box, d);
+    },
+    submit(st, box) {
+      const v = vals(box);
+      if (!(+v.amount > 0)) throw new UserError(t("Enter the amount."));
+      if (!v.category) throw new UserError(t("Choose what the money was spent on."));
+      return api("mimaar.petty.entry_save", { data: Object.assign(v, { entry_type: "Expense", paid_to_person: st.who.name }), check: st.check.check });
+    } } });
+  if (r) { toast(r.status === "Approved" ? t("Paid and booked") : t("Paid: waiting for the owner's check"), "good"); if (location.hash.includes("petty")) render(); }
+}
+function cashForm(d, giving, withHolder) {
+  return `<div class="form">${withHolder ? holderSel(d, giving ? t("Supervisor (cash holder)") : t("Returned by (cash holder)")) : ""}
+    ${fld(t("Amount (Rs)"), inp("amount", "", "number"), { req: true })}
+    ${fld(giving ? t("Given by") : t("Returned by"), chips("method", METHODS, "Cash in hand"))}
+    ${fld(t("Transfer / cheque / receipt no."), inp("reference"))}
+    ${fld(t("Handed over in front of (witness)"), inp("witness"))}
+    ${fld(t("Proofs"), `<div class="shots">${shot("proof_1", t("Signed receipt or handover photo"))}${shot("proof_2", t("Transfer screenshot or cheque photo"))}${shot("proof_3", t("Proof 3 (optional)"))}</div>`)}
+    ${fld(t("Notes"), area("notes"))}</div>`;
+}
+async function giveCash(d) {
+  if (d.rules.card) {
+    const r = await cardFlow({ title: t("Give cash by site card"), action: "Petty cash", step3: { label: "Cash", ok: t("Save"),
+      render(box) { box.innerHTML = cashForm(d, true, false); wireForm(box); },
+      submit(st, box) { const v = vals(box); if (!(+v.amount > 0)) throw new UserError(t("Enter the amount.")); return api("mimaar.petty.entry_save", { data: Object.assign(v, { entry_type: "Cash given", holder: st.who.name }), check: st.check.check }); } } });
+    if (r) { toast(t("Saved and booked"), "good"); render(); }
+    return;
+  }
+  cashSheet(d, true);
+}
+function returnCash(d) { cashSheet(d, false); }
+function cashSheet(d, giving) {
+  const sh = sheet(giving ? t("Give cash") : t("Return cash"), cashForm(d, giving, true), { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(t("Save"))}</button>` });
+  wireForm(sh);
+  sh.querySelector("[data-save]").onclick = async () => {
+    if (!need(sh, ["amount"].concat(d.full && d.holder_list.length ? ["holder"] : []))) return;
+    const v = vals(sh);
+    if (!v.proof_1 && !v.proof_2 && !v.proof_3) { sheetError(sh, t("Add at least one proof of the handover (signed receipt, photo, transfer screenshot or cheque).")); return; }
+    const r = await run(sh, () => api("mimaar.petty.entry_save", { data: Object.assign(v, { entry_type: giving ? "Cash given" : "Cash returned" }) }));
+    if (r) { closeSheet(sh); toast(r.status === "Approved" ? t("Saved and booked") : t("Saved: waiting for the owner's check"), "good"); render(); }
+  };
+}
+async function pcSheet(name) {
+  let e;
+  try { e = await busy(api("mimaar.petty.entry", { name })); } catch (err) { toast(err.message, "bad"); return; }
+  const kv = (l, v) => (v || v === 0 ? `<div class="kv"><span>${esc(l)}</span><b>${esc(v)}</b></div>` : "");
+  const f = e.face;
+  const canCheck = S.petty && S.petty.full && e.docstatus === 0 && e.status === "Waiting for owner";
+  const sh = sheet(`${t(e.entry_type)} · ${money(e.amount)}`, `<div class="stack">
+      <div class="row" style="justify-content:space-between">${pill(ST(e.status), PCST[e.status])}<span class="small muted">${esc(e.name)}</span></div>
+      <div class="kvs">${kv(t("Date"), fdate(e.date))}${kv(t("Cash holder"), e.holder_name)}${kv(t("Spent on"), e.category ? t(e.category) : "")}${kv(t("Paid to / shop"), e.paid_to)}${kv(t("Bill / receipt no."), e.bill_no)}
+        ${e.entry_type !== "Expense" ? kv(t("Given by"), t(e.method || "")) + kv(t("Transfer / cheque / receipt no."), e.reference) + kv(t("Handed over in front of (witness)"), e.witness) : ""}${kv(t("What it was for"), e.notes)}
+        ${e.check_note ? kv(t("Owner's note"), e.check_note) : ""}</div>
+      ${e.budget ? `<div class="banner ${e.budget.left < 0 ? "bad" : "good"}">${esc(e.budget.has_budget ? t("Budget {0} · left {1}", money(e.budget.budget, 1), money(e.budget.left, 1)) : t("No budget yet"))}</div>` : ""}
+      ${f ? `<div class="facecmp"><figure><img src="${esc(f.registered_photo || "")}" alt="" class="zoomable"><figcaption>${esc(t("Registered photo"))}</figcaption></figure><figure><img src="${esc(f.live_photo || "")}" alt="" class="zoomable"><figcaption>${esc(t("Taken now"))}</figcaption></figure></div>
+        <div class="verdict ${f.result === "Match" ? "good" : "warn"}">${icon(f.result === "Match" ? "check" : "alert")}<span>${esc(f.result === "Match" ? t("Face matches ({0}%)", f.score) : ST(f.result))} · ${esc(f.person_name || "")}</span></div>` : ""}
+      <div class="pfigs">${photoFig(e.bill_photo, t("Bill or receipt"))}${photoFig(e.proof_1, t("Proof 1"))}${photoFig(e.proof_2, t("Proof 2"))}${photoFig(e.proof_3, t("Proof 3"))}</div></div>`,
+    { full: true, footer: canCheck ? `<button class="btn bad" data-no="1">${esc(t("Reject"))}</button><button class="btn good" data-ok="1">${icon("check")}${esc(t("Approve"))}</button>` : "" });
+  if (!canCheck) return;
+  sh.querySelector("[data-ok]").onclick = async () => { const r = await run(sh, () => api("mimaar.petty.decide", { name, status: "Approved" }), t("Approved and booked")); if (r) { closeSheet(sh); render(); } };
+  sh.querySelector("[data-no]").onclick = async () => {
+    const why = await ask(t("Reject"), t("Why is it rejected? The cash holder sees this."), "", { area: true, ok: t("Reject") });
+    if (!why) return;
+    const r = await run(sh, () => api("mimaar.petty.decide", { name, status: "Rejected", note: why }), t("Rejected"));
+    if (r) { closeSheet(sh); render(); }
+  };
+}
+async function budgetSheet(cat) {
+  const v = await ask(t("Budget for {0}", t(cat)), t("Amount to add to this budget line (Rs). It is saved as a budget in the ERP."), "", { type: "number", ok: t("Add budget") });
+  if (!v) return;
+  try { await busy(api("mimaar.petty.budget_add", { category: cat, amount: v })); toast(t("Budget added"), "good"); render(); } catch (e) { toast(e.message, "bad"); }
+}
+
+function releaseSheet(preset = []) {
+  S.rel = preset.map((x) => ({ item_code: x.item_code, item_name: x.item_name, uom: x.uom, stock: x.qty, qty: "" }));
   const sh = sheet(t("Release to work"), `<div class="form">
     ${fld(t("Released to (mistri or group head)"), inp("issued_to"), { req: true })}
     ${fld(t("Area / activity"), inp("work_area", "", "text", `placeholder="${esc(t("e.g. first floor slab"))}"`))}
@@ -673,6 +1119,7 @@ function releaseSheet() {
   wireForm(sh);
   const box = sh.querySelector("[data-items]");
   const draw = () => { box.innerHTML = S.rel.map((r, i) => `<div class="line" data-skip="1"><div class="lt"><b>${esc(r.item_name)}</b><span class="small muted">${esc(t("in store: {0} {1}", num(r.stock), t(r.uom)))}</span><button type="button" class="sh-x" data-rm="${i}">${icon("x")}</button></div>${qtyBox(`q_${i}`, r.qty || "")}</div>`).join(""); };
+  draw();
   sh.querySelector("[data-add]").onclick = async () => { const it = await pickItem(t("Item from the store"), { stock: true }); if (it && !it.__new) { S.rel.push({ item_code: it.item_code, item_name: it.item_name, uom: it.uom, stock: it.qty, qty: "" }); draw(); } };
   box.addEventListener("click", (e) => { const r = e.target.closest("[data-rm]"); if (r) { S.rel.splice(+r.dataset.rm, 1); draw(); } });
   box.addEventListener("input", (e) => { const m = e.target.name && e.target.name.match(/^q_(\d+)$/); if (m) S.rel[+m[1]].qty = e.target.value; });
@@ -754,7 +1201,8 @@ VIEWS.more = async (el) => {
   if (c.buy) T.push(["Quotations", "log", "quotes", "k6"], ["Purchase orders", "cart", "orders", "k5"]);
   if (c.money) T.push(["Bills and payments", "pay", "bills", "k8"], ["Budget", "budget", "budget", "k3"]);
   if (c.site) T.push(["Snags", "alert", "build/snags", "k4"], ["Site diary", "log", "build/diary", "k7"]);
-  if (c.store) T.push(["Stock", "box", "store/stock", "k3"]);
+  if (c.store || c.site) T.push(["Stock", "box", "store/items", "k3"], ["Water", "drop", "store/water", "k7"]);
+  if (PETTY()) T.push(["Petty cash", "cash", "petty", "k1"]);
   T.push(["My settings", "gear", "settings", "k8"]);
   if (c.owner && !NATIVE && /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) T.push(["Connect a phone", "globe", "connect", "k2"]);
   el.innerHTML = `<button class="mo-me" data-go="settings"><span class="av">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc((b.full_name || "?").charAt(0))}</span><span><b>${esc(b.full_name)}</b><span class="small muted">${esc(b.project_name || "")}</span></span>${icon("chev", "lch")}</button>
@@ -852,8 +1300,8 @@ async function attendanceByCard() {
 }
 
 /* store issue / return by site card: card → face → items */
-async function storeByCard(kind) {
-  const items = [];
+async function storeByCard(kind, preset = []) {
+  const items = preset.map((x) => ({ item_code: x.item_code, item_name: x.item_name, uom: x.uom, stock: x.qty, qty: "" }));
   const issue = kind === "issue";
   const r = await cardFlow({ title: issue ? t("Issue from store by site card") : t("Return to store by site card"), action: issue ? "Store issue" : "Store return", step3: { label: "Items", ok: issue ? t("Release") : t("Return to store"),
     render(box) {
@@ -869,6 +1317,7 @@ async function storeByCard(kind) {
       };
       list.addEventListener("click", (e) => { const b = e.target.closest("[data-rm]"); if (b) { items.splice(+b.dataset.rm, 1); draw(); } });
       list.addEventListener("input", (e) => { const m = e.target.name && e.target.name.match(/^q_(\d+)$/); if (m) items[+m[1]].qty = e.target.value; });
+      draw();
     },
     submit(st, box) {
       const rows = items.filter((x) => +x.qty > 0).map((x) => ({ item_code: x.item_code, qty: +x.qty }));

@@ -1,0 +1,162 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-23 15:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mimaar",
+ "name": "Water Tank",
+ "owner": "Administrator",
+ "modified": "2026-10-23 15:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "tank_name",
+   "fieldtype": "Data",
+   "label": "Tank",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "kind",
+   "fieldtype": "Select",
+   "label": "Kind",
+   "options": "Underground\nOverhead\nDrums\nDirect use",
+   "default": "Underground",
+   "in_list_view": 1,
+   "description": "Direct use: water used straight from the tanker (e.g. on a slab); it has no level."
+  },
+  {
+   "fieldname": "capacity_gallons",
+   "fieldtype": "Float",
+   "label": "Capacity (gallons)",
+   "in_list_view": 1,
+   "description": "A full tank. Turns the daily level (% full) into gallons."
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "In use",
+   "default": "1"
+  },
+  {
+   "fieldname": "sort_order",
+   "fieldtype": "Int",
+   "label": "Order on screen"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "field_order": [
+  "tank_name",
+  "kind",
+  "capacity_gallons",
+  "col1",
+  "project",
+  "is_active",
+  "sort_order",
+  "notes"
+ ],
+ "links": [],
+ "sort_field": "sort_order",
+ "sort_order": "ASC",
+ "states": [],
+ "row_format": "Dynamic",
+ "autoname": "field:tank_name",
+ "title_field": "tank_name",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1
+  },
+  {
+   "role": "Projects Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Site Supervisor",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Stock Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Stock User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Projects User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Accounts Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  }
+ ],
+ "track_changes": 1
+}

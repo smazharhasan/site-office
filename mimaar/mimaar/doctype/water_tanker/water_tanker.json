@@ -1,0 +1,374 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-23 15:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mimaar",
+ "name": "Water Tanker",
+ "owner": "Administrator",
+ "modified": "2026-10-23 15:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "reqd": 1,
+   "default": "Today",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "time",
+   "fieldtype": "Time",
+   "label": "Time"
+  },
+  {
+   "fieldname": "vehicle_no",
+   "fieldtype": "Data",
+   "label": "Tanker vehicle no.",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_global_search": 1
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Water supplier",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "supplier_text",
+   "fieldtype": "Data",
+   "label": "Water supplier / hydrant"
+  },
+  {
+   "fieldname": "gallons",
+   "fieldtype": "Float",
+   "label": "Tanker size (gallons)",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "water_type",
+   "fieldtype": "Select",
+   "label": "Water",
+   "options": "Sweet (construction & curing)\nDrinking\nBrackish (rejected)",
+   "default": "Sweet (construction & curing)",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "tds_ppm",
+   "fieldtype": "Int",
+   "label": "TDS reading (ppm)",
+   "description": "Above about 1,000 ppm is not fit for concrete and curing."
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cost",
+   "fieldtype": "Currency",
+   "label": "Cost (Rs)"
+  },
+  {
+   "fieldname": "emptied_into",
+   "fieldtype": "Link",
+   "label": "Emptied into",
+   "options": "Water Tank"
+  },
+  {
+   "fieldname": "received_by",
+   "fieldtype": "Link",
+   "label": "Received by",
+   "options": "Site Worker"
+  },
+  {
+   "fieldname": "received_by_name",
+   "fieldtype": "Data",
+   "label": "Received by (name)",
+   "fetch_from": "received_by.full_name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "identity_check",
+   "fieldtype": "Link",
+   "label": "Face check",
+   "options": "Identity Check",
+   "read_only": 1
+  },
+  {
+   "fieldname": "paid_from_petty_cash",
+   "fieldtype": "Check",
+   "label": "Paid in cash from petty cash"
+  },
+  {
+   "fieldname": "petty_cash_entry",
+   "fieldtype": "Link",
+   "label": "Petty cash entry",
+   "options": "Petty Cash Entry",
+   "read_only": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "photos_section",
+   "fieldtype": "Section Break",
+   "label": "Photos and bill"
+  },
+  {
+   "fieldname": "tanker_photo",
+   "fieldtype": "Attach Image",
+   "label": "Photo: tanker with number plate"
+  },
+  {
+   "fieldname": "bill_scan",
+   "fieldtype": "Attach Image",
+   "label": "Scan of the tanker bill / slip"
+  },
+  {
+   "fieldname": "tds_photo",
+   "fieldtype": "Attach Image",
+   "label": "Photo: TDS meter or water sample"
+  },
+  {
+   "fieldname": "col2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bill_no",
+   "fieldtype": "Data",
+   "label": "Tanker bill / slip no."
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location (from the phone)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "ai_section",
+   "fieldtype": "Section Break",
+   "label": "Verify with AI"
+  },
+  {
+   "fieldname": "ai_verdict",
+   "fieldtype": "Select",
+   "label": "AI verdict",
+   "options": "\nVerified\nCheck\nMismatch\nNot checked",
+   "read_only": 1,
+   "in_list_view": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "ai_plate",
+   "fieldtype": "Data",
+   "label": "Number plate read by the AI",
+   "read_only": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "ai_gallons",
+   "fieldtype": "Float",
+   "label": "AI estimate of the tanker size (gallons)",
+   "read_only": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "ai_tds_seen",
+   "fieldtype": "Data",
+   "label": "TDS seen on the meter",
+   "read_only": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "col3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ai_summary",
+   "fieldtype": "Small Text",
+   "label": "AI notes",
+   "read_only": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "stock_entry",
+   "fieldtype": "Link",
+   "label": "Stock entry (water in)",
+   "options": "Stock Entry",
+   "read_only": 1,
+   "allow_on_submit": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "options": "Water Tanker",
+   "read_only": 1,
+   "no_copy": 1,
+   "print_hide": 1
+  }
+ ],
+ "field_order": [
+  "date",
+  "time",
+  "vehicle_no",
+  "supplier",
+  "supplier_text",
+  "gallons",
+  "water_type",
+  "tds_ppm",
+  "col1",
+  "cost",
+  "emptied_into",
+  "received_by",
+  "received_by_name",
+  "identity_check",
+  "paid_from_petty_cash",
+  "petty_cash_entry",
+  "photos_section",
+  "tanker_photo",
+  "bill_scan",
+  "tds_photo",
+  "col2",
+  "bill_no",
+  "location",
+  "notes",
+  "ai_section",
+  "ai_verdict",
+  "ai_plate",
+  "ai_gallons",
+  "ai_tds_seen",
+  "col3",
+  "ai_summary",
+  "stock_entry",
+  "project",
+  "amended_from"
+ ],
+ "links": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "row_format": "Dynamic",
+ "autoname": "WTK-.YY.-.#####",
+ "title_field": "vehicle_no",
+ "image_field": "tanker_photo",
+ "is_submittable": 1,
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 1,
+   "cancel": 1,
+   "amend": 0
+  },
+  {
+   "role": "Projects Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 1,
+   "cancel": 0,
+   "amend": 0
+  },
+  {
+   "role": "Site Supervisor",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 1,
+   "cancel": 0,
+   "amend": 0
+  },
+  {
+   "role": "Stock Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 1,
+   "cancel": 0,
+   "amend": 0
+  },
+  {
+   "role": "Stock User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 1,
+   "cancel": 0,
+   "amend": 0
+  },
+  {
+   "role": "Projects User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Accounts Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  }
+ ],
+ "track_changes": 1
+}

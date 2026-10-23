@@ -1,0 +1,243 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-23 15:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mimaar",
+ "name": "Water Tank Reading",
+ "owner": "Administrator",
+ "modified": "2026-10-23 15:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "reqd": 1,
+   "default": "Today",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "time",
+   "fieldtype": "Time",
+   "label": "Time"
+  },
+  {
+   "fieldname": "tank",
+   "fieldtype": "Link",
+   "label": "Tank",
+   "options": "Water Tank",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "level_pct",
+   "fieldtype": "Percent",
+   "label": "Level (% full)",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "gallons",
+   "fieldtype": "Float",
+   "label": "Water in the tank (gallons)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "photo",
+   "fieldtype": "Attach Image",
+   "label": "Photo inside the tank"
+  },
+  {
+   "fieldname": "recorded_by",
+   "fieldtype": "Link",
+   "label": "Recorded by",
+   "options": "User",
+   "default": "__user",
+   "read_only": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location (from the phone)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes (cleanliness, leaks)"
+  },
+  {
+   "fieldname": "ai_section",
+   "fieldtype": "Section Break",
+   "label": "AI check of the photo"
+  },
+  {
+   "fieldname": "ai_verdict",
+   "fieldtype": "Select",
+   "label": "AI verdict",
+   "options": "\nVerified\nCheck\nMismatch\nNot checked",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "ai_level_pct",
+   "fieldtype": "Percent",
+   "label": "AI estimate (% full)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ai_clarity",
+   "fieldtype": "Data",
+   "label": "Water clarity",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ai_summary",
+   "fieldtype": "Small Text",
+   "label": "AI notes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "stock_entry",
+   "fieldtype": "Link",
+   "label": "Water used (stock entry)",
+   "options": "Stock Entry",
+   "read_only": 1
+  }
+ ],
+ "field_order": [
+  "date",
+  "time",
+  "tank",
+  "level_pct",
+  "gallons",
+  "col1",
+  "photo",
+  "recorded_by",
+  "project",
+  "location",
+  "notes",
+  "ai_section",
+  "ai_verdict",
+  "ai_level_pct",
+  "ai_clarity",
+  "col2",
+  "ai_summary",
+  "stock_entry"
+ ],
+ "links": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "row_format": "Dynamic",
+ "autoname": "WTR-.YY.-.#####",
+ "title_field": "tank",
+ "image_field": "photo",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1
+  },
+  {
+   "role": "Projects Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Site Supervisor",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Stock Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Stock User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Projects User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Accounts Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  }
+ ],
+ "track_changes": 1
+}

@@ -142,6 +142,47 @@
    "default": "1"
   },
   {
+   "fieldname": "water_section",
+   "fieldtype": "Section Break",
+   "label": "Water and petty cash"
+  },
+  {
+   "fieldname": "tds_limit",
+   "fieldtype": "Int",
+   "label": "Highest TDS for construction water (ppm)",
+   "default": "1000"
+  },
+  {
+   "fieldname": "water_warehouse",
+   "fieldtype": "Link",
+   "label": "Water store (warehouse)",
+   "options": "Warehouse",
+   "description": "Tankers add water here; the daily tank levels show what was used."
+  },
+  {
+   "fieldname": "col_w",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "petty_cash_account",
+   "fieldtype": "Link",
+   "label": "Petty cash account",
+   "options": "Account",
+   "description": "The cash kept on site with the cash holders."
+  },
+  {
+   "fieldname": "petty_needs_budget",
+   "fieldtype": "Check",
+   "label": "Petty cash expenses need a budget line",
+   "default": "1"
+  },
+  {
+   "fieldname": "petty_bill_required",
+   "fieldtype": "Check",
+   "label": "Petty cash expenses need the bill photo",
+   "default": "1"
+  },
+  {
    "fieldname": "share_section",
    "fieldtype": "Section Break",
    "label": "Sharing"
@@ -199,6 +240,13 @@
   "card_for_receiving",
   "card_for_petty_cash",
   "card_sign_in",
+  "water_section",
+  "tds_limit",
+  "water_warehouse",
+  "col_w",
+  "petty_cash_account",
+  "petty_needs_budget",
+  "petty_bill_required",
   "share_section",
   "share_link_days",
   "country_code",

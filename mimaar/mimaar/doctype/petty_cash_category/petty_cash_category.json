@@ -1,0 +1,94 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-23 15:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mimaar",
+ "name": "Petty Cash Category",
+ "owner": "Administrator",
+ "modified": "2026-10-23 15:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "category_name",
+   "fieldtype": "Data",
+   "label": "Spent on",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "expense_account",
+   "fieldtype": "Link",
+   "label": "Budget line (expense account)",
+   "options": "Account",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "Every expense is booked to this account; its budget (Accounting > Budget) shows on the phone before spending."
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "In use",
+   "default": "1"
+  },
+  {
+   "fieldname": "for_wages",
+   "fieldtype": "Check",
+   "label": "Payments to workers (wage advance)"
+  },
+  {
+   "fieldname": "sort_order",
+   "fieldtype": "Int",
+   "label": "Order on screen"
+  }
+ ],
+ "field_order": [
+  "category_name",
+  "expense_account",
+  "col1",
+  "is_active",
+  "for_wages",
+  "sort_order"
+ ],
+ "links": [],
+ "sort_field": "sort_order",
+ "sort_order": "ASC",
+ "states": [],
+ "row_format": "Dynamic",
+ "autoname": "field:category_name",
+ "title_field": "category_name",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1
+  },
+  {
+   "role": "Accounts Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1
+  },
+  {
+   "role": "Site Supervisor",
+   "read": 1
+  },
+  {
+   "role": "Stock User",
+   "read": 1
+  }
+ ],
+ "track_changes": 1
+}

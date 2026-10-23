@@ -1079,7 +1079,8 @@ def search(q):
 	if c["suppliers"]:
 		out["suppliers"] = frappe.get_list("Supplier", filters={"disabled": 0}, or_filters={"supplier_name": ["like", like], "name": ["like", like], "mobile_no": ["like", like]}, fields=["name", "supplier_name", "mimaar_work_area"], limit_page_length=8)
 	if c["store"] or c["site"]:
-		out["items"] = [r for r in stock(q)["rows"] if flt(r.qty) > 0][:8]
+		rows = stock(q)["rows"]
+		out["items"] = (sorted(rows, key=lambda r: -flt(r.qty)))[:8]
 	if c["buy"] or c["money"]:
 		out["orders"] = frappe.get_list("Purchase Order", filters={"docstatus": ["<", 2]}, or_filters={"name": ["like", like], "supplier_name": ["like", like]}, fields=["name", "supplier_name"], order_by="creation desc", limit_page_length=8)
 	if c["buy"]:

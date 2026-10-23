@@ -4845,3 +4845,324 @@ Not enough in the store,اسٹور میں کافی مقدار نہیں
 Today's attendance is already submitted. Only time out can be marked now.,آج کی حاضری جمع ہو چکی ہے۔ اب صرف روانگی درج ہو سکتی ہے۔
 Today's attendance is submitted. Only time out can be marked now.,آج کی حاضری جمع ہو چکی ہے۔ اب صرف روانگی درج ہو سکتی ہے۔
 Time out by site card,سائٹ کارڈ سے روانگی
++ Budget,+ بجٹ
+AI estimate (% full),AI کا اندازہ (% بھری)
+AI {0}%,AI {0}%
+AI ✓,AI ✓
+AI: check,AI: دیکھیں
+AI: mismatch,AI: فرق
+AI: not checked,AI: جانچ نہیں ہوئی
+About {0} visible,تقریباً {0} نظر آ رہے ہیں
+Above {0} ppm is not fit for concrete or curing.,{0} ppm سے زیادہ پانی کنکریٹ اور ترائی کے قابل نہیں۔
+"Access (ladders, scaffolding)",سیڑھیاں اور پاڑ
+Add a tank,ٹینکی شامل کریں
+Add as a new item,نئے آئٹم کے طور پر شامل کریں
+Add as a new item: {0},نیا آئٹم شامل کریں: {0}
+"Add at least one proof of the handover (signed receipt, photo, transfer screenshot or cheque).",حوالگی کا کم از کم ایک ثبوت لگائیں (دستخط شدہ رسید، تصویر، ٹرانسفر کا اسکرین شاٹ یا چیک)۔
+Add budget,بجٹ شامل کریں
+Admixtures & chemicals,کیمیکل اور ایڈمکسچر
+Aluminium & glass,ایلومینیم اور شیشہ
+Amount to add to this budget line (Rs). It is saved as a budget in the ERP.,اس بجٹ لائن میں شامل کرنے کی رقم (روپے)۔ یہ ERP میں بجٹ کے طور پر محفوظ ہو گی۔
+Approve,منظور کریں
+Approve or reject.,منظور یا مسترد کریں۔
+Approved,منظور شدہ
+Approved and booked,منظور ہو کر کھاتے میں درج
+Bad water,خراب پانی
+Bag,بوری
+Bill / receipt no.,بل / رسید نمبر
+Bill needed,بل ضروری ہے
+Bill or receipt,بل یا رسید
+Binding & fixing,باندھنے اور لگانے کا سامان
+Blocks & bricks,بلاک اور اینٹیں
+Box,ڈبہ
+Brackish (rejected),کھارا (واپس کر دیا)
+Budget added,بجٹ شامل ہو گیا
+Budget for {0},{0} کا بجٹ
+Budget lines for petty cash,پیٹی کیش کی بجٹ لائنیں
+Budget {0} · booked {1} · waiting {2},بجٹ {0} · درج {1} · منتظر {2}
+Budget {0} · left {1},بجٹ {0} · باقی {1}
+Canteen & food,کینٹین اور کھانا
+Canteen and food,کینٹین اور کھانا
+Cash given,نقد دیا
+Cash holder,نقد رکھنے والا
+Cash holders,نقد رکھنے والے
+Cash in hand,ہاتھ میں نقد
+Cash kept on site for small daily costs. Every expense needs a bill photo; the owner checks it.,سائٹ پر روزمرہ کے چھوٹے خرچوں کے لیے رکھا گیا نقد۔ ہر خرچ کے ساتھ بل کی تصویر ضروری ہے؛ مالک اسے جانچتا ہے۔
+Cash returned,نقد واپس کیا
+Cement,سیمنٹ
+Check again with AI,AI سے دوبارہ جانچیں
+Choose the category.,قسم چنیں۔
+Choose the kind of entry.,اندراج کی قسم چنیں۔
+Choose the tank it was emptied into.,وہ ٹینکی چنیں جس میں پانی ڈالا گیا۔
+Choose what the money is spent on.,چنیں کہ رقم کس پر خرچ ہو گی۔
+Choose what the money was spent on.,چنیں کہ رقم کس پر خرچ ہوئی۔
+Coil,کوائل
+Coming on order,آرڈر پر آ رہا ہے
+Construction Materials,تعمیراتی سامان
+Consumable,استعمال کا سامان
+Cost (Rs),قیمت (روپے)
+Cubic Foot,مکعب فٹ
+Curing & cleaning,ترائی اور صفائی
+Cutting & grinding,کٹائی اور گرائنڈنگ
+Direct use,براہ راست استعمال
+Direct use on slab,سلیب پر براہ راست استعمال
+Doors & woodwork,دروازے اور لکڑی کا کام
+Drinking,پینے کا
+Drums,ڈرم
+Edit item,آئٹم میں تبدیلی
+Electrical (finishing),بجلی (فنشنگ)
+Electrical (grey),بجلی (گرے)
+Emptied into,کس میں ڈالا گیا
+Enter the amount.,رقم لکھیں۔
+Enter the budget amount.,بجٹ کی رقم لکھیں۔
+Enter the cost paid from petty cash.,پیٹی کیش سے دی گئی قیمت لکھیں۔
+Enter the tank's name.,ٹینکی کا نام لکھیں۔
+Enter the tanker number and its size in gallons.,ٹینکر کا نمبر اور اس کا سائز گیلن میں لکھیں۔
+Enter the tanker size in gallons.,ٹینکر کا سائز گیلن میں لکھیں۔
+Enter the tanker's vehicle number.,ٹینکر کی گاڑی کا نمبر لکھیں۔
+Enter who was paid (the shop or the person).,لکھیں کہ ادائیگی کس کو ہوئی (دکان یا شخص)۔
+Fill in when you pay it from petty cash.,اگر پیٹی کیش سے ادا کریں تو لکھیں۔
+Finishing Materials,فنشنگ کا سامان
+Foot,فٹ
+Fuel & lubricants,ایندھن اور تیل
+Gallon,گیلن
+Give cash,نقد دیں
+Give cash by site card,سائٹ کارڈ سے نقد دیں
+Given by,کیسے دیا
+Given {0} · spent {1} · returned {2},دیا {0} · خرچ {1} · واپس {2}
+Grey materials,گرے سامان
+Gypsum & ceiling,جپسم اور سیلنگ
+Hand tools,ہاتھ کے اوزار
+Handed over in front of (witness),کس کے سامنے دیا (گواہ)
+Hardware,ہارڈ ویئر
+Identify from a photo,تصویر سے پہچانیں
+In store,اسٹور میں
+In the store list,اسٹور کی فہرست میں
+In the tanks about {0} gallons · in the books {1} gallons,ٹینکیوں میں تقریباً {0} گیلن · کھاتے میں {1} گیلن
+In use,استعمال میں
+Item name,آئٹم کا نام
+JazzCash / Easypaisa,جاز کیش / ایزی پیسہ
+Kg,کلو
+Kitchen,کچن
+Labour advance,مزدور کو پیشگی
+Last reading: {0}% on {1},پچھلی ریڈنگ: {0}% ({1})
+Leave empty for no warning.,اگر خبردار نہ کرنا ہو تو خالی چھوڑ دیں۔
+Level (% full),سطح (% بھری)
+Level reading,سطح کی ریڈنگ
+Lighting,روشنی
+Litre,لیٹر
+"Log each tanker at the gate with its number plate, size, TDS reading and a photo.",ہر ٹینکر گیٹ پر درج کریں: نمبر پلیٹ، سائز، TDS ریڈنگ اور تصویر کے ساتھ۔
+Lot,لاٹ
+MS & railings,ایم ایس اور ریلنگ
+Machinery,مشینری
+Measuring & levelling,پیمائش اور لیولنگ
+Mismatch,فرق ہے
+New water tanker,نیا پانی کا ٹینکر
+No budget,بجٹ نہیں
+No cash given yet,ابھی کوئی نقد نہیں دیا گیا
+No movement yet,ابھی کوئی آمد و رفت نہیں
+No petty cash entries yet,ابھی پیٹی کیش کا کوئی اندراج نہیں
+No reading yet,ابھی کوئی ریڈنگ نہیں
+No readings yet,ابھی کوئی ریڈنگ نہیں
+No tanker above {0} ppm,کوئی ٹینکر {0} ppm سے زیادہ نہیں
+No tankers logged,کوئی ٹینکر درج نہیں
+No tanks yet. The owner adds them under Tanks.,"ابھی کوئی ٹینکی نہیں۔ مالک انہیں ""ٹینکیاں"" میں شامل کرتا ہے۔"
+Nos,عدد
+Not a water record.,یہ پانی کا ریکارڈ نہیں۔
+Not enough cash,نقد کافی نہیں
+Not received yet,ابھی وصول نہیں ہوا
+Not sure what this is,پتا نہیں یہ کیا ہے
+"Notes (cleanliness, leaks)",نوٹس (صفائی، رساؤ)
+Nothing spent this month,اس مہینے کچھ خرچ نہیں ہوا
+Number plate: {0},نمبر پلیٹ: {0}
+On order,آرڈر پر
+Only the owner changes the tanks.,ٹینکیاں صرف مالک بدل سکتا ہے۔
+Only the owner or the accountant checks petty cash.,پیٹی کیش صرف مالک یا اکاؤنٹنٹ جانچتا ہے۔
+Only the owner or the accountant records cash given.,نقد دینا صرف مالک یا اکاؤنٹنٹ درج کرتا ہے۔
+Only the owner sets budgets.,بجٹ صرف مالک طے کرتا ہے۔
+Other site expenses,سائٹ کے دیگر خرچ
+Overhead,چھت والی
+Overhead tank,چھت کی ٹینکی
+Owner's note,مالک کا نوٹ
+Paid and booked,ادا ہو کر کھاتے میں درج
+Paid from cash held by,کس کے نقد سے ادا ہوا
+Paid in cash from petty cash,پیٹی کیش سے نقد ادا کیا
+Paid to / shop,کس کو ادا کیا / دکان
+Paid: waiting for the owner's check,ادا ہو گیا: مالک کی جانچ کا انتظار
+Pair,جوڑا
+Pay by site card,سائٹ کارڈ سے ادائیگی
+Pay from petty cash by site card,سائٹ کارڈ سے پیٹی کیش کی ادائیگی
+Petty cash expense,پیٹی کیش کا خرچ
+Petty cash given to {0} ({1}),{0} کو پیٹی کیش دیا ({1})
+Petty cash returned by {0} ({1}),{0} نے پیٹی کیش واپس کیا ({1})
+Petty cash: {0} paid to {1} by {2},پیٹی کیش: {0}، {1} کو {2} نے ادا کیا
+Photo inside the tank,ٹینکی کے اندر کی تصویر
+Photo needed,تصویر ضروری ہے
+Photo of the bill or receipt,بل یا رسید کی تصویر
+Photo of the item,آئٹم کی تصویر
+Photo through the manhole,مین ہول سے تصویر
+Photograph the inside of the tank through the manhole each morning; the AI estimates the level from the photo.,ہر صبح مین ہول سے ٹینکی کے اندر کی تصویر لیں؛ AI تصویر سے سطح کا اندازہ لگاتا ہے۔
+Plumbing (grey),پلمبنگ (گرے)
+Power tools,بجلی کے اوزار
+Products,مصنوعات
+Proof 1,ثبوت 1
+Proof 2,ثبوت 2
+Proof 3,ثبوت 3
+Proof 3 (optional),ثبوت 3 (اختیاری)
+Proofs,ثبوت
+Raast,راست
+Raw Material,خام مال
+Read the level of every tank once ({0}) to work out the water used.,استعمال شدہ پانی جاننے کے لیے ہر ٹینکی کی سطح ایک بار پڑھیں ({0})۔
+Ready-mix,ریڈی مکس
+Received (gallons),وصول (گیلن)
+Record each small expense with its bill photo.,ہر چھوٹا خرچ اس کے بل کی تصویر کے ساتھ درج کریں۔
+Recorded by the owner,مالک نے درج کیا
+Reject,مسترد کریں
+Rejected at the gate (brackish water).,گیٹ پر واپس کر دیا (کھارا پانی)۔
+Repairs & maintenance,مرمت اور دیکھ بھال
+Return cash,نقد واپس کریں
+Returned,واپس
+Returned by,کیسے واپس کیا
+Returned by (cash holder),کس نے واپس کیا (نقد رکھنے والا)
+Roll,رول
+Running low or out,کم یا ختم
+Safety (PPE),حفاظتی سامان
+Sand & crush,ریت اور بجری
+Sanitary,سینیٹری
+Saved and booked,محفوظ ہو کر کھاتے میں درج
+Saved. Water used since the last reading: about {0} gallons,محفوظ ہو گیا۔ پچھلی ریڈنگ سے اب تک تقریباً {0} گیلن پانی استعمال ہوا
+Saved: waiting for the owner's check,محفوظ ہو گیا: مالک کی جانچ کا انتظار
+Scan the site card of the person being paid and take their photo.,جسے ادائیگی ہو رہی ہے اس کا سائٹ کارڈ اسکین کریں اور اس کی تصویر لیں۔
+Scan the site card of the person receiving the cash and take their photo.,نقد لینے والے کا سائٹ کارڈ اسکین کریں اور اس کی تصویر لیں۔
+Scan the tanker's bill or slip.,ٹینکر کا بل یا پرچی اسکین کریں۔
+Search any item,کوئی بھی آئٹم تلاش کریں
+Services and Labour,سروسز اور مزدوری
+Show all ({0}),سب دکھائیں ({0})
+Shuttering & formwork,شٹرنگ
+Signed receipt or handover photo,دستخط شدہ رسید یا حوالگی کی تصویر
+Site Consumables,سائٹ کا استعمالی سامان
+Site consumables,سائٹ کا استعمالی سامان
+Site drums / curing,سائٹ کے ڈرم / ترائی
+Site work (water used),سائٹ کا کام (استعمال شدہ پانی)
+Size (gallons),سائز (گیلن)
+Small tools & hardware,چھوٹے اوزار اور ہارڈ ویئر
+Spent on,کس پر خرچ
+Spent this month,اس مہینے خرچ
+Spent this month by type,اس مہینے قسم وار خرچ
+Square Foot,مربع فٹ
+Stationery & phone,اسٹیشنری اور فون
+Steel,سریا
+Stock adjusted,اسٹاک درست کیا
+Stone & granite,پتھر اور گرینائٹ
+Stores & water,اسٹور اور پانی
+Sub Assemblies,ذیلی پرزے
+Supervisor (cash holder),سپروائزر (نقد رکھنے والا)
+Sweet (construction & curing),میٹھا (تعمیر اور ترائی)
+TDS above {0} or rejected,TDS {0} سے زیادہ یا واپس
+TDS above {0} ppm: not fit for concrete or curing.,TDS {0} ppm سے زیادہ: کنکریٹ یا ترائی کے قابل نہیں۔
+TDS meter or water sample,TDS میٹر یا پانی کا نمونہ
+TDS on the meter: {0},میٹر پر TDS: {0}
+TDS reading (ppm),TDS ریڈنگ (ppm)
+TDS {0} ppm is above {1}: not fit for concrete or curing.,TDS {0} ppm، {1} سے زیادہ ہے: کنکریٹ یا ترائی کے قابل نہیں۔
+Take a photo inside the tank (through the manhole).,ٹینکی کے اندر کی تصویر لیں (مین ہول سے)۔
+Take a photo of the bill or receipt.,بل یا رسید کی تصویر لیں۔
+Take a photo of the tanker with its number plate.,ٹینکر کی نمبر پلیٹ کے ساتھ تصویر لیں۔
+Tank,ٹینکی
+Tank level reading,ٹینکی کی سطح کی ریڈنگ
+Tank levels now,ٹینکیوں کی موجودہ سطح
+Tank name,ٹینکی کا نام
+Tank readings,ٹینکی کی ریڈنگز
+Tanker,ٹینکر
+Tanker bill / slip,ٹینکر کا بل / پرچی
+Tanker bill / slip no.,ٹینکر بل / پرچی نمبر
+Tanker log,ٹینکر رجسٹر
+Tanker received,ٹینکر آیا
+Tanker saved,ٹینکر محفوظ ہو گیا
+Tanker size (gallons),ٹینکر کا سائز (گیلن)
+Tanker size about {0} gallons,ٹینکر کا سائز تقریباً {0} گیلن
+Tanker vehicle no.,ٹینکر گاڑی نمبر
+Tanker with number plate,نمبر پلیٹ کے ساتھ ٹینکر
+Tankers today,آج کے ٹینکر
+Tanks,ٹینکیاں
+Termite,دیمک
+The AI check runs after saving when an AI key is set in Mimaar Settings.,جب معمار سیٹنگز میں AI کی کلید لگی ہو تو محفوظ کرنے کے بعد AI جانچ ہوتی ہے۔
+The AI is checking the photos…,AI تصویریں جانچ رہا ہے…
+The AI is checking the photo…,AI تصویر جانچ رہا ہے…
+The AI is looking at the photo…,AI تصویر دیکھ رہا ہے…
+The face check is for someone else.,چہرے کی جانچ کسی اور کی ہے۔
+The level is a percentage from 0 (empty) to 100 (full).,سطح 0 (خالی) سے 100 (بھری) تک فیصد میں ہے۔
+The owner records cash handed to a supervisor with Give cash.,"مالک سپروائزر کو دیا گیا نقد ""نقد دیں"" سے درج کرتا ہے۔"
+The owner sets this tank's size under Tanks.,"اس ٹینکی کا سائز مالک ""ٹینکیاں"" میں طے کرتا ہے۔"
+The petty cash account isn't set up. Open Mimaar Settings and choose it.,پیٹی کیش کا کھاتہ نہیں بنا۔ معمار سیٹنگز کھول کر اسے چنیں۔
+The tanks hold about {0} gallons more than the tankers recorded. Was a tanker not entered?,ٹینکیوں میں درج ٹینکروں سے تقریباً {0} گیلن زیادہ پانی ہے۔ کیا کوئی ٹینکر درج ہونے سے رہ گیا؟
+There is no budget for {0} yet.,{0} کا ابھی کوئی بجٹ نہیں۔
+There is no budget for {0} yet. Ask the owner to add it before spending.,{0} کا ابھی کوئی بجٹ نہیں۔ خرچ کرنے سے پہلے مالک سے بجٹ شامل کروائیں۔
+There is no budget for {0} yet. Every expense is budgeted first: the owner adds it in the ERP (Accounting > Budget) or on the phone.,{0} کا ابھی کوئی بجٹ نہیں۔ ہر خرچ کا بجٹ پہلے بنتا ہے: مالک اسے ERP (اکاؤنٹنگ > بجٹ) میں یا فون پر شامل کرتا ہے۔
+This doesn't match any item in the store list.,یہ اسٹور کی فہرست کے کسی آئٹم سے نہیں ملتا۔
+This entry belongs to another cash holder.,یہ اندراج کسی اور نقد رکھنے والے کا ہے۔
+This entry has already been checked.,یہ اندراج پہلے ہی جانچا جا چکا ہے۔
+This line is over its budget. The owner will see it.,یہ لائن اپنے بجٹ سے زیادہ ہے۔ مالک اسے دیکھے گا۔
+This week,اس ہفتے
+Tiles & marble,ٹائلیں اور ماربل
+Today's level not read yet: {0},آج کی سطح ابھی نہیں پڑھی گئی: {0}
+Tonne,ٹن
+Tools & equipment,اوزار اور سامان
+Tools and Equipment,اوزار اور سامان
+Transfer / cheque / receipt no.,ٹرانسفر / چیک / رسید نمبر
+Transfer screenshot or cheque photo,ٹرانسفر کا اسکرین شاٹ یا چیک کی تصویر
+Transport & fuel,ٹرانسپورٹ اور ایندھن
+Truck Load,ٹرک
+"Try another word, or identify the item from a photo.",کوئی اور لفظ آزمائیں، یا تصویر سے آئٹم پہچانیں۔
+Underground,زیرِ زمین
+Underground tank,زیرِ زمین ٹینکی
+Used (from tank levels),استعمال (ٹینکی کی سطح سے)
+Used straight from tanker {0},ٹینکر {0} سے براہ راست استعمال
+Value in store,اسٹور میں مالیت
+Verify with AI,AI سے تصدیق کریں
+Waiting for owner,مالک کا انتظار
+Waiting for your check,آپ کی جانچ کا انتظار
+Warn at,خبردار کب
+Warn when the store has this much or less,جب اسٹور میں اتنا یا اس سے کم رہ جائے تو خبردار کریں
+Water,پانی
+Water already used,پانی استعمال ہو چکا
+Water clarity,پانی کی صفائی
+Water quality,پانی کا معیار
+"Water received and used, last 14 days",پچھلے 14 دن: آیا اور استعمال ہوا پانی
+Water supplier / hydrant,پانی والا / ہائیڈرنٹ
+Water tanker,پانی کا ٹینکر
+Water tanker {0} ({1} gallons),پانی کا ٹینکر {0} ({1} گیلن)
+"Water tanker {0}, {1} gallons",پانی کا ٹینکر {0}، {1} گیلن
+Water tanker: receiver's site card,پانی کا ٹینکر: وصول کرنے والے کا سائٹ کارڈ
+"Water used (tank levels, {0})",استعمال شدہ پانی (ٹینکی کی سطح، {0})
+What it was for,کس لیے تھا
+Why is it rejected? The cash holder sees this.,کیوں مسترد کیا؟ نقد رکھنے والا یہ دیکھے گا۔
+Wood & boards,لکڑی اور بورڈ
+Write why it is rejected.,لکھیں کہ کیوں مسترد کیا۔
+You don't have access to petty cash. Ask the owner.,آپ کو پیٹی کیش تک رسائی نہیں۔ مالک سے پوچھیں۔
+"Your sign-in isn't linked to a person on site, so you can't hold petty cash. Ask the owner.",آپ کا سائن اِن سائٹ کے کسی فرد سے منسلک نہیں، اس لیے آپ پیٹی کیش نہیں رکھ سکتے۔ مالک سے پوچھیں۔
+"Your sign-in isn't linked to a person on site, so you can't pay from petty cash. Ask the owner.",آپ کا سائن اِن سائٹ کے کسی فرد سے منسلک نہیں، اس لیے آپ پیٹی کیش سے ادائیگی نہیں کر سکتے۔ مالک سے پوچھیں۔
+clear,صاف
+damaged,خراب
+e.g. Second overhead tank,مثلاً دوسری چھت کی ٹینکی
+e.g. wage advance for this week,مثلاً اس ہفتے کی اجرت کی پیشگی
+in hand,ہاتھ میں
+left,باقی
+no budget,بجٹ نہیں
+not visible,نظر نہیں آ رہا
+or type the size,یا سائز لکھیں
+over budget,بجٹ سے زیادہ
+slightly turbid,تھوڑا گدلا
+turbid,گدلا
+used,استعمال شدہ
+with all cash holders,تمام نقد رکھنے والوں کے پاس
+with you,آپ کے پاس
+{0} bad,{0} خراب
+{0} bills,{0} بل
+{0} gal,{0} گیلن
+{0} gal tank,{0} گیلن کی ٹینکی
+{0} has no level to read.,{0} کی کوئی سطح نہیں پڑھی جاتی۔
+{0} has only Rs {1} of petty cash in hand.,{0} کے پاس صرف {1} روپے پیٹی کیش ہے۔
+{0} has only Rs {1} of petty cash in hand. The owner gives more cash first.,{0} کے پاس صرف {1} روپے پیٹی کیش ہے۔ پہلے مالک مزید نقد دے۔
+{0} on order,{0} آرڈر پر
+≈ {0} gal,≈ {0} گیلن
+≈ {0} of {1} gallons,≈ {1} میں سے {0} گیلن
