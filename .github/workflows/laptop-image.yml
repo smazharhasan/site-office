@@ -2,7 +2,7 @@
 # (Docker), using frappe_docker's official layered build. Apple silicon (arm64) and Intel/AMD.
 name: Build the Mimaar ERP image
 on:
-  push: { branches: [erpnext-app] }
+  push: { branches: [erpnext-app], paths-ignore: ["deploy/**", "docs/**", "*.md", ".github/**"] }
   workflow_dispatch:
 permissions: { contents: read, packages: write }
 concurrency: { group: mimaar-image, cancel-in-progress: true }

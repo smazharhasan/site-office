@@ -11,4 +11,9 @@ One Ubuntu 24.04 server runs everything in Docker:
 - Admin access through Systems Manager Session Manager (no SSH port is open).
 
 Set-up: in AWS CloudShell, put `mimaar-data.json.gz.b64` (the old app's data, gzip + base64)
-next to `launch.sh`, then `bash launch.sh`. Updates: `sudo /opt/mimaar/update.sh` on the server.
+next to `launch.sh`, then `bash launch.sh`.
+
+Updates are automatic: every 15 minutes the server checks for a newer image (built by GitHub
+Actions on each push to `erpnext-app`) and applies it with `/opt/mimaar/update.sh` (backup first,
+then migrate). Log: `/var/log/mimaar-update.log`. A server set up before this existed is switched
+over once with `deploy/aws/enable-auto-update.sh`.
