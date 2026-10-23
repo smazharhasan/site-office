@@ -23,7 +23,7 @@ REJECTED = "Brackish (rejected)"
 # ---------------------------------------------------------------- helpers
 def _can():
 	c = caps()
-	if not (c["site"] or c["store"]):
+	if c.get("partner") or not (c["site"] or c["store"]):
 		frappe.throw(_("You don't have access to this. Ask the owner."), frappe.PermissionError)
 	return c
 

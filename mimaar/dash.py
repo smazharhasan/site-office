@@ -17,6 +17,7 @@ def _sql1(q, a=None):
 @frappe.whitelist()
 def overview():
 	c = caps()
+	partner = c.get("partner")
 	from mimaar import petty
 
 	full_money = petty.approver() or c["money"]
@@ -28,7 +29,7 @@ def overview():
 	if full_money:
 		tiles["paid"] = {"paid": k["paid"], "committed": k["committed"], "due_now": k["due_now"]}
 		tiles["budget"] = {"budget": k["budget"], "committed": k["committed"]}
-	if c["store"] or c["site"]:
+	if (c["store"] or c["site"]) and not partner:
 		from mimaar import stores
 
 		bins, received, released, returned, on_order, reorder = stores._figures(_store())
@@ -44,7 +45,7 @@ def overview():
 		tiles["ncr"] = {"open": cint(ncr), "waiting": frappe.db.count("Site Inspection", {"docstatus": 0})}
 		overdue = frappe.db.count("Site Snag", {"status": ["in", ["Open", "In progress"]], "target_date": ["<", today]})
 		tiles["snags"] = {"open": k["snags_open"], "overdue": overdue}
-	if c["people"] or c["site"]:
+	if (c["people"] or c["site"]) and not partner:
 		att = frappe.db.get_value("Site Attendance", {"date": today, "docstatus": ["<", 2]}, "name")
 		now = left = 0
 		if att:
@@ -68,7 +69,7 @@ def overview():
 	for a in base["acts"]:
 		g = {"quote": "Buying", "order": "Buying", "receive": "Stores", "bill": "Money", "billnew": "Money", "snag": "Quality", "task": "Build", "worker": "People"}.get(a["go"][0], "Other")
 		acts.append(dict(a, g=g))
-	if c["store"] or c["site"]:
+	if (c["store"] or c["site"]) and not partner:
 		from mimaar import water
 
 		read = {r for r in frappe.get_all("Water Tank Reading", filters={"date": today}, pluck="tank")}
@@ -99,7 +100,7 @@ def overview():
 				union all select supplier, base_grand_total, 'po' from `tabPurchase Order` where docstatus = 1 and status != 'Closed' and company = %(co)s) x
 			left join `tabSupplier` s on s.name = x.sup group by grp order by committed desc""", {"co": co, "other": _("Other")}, as_dict=True)
 		panels["budget"] = budget_by_category()
-	if c["people"] or c["site"]:
+	if (c["people"] or c["site"]) and not partner:
 		panels["labour"] = labour_today()
 	if c["site"] or c["owner"]:
 		from mimaar import build
@@ -107,7 +108,7 @@ def overview():
 		s = build.stages()
 		panels["stages"] = {"counts": s["counts"], "now": s["now"], "next": s["next"], "built": s["built"], "planned": s["planned"],
 			"phases": [{"name": p["name"], "start": p["start"], "end": p["end"], "built": p["built"], "planned": p["planned"]} for p in s["phases"]]}
-	if c["store"] or c["site"]:
+	if (c["store"] or c["site"]) and not partner:
 		rel = frappe.db.sql("""select s.posting_date d, count(distinct s.name) n, sum(x.transfer_qty) q from `tabStock Entry` s join `tabStock Entry Detail` x on x.parent = s.name
 			where s.docstatus = 1 and s.stock_entry_type = 'Material Issue' and ifnull(s.mimaar_water_ref, '') = '' and s.posting_date >= %s group by s.posting_date""", add_days(today, -13), as_dict=True)
 		m = {str(r.d): cint(r.n) for r in rel}

@@ -22,7 +22,8 @@ PREFIX = "MMR1:"
 MAX_TRIES = 5
 LOCK_MINUTES = 15
 CHECK_VALID_MINUTES = 20
-ACCESS_PROFILES = {"Site supervisor": ["Mimaar Site Supervisor"], "Accountant": ["Mimaar Accountant"], "Owner": ["Mimaar Owner"]}
+ACCESS_PROFILES = {"Site supervisor": ["Mimaar Site Supervisor"], "Owner's supervisor": ["Mimaar Owner Supervisor"], "Partner (builder or consultant)": ["Mimaar Partner"],
+	"Accountant": ["Mimaar Accountant"], "Owner": ["Mimaar Owner"]}
 
 
 def _s():

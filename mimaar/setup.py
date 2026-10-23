@@ -99,7 +99,7 @@ TRACKED = ["Supplier", "Supplier Quotation", "Request for Quotation", "Purchase 
 
 def before_install():
 	"""Roles the Mimaar doctypes refer to; created before the doctypes are synced."""
-	for role in ("Site Supervisor",):
+	for role in ("Site Supervisor", "Mimaar Partner"):
 		if not frappe.db.exists("Role", role):
 			frappe.get_doc({"doctype": "Role", "role_name": role, "desk_access": 1}).insert(ignore_permissions=True)
 
@@ -110,6 +110,7 @@ def after_install():
 
 
 def after_migrate():
+	before_install()
 	create_custom_fields(CUSTOM_FIELDS, update=True)
 	for dt in TRACKED:
 		if frappe.db.exists("DocType", dt) and not frappe.db.get_value("DocType", dt, "track_changes"):
@@ -166,6 +167,8 @@ def apply_settings():
 ROLE_PROFILES = {
 	"Mimaar Owner": ["System Manager", "Site Supervisor", "Purchase Manager", "Purchase Master Manager", "Purchase User", "Item Manager", "Stock Manager", "Stock User", "Accounts Manager", "Accounts User", "Projects Manager", "Projects User"],
 	"Mimaar Site Supervisor": ["Site Supervisor", "Purchase User", "Purchase Master Manager", "Item Manager", "Stock User", "Projects User"],
+	"Mimaar Owner Supervisor": ["Site Supervisor", "Projects Manager", "Purchase User", "Purchase Master Manager", "Item Manager", "Stock User", "Projects User"],
+	"Mimaar Partner": ["Mimaar Partner", "Projects User"],
 	"Mimaar Store Keeper": ["Stock User", "Projects User"],
 	"Mimaar Accountant": ["Accounts User", "Accounts Manager", "Purchase User", "Projects User"],
 }

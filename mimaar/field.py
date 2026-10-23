@@ -53,7 +53,13 @@ def caps():
 	"""What this person can do in the field app (the server still checks every action)."""
 	r = _roles()
 	owner = "System Manager" in r
+	inside = owner or bool(r & {"Site Supervisor", "Projects Manager", "Stock User", "Stock Manager", "Accounts User", "Accounts Manager", "Purchase User", "Purchase Manager"})
+	if "Mimaar Partner" in r and not inside:
+		# a builder's or consultant's staff: build progress, diary, inspections and snags; no store, people or money
+		return {"owner": False, "buy": False, "suppliers": False, "money": False, "store": False, "site": True, "people": False, "new_supplier": False,
+			"new_item": False, "accountant": False, "partner": True}
 	return {
+		"partner": False,
 		"owner": owner,
 		"buy": owner or bool(r & {"Purchase User", "Purchase Manager"}),
 		"suppliers": owner or bool(r & {"Purchase User", "Purchase Manager", "Purchase Master Manager", "Accounts User"}),

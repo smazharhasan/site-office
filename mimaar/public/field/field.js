@@ -356,12 +356,14 @@ const pickWorker = () => picker(t("Choose the worker"), (q) => api("workers", { 
 
 /* ---------- layout ---------- */
 const TABS = [["dash", "Dashboard", "dash"], ["build", "Construction", "house"], ["+", "", "plus"], ["store", "Stores", "box"], ["more", "More", "menu"]];
-const PETTY = () => { const c = C(); return c.owner || c.money || c.site || c.store; };
+const PETTY = () => { const c = C(); return !c.partner && (c.owner || c.money || c.site || c.store); };
+const STORE = () => { const c = C(); return !c.partner && (c.store || c.site); };
 const TOP_OF = { dash: "dash", build: "build", store: "store", receive: "store", item: "store", money: "more", ask: "more" };
 function layout() {
   document.documentElement.lang = S.lang; document.documentElement.dir = S.lang === "ur" ? "rtl" : "ltr";
+  const tabs = TABS.filter(([id]) => id !== "store" || !C().partner);
   $("#app").innerHTML = `<header class="top" id="top"></header><main class="content" id="content"></main>
-    <nav class="bottombar" id="bar">${TABS.map(([id, l, ic]) => id === "+" ? `<button class="bb-plus" data-act="quick" aria-label="${esc(t("Quick actions"))}"><span>${icon("plus")}</span></button>` : `<button data-go="${id}" data-tab="${id}">${icon(ic)}<span>${esc(t(l))}</span></button>`).join("")}</nav>`;
+    <nav class="bottombar" id="bar" style="grid-template-columns:repeat(${tabs.length},minmax(0,1fr))">${tabs.map(([id, l, ic]) => id === "+" ? `<button class="bb-plus" data-act="quick" aria-label="${esc(t("Quick actions"))}"><span>${icon("plus")}</span></button>` : `<button data-go="${id}" data-tab="${id}">${icon(ic)}<span>${esc(t(l))}</span></button>`).join("")}</nav>`;
 }
 function setTop(title, back) {
   const b = S.b || {}; const ini = (b.full_name || "?").trim().charAt(0).toUpperCase();
@@ -399,7 +401,7 @@ const GLOBAL = {
   quick() {
     const c = C(); const A = [];
     if (c.store) A.push(["Receive goods", "truck", "store/receive", "k2"], ["Release to work", "box", "release", "k3"], ["Return to store", "store", "return", "k7"]);
-    if (c.store || c.site) A.push(["Water tanker", "drop", "tanker", "k7"], ["Tank level", "tank", "tanklevel", "k2"]);
+    if (STORE()) A.push(["Water tanker", "drop", "tanker", "k7"], ["Tank level", "tank", "tanklevel", "k2"]);
     if (c.people) A.push(["Attendance by site card", "card", "attcard", "k1"]);
     if (PETTY()) A.push(["Petty cash expense", "pay", "pettyexp", "k3"], ["Pay by site card", "cash", "paycard", "k8"]);
     if (c.site) A.push(["Site diary", "log", "diary", "k7"], ["Report a snag", "alert", "snag", "k4"], ["Progress photo", "cam", "build/schedule", "k5"]);
@@ -461,7 +463,7 @@ VIEWS.dash = async (el) => {
   const A = [];
   if (c.people) A.push(qa(t("Attendance by site card"), "card", "attcard", "k1"));
   if (c.store) A.push(qa(t("Receive goods"), "truck", "go_receive", "k2"), qa(t("Release to work"), "box", "release", "k3"), qa(t("Return to store"), "store", "ret", "k7"));
-  if (c.store || c.site) A.push(qa(t("Water tanker"), "drop", "tanker", "k7"));
+  if (STORE()) A.push(qa(t("Water tanker"), "drop", "tanker", "k7"));
   if (c.site) A.push(qa(t("Report progress"), "house", "go_build", "k5"), qa(t("Site diary"), "log", "diary", "k7"), qa(t("Report a snag"), "alert", "snag", "k4"));
   if (PETTY()) A.push(qa(t("Petty cash"), "cash", "go_petty", "k1"));
   if (c.buy) A.push(qa(t("Scan a quotation"), "ai", "scanquote", "k6"));
@@ -1341,7 +1343,7 @@ VIEWS.more = async (el) => {
   if (c.buy) T.push(["Quotations", "log", "quotes", "k6"], ["Purchase orders", "cart", "orders", "k5"]);
   if (c.money) T.push(["Money", "pay", "money/bills", "k8"], ["Budget", "budget", "money/budget", "k3"]);
   if (c.site) T.push(["Snags", "alert", "build/snags", "k4"], ["Site diary", "log", "build/diary", "k7"]);
-  if (c.store || c.site) T.push(["Stock", "box", "store/items", "k3"], ["Water", "drop", "store/water", "k7"]);
+  if (STORE()) T.push(["Stock", "box", "store/items", "k3"], ["Water", "drop", "store/water", "k7"]);
   if (PETTY()) T.push(["Petty cash", "cash", "money/petty", "k1"]);
   if (S.b.ai) T.push(["Ask the project", "sparkle", "ask", "k5"]);
   T.push(["My settings", "gear", "settings", "k8"]);
@@ -1577,7 +1579,7 @@ VIEWS.person = async (el, [name]) => {
       ${kv(t("Police verification"), t(w.police_verification || "Not done"))}${kv(t("Joined on"), fdate(w.joined_on))}${c.money ? kv(t("Daily wage"), w.daily_wage ? money(w.daily_wage) : "") : ""}
       ${kv(t("Emergency contact"), w.emergency_contact)}${kv(t("Address"), [w.address, w.address_ur].filter(Boolean).join(" · "))}${kv(t("Notes"), w.notes)}</div>`)}
     ${panel(t("Documents"), `<div class="body docs">${doc("photo", t("Photo"))}${doc("cnic_front", t("CNIC front"))}${doc("cnic_back", t("CNIC back"))}${doc("entry_card_photo", t("BTK registration card"))}${doc("police_document", t("Police verification letter"))}</div>`)}
-    ${c.owner ? panel(t("Access to Mimaar"), `<div class="body form">${fld(t("Signs in as"), chips("app_access", [["No sign-in", t("No sign-in")], ["Site supervisor", t("Site supervisor")], ["Accountant", t("Accountant")], ["Owner", t("Owner")]], w.app_access || "No sign-in"))}
+    ${c.owner ? panel(t("Access to Mimaar"), `<div class="body form">${fld(t("Signs in as"), chips("app_access", [["No sign-in", t("No sign-in")], ["Site supervisor", t("Site supervisor")], ["Owner's supervisor", t("Owner's supervisor")], ["Partner (builder or consultant)", t("Partner (builder or consultant)")], ["Accountant", t("Accountant")], ["Owner", t("Owner")]], w.app_access || "No sign-in"))}
       <label class="row" style="gap:10px"><input type="checkbox" name="store_keeper" ${w.store_keeper ? "checked" : ""} style="width:22px;height:22px"><span>${esc(t("Also store keeper (receives, issues and returns material)"))}</span></label>
       <button class="btn wide" data-act="access">${icon("check")}${esc(t("Save access"))}</button></div>`) : ""}
     ${c.owner ? panel(t("Sign in with site card"), `<div class="body form">

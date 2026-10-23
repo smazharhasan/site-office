@@ -16,7 +16,7 @@ WATER = "WATER"
 
 def _can():
 	c = caps()
-	if not (c["store"] or c["site"] or c["buy"]):
+	if c.get("partner") or not (c["store"] or c["site"] or c["buy"]):
 		frappe.throw(_("You don't have access to this. Ask the owner."), frappe.PermissionError)
 	return c
 

@@ -32,7 +32,7 @@ def approver():
 
 def _can():
 	c = caps()
-	if not (approver() or c["money"] or c["site"] or c["store"]):
+	if c.get("partner") or not (approver() or c["money"] or c["site"] or c["store"]):
 		frappe.throw(_("You don't have access to petty cash. Ask the owner."), frappe.PermissionError)
 	return c
 

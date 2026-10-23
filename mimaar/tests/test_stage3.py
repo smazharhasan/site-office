@@ -92,3 +92,36 @@ class TestStage3(IntegrationTestCase):
 		data = askai.gather(False)
 		self.assertNotIn("budget", data)
 		self.assertNotIn("total", (data["purchase_orders"] or [{}])[0])
+
+	def test_partner_and_owner_supervisor(self):
+		from mimaar import field, petty, stores
+		from mimaar.tests.test_identity import person
+
+		pt = person("Partner Test Builder", worker_type="Supervisor")
+		pt.app_access = "Partner (builder or consultant)"
+		pt.save()
+		user = frappe.db.get_value("Site Worker", pt.name, "user")
+		self.assertIn("Mimaar Partner", frappe.get_roles(user))
+		os_ = person("Owner Sup Test", worker_type="Supervisor")
+		os_.app_access = "Owner's supervisor"
+		os_.save()
+		ou = frappe.db.get_value("Site Worker", os_.name, "user")
+		t = stage("T7")
+		frappe.set_user(user)
+		c = field.caps()
+		self.assertTrue(c["partner"] and c["site"])
+		self.assertFalse(c["store"] or c["money"] or c["people"])
+		build.report(t.name, 10, "Shuttering fixed", [a_file("pt.png")])
+		with self.assertRaises(frappe.PermissionError):
+			stores.items()
+		with self.assertRaises(frappe.PermissionError):
+			petty.overview()
+		with self.assertRaises(frappe.PermissionError):
+			build.verify(t.name, 10)
+		d = dash.overview()
+		self.assertNotIn("stock", d["tiles"])
+		self.assertFalse(d["money"])
+		frappe.set_user(ou)
+		self.assertFalse(field.caps()["partner"])
+		build.verify(t.name, 8, "Checked")
+		self.assertEqual(flt(frappe.db.get_value("Task", t.name, "progress")), 8)

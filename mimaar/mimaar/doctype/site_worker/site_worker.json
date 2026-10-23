@@ -210,9 +210,10 @@
    "fieldname": "app_access",
    "fieldtype": "Select",
    "label": "Signs in as",
-   "options": "No sign-in\nSite supervisor\nAccountant\nOwner",
+   "options": "No sign-in\nSite supervisor\nOwner's supervisor\nPartner (builder or consultant)\nAccountant\nOwner",
    "default": "No sign-in",
-   "permlevel": 1
+   "permlevel": 1,
+   "description": "Site supervisor: site work, store, people, petty cash. Owner's supervisor: the same, and verifies progress. Partner: build progress, diary, inspections and snags only. Accountant and owner: all money."
   },
   {
    "fieldname": "store_keeper",
