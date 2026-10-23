@@ -62,26 +62,42 @@ def ask(prompt, file_url):
 		frappe.local.mimaar_last_prompt = prompt
 		with open(fake) as fh:
 			return json.load(fh)
+	return _call(prompt, [_file(file_url)])
+
+
+def _file_raw(file_url):
+	"""A file's content for a check made by the server itself (no user permission involved)."""
+	f = frappe.get_doc("File", {"file_url": file_url})
+	data = f.get_content()
+	if isinstance(data, str):
+		data = data.encode()
+	name = (f.file_name or file_url).lower()
+	mime = "image/png" if name.endswith(".png") else "image/webp" if name.endswith(".webp") else "image/jpeg"
+	return mime, base64.b64encode(data).decode()
+
+
+def _call(prompt, files, max_tokens=8192):
+	"""Send the prompt and the images/PDFs to the AI chosen in Mimaar Settings; the reply must be JSON."""
 	provider, key, model = _cfg()
-	mime, b64 = _file(file_url)
 	try:
 		if provider == "Gemini":
+			parts = [{"text": prompt}] + [{"inline_data": {"mime_type": m, "data": b}} for m, b in files]
 			r = requests.post(
 				f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
 				headers={"x-goog-api-key": key, "content-type": "application/json"},
-				json={"contents": [{"role": "user", "parts": [{"text": prompt}, {"inline_data": {"mime_type": mime, "data": b64}}]}],
-					"generationConfig": {"maxOutputTokens": 8192, "responseMimeType": "application/json"}},
+				json={"contents": [{"role": "user", "parts": parts}], "generationConfig": {"maxOutputTokens": max_tokens, "responseMimeType": "application/json"}},
 				timeout=120,
 			)
 			r.raise_for_status()
-			parts = ((r.json().get("candidates") or [{}])[0].get("content") or {}).get("parts") or []
-			text = "".join(p.get("text", "") for p in parts if not p.get("thought"))
+			out = ((r.json().get("candidates") or [{}])[0].get("content") or {}).get("parts") or []
+			text = "".join(p.get("text", "") for p in out if not p.get("thought"))
 		else:
-			block = {"type": "document", "source": {"type": "base64", "media_type": mime, "data": b64}} if mime == "application/pdf" else {"type": "image", "source": {"type": "base64", "media_type": mime, "data": b64}}
+			blocks = [{"type": "document", "source": {"type": "base64", "media_type": m, "data": b}} if m == "application/pdf"
+				else {"type": "image", "source": {"type": "base64", "media_type": m, "data": b}} for m, b in files]
 			r = requests.post(
 				"https://api.anthropic.com/v1/messages",
 				headers={"x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
-				json={"model": model, "max_tokens": 4000, "messages": [{"role": "user", "content": [block, {"type": "text", "text": prompt}]}]},
+				json={"model": model, "max_tokens": min(max_tokens, 4000), "messages": [{"role": "user", "content": blocks + [{"type": "text", "text": prompt}]}]},
 				timeout=120,
 			)
 			r.raise_for_status()
@@ -98,6 +114,22 @@ def ask(prompt, file_url):
 		return json.loads(m.group(0))
 	except ValueError:
 		frappe.throw(_("The AI couldn't read this document. Try a clearer photo."), title=_("AI error"))
+
+
+FACE_PROMPT = """Image 1 is the registered photo of a person working on a house construction site in Pakistan.
+Image 2 was taken just now with a phone camera, to identify the same person before an entry (signing in, attendance, taking material from the store, receiving goods or cash).
+Decide whether image 2 shows the same person as image 1. Ignore differences in clothes, cap, beard trim, lighting, dust and camera quality.
+Image 2 should show a real person in front of the camera: if it looks like a photo of a printed photo or of a phone or computer screen, say so.
+Reply with only JSON: {"face_visible": true|false, "same_person": true|false, "confidence": 0-100, "photo_of_photo": true|false, "notes": "one short sentence in English"}"""
+
+
+def compare_faces(registered_url, live_url):
+	"""Is the person in the photo taken now the registered person? (Gemini or Claude, as set in Mimaar Settings.)"""
+	fake = frappe.conf.get("mimaar_fake_face_file")
+	if fake:  # tests only
+		with open(fake) as fh:
+			return json.load(fh)
+	return _call(FACE_PROMPT, [_file_raw(registered_url), _file_raw(live_url)], max_tokens=1024)
 
 
 # ---------------------------------------------------------------- matching

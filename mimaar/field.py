@@ -63,6 +63,7 @@ def caps():
 		"people": owner or bool(r & {"Site Supervisor", "Projects Manager"}),
 		"new_supplier": owner or "Purchase Master Manager" in r,
 		"new_item": owner or "Item Manager" in r,
+		"accountant": bool(r & {"Accounts User", "Accounts Manager"}),
 	}
 
 
@@ -94,9 +95,40 @@ def boot():
 		"project_name": frappe.db.get_value("Project", project, "project_name") if project else "",
 		"store": _store(),
 		"ai": bool((s.ai_provider and s.ai_provider != "Off") or frappe.conf.get("mimaar_fake_ai_file")),
-		"rules": {k: cint(s.get(k)) for k in ("require_dn_scan", "require_receiver_photo", "require_bill_scan", "require_payment_proof", "require_attendance_photo")},
+		"rules": {k: cint(s.get(k)) for k in ("require_dn_scan", "require_receiver_photo", "require_bill_scan", "require_payment_proof", "require_attendance_photo",
+			"card_for_store", "card_for_receiving", "card_for_petty_cash")},
+		"face_check": s.face_check or "Required",
 		"today": nowdate(),
+		"ui": _ui(),
+		"person": _me(),
 	}
+
+
+def _ui():
+	try:
+		return json.loads(frappe.defaults.get_user_default("mimaar_ui") or "{}")
+	except ValueError:
+		return {}
+
+
+def _me():
+	from mimaar.identity import my_person
+
+	p = my_person()
+	if not p:
+		return None
+	d = frappe.db.get_value("Site Worker", p, ["name", "full_name", "full_name_ur", "worker_type", "status", "photo", "entry_card_no", "app_access", "store_keeper"], as_dict=True)
+	d.pin_set = cint(frappe.db.get_value("Site Card", {"person": p}, "pin_set"))
+	return d
+
+
+@frappe.whitelist()
+def ui_save(ui):
+	"""My settings (theme, fonts, text size): kept with the user, so they follow them to any phone."""
+	u = _parse(ui) or {}
+	keep = {k: str(u[k])[:40] for k in ("skin", "mode", "ur", "en", "size") if u.get(k)}
+	frappe.defaults.set_user_default("mimaar_ui", json.dumps(keep))
+	return keep
 
 
 @frappe.whitelist()
@@ -382,9 +414,14 @@ def read_challan(po, file_url):
 
 
 @frappe.whitelist()
-def receive(po, lines, dn_no=None, dn_scan=None, receiver_photo=None, goods_photo=None, vehicle=None, received_by=None, location=None):
-	"""Goods arrive at site against a purchase order. Part deliveries keep the order open."""
+def receive(po, lines, dn_no=None, dn_scan=None, receiver_photo=None, goods_photo=None, vehicle=None, received_by=None, location=None, check=None):
+	"""Goods arrive at site against a purchase order. Part deliveries keep the order open.
+	The receiver is identified by their site card and a face check (when the owner requires it)."""
 	_need("store")
+	from mimaar.identity import needs_card, use_check
+
+	if needs_card("card_for_receiving") and not check:
+		frappe.throw(_("Scan the receiver's site card and take their photo first."), title=_("Receiver's site card"))
 	from erpnext.buying.doctype.purchase_order.purchase_order import make_purchase_receipt
 
 	want = {x.get("po_detail"): flt(x.get("qty")) for x in _parse(lines) or []}
@@ -409,7 +446,15 @@ def receive(po, lines, dn_no=None, dn_scan=None, receiver_photo=None, goods_phot
 	pr.mimaar_received_by = received_by or get_fullname(frappe.session.user)
 	if location:
 		pr.remarks = _("Received at {0}").format(location)
+	idc = frappe.get_doc("Identity Check", check) if check else None
+	if idc:
+		pr.mimaar_receiver = idc.person
+		pr.mimaar_received_by = idc.person_name
+		pr.mimaar_receiver_photo = pr.mimaar_receiver_photo or idc.live_photo
 	pr.insert()
+	if idc:
+		use_check(idc.name, "Receiving goods", "Purchase Receipt", pr.name, idc.person)
+		pr.db_set("mimaar_identity_check", idc.name)
 	try:
 		pr.submit()
 	except Exception:
@@ -418,21 +463,44 @@ def receive(po, lines, dn_no=None, dn_scan=None, receiver_photo=None, goods_phot
 	return {"name": pr.name, "po_status": frappe.db.get_value("Purchase Order", po, ["status", "per_received"], as_dict=True)}
 
 
-@frappe.whitelist()
-def release(items, issued_to, work_area=None, photo=None, remarks=None):
-	"""Material leaves the site store for the work, named to the mistri or group head."""
+def _stock_entry(kind, items, check=None, issued_to=None, work_area=None, photo=None, remarks=None):
+	"""Material released from the store to the work, or returned from the work to the store."""
 	_need("store")
+	from mimaar.identity import needs_card, use_check
+
+	action = "Store issue" if kind == "issue" else "Store return"
+	if needs_card("card_for_store") and not check:
+		frappe.throw(_("Scan the site card of the person taking or returning the material, and take their photo."), title=_("Site card"))
 	rows = [x for x in _parse(items) or [] if flt(x.get("qty")) > 0 and x.get("item_code")]
 	if not rows:
 		frappe.throw(_("Add at least one item and its quantity."))
+	idc = frappe.get_doc("Identity Check", check) if check else None
 	wh = _store()
-	se = frappe.get_doc({
-		"doctype": "Stock Entry", "stock_entry_type": "Material Issue", "company": _company(), "from_warehouse": wh,
-		"mimaar_issued_to": issued_to, "mimaar_work_area": work_area, "mimaar_photo": photo if _photo_ok(photo) else None,
-		"remarks": remarks, "project": _project(),
-		"items": [{"item_code": x["item_code"], "qty": flt(x["qty"]), "s_warehouse": wh} for x in rows],
-	})
+	if kind == "issue":
+		short = []
+		for x in rows:
+			have = flt(frappe.db.get_value("Bin", {"item_code": x["item_code"], "warehouse": wh}, "actual_qty"))
+			if flt(x["qty"]) > have:
+				short.append(_("{0}: only {1} in the store").format(frappe.db.get_value("Item", x["item_code"], "item_name") or x["item_code"], frappe.format(have, {"fieldtype": "Float"})))
+		if short:
+			frappe.throw("<br>".join(short), title=_("Not enough in the store"))
+	d = {"doctype": "Stock Entry", "company": _company(), "project": _project(), "remarks": remarks,
+		"mimaar_issued_to": idc.person_name if idc else issued_to, "mimaar_person": idc.person if idc else None,
+		"mimaar_work_area": work_area, "mimaar_photo": photo if _photo_ok(photo) else (idc.live_photo if idc else None)}
+	if kind == "issue":
+		d.update({"stock_entry_type": "Material Issue", "from_warehouse": wh, "items": [{"item_code": x["item_code"], "qty": flt(x["qty"]), "s_warehouse": wh} for x in rows]})
+	else:
+		d.update({"stock_entry_type": "Material Receipt", "to_warehouse": wh, "mimaar_is_return": 1, "items": [{
+			"item_code": x["item_code"], "qty": flt(x["qty"]), "t_warehouse": wh, "allow_zero_valuation_rate": 1,
+			"basic_rate": flt(frappe.db.get_value("Bin", {"item_code": x["item_code"], "warehouse": wh}, "valuation_rate")) or flt(frappe.db.get_value("Item", x["item_code"], "valuation_rate")),
+		} for x in rows]})
+	if not d["mimaar_issued_to"]:
+		frappe.throw(_("Enter who takes or returns the material (mistri or group head)."))
+	se = frappe.get_doc(d)
 	se.insert()
+	if idc:
+		use_check(idc.name, action, "Stock Entry", se.name, idc.person)
+		se.mimaar_identity_check = idc.name
 	try:
 		se.submit()
 	except Exception:
@@ -442,17 +510,31 @@ def release(items, issued_to, work_area=None, photo=None, remarks=None):
 
 
 @frappe.whitelist()
+def release(items, issued_to=None, work_area=None, photo=None, remarks=None, check=None):
+	"""Material leaves the site store for the work, named to the mistri or group head (site card + face)."""
+	return _stock_entry("issue", items, check, issued_to, work_area, photo, remarks)
+
+
+@frappe.whitelist()
+def return_to_store(items, check=None, returned_by=None, work_area=None, photo=None, remarks=None):
+	"""Unused material comes back from the work into the store (site card + face of who returns it)."""
+	return _stock_entry("return", items, check, returned_by, work_area, photo, remarks)
+
+
+@frappe.whitelist()
 def movements(limit=40):
 	_need("store") if not caps()["site"] else None
 	pr = frappe.get_list("Purchase Receipt", filters={"docstatus": 1}, fields=["name", "posting_date", "supplier_name", "supplier_delivery_note", "mimaar_received_by"], order_by="posting_date desc, creation desc", limit_page_length=cint(limit))
-	se = frappe.get_list("Stock Entry", filters={"docstatus": 1, "stock_entry_type": "Material Issue"}, fields=["name", "posting_date", "mimaar_issued_to", "mimaar_work_area"], order_by="posting_date desc, creation desc", limit_page_length=cint(limit))
+	se = frappe.get_list("Stock Entry", filters={"docstatus": 1, "stock_entry_type": ["in", ["Material Issue", "Material Receipt"]]}, fields=["name", "posting_date", "mimaar_issued_to", "mimaar_work_area", "stock_entry_type", "mimaar_is_return", "mimaar_identity_check"], order_by="posting_date desc, creation desc", limit_page_length=cint(limit))
 	out = []
 	for r in pr:
 		items = frappe.get_all("Purchase Receipt Item", filters={"parent": r.name}, fields=["item_name", "qty", "uom"], order_by="idx")
 		out.append({"kind": "in", "name": r.name, "date": r.posting_date, "who": r.supplier_name, "ref": r.supplier_delivery_note, "items": items})
 	for s in se:
+		if s.stock_entry_type == "Material Receipt" and not s.mimaar_is_return:
+			continue
 		items = frappe.get_all("Stock Entry Detail", filters={"parent": s.name}, fields=["item_name", "qty", "uom"], order_by="idx")
-		out.append({"kind": "out", "name": s.name, "date": s.posting_date, "who": s.mimaar_issued_to, "ref": s.mimaar_work_area, "items": items})
+		out.append({"kind": "back" if s.stock_entry_type == "Material Receipt" else "out", "name": s.name, "date": s.posting_date, "who": s.mimaar_issued_to, "ref": s.mimaar_work_area, "items": items, "face": bool(s.mimaar_identity_check)})
 	out.sort(key=lambda x: (str(x["date"]), x["name"]), reverse=True)
 	return out[: cint(limit)]
 
@@ -473,7 +555,8 @@ def attendance_today():
 	d.check_permission("read")
 	return {
 		"name": d.name, "docstatus": d.docstatus, "date": d.date, "location": d.location, "group_photo": d.group_photo, "present": d.present, "half_day": d.half_day,
-		"rows": [{"worker": r.worker, "worker_name": r.worker_name, "trade": r.trade, "status": r.status, "time_in": _hhmm(r.time_in), "photo": r.photo,
+		"rows": [{"worker": r.worker, "worker_name": r.worker_name, "trade": r.trade, "status": r.status, "time_in": _hhmm(r.time_in), "time_out": _hhmm(r.time_out),
+			"photo": r.photo, "scanned": r.scanned, "identity_check": r.identity_check, "face": frappe.db.get_value("Identity Check", r.identity_check, "result") if r.identity_check else None,
 			"worker_photo": frappe.db.get_value("Site Worker", r.worker, "photo")} for r in d.rows],
 	}
 
@@ -492,9 +575,13 @@ def attendance_save(rows, group_photo=None, location=None, submit=0):
 		doc.group_photo = group_photo
 	if location:
 		doc.location = location
+	keep = {r.worker: r for r in doc.rows}  # what the card scans recorded stays as it was
 	doc.set("rows", [])
 	for r in rows:
-		doc.append("rows", {"worker": r["worker"], "status": r.get("status") or "Present", "time_in": r.get("time_in") or nowtime(), "photo": r.get("photo") if _photo_ok(r.get("photo")) else None, "scanned": cint(r.get("scanned"))})
+		old = keep.get(r["worker"])
+		doc.append("rows", {"worker": r["worker"], "status": r.get("status") or "Present", "time_in": (old and old.time_in) or r.get("time_in") or nowtime(),
+			"time_out": (old and old.time_out) or r.get("time_out") or None, "photo": (old and old.photo) or (r.get("photo") if _photo_ok(r.get("photo")) else None),
+			"scanned": (old and old.scanned) or cint(r.get("scanned")), "identity_check": old and old.identity_check})
 	doc.save()
 	if cint(submit):
 		doc.submit()
@@ -502,28 +589,129 @@ def attendance_save(rows, group_photo=None, location=None, submit=0):
 
 
 @frappe.whitelist()
+def attendance_card(check, mode="in"):
+	"""Attendance by site card: the card was scanned and the face checked; mark time in or time out."""
+	_need("people")
+	from mimaar.identity import use_check
+
+	idc = frappe.get_doc("Identity Check", check)
+	done = frappe.db.get_value("Site Attendance", {"date": nowdate(), "project": _project(), "docstatus": 1})
+	if done:
+		# the day's list is submitted in the morning; people still leave in the evening: time out only
+		if mode != "out":
+			frappe.throw(_("Today's attendance is already submitted. Only time out can be marked now."))
+		row = frappe.db.get_value("Site Attendance Row", {"parent": done, "parenttype": "Site Attendance", "worker": idc.person}, ["name", "time_in", "time_out"], as_dict=True)
+		if not row or not row.time_in:
+			frappe.throw(_("{0} has no time in today.").format(idc.person_name))
+		now = nowtime()
+		frappe.db.set_value("Site Attendance Row", row.name, "time_out", now)
+		use_check(idc.name, "Attendance", "Site Attendance", done, idc.person)
+		return {"name": done, "worker": idc.person, "full_name": idc.person_name, "mode": mode, "time": _hhmm(now)}
+	name = frappe.db.get_value("Site Attendance", {"date": nowdate(), "project": _project(), "docstatus": 0})
+	doc = frappe.get_doc("Site Attendance", name) if name else frappe.new_doc("Site Attendance")
+	doc.date, doc.project = nowdate(), _project()
+	row = next((r for r in doc.rows if r.worker == idc.person), None)
+	now = nowtime()
+	if mode == "out":
+		if not row or not row.time_in:
+			frappe.throw(_("{0} has no time in today.").format(idc.person_name))
+		row.time_out = now
+	else:
+		if row and row.time_in and not row.time_out:
+			frappe.throw(_("{0} is already marked in at {1}.").format(idc.person_name, _hhmm(row.time_in)))
+		if not row:
+			row = doc.append("rows", {"worker": idc.person, "status": "Present"})
+		row.time_in, row.time_out, row.status = row.time_in or now, None if not row.time_out else row.time_out, row.status or "Present"
+	row.scanned = cint(idc.card_scanned)
+	row.photo = idc.live_photo
+	row.identity_check = idc.name
+	doc.save()
+	use_check(idc.name, "Attendance", "Site Attendance", doc.name, idc.person)
+	return {"name": doc.name, "worker": idc.person, "full_name": idc.person_name, "mode": mode, "time": _hhmm(now)}
+
+
+# ---------------------------------------------------------------- people and access
+PERSON_FIELDS = ("full_name", "full_name_ur", "father_name", "father_name_ur", "worker_type", "trade", "contractor", "gang", "status", "phone", "joined_on",
+	"cnic", "cnic_expiry", "entry_card_no", "entry_card_expiry", "police_verification", "address", "address_ur", "emergency_contact", "notes")
+PERSON_DOCS = ("photo", "cnic_front", "cnic_back", "entry_card_photo", "police_document")
+
+
+def _on_site_today():
+	name = frappe.db.get_value("Site Attendance", {"date": nowdate(), "project": _project(), "docstatus": ["<", 2]})
+	if not name:
+		return {}
+	return {r.worker: r for r in frappe.get_all("Site Attendance Row", filters={"parent": name}, fields=["worker", "status", "time_in", "time_out"])}
+
+
+@frappe.whitelist()
 def workers(q=None, status="Active"):
+	"""The people register (for pickers and the People screen)."""
 	_need("people")
 	f = {"status": status} if status else {}
-	of = {"full_name": ["like", f"%{q}%"], "cnic": ["like", f"%{q}%"], "name": ["like", f"%{q}%"]} if q else None
-	return frappe.get_list("Site Worker", filters=f, or_filters=of, fields=["name", "full_name", "father_name", "worker_type", "trade", "contractor", "status", "photo", "daily_wage", "phone", "cnic", "cnic_expiry", "entry_card_no", "entry_card_expiry", "police_verification"], order_by="full_name asc", limit_page_length=500)
+	of = {"full_name": ["like", f"%{q}%"], "full_name_ur": ["like", f"%{q}%"], "cnic": ["like", f"%{q}%"], "name": ["like", f"%{q}%"], "phone": ["like", f"%{q}%"], "entry_card_no": ["like", f"%{q}%"]} if q else None
+	fields = ["name", "full_name", "full_name_ur", "father_name", "worker_type", "trade", "contractor", "gang", "status", "photo", "phone", "cnic", "cnic_expiry",
+		"entry_card_no", "entry_card_expiry", "police_verification", "app_access", "store_keeper", "user"]
+	if caps()["money"]:
+		fields.append("daily_wage")
+	rows = frappe.get_list("Site Worker", filters=f, or_filters=of, fields=fields, order_by="full_name asc", limit_page_length=1000)
+	here = _on_site_today()
+	for r in rows:
+		a = here.get(r.name)
+		r.on_site = bool(a and a.status != "Absent" and a.time_in and not a.time_out)
+		r.contractor_name = frappe.db.get_value("Supplier", r.contractor, "supplier_name") if r.contractor else None
+	return rows
+
+
+@frappe.whitelist()
+def person(name):
+	_need("people")
+	d = frappe.get_doc("Site Worker", name)
+	d.check_permission("read")
+	out = {k: d.get(k) for k in ("name",) + PERSON_FIELDS + PERSON_DOCS + ("app_access", "store_keeper", "user", "verified_by", "verified_on", "modified")}
+	if caps()["money"]:
+		out["daily_wage"] = d.daily_wage
+	out["warnings"] = d.warnings()
+	out["contractor_name"] = frappe.db.get_value("Supplier", d.contractor, "supplier_name") if d.contractor else None
+	if caps()["owner"]:
+		from mimaar.identity import card_info
+
+		out["card"] = card_info(d.name)
+	out["checks"] = frappe.get_all("Identity Check", filters={"person": d.name}, fields=["name", "action", "result", "score", "checked_at", "live_photo"], order_by="creation desc", limit=10) \
+		if (caps()["owner"] or caps()["money"] or "Site Supervisor" in _roles()) else []
+	out["days"] = frappe.db.count("Site Attendance Row", {"worker": d.name, "status": ["!=", "Absent"], "docstatus": 1})
+	return out
 
 
 @frappe.whitelist()
 def worker_save(data):
+	"""Add or update a person, with their documents (any staff with the People screen); access only by the owner."""
 	_need("people")
 	d = _parse(data) or {}
-	fields = ("full_name", "father_name", "worker_type", "trade", "contractor", "gang", "status", "daily_wage", "phone", "cnic", "cnic_expiry", "entry_card_no", "entry_card_expiry", "police_verification", "address", "emergency_contact")
-	photos = ("photo", "cnic_front", "cnic_back")
 	doc = frappe.get_doc("Site Worker", d["name"]) if d.get("name") else frappe.new_doc("Site Worker")
-	for k in fields:
+	for k in PERSON_FIELDS:
 		if k in d:
 			doc.set(k, d[k] if d[k] != "" else None)
-	for k in photos:
+	for k in PERSON_DOCS:
 		if _photo_ok(d.get(k)):
 			doc.set(k, d[k])
+	c = caps()
+	if c["money"] and "daily_wage" in d:
+		doc.daily_wage = flt(d["daily_wage"]) or None
+	if c["owner"]:
+		if d.get("app_access"):
+			doc.app_access = d["app_access"]
+		if "store_keeper" in d:
+			doc.store_keeper = cint(d["store_keeper"])
 	doc.save()
 	return {"name": doc.name, "warnings": doc.warnings()}
+
+
+@frappe.whitelist()
+def people_summary():
+	_need("people")
+	here = _on_site_today()
+	return {"total": frappe.db.count("Site Worker", {"status": "Active"}), "on_site": sum(1 for a in here.values() if a.status != "Absent" and a.time_in and not a.time_out),
+		"marked": len(here)}
 
 
 # ---------------------------------------------------------------- suppliers

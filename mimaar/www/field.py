@@ -57,6 +57,6 @@ def get_context(context):
 	lang = (b or {}).get("lang") or ("ur" if (frappe.request and frappe.request.cookies.get("preferred_language") == "ur") else "en")
 	context.lang = lang
 	context.v = int(os.path.getmtime(JS))
-	context.boot_json = _json({"boot": b, "lang": lang})
+	context.boot_json = _json({"boot": b, "lang": lang, "card_sign_in": bool(frappe.db.get_single_value("Mimaar Settings", "card_sign_in"))})
 	context.ur_json = _json(_ur())
 	return context

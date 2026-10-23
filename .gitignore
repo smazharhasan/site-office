@@ -5,3 +5,4 @@ __pycache__
 .DS_Store
 mimaar/devtmp.py
 mimaar/migration/*.json
+dump.rdb

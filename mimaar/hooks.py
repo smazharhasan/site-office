@@ -35,7 +35,7 @@ doctype_list_js = {
 	"Supplier": "public/js/supplier_list.js",
 }
 
-jinja = {"methods": ["mimaar.api.qr_code"]}
+jinja = {"methods": ["mimaar.api.qr_code", "mimaar.identity.card_code"]}
 
 before_install = "mimaar.setup.before_install"
 before_migrate = "mimaar.setup.before_install"
@@ -45,6 +45,7 @@ override_whitelisted_methods = {
 }
 
 doc_events = {
+	"Site Worker": {"on_update": "mimaar.identity.on_worker_update"},
 	"Supplier Quotation": {
 		"validate": "mimaar.procurement.sq_validate",
 		"before_cancel": "mimaar.procurement.sq_before_cancel",

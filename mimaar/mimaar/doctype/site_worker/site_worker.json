@@ -1,13 +1,13 @@
 {
  "actions": [],
  "allow_rename": 0,
- "creation": "2026-10-22 18:00:00.000000",
+ "creation": "2026-10-23 15:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "module": "Mimaar",
  "name": "Site Worker",
  "owner": "Administrator",
- "modified": "2026-10-22 18:00:00.000000",
+ "modified": "2026-10-23 15:00:00.000000",
  "modified_by": "Administrator",
  "fields": [
   {
@@ -19,15 +19,25 @@
    "in_global_search": 1
   },
   {
+   "fieldname": "full_name_ur",
+   "fieldtype": "Data",
+   "label": "Name in Urdu (printed on the site card)"
+  },
+  {
    "fieldname": "father_name",
    "fieldtype": "Data",
    "label": "Father's name"
   },
   {
+   "fieldname": "father_name_ur",
+   "fieldtype": "Data",
+   "label": "Father's name in Urdu"
+  },
+  {
    "fieldname": "worker_type",
    "fieldtype": "Select",
    "label": "Type",
-   "options": "Labour\nMistri\nGroup head\nSupervisor\nBuilder staff\nSupplier staff\nConsultant\nOther",
+   "options": "Labour\nMistri\nGroup head\nSupervisor\nEngineer\nStore keeper\nAccountant\nOwner\nBuilder staff\nSupplier staff\nConsultant\nOther",
    "default": "Labour",
    "in_list_view": 1,
    "in_standard_filter": 1
@@ -74,13 +84,20 @@
   {
    "fieldname": "daily_wage",
    "fieldtype": "Currency",
-   "label": "Daily wage"
+   "label": "Daily wage",
+   "permlevel": 1
   },
   {
    "fieldname": "phone",
    "fieldtype": "Data",
    "label": "Mobile",
    "options": "Phone"
+  },
+  {
+   "fieldname": "joined_on",
+   "fieldtype": "Date",
+   "label": "Joined on",
+   "default": "Today"
   },
   {
    "fieldname": "id_section",
@@ -124,6 +141,11 @@
    "label": "Entry card expiry"
   },
   {
+   "fieldname": "entry_card_photo",
+   "fieldtype": "Attach Image",
+   "label": "Society entry card photo"
+  },
+  {
    "fieldname": "police_verification",
    "fieldtype": "Select",
    "label": "Police verification",
@@ -160,6 +182,11 @@
    "label": "Address"
   },
   {
+   "fieldname": "address_ur",
+   "fieldtype": "Small Text",
+   "label": "Address in Urdu"
+  },
+  {
    "fieldname": "col3",
    "fieldtype": "Column Break"
   },
@@ -167,11 +194,50 @@
    "fieldname": "emergency_contact",
    "fieldtype": "Data",
    "label": "Emergency contact (name and number)"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "access_section",
+   "fieldtype": "Section Break",
+   "label": "Access to Mimaar",
+   "description": "Only for staff who use the app. Labour do not sign in; their site card is used for attendance and to identify them."
+  },
+  {
+   "fieldname": "app_access",
+   "fieldtype": "Select",
+   "label": "Signs in as",
+   "options": "No sign-in\nSite supervisor\nAccountant\nOwner",
+   "default": "No sign-in",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "store_keeper",
+   "fieldtype": "Check",
+   "label": "Also store keeper (receives, issues and returns material)",
+   "permlevel": 1
+  },
+  {
+   "fieldname": "col4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User",
+   "options": "User",
+   "read_only": 1,
+   "permlevel": 1
   }
  ],
  "field_order": [
   "full_name",
+  "full_name_ur",
   "father_name",
+  "father_name_ur",
   "worker_type",
   "trade",
   "contractor",
@@ -181,6 +247,7 @@
   "status",
   "daily_wage",
   "phone",
+  "joined_on",
   "id_section",
   "cnic",
   "cnic_expiry",
@@ -189,14 +256,22 @@
   "col2",
   "entry_card_no",
   "entry_card_expiry",
+  "entry_card_photo",
   "police_verification",
   "police_document",
   "verified_by",
   "verified_on",
   "contact_section",
   "address",
+  "address_ur",
   "col3",
-  "emergency_contact"
+  "emergency_contact",
+  "notes",
+  "access_section",
+  "app_access",
+  "store_keeper",
+  "col4",
+  "user"
  ],
  "links": [],
  "sort_field": "creation",
@@ -271,6 +346,22 @@
    "export": 1,
    "report": 1,
    "share": 1
+  },
+  {
+   "role": "System Manager",
+   "permlevel": 1,
+   "read": 1,
+   "write": 1
+  },
+  {
+   "role": "Accounts Manager",
+   "permlevel": 1,
+   "read": 1
+  },
+  {
+   "role": "Accounts User",
+   "permlevel": 1,
+   "read": 1
   }
  ],
  "track_changes": 1,

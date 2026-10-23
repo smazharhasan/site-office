@@ -93,17 +93,85 @@ function pickFile(capture) {
     i.onchange = () => resolve(i.files && i.files[0]); i.click();
   });
 }
-/** A live photo (in the phone app: camera only, stamped with GPS). Returns {url, loc}. */
+/** A photo. In the phone app: live camera only, stamped with GPS. In a browser: the live camera for
+ *  face photos (opts.live), otherwise the phone's camera through the file picker. Returns {url, loc}. */
 async function takePhoto(title, opts = {}) {
   if (NATIVE) {
     const r = await native("photo", { title: t(title), facing: opts.facing || "back", lang: S.lang });
     if (!r || r.cancelled || !r.data) return null;
-    const bin = atob(r.data); const bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-    const file = new File([bytes], `photo-${Date.now()}.jpg`, { type: "image/jpeg" });
+    const file = new File([b64bytes(r.data)], `photo-${Date.now()}.jpg`, { type: "image/jpeg" });
     return { url: await busy(upload(file), t("Saving the photo…")), loc: r.lat ? `${(+r.lat).toFixed(6)}, ${(+r.lng).toFixed(6)} (±${Math.round(r.accuracy || 0)} m)` : "" };
+  }
+  if (opts.live) {
+    const blob = await liveCamera(title, { facing: opts.facing === "front" ? "user" : "environment", face: opts.face });
+    if (!blob) return null;
+    const [url, loc] = await busy(Promise.all([upload(new File([blob], `photo-${Date.now()}.jpg`, { type: "image/jpeg" })), getLocation().catch(() => "")]), t("Saving the photo…"));
+    return { url, loc };
   }
   const f = await pickFile(true); if (!f) return null;
   return { url: await busy(upload(f), t("Saving the photo…")), loc: "" };
+}
+function b64bytes(b64) { const bin = atob(b64); const bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i); return bytes; }
+/** A live face photo as a data URL (for signing in, before there is a session). */
+async function liveFaceData(title) {
+  if (NATIVE) { const r = await native("photo", { title: t(title), facing: "front", lang: S.lang }); return r && r.data ? `data:image/jpeg;base64,${r.data}` : null; }
+  const blob = await liveCamera(title, { facing: "user", face: true });
+  if (!blob) return null;
+  return new Promise((ok) => { const fr = new FileReader(); fr.onload = () => ok(fr.result); fr.readAsDataURL(blob); });
+}
+/** Live camera in a browser (no gallery): take, check, use. Resolves a JPEG blob or null. */
+function liveCamera(title, { facing = "environment", face = false } = {}) {
+  return new Promise((resolve) => {
+    let stream = null, done = false, mode = facing, shotBlob = null;
+    const sh = sheet(title, `<div class="cam"><video playsinline muted autoplay></video><canvas hidden></canvas>${face ? '<div class="face"></div>' : ""}<div class="note" data-note>${esc(face ? t("Face the camera in good light") : t("Point the camera"))}</div></div>`,
+      { full: true, footer: `<button class="btn" data-flip="1">${icon("refresh")}${esc(t("Switch camera"))}</button><button class="btn pri" data-take="1">${icon("cam")}${esc(t("Take photo"))}</button>` });
+    const video = sh.querySelector("video"), canvas = sh.querySelector("canvas"), note = sh.querySelector("[data-note]"), take = sh.querySelector("[data-take]");
+    const stop = () => { if (stream) stream.getTracks().forEach((x) => x.stop()); stream = null; };
+    const start = async () => {
+      stop();
+      try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: mode, width: { ideal: 1280 }, height: { ideal: 1280 } }, audio: false }); video.srcObject = stream; await video.play().catch(() => {}); note.hidden = false; }
+      catch (e) { note.textContent = t("The camera can't be opened here. Allow the camera for this site, or use the Mimaar app."); }
+    };
+    const finish = (v) => { if (done) return; done = true; stop(); closeSheet(sh); resolve(v); };
+    sh.querySelector("[data-flip]").onclick = () => { mode = mode === "user" ? "environment" : "user"; start(); };
+    take.onclick = () => {
+      if (shotBlob) { finish(shotBlob); return; }
+      if (!stream || !video.videoWidth) return;
+      const k = Math.min(1, 1280 / Math.max(video.videoWidth, video.videoHeight));
+      canvas.width = Math.round(video.videoWidth * k); canvas.height = Math.round(video.videoHeight * k);
+      const g = canvas.getContext("2d"); if (mode === "user") { g.translate(canvas.width, 0); g.scale(-1, 1); }
+      g.drawImage(video, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((b) => { shotBlob = b; video.hidden = true; canvas.hidden = false; take.innerHTML = `${icon("check")}${esc(t("Use photo"))}`; const f = sh.querySelector("[data-flip]"); f.innerHTML = `${icon("refresh")}${esc(t("Retake"))}`; f.onclick = () => { shotBlob = null; video.hidden = false; canvas.hidden = true; take.innerHTML = `${icon("cam")}${esc(t("Take photo"))}`; f.innerHTML = `${icon("refresh")}${esc(t("Switch camera"))}`; f.onclick = () => { mode = mode === "user" ? "environment" : "user"; start(); }; }; }, "image/jpeg", 0.85);
+    };
+    if (mode === "user") video.style.transform = "scaleX(-1)";
+    const obs = new MutationObserver(() => { if (!document.body.contains(sh) || sh.parentElement.classList.contains("closing")) { obs.disconnect(); if (!done) { done = true; stop(); resolve(null); } } });
+    obs.observe($("#sheetRoot"), { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+    start();
+  });
+}
+/** Reads a QR code with the camera in a browser (BarcodeDetector). Resolves the text. */
+function qrReader(box, flipBtn) {
+  let stream = null, stopped = false, mode = "environment";
+  const video = box.querySelector("video"), note = box.querySelector(".note");
+  const stop = () => { stopped = true; if (stream) stream.getTracks().forEach((x) => x.stop()); stream = null; };
+  const result = new Promise(async (resolve, reject) => {
+    if (!("BarcodeDetector" in window)) { reject(new UserError(t("This browser can't read QR codes. Use the Mimaar app on the phone, or Chrome."))); return; }
+    const det = new window.BarcodeDetector({ formats: ["qr_code"] });
+    const open = async () => {
+      if (stream) stream.getTracks().forEach((x) => x.stop());
+      try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: mode }, audio: false }); video.srcObject = stream; await video.play().catch(() => {}); }
+      catch (e) { reject(new UserError(t("The camera can't be opened here. Allow the camera for this site, or use the Mimaar app."))); }
+    };
+    if (flipBtn) flipBtn.onclick = () => { mode = mode === "user" ? "environment" : "user"; open(); };
+    await open();
+    const tick = async () => {
+      if (stopped) return;
+      try { if (video.readyState >= 2) { const c = await det.detect(video); if (c && c.length && c[0].rawValue) { stop(); resolve(c[0].rawValue); return; } } } catch (e) { /* keep trying */ }
+      setTimeout(tick, 250);
+    };
+    tick();
+  });
+  return { result, stop };
 }
 async function getLocation() {
   if (NATIVE) { const r = await native("location", { lang: S.lang }); return r && r.lat ? `${(+r.lat).toFixed(6)}, ${(+r.lng).toFixed(6)} (±${Math.round(r.accuracy || 0)} m)` : ""; }
@@ -112,7 +180,16 @@ async function getLocation() {
 }
 async function scanCode(title) {
   if (NATIVE) { const r = await native("scan", { title: t(title), lang: S.lang }); return r && r.text ? r.text : ""; }
-  return ask(title, t("Type the number on the site card (or the CNIC)."), "");
+  if (!("BarcodeDetector" in window)) return ask(title, t("Type the number on the site card (or the CNIC)."), "");
+  return new Promise((resolve) => {
+    let done = false;
+    const sh = sheet(title, `<div class="cam"><video playsinline muted autoplay></video><div class="frame"></div><div class="note">${esc(t("Waiting for a site card… hold the card's QR inside the frame"))}</div></div>`,
+      { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn" data-flip="1">${icon("refresh")}${esc(t("Switch camera"))}</button>` });
+    const r = qrReader(sh.querySelector(".cam"), sh.querySelector("[data-flip]"));
+    r.result.then((v) => { done = true; closeSheet(sh); resolve(v); }).catch((e) => { sh.querySelector(".note").textContent = e.message; });
+    const obs = new MutationObserver(() => { if (!document.body.contains(sh) || sh.parentElement.classList.contains("closing")) { obs.disconnect(); r.stop(); if (!done) { done = true; resolve(""); } } });
+    obs.observe($("#sheetRoot"), { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+  });
 }
 /** Open a link: the site's own pages stay in the app; WhatsApp, phone calls and other sites go to the phone. */
 function openOut(url) {
@@ -209,7 +286,7 @@ function chips(name, options, value = "", cls = "") {
 }
 /** A photo slot: tap to take the photo; the file's address is kept in a hidden input. */
 function shot(name, label, url = "", opts = {}) {
-  return `<button type="button" class="shot ${url ? "has" : ""} ${opts.wide ? "wide" : ""}" data-shot="${name}" data-title="${esc(label)}" ${opts.facing ? `data-facing="${opts.facing}"` : ""}>${url ? `<img src="${esc(url)}" alt="">` : `${icon("cam")}<span>${esc(label)}${opts.req ? " *" : ""}</span>`}</button><input type="hidden" name="${name}" value="${esc(url)}">`;
+  return `<button type="button" class="shot ${url ? "has" : ""} ${opts.wide ? "wide" : ""}" data-shot="${name}" data-title="${esc(label)}" ${opts.facing ? `data-facing="${opts.facing}"` : ""} ${opts.facing === "front" ? 'data-live="1"' : ""}>${url ? `<img src="${esc(url)}" alt="">` : `${icon("cam")}<span>${esc(label)}${opts.req ? " *" : ""}</span>`}</button><input type="hidden" name="${name}" value="${esc(url)}">`;
 }
 function wireForm(root) {
   if (root._wired) return; root._wired = true;
@@ -223,7 +300,7 @@ function wireForm(root) {
     if (s) {
       e.preventDefault();
       try {
-        const r = await takePhoto(s.dataset.title, { facing: s.dataset.facing });
+        const r = await takePhoto(s.dataset.title, { facing: s.dataset.facing, live: s.dataset.live === "1", face: s.dataset.live === "1" });
         if (!r) return;
         const h = s.nextElementSibling; h.value = r.url; s.classList.add("has"); s.innerHTML = `<img src="${esc(r.url)}" alt="">`;
         if (r.loc) { const l = root.querySelector("[name=location]"); if (l && !l.value) { l.value = r.loc; const lt = root.querySelector("[data-loc]"); if (lt) lt.textContent = r.loc; } }
@@ -320,37 +397,24 @@ window.addEventListener("hashchange", () => { closeAll(); render(); });
 const GLOBAL = {
   quick() {
     const c = C(); const A = [];
-    if (c.store) A.push(["Receive goods", "truck", "store/receive", "k2"], ["Release to work", "box", "release", "k3"]);
-    if (c.people) A.push(["Mark attendance", "users", "att", "k1"]);
+    if (c.store) A.push(["Receive goods", "truck", "store/receive", "k2"], ["Release to work", "box", "release", "k3"], ["Return to store", "store", "return", "k7"]);
+    if (c.people) A.push(["Attendance by site card", "card", "attcard", "k1"]);
     if (c.site) A.push(["Site diary", "log", "diary", "k7"], ["Report a snag", "alert", "snag", "k4"], ["Progress photo", "cam", "build/schedule", "k5"]);
     if (c.buy) A.push(["Scan a quotation", "ai", "scanquote", "k6"]);
     if (c.money) A.push(["Pay a supplier", "pay", "bills", "k8"]);
     const sh = sheet(t("Quick actions"), `<div class="qa-grid">${A.map(([l, ic, to, tc], i) => `<button class="qa" data-q="${i}"><span class="qa-i" style="--tc:var(--${tc})">${icon(ic)}</span><span>${esc(t(l))}</span></button>`).join("")}</div>`);
     sh.addEventListener("click", (e) => {
       const b = e.target.closest("[data-q]"); if (!b) return; const to = A[+b.dataset.q][2]; closeSheet();
-      if (to === "release") return releaseSheet();
+      if (to === "release") return S.b.rules.card_for_store ? storeByCard("issue") : releaseSheet();
+      if (to === "return") return storeByCard("return");
+      if (to === "attcard") return attendanceByCard();
       if (to === "diary") return diarySheet();
       if (to === "snag") return snagNewSheet();
       if (to === "scanquote") return scanQuote();
       go(to);
     });
   },
-  me() {
-    const b = S.b || {}; const c = C();
-    const role = c.owner ? t("Owner") : c.money ? t("Accounts") : c.buy ? t("Site supervisor") : c.store ? t("Store keeper") : t("Site staff");
-    const sh = sheet(t("My account"), `<div class="stack">
-      <div class="mo-me"><span class="av">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc((b.full_name || "?").charAt(0))}</span><span><b>${esc(b.full_name)}</b><span class="small muted">${esc(b.user)} · ${esc(role)}</span></span></div>
-      <div class="fld"><label>${esc(t("Language"))}</label><div class="seg"><button data-lang="en" aria-pressed="${S.lang === "en"}">English</button><button data-lang="ur" aria-pressed="${S.lang === "ur"}">اردو</button></div></div>
-      ${c.owner || c.money ? `<button class="btn wide" data-desk="1">${icon("dash")}${esc(t("Open the full ERPNext (office)"))}</button>` : ""}
-      ${NATIVE ? `<button class="btn wide" data-site="1">${icon("globe")}${esc(t("Change site address"))}</button>` : ""}
-      <button class="btn wide bad" data-out="1">${icon("out")}${esc(t("Sign out"))}</button></div>`);
-    sh.addEventListener("click", async (e) => {
-      const l = e.target.closest("[data-lang]"); if (l) { await busy(api("set_language", { lang: l.dataset.lang })); location.reload(); }
-      if (e.target.closest("[data-desk]")) { location.href = "/desk/mimaar"; }
-      if (e.target.closest("[data-site]") && (await confirmBox(t("Change site address"), t("The app will ask for the site address again."), t("Change")))) native("forget").catch(() => {});
-      if (e.target.closest("[data-out]")) { await fetch("/api/method/logout", { credentials: "same-origin" }); if (NATIVE) native("signout").catch(() => {}); location.reload(); }
-    });
-  },
+  me() { go("settings"); },
   search() {
     const sh = sheet(t("Search"), `<div class="stack"><div class="fld search">${icon("search")}<input name="q" placeholder="${esc(t("Workers, suppliers, items, orders…"))}" autocomplete="off"></div><div data-res class="stack"></div></div>`, { full: true });
     const q = sh.querySelector("[name=q]"), res = sh.querySelector("[data-res]"); let tm = null;
@@ -389,16 +453,17 @@ VIEWS.dash = async (el) => {
   }
   if (tiles.length % 2) tiles.push(`<span class="ctile" style="cursor:default"></span>`);
   const A = [];
-  if (c.store) A.push(qa(t("Receive goods"), "truck", "go_receive", "k2"), qa(t("Release to work"), "box", "release", "k3"));
-  if (c.people) A.push(qa(t("Mark attendance"), "users", "go_att", "k1"));
+  if (c.people) A.push(qa(t("Attendance by site card"), "card", "attcard", "k1"));
+  if (c.store) A.push(qa(t("Receive goods"), "truck", "go_receive", "k2"), qa(t("Release to work"), "box", "release", "k3"), qa(t("Return to store"), "store", "ret", "k7"));
   if (c.site) A.push(qa(t("Site diary"), "log", "diary", "k7"), qa(t("Report a snag"), "alert", "snag", "k4"));
   if (c.buy) A.push(qa(t("Scan a quotation"), "ai", "scanquote", "k6"));
   if (c.money) A.push(qa(t("Pay a supplier"), "pay", "go_bills", "k8"));
-  Object.assign(S.acts, { go_receive: () => go("store/receive"), go_att: () => go("att"), go_bills: () => go("bills"), release: () => releaseSheet(), diary: () => diarySheet(), snag: () => snagNewSheet(), scanquote: () => scanQuote() });
+  Object.assign(S.acts, { go_receive: () => go("store/receive"), go_att: () => go("att"), go_bills: () => go("bills"), attcard: () => attendanceByCard(), ret: () => storeByCard("return"),
+    release: () => (S.b.rules.card_for_store ? storeByCard("issue") : releaseSheet()), diary: () => diarySheet(), snag: () => snagNewSheet(), scanquote: () => scanQuote() });
   const acts = d.acts || [];
   el.innerHTML = `<div class="hero"><span class="muted small">${esc(fdate(b.today))}</span><b>${esc(t("Salaam, {0}", (b.full_name || "").split(" ")[0]))}</b><span class="small muted">${esc(b.project_name || "")}</span></div>
     ${tiles.length ? `<div class="ctiles">${tiles.join("")}</div>` : ""}
-    ${A.length ? panel(t("Quick actions"), `<div class="body"><div class="qa-grid">${A.slice(0, 6).join("")}</div></div>`) : ""}
+    ${A.length ? panel(t("Quick actions"), `<div class="body"><div class="qa-grid">${A.slice(0, 9).join("")}</div></div>`) : ""}
     ${panel(t("Needs your attention"), acts.length ? `<div class="lst">${acts.slice(0, 25).map((a) => lrow({ act: "open", data: a.go.join("|"), title: a.t, dot: a.k })).join("")}</div>` : empty(t("All clear"), t("Nothing is waiting for you right now.")), acts.length ? `<span class="cnt">${acts.length}</span>` : "")}`;
   S.acts.open = (v) => {
     const [kind, name] = v.split("|");
@@ -582,16 +647,19 @@ VIEWS.store = async (el, [tab = "stock"]) => {
     const rows = await api("to_receive");
     pane.innerHTML = panel(t("Deliveries expected"), rows.length ? `<div class="lst">${rows.map((r) => lrow({ go: `receive/${r.name}`, ic: "truck", title: r.supplier_name, sub: `${esc(r.name)} · ${esc(t("needed by {0}", fdate(r.schedule_date)))}<span style="display:block;margin-top:6px">${bar(r.per_received, "mid")}</span>`, end: `<b>${num(r.per_received)}%</b><span class="small muted">${esc(t("received"))}</span>` })).join("")}</div>` : empty(t("Nothing to receive"), t("Locked purchase orders waiting for delivery appear here.")), `<span class="cnt">${rows.length}</span>`);
   } else if (tab === "release") {
-    pane.innerHTML = `<div class="banner">${esc(t("Material leaves the store only against a name: the mistri or group head who takes it."))}</div><button class="btn pri big wide" data-act="rel">${icon("box")}${esc(t("Release material"))}</button><div data-moves></div>`;
-    S.acts.rel = () => releaseSheet();
-    const m = (await api("movements")).filter((x) => x.kind === "out");
+    pane.innerHTML = `<div class="banner">${esc(S.b.rules.card_for_store ? t("Material leaves the store only against a person: scan their site card and take their photo.") : t("Material leaves the store only against a name: the mistri or group head who takes it."))}</div>
+      <button class="btn pri big wide" data-act="rel">${icon(S.b.rules.card_for_store ? "card" : "box")}${esc(S.b.rules.card_for_store ? t("Issue from store by site card") : t("Release material"))}</button>
+      <button class="btn wide" data-act="ret">${icon("store")}${esc(t("Return to store by site card"))}</button><div data-moves></div>`;
+    S.acts.rel = () => (S.b.rules.card_for_store ? storeByCard("issue") : releaseSheet());
+    S.acts.ret = () => storeByCard("return");
+    const m = (await api("movements")).filter((x) => x.kind !== "in");
     pane.querySelector("[data-moves]").innerHTML = panel(t("Released recently"), m.length ? `<div class="lst">${m.map(moveRow).join("")}</div>` : empty(t("Nothing released yet")));
   } else if (tab === "moves") {
     const m = await api("movements");
     pane.innerHTML = panel(t("Movements"), m.length ? `<div class="lst">${m.map(moveRow).join("")}</div>` : empty(t("No movements yet")));
   }
 };
-const moveRow = (x) => lrow({ ic: x.kind === "in" ? "truck" : "box", title: `${x.kind === "in" ? t("Received from {0}", x.who || "") : t("Released to {0}", x.who || "")}`,
+const moveRow = (x) => lrow({ ic: x.kind === "in" ? "truck" : x.kind === "back" ? "store" : "box", title: `${x.kind === "in" ? t("Received from {0}", x.who || "") : x.kind === "back" ? t("Returned by {0}", x.who || "") : t("Released to {0}", x.who || "")}${x.face ? " ✓" : ""}`,
   sub: esc(x.items.map((i) => `${i.item_name} ${num(i.qty)} ${t(i.uom)}`).join(", ")) + `<span style="display:block">${esc([fdate(x.date), x.ref, x.name].filter(Boolean).join(" · "))}</span>`, chev: false });
 
 function releaseSheet() {
@@ -611,6 +679,8 @@ function releaseSheet() {
   sh.querySelector("[data-save]").onclick = async () => {
     if (!need(sh, ["issued_to"])) return;
     const items = S.rel.filter((r) => +r.qty > 0).map((r) => ({ item_code: r.item_code, qty: +r.qty }));
+    const over = S.rel.filter((r) => +r.qty > 0 && r.stock != null && +r.qty > +r.stock);
+    if (over.length) { sheetError(sh, over.map((r) => t("{0}: only {1} in the store", r.item_name, num(r.stock))).join(" · ")); return; }
     if (!items.length) { sheetError(sh, t("Add at least one item and its quantity.")); return; }
     const v = vals(sh);
     const r = await run(sh, () => api("release", { items, issued_to: v.issued_to, work_area: v.work_area, photo: v.photo }), t("Released"));
@@ -633,8 +703,9 @@ VIEWS.receive = async (el, [po]) => {
       <div class="lt"><b>${esc(l.item_name)}</b><span class="small muted">${esc(t("ordered {0} · received {1}", num(l.qty), num(l.received)))}</span></div>
       ${l.pending > 0 ? `<span class="small">${esc(t("Still due: {0} {1}", num(l.pending), t(l.uom)))}</span>${qtyBox(`q_${i}`, "")}` : `<span class="pill good">${esc(t("All received"))}</span>`}</div>`).join("")}</div>`)}
     ${panel(t("3. Who received it"), `<div class="body form">
-      <div class="shots">${shot("receiver_photo", t("Photo of the person receiving") + (R.require_receiver_photo ? " *" : ""), "", { facing: "front" })}${shot("goods_photo", t("Photo of the material"))}</div>
-      ${fld(t("Received by"), inp("received_by", S.b.full_name))}<input type="hidden" name="location"></div>`)}
+      ${R.card_for_receiving ? `<div data-recv><button class="btn pri wide" data-act="recv">${icon("card")}${esc(t("Receiver's site card and face"))}</button></div><input type="hidden" name="check">`
+        : `<div class="shots">${shot("receiver_photo", t("Photo of the person receiving") + (R.require_receiver_photo ? " *" : ""), "", { facing: "front" })}</div>${fld(t("Received by"), inp("received_by", S.b.full_name))}`}
+      <div class="shots">${shot("goods_photo", t("Photo of the material"))}</div><input type="hidden" name="location"></div>`)}
     <button class="btn pri big wide" data-act="save">${icon("check")}${esc(t("Receive goods"))}</button><div data-err></div>`;
   wireForm(el);
   S.acts.all = () => { d.lines.forEach((l, i) => { const x = el.querySelector(`[name=q_${i}]`); if (x) x.value = l.pending; }); };
@@ -648,15 +719,25 @@ VIEWS.receive = async (el, [po]) => {
       toast(t("AI filled {0} lines. Check them against what you see.", n), "good");
     } catch (e) { toast(e.message, "bad"); }
   };
+  S.acts.recv = async () => {
+    const ck = await cardFlow({ title: t("Receive goods: receiver's site card"), action: "Receiving goods" });
+    if (!ck) return;
+    el.querySelector("[name=check]").value = ck.check;
+    if (ck.loc) el.querySelector("[name=location]").value = ck.loc;
+    el.querySelector("[data-recv]").innerHTML = whoCard({ full_name: ck.full_name, full_name_ur: ck.full_name_ur, photo: ck.photo, worker_type: ck.worker_type, trade: ck.trade, name: ck.person })
+      + `<div class="verdict ${ck.result === "Match" ? "good" : "warn"}" style="margin-top:8px">${icon(ck.result === "Match" ? "check" : "alert")}<span>${esc(ck.result === "Match" ? t("Face matches ({0}%)", ck.score) : ST(ck.result))}</span></div>
+      <button class="btn sm" data-act="recv" style="margin-top:8px">${icon("refresh")}${esc(t("Change the receiver"))}</button>`;
+  };
   S.acts.save = async () => {
-    const need_ = ["dn_no"]; if (R.require_dn_scan) need_.push("dn_scan"); if (R.require_receiver_photo) need_.push("receiver_photo");
+    if (R.card_for_receiving && !el.querySelector("[name=check]").value) { toast(t("Scan the receiver's site card and take their photo first."), "bad"); el.querySelector("[data-recv]").scrollIntoView({ block: "center" }); return; }
+    const need_ = ["dn_no"]; if (R.require_dn_scan) need_.push("dn_scan"); if (R.require_receiver_photo && !R.card_for_receiving) need_.push("receiver_photo");
     if (!need(el, need_)) return;
     const v = vals(el);
     const lines = d.lines.map((l, i) => ({ po_detail: l.po_detail, qty: +(v[`q_${i}`] || 0) })).filter((x) => x.qty > 0);
     if (!lines.length) { toast(t("Enter the quantity received for at least one item."), "bad"); return; }
     if (!v.location) v.location = await getLocation().catch(() => "");
     try {
-      const r = await busy(api("receive", { po, lines, dn_no: v.dn_no, dn_scan: v.dn_scan, receiver_photo: v.receiver_photo, goods_photo: v.goods_photo, vehicle: v.vehicle, received_by: v.received_by, location: v.location }), t("Saving…"));
+      const r = await busy(api("receive", { po, lines, dn_no: v.dn_no, dn_scan: v.dn_scan, receiver_photo: v.receiver_photo, goods_photo: v.goods_photo, vehicle: v.vehicle, received_by: v.received_by, location: v.location, check: v.check || null }), t("Saving…"));
       sheet(t("Goods received"), `<div class="stack" style="align-items:center;text-align:center"><span class="qa-i" style="--tc:var(--k1);width:64px;height:64px">${icon("check")}</span><b style="font-size:18px">${esc(r.name)}</b><span>${esc(t("The purchase order is now {0}% received.", num(r.po_status.per_received)))}</span></div>`,
         { footer: `<button class="btn pri" data-go="store/receive">${esc(t("Done"))}</button>` });
     } catch (e) { el.querySelector("[data-err]").innerHTML = `<div class="banner bad"><b>${esc(t("Not saved"))}</b>${esc(e.message)}</div>`; el.querySelector("[data-err]").scrollIntoView({ block: "center" }); }
@@ -668,16 +749,138 @@ VIEWS.more = async (el) => {
   setTop(t("More"));
   const c = C(); const b = S.b;
   const T = [];
-  if (c.people) T.push(["Attendance", "users", "att", "k1"], ["Workers and site cards", "card", "workers", "k7"]);
+  if (c.people) T.push(["Attendance", "users", "att", "k1"], ["People and access", "card", "people", "k7"]);
   if (c.suppliers) T.push(["Suppliers", "truck", "suppliers", "k2"]);
   if (c.buy) T.push(["Quotations", "log", "quotes", "k6"], ["Purchase orders", "cart", "orders", "k5"]);
   if (c.money) T.push(["Bills and payments", "pay", "bills", "k8"], ["Budget", "budget", "budget", "k3"]);
   if (c.site) T.push(["Snags", "alert", "build/snags", "k4"], ["Site diary", "log", "build/diary", "k7"]);
   if (c.store) T.push(["Stock", "box", "store/stock", "k3"]);
+  T.push(["My settings", "gear", "settings", "k8"]);
   if (c.owner && !NATIVE && /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) T.push(["Connect a phone", "globe", "connect", "k2"]);
-  el.innerHTML = `<button class="mo-me" data-act="me"><span class="av">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc((b.full_name || "?").charAt(0))}</span><span><b>${esc(b.full_name)}</b><span class="small muted">${esc(b.project_name || "")}</span></span>${icon("chev", "lch")}</button>
+  el.innerHTML = `<button class="mo-me" data-go="settings"><span class="av">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc((b.full_name || "?").charAt(0))}</span><span><b>${esc(b.full_name)}</b><span class="small muted">${esc(b.project_name || "")}</span></span>${icon("chev", "lch")}</button>
     <div class="qa-grid">${T.map(([l, ic, to, tc]) => `<button class="qa" data-go="${to}"><span class="qa-i" style="--tc:var(--${tc})">${icon(ic)}</span><span>${esc(t(l))}</span></button>`).join("")}</div>`;
 };
+
+/* ---------------- site card and face: the steps used wherever a person is identified ---------------- */
+const whoCard = (w) => `<div class="who-card">${w.photo ? `<img src="${esc(w.photo)}" alt="" class="zoomable">` : `<span class="ph"></span>`}<div style="min-width:0"><b>${esc(w.full_name)}</b>${w.full_name_ur ? `<span class="ur" style="display:block">${esc(w.full_name_ur)}</span>` : ""}<span class="small muted">${esc([t(w.worker_type || ""), t(w.trade || ""), w.name].filter(Boolean).join(" · "))}</span></div></div>`;
+/** Site card → face → (the entry). Resolves the entry's result (or the face check when there is no third step), or null. */
+function cardFlow({ title, action, step3, needCard = 1 }) {
+  return new Promise((resolve) => {
+    const labels = [t("Card"), t("Face")].concat(step3 ? [t(step3.label)] : []);
+    const st = { code: "", who: null, check: null, done: false };
+    const sh = sheet(title, `<div class="steps">${labels.map((l, i) => `<span data-s="${i}"><b>${i + 1}</b>${esc(l)}</span>`).join("")}</div><div data-body></div>`,
+      { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-next="1" hidden></button>` });
+    const body = sh.querySelector("[data-body]"), next = sh.querySelector("[data-next]");
+    let stopScan = null;
+    const mark = (i) => $$("[data-s]", sh).forEach((x) => { const k = +x.dataset.s; x.classList.toggle("on", k === i); x.classList.toggle("done", k < i); });
+    const finish = (v) => { if (st.done) return; st.done = true; if (stopScan) stopScan(); closeSheet(sh); resolve(v); };
+    const obs = new MutationObserver(() => { if (!document.body.contains(sh) || sh.parentElement.classList.contains("closing")) { obs.disconnect(); if (stopScan) stopScan(); if (!st.done) { st.done = true; resolve(null); } } });
+    obs.observe($("#sheetRoot"), { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+    async function step1(err) {
+      mark(0); next.hidden = true; sheetError(sh, err || "");
+      if (NATIVE || !("BarcodeDetector" in window)) {
+        body.innerHTML = `<div class="stack" style="align-items:center;text-align:center;padding:10px 0"><span class="qa-i" style="--tc:var(--k2);width:76px;height:76px">${icon("card")}</span>
+          <p style="margin:0">${esc(t("Hold the person's site card in front of the camera."))}</p><button class="btn pri big wide" data-scan="1">${icon("qr")}${esc(t("Scan site card"))}</button></div>`;
+        const scan = async () => { const code = await scanCode(t("Scan the site card")); if (code) gotCode(code); };
+        body.querySelector("[data-scan]").onclick = scan;
+        if (NATIVE && !err) scan();
+      } else {
+        body.innerHTML = `<div class="cam"><video playsinline muted autoplay></video><div class="frame"></div><div class="note">${esc(t("Waiting for a site card… hold the card's QR inside the frame"))}</div></div>
+          <div class="row" style="margin-top:10px;justify-content:center"><button class="btn sm" data-flip="1">${icon("refresh")}${esc(t("Switch camera"))}</button></div>`;
+        const r = qrReader(body.querySelector(".cam"), body.querySelector("[data-flip]"));
+        stopScan = r.stop;
+        r.result.then((c) => { stopScan = null; if (c) gotCode(c); }).catch((e) => { const n = body.querySelector(".note"); if (n) n.textContent = e.message; });
+      }
+    }
+    async function gotCode(code) {
+      try {
+        const w = await busy(api("mimaar.api.find_worker", { code }), t("Finding the person…"));
+        if (!w) return step1(t("This card is not recognised. Is the person registered?"));
+        if (needCard && !w.card_scanned) return step1(t("Scan the person's site card. Typing the number is not enough here."));
+        if (w.status !== "Active") return step1(t("{0} is {1} in the register and can't be used here.", w.full_name, ST(w.status)));
+        st.code = code; st.who = w; step2();
+      } catch (e) { step1(e.message); }
+    }
+    function step2() {
+      mark(1); next.hidden = true; sheetError(sh, "");
+      body.innerHTML = `<div class="stack">${whoCard(st.who)}<p style="margin:0">${esc(t("Take a photo of {0}'s face now. The AI compares it with the registered photo.", st.who.full_name))}</p>
+        <button class="btn pri big wide" data-face="1">${icon("cam")}${esc(t("Take face photo"))}</button><div data-res></div></div>`;
+      const btn = body.querySelector("[data-face]");
+      btn.onclick = async () => {
+        sheetError(sh, "");
+        try {
+          const p = await takePhoto(t("Face of {0}", st.who.full_name), { facing: "front", live: true, face: true });
+          if (!p) return;
+          const r = await busy(api("mimaar.identity.verify", { code: st.code, photo: p.url, action, location: p.loc || "", need_card: needCard }), t("Checking the face…"));
+          st.check = r;
+          const kind = r.result === "Match" ? "good" : r.ok ? "warn" : "bad";
+          const msg = r.result === "Match" ? t("Face matches ({0}%)", r.score) : r.result === "Not checked" ? t("Face not checked: {0}", r.notes || "")
+            : r.ok ? t("Face not clear ({0}). Allowed, and flagged for the owner.", ST(r.result)) : (r.message || t("The face does not match."));
+          body.querySelector("[data-res]").innerHTML = `<div class="facecmp"><figure><img src="${esc(r.photo || "")}" alt="" class="zoomable"><figcaption>${esc(t("Registered photo"))}</figcaption></figure><figure><img src="${esc(p.url)}" alt="" class="zoomable"><figcaption>${esc(t("Taken now"))}</figcaption></figure></div>
+            <div class="verdict ${kind}" style="margin-top:10px">${icon(kind === "good" ? "check" : "alert")}<span>${esc(msg)}</span></div>${(r.warnings || []).length ? `<div class="banner warn" style="margin-top:8px">${r.warnings.map(esc).join("<br>")}</div>` : ""}`;
+          if (r.ok) { next.hidden = false; next.textContent = step3 ? t("Next") : t("Done"); next.onclick = () => (step3 ? step3go() : finish(st.check)); }
+          else btn.innerHTML = `${icon("cam")}${esc(t("Take the photo again"))}`;
+        } catch (e) { sheetError(sh, e.message); }
+      };
+    }
+    function step3go() {
+      mark(2); sheetError(sh, "");
+      body.innerHTML = whoCard(st.who) + `<div data-s3 class="form" style="margin-top:12px"></div>`;
+      const box = body.querySelector("[data-s3]");
+      step3.render(box, st, sh);
+      next.hidden = false; next.textContent = step3.ok || t("Save");
+      next.onclick = async () => { const r = await run(sh, () => step3.submit(st, box)); if (r !== undefined && r !== false) finish(r); };
+    }
+    step1();
+  });
+}
+
+/* attendance by site card: card → face → time in / out */
+async function attendanceByCard() {
+  const r = await cardFlow({ title: t("Attendance by site card"), action: "Attendance", step3: { label: "Time in / out", ok: t("Save"),
+    async render(box, st) {
+      box.innerHTML = `<div class="spin"></div>`;
+      let row = null, locked = false; try { const d = await api("attendance_today"); locked = !!(d && d.docstatus === 1); row = d && d.rows.find((x) => x.worker === st.who.name); } catch (e) { /* */ }
+      const mode = locked || (row && row.time_in && !row.time_out) ? "out" : "in";
+      box.innerHTML = `${locked ? `<div class="banner info" style="margin-bottom:10px">${esc(t("Today's attendance is submitted. Only time out can be marked now."))}</div>` : ""}<div class="bigchoice" data-mode="${mode}"><button type="button" data-m="in" aria-pressed="${mode === "in"}"${locked ? " disabled" : ""}>${esc(t("Time in"))}<small>${esc(row && row.time_in ? t("in at {0}", row.time_in) : t("Starting work"))}</small></button>
+        <button type="button" data-m="out" aria-pressed="${mode === "out"}">${esc(t("Time out"))}<small>${esc(row && row.time_out ? t("out at {0}", row.time_out) : t("Leaving the site"))}</small></button></div>`;
+      box.addEventListener("click", (e) => { const b = e.target.closest("[data-m]"); if (!b) return; $$("[data-m]", box).forEach((x) => x.setAttribute("aria-pressed", String(x === b))); box.firstElementChild.dataset.mode = b.dataset.m; });
+    },
+    submit(st, box) { const mode = (box.querySelector("[data-mode]") || {}).dataset?.mode || "in"; return api("attendance_card", { check: st.check.check, mode }); },
+  } });
+  if (r) { toast(r.mode === "out" ? t("Time out marked for {0} at {1}", r.full_name, r.time) : t("Time in marked for {0} at {1}", r.full_name, r.time), "good"); if (/#\/(att|people)/.test(location.hash)) render(); }
+}
+
+/* store issue / return by site card: card → face → items */
+async function storeByCard(kind) {
+  const items = [];
+  const issue = kind === "issue";
+  const r = await cardFlow({ title: issue ? t("Issue from store by site card") : t("Return to store by site card"), action: issue ? "Store issue" : "Store return", step3: { label: "Items", ok: issue ? t("Release") : t("Return to store"),
+    render(box) {
+      box.innerHTML = `${fld(t("Area / activity"), inp("work_area", "", "text", `placeholder="${esc(t("e.g. first floor slab"))}"`))}
+        <div class="fld"><label>${esc(t("Items"))}${req(true)}</label><div data-items class="stack"></div><button type="button" class="btn wide" data-add="1">${icon("plus")}${esc(issue ? t("Add item from the store") : t("Add item being returned"))}</button></div>
+        ${fld(issue ? t("Photo of the material going out") : t("Photo of the material returned"), `<div class="shots">${shot("photo", t("Take photo"))}</div>`)}`;
+      wireForm(box);
+      const list = box.querySelector("[data-items]");
+      const draw = () => { list.innerHTML = items.map((x, i) => `<div class="line" data-skip="1"><div class="lt"><b>${esc(x.item_name)}</b>${issue ? `<span class="small muted">${esc(t("in store: {0} {1}", num(x.stock), t(x.uom)))}</span>` : ""}<button type="button" class="sh-x" data-rm="${i}">${icon("x")}</button></div>${qtyBox(`q_${i}`, x.qty || "")}</div>`).join(""); };
+      box.querySelector("[data-add]").onclick = async () => {
+        const it = await pickItem(issue ? t("Item from the store") : t("Item being returned"), { stock: issue });
+        if (it && !it.__new) { items.push({ item_code: it.item_code || it.name, item_name: it.item_name, uom: it.uom || it.stock_uom, stock: it.qty, qty: "" }); draw(); }
+      };
+      list.addEventListener("click", (e) => { const b = e.target.closest("[data-rm]"); if (b) { items.splice(+b.dataset.rm, 1); draw(); } });
+      list.addEventListener("input", (e) => { const m = e.target.name && e.target.name.match(/^q_(\d+)$/); if (m) items[+m[1]].qty = e.target.value; });
+    },
+    submit(st, box) {
+      const rows = items.filter((x) => +x.qty > 0).map((x) => ({ item_code: x.item_code, qty: +x.qty }));
+      if (!rows.length) throw new UserError(t("Add at least one item and its quantity."));
+      const over = issue ? items.filter((x) => +x.qty > 0 && x.stock != null && +x.qty > +x.stock) : [];
+      if (over.length) throw new UserError(over.map((x) => t("{0}: only {1} in the store", x.item_name, num(x.stock))).join(" · "));
+      const v = vals(box);
+      return api(issue ? "release" : "return_to_store", { items: rows, check: st.check.check, work_area: v.work_area, photo: v.photo });
+    },
+  } });
+  if (r) { toast(issue ? t("Released") : t("Returned to the store"), "good"); if (location.hash.includes("store")) render(); }
+}
 
 /* ---------------- attendance ---------------- */
 VIEWS.att = async (el) => {
@@ -687,11 +890,14 @@ VIEWS.att = async (el) => {
   const locked = A.docstatus === 1;
   const draw = () => {
     const p = A.rows.filter((r) => r.status === "Present").length, h = A.rows.filter((r) => r.status === "Half day").length;
-    el.innerHTML = `<div class="hero"><span class="muted small">${esc(fdate(today()))}</span><b>${esc(t("{0} present · {1} half day", p, h))}</b></div>
-      ${locked ? `<div class="banner good">${esc(t("Today's attendance is submitted."))}</div>` : `<div class="row"><button class="btn pri big" data-act="scan">${icon("card")}${esc(t("Scan site card"))}</button><button class="btn big" data-act="add">${icon("plus")}${esc(t("Add by name"))}</button></div>`}
-      ${panel(t("Workers on site"), A.rows.length ? `<div class="lst">${A.rows.map((r, i) => `<div class="lrow static" style="flex-wrap:wrap">${r.worker_photo || r.photo ? `<img class="lth round zoomable" src="${esc(r.photo || r.worker_photo)}" alt="">` : `<span class="lth round">${icon("users")}</span>`}
-        <span class="lmain"><b>${esc(r.worker_name || r.worker)}</b><span class="lsub">${esc([t(r.trade || ""), r.time_in].filter(Boolean).join(" · "))}</span></span>
-        ${locked ? pill(t(r.status), r.status === "Present" ? "good" : r.status === "Absent" ? "bad" : "warn") : `<button class="sh-x" data-act="rm" data-v="${i}">${icon("x")}</button>
+    const now = A.rows.filter((r) => r.status !== "Absent" && r.time_in && !r.time_out).length;
+    el.innerHTML = `<div class="hero"><span class="muted small">${esc(fdate(today()))}</span><b>${esc(t("{0} present · {1} half day", p, h))}</b><span class="small muted">${esc(t("{0} on site now", now))}</span></div>
+      ${locked ? `<div class="banner good">${esc(t("Today's attendance is submitted."))}</div><button class="btn pri big wide" data-act="card">${icon("card")}${esc(t("Time out by site card"))}</button>` : `<button class="btn pri big wide" data-act="card">${icon("card")}${esc(t("Attendance by site card"))}</button>
+        <button class="btn wide" data-act="add">${icon("plus")}${esc(t("Add by name (no card)"))}</button>`}
+      ${panel(t("Workers on site"), A.rows.length ? `<div class="lst">${A.rows.map((r, i) => `<div class="lrow static" style="flex-wrap:wrap">${r.photo || r.worker_photo ? `<img class="lth round zoomable" src="${esc(r.photo || r.worker_photo)}" alt="">` : `<span class="lth round">${icon("users")}</span>`}
+        <span class="lmain"><b>${esc(r.worker_name || r.worker)}</b><span class="lsub">${esc([t(r.trade || ""), r.time_in ? t("in {0}", r.time_in) : "", r.time_out ? t("out {0}", r.time_out) : ""].filter(Boolean).join(" · "))}</span></span>
+        <span class="lend">${r.face === "Match" ? pill(t("Face ✓"), "good") : r.face ? pill(ST(r.face), "warn") : r.scanned ? pill(t("Card"), "info") : pill(t("By name"), "")}</span>
+        ${locked ? pill(ST(r.status), r.status === "Present" ? "good" : r.status === "Absent" ? "bad" : "warn") : `${r.identity_check ? "" : `<button class="sh-x" data-act="rm" data-v="${i}">${icon("x")}</button>`}
         <div class="seg" style="width:100%">${["Present", "Half day", "Absent"].map((s) => `<button data-act="st" data-v="${i}|${s}" aria-pressed="${r.status === s}">${esc(t(s))}</button>`).join("")}</div>`}</div>`).join("")}</div>` : empty(t("No one marked yet"), t("Scan each worker's site card.")), `<span class="cnt">${A.rows.length}</span>`)}
       ${panel(t("Team photo and location"), `<div class="body form">
         <div class="shots">${shot("group_photo", t("Team photo") + (S.b.rules.require_attendance_photo ? " *" : ""), A.group_photo || "", { wide: true })}</div>
@@ -703,19 +909,19 @@ VIEWS.att = async (el) => {
     const v = vals(el); A.group_photo = v.group_photo || A.group_photo; A.location = v.location || A.location;
     try { const r = await api("attendance_save", { rows: A.rows, group_photo: A.group_photo, location: A.location }); A.name = r.name; if (!quiet) toast(t("Saved"), "good"); return true; } catch (e) { toast(e.message, "bad"); return false; }
   };
-  const addWorker = async (w, scanned) => {
+  const addWorker = async (w) => {
     if (!w) return;
-    if (w.status !== "Active") { toast(t("{0} is {1} in the worker register: not allowed on site.", w.full_name, t(w.status)), "bad", w.photo); return; }
+    if (w.status !== "Active") { toast(t("{0} is {1} in the worker register: not allowed on site.", w.full_name, ST(w.status)), "bad", w.photo); return; }
     if (A.rows.some((r) => r.worker === w.name)) { toast(t("{0} is already marked.", w.full_name), "", w.photo); return; }
-    A.rows.unshift({ worker: w.name, worker_name: w.full_name, trade: w.trade, status: "Present", time_in: nowTime(), scanned: scanned ? 1 : 0, worker_photo: w.photo });
+    A.rows.unshift({ worker: w.name, worker_name: w.full_name, trade: w.trade, status: "Present", time_in: nowTime(), scanned: 0, worker_photo: w.photo });
     toast(t("{0}: present. Check the face matches.", w.full_name), "good", w.photo);
     draw(); persist(true);
   };
   draw();
   if (!A.location && !locked) getLocation().then((l) => { if (l) { A.location = l; const x = el.querySelector("[data-loc]"); if (x) x.textContent = l; const h = el.querySelector("[name=location]"); if (h) h.value = l; } }).catch(() => {});
   Object.assign(S.acts, {
-    async scan() { const code = await scanCode(t("Scan the worker's site card")); if (!code) return; try { const w = await api("mimaar.api.find_worker", { code }); if (!w) { toast(t("Card not recognised: {0}", code), "bad"); return; } addWorker(w, true); } catch (e) { toast(e.message, "bad"); } },
-    async add() { const w = await pickWorker(); if (w) addWorker(w, false); },
+    card: () => attendanceByCard(),
+    async add() { const w = await pickWorker(); if (w) addWorker(w); },
     rm(i) { A.rows.splice(+i, 1); draw(); persist(true); },
     st(v) { const [i, s] = v.split("|"); A.rows[+i].status = s; draw(); persist(true); },
     async loc() { const l = await busy(getLocation(), t("Getting the location…")); if (!l) { toast(t("Location not available: allow location for Mimaar, then try again."), "bad"); return; } A.location = l; el.querySelector("[data-loc]").textContent = l; el.querySelector("[name=location]").value = l; },
@@ -728,65 +934,115 @@ VIEWS.att = async (el) => {
   });
 };
 
-/* ---------------- workers ---------------- */
-VIEWS.workers = async (el) => {
-  setTop(t("Workers"), true);
-  el.innerHTML = `<button class="btn pri big wide" data-act="new">${icon("plus")}${esc(t("Register a worker"))}</button><div class="fld search">${icon("search")}<input name="q" placeholder="${esc(t("Search by name or CNIC"))}"></div><div data-list><div class="spin"></div></div>`;
-  const list = el.querySelector("[data-list]"), q = el.querySelector("[name=q]"); let tm = null;
-  const show = async () => {
-    const rows = await api("workers", { q: q.value.trim(), status: "" });
-    const now = today();
-    list.innerHTML = panel(t("Workers"), rows.length ? `<div class="lst">${rows.map((w) => { const exp = [w.cnic_expiry, w.entry_card_expiry].some((x) => x && x < now);
-      return lrow({ go: `worker/${w.name}`, img: w.photo, title: w.full_name, sub: esc([t(w.trade || w.worker_type || ""), w.name].filter(Boolean).join(" · ")), end: `${w.status !== "Active" ? pill(t(w.status), "bad") : exp ? pill(t("Expired card"), "bad") : w.police_verification === "Verified" ? pill(t("Verified"), "good") : pill(t(w.police_verification || "Not done"), "warn")}` }); }).join("")}</div>` : empty(t("No workers yet"), t("Register each worker to print their site card.")), `<span class="cnt">${rows.length}</span>`);
+/* ---------------- people and access ---------------- */
+const STAFF_TYPES = ["Supervisor", "Engineer", "Store keeper", "Accountant", "Owner", "Builder staff", "Consultant"];
+const PEOPLE_FILTERS = [["all", "All"], ["site", "On site today"], ["labour", "Labour and mistri"], ["staff", "Site staff"], ["access", "Sign in to Mimaar"], ["left", "Left or blocked"]];
+VIEWS.workers = (el) => VIEWS.people(el);
+VIEWS.people = async (el) => {
+  setTop(t("People and access"), true); setTab("more");
+  const f0 = (location.hash.split("?")[1] || "all");
+  el.innerHTML = `<div class="row" style="align-items:center;flex-wrap:nowrap"><div data-sum style="flex:1;display:flex;gap:6px;flex-wrap:wrap"></div><button class="btn pri" data-act="new" style="flex:none">${icon("plus")}${esc(t("Person"))}</button></div>
+    <div class="row"><div class="fld search" style="flex:1;margin:0">${icon("search")}<input name="q" placeholder="${esc(t("Search name, phone, CNIC or card"))}" autocomplete="off"></div>${sel("f", PEOPLE_FILTERS, f0, false)}</div>
+    <div data-list><div class="spin"></div></div>`;
+  const list = el.querySelector("[data-list]"), q = el.querySelector("[name=q]"), fsel = el.querySelector("[name=f]");
+  let rows = []; let tm = null;
+  const draw = () => {
+    const f = fsel.value, now = today();
+    const show = rows.filter((w) => f === "all" ? w.status === "Active" : f === "site" ? w.on_site : f === "labour" ? w.status === "Active" && ["Labour", "Mistri", "Group head"].includes(w.worker_type)
+      : f === "staff" ? w.status === "Active" && STAFF_TYPES.includes(w.worker_type) : f === "access" ? w.status === "Active" && (w.app_access && w.app_access !== "No sign-in" || w.store_keeper) : w.status !== "Active");
+    list.innerHTML = panel(t("People"), show.length ? `<div class="lst">${show.map((w) => {
+      const exp = [w.cnic_expiry, w.entry_card_expiry].some((x) => x && x < now);
+      const badge = w.status !== "Active" ? pill(ST(w.status), "bad") : exp ? pill(t("Expired card"), "bad") : w.police_verification === "Verified" ? pill(ST("Active"), "good")
+        : w.entry_card_no ? pill(t("Society card on record"), "info") : pill(t("Police verification pending"), "warn");
+      return lrow({ go: `person/${w.name}`, img: w.photo, ic: w.photo ? "" : "users", title: w.full_name + (w.on_site ? " ●" : ""),
+        sub: esc([t(w.worker_type || ""), t(w.trade || ""), w.cnic || w.phone || "", w.entry_card_no ? `BTK ${w.entry_card_no}` : ""].filter(Boolean).join(" · ")), end: badge });
+    }).join("")}</div>` : empty(t("Nobody here"), t("Register each worker to print their site card.")), `<span class="cnt">${show.length}</span>`);
   };
-  q.addEventListener("input", () => { clearTimeout(tm); tm = setTimeout(show, 300); });
-  S.acts.new = () => workerSheet();
-  await show();
+  const load = async () => {
+    rows = await api("workers", { q: q.value.trim(), status: "" });
+    const act = rows.filter((w) => w.status === "Active");
+    el.querySelector("[data-sum]").innerHTML = `<span class="pill info" style="padding:8px 12px">${esc(t("{0} people", act.length))}</span><span class="pill good" style="padding:8px 12px">${esc(t("{0} on site today", act.filter((w) => w.on_site).length))}</span>`;
+    draw();
+  };
+  q.addEventListener("input", () => { clearTimeout(tm); tm = setTimeout(load, 300); });
+  fsel.addEventListener("change", draw);
+  S.acts.new = () => personSheet();
+  await load();
 };
-VIEWS.worker = async (el, [name]) => {
-  setTop(t("Worker"), true); setTab("more");
-  const rows = await api("workers", { q: name, status: "" });
-  const w = rows.find((x) => x.name === name); if (!w) { el.innerHTML = empty(t("Not found")); return; }
-  const now = today(); const warn = [];
-  if (w.cnic_expiry && w.cnic_expiry < now) warn.push(t("CNIC expired on {0}", fdate(w.cnic_expiry)));
-  if (w.entry_card_expiry && w.entry_card_expiry < now) warn.push(t("Entry card expired on {0}", fdate(w.entry_card_expiry)));
-  if (w.police_verification !== "Verified") warn.push(t("Police verification: {0}", t(w.police_verification || "Not done")));
-  el.innerHTML = `<div class="panel plain"><div class="body" style="display:flex;gap:14px;align-items:center">${w.photo ? `<img src="${esc(w.photo)}" class="zoomable" style="width:96px;height:112px;border-radius:14px;object-fit:cover" alt="">` : `<span class="lth" style="width:96px;height:112px">${icon("users")}</span>`}
-    <div class="stack" style="gap:2px"><b style="font-size:19px">${esc(w.full_name)}</b><span class="muted">${esc(t(w.worker_type || ""))}${w.trade ? " · " + esc(t(w.trade)) : ""}</span><span class="small muted">${esc(w.name)}</span>${pill(t(w.status), w.status === "Active" ? "good" : "bad")}</div></div></div>
+VIEWS.worker = (el, args) => VIEWS.person(el, args);
+VIEWS.person = async (el, [name]) => {
+  setTop(t("Person"), true); setTab("more");
+  const w = await api("person", { name }); const c = C();
+  const warn = w.warnings || [];
+  const doc = (k, label) => `<div class="doc"><b>${esc(label)}</b>${w[k] ? (/\.pdf$/i.test(w[k]) ? `<button class="btn sm" data-open="${esc(w[k])}">${icon("file")}${esc(t("Open"))}</button>` : `<img src="${esc(w[k])}" alt="" class="zoomable">`) : `<div class="none">${esc(t("Not uploaded"))}</div>`}
+    <button class="btn sm" data-doc="${k}">${icon("cam")}${esc(w[k] ? t("Replace") : t("Upload"))}</button></div>`;
+  const kv = (l, v, ltr) => v ? `<span>${esc(l)}</span><b class="${ltr ? "ltr" : ""}">${esc(v)}</b>` : "";
+  const card = w.card;
+  el.innerHTML = `<div class="panel plain"><div class="body" style="display:flex;gap:14px;align-items:center">${w.photo ? `<img src="${esc(w.photo)}" class="zoomable" style="width:96px;height:116px;border-radius:14px;object-fit:cover" alt="">` : `<span class="lth" style="width:96px;height:116px">${icon("users")}</span>`}
+    <div class="stack" style="gap:2px;min-width:0"><b style="font-size:19px">${esc(w.full_name)}</b>${w.full_name_ur ? `<span class="ur" style="font-size:17px">${esc(w.full_name_ur)}</span>` : ""}<span class="muted">${esc(t(w.worker_type || ""))}${w.trade ? " · " + esc(t(w.trade)) : ""}</span><span class="small muted">${esc(w.name)}${w.days ? " · " + esc(t("{0} days worked", w.days)) : ""}</span>${pill(ST(w.status), w.status === "Active" ? "good" : "bad")}</div></div></div>
     ${warn.length ? `<div class="banner warn">${warn.map(esc).join("<br>")}</div>` : ""}
-    ${panel(t("Details"), `<div class="body kv"><span>${esc(t("Father's name"))}</span><b>${esc(w.father_name || "—")}</b><span>${esc(t("Contractor / supplier"))}</span><b>${esc(w.contractor || "—")}</b><span>${esc(t("Mobile"))}</span><b class="ltr">${esc(w.phone || "—")}</b><span>${esc(t("CNIC"))}</span><b class="ltr">${esc(w.cnic || "—")}</b><span>${esc(t("Entry card"))}</span><b class="ltr">${esc(w.entry_card_no || "—")}</b>${C().money ? `<span>${esc(t("Daily wage"))}</span><b>${esc(w.daily_wage ? money(w.daily_wage) : "—")}</b>` : ""}</div>`)}
-    <div class="row"><button class="btn big" data-act="edit">${icon("pencil")}${esc(t("Edit"))}</button><button class="btn pri big" data-act="card">${icon("card")}${esc(t("Print site card"))}</button></div>
+    <div class="pgrid">
+    ${panel(t("Details"), `<div class="body kv">${kv(t("Father's name"), [w.father_name, w.father_name_ur].filter(Boolean).join(" · "))}${kv(t("Group / team"), w.gang)}${kv(t("Works for"), w.contractor_name || w.contractor)}
+      ${kv(t("Mobile"), w.phone, 1)}${kv(t("CNIC"), w.cnic && (w.cnic + (w.cnic_expiry ? ` (${fdate(w.cnic_expiry)})` : "")), 1)}${kv(t("BTK registration card"), w.entry_card_no && (w.entry_card_no + (w.entry_card_expiry ? ` (${fdate(w.entry_card_expiry)})` : "")), 1)}
+      ${kv(t("Police verification"), t(w.police_verification || "Not done"))}${kv(t("Joined on"), fdate(w.joined_on))}${c.money ? kv(t("Daily wage"), w.daily_wage ? money(w.daily_wage) : "") : ""}
+      ${kv(t("Emergency contact"), w.emergency_contact)}${kv(t("Address"), [w.address, w.address_ur].filter(Boolean).join(" · "))}${kv(t("Notes"), w.notes)}</div>`)}
+    ${panel(t("Documents"), `<div class="body docs">${doc("photo", t("Photo"))}${doc("cnic_front", t("CNIC front"))}${doc("cnic_back", t("CNIC back"))}${doc("entry_card_photo", t("BTK registration card"))}${doc("police_document", t("Police verification letter"))}</div>`)}
+    ${c.owner ? panel(t("Access to Mimaar"), `<div class="body form">${fld(t("Signs in as"), chips("app_access", [["No sign-in", t("No sign-in")], ["Site supervisor", t("Site supervisor")], ["Accountant", t("Accountant")], ["Owner", t("Owner")]], w.app_access || "No sign-in"))}
+      <label class="row" style="gap:10px"><input type="checkbox" name="store_keeper" ${w.store_keeper ? "checked" : ""} style="width:22px;height:22px"><span>${esc(t("Also store keeper (receives, issues and returns material)"))}</span></label>
+      <button class="btn wide" data-act="access">${icon("check")}${esc(t("Save access"))}</button></div>`) : ""}
+    ${c.owner ? panel(t("Sign in with site card"), `<div class="body form">
+      <div class="banner ${card && card.sign_in_enabled && card.pin_set ? "good" : ""}">${esc(card && card.sign_in_enabled && card.pin_set ? t("Card sign-in is on.") + (card.last_sign_in ? " " + t("Last used {0}", fdate(String(card.last_sign_in).slice(0, 10))) : "") : t("Card sign-in is off."))}${card && card.locked ? "<br>" + esc(t("Locked after wrong PINs.")) : ""}</div>
+      ${w.user ? `<div class="row">${inp("pin", "", "password", `inputmode="numeric" maxlength="6" placeholder="${esc(t("New PIN (4-6 digits)"))}" style="flex:1"`)}<button class="btn pri" data-act="pin">${esc(t("Set PIN"))}</button></div>` : `<span class="small muted">${esc(t("Choose 'Signs in as' first to give this person a sign-in."))}</span>`}
+      <div class="row"><button class="btn" data-act="newcard">${icon("refresh")}${esc(t("New card"))}</button><button class="btn" data-act="card">${icon("card")}${esc(t("Print site card"))}</button>${card && card.sign_in_enabled ? `<button class="btn bad" data-act="off">${esc(t("Turn off"))}</button>` : ""}</div>
+      <span class="small muted">${esc(t("A new card makes the old site card stop working for signing in and for card scans. Print and hand over the new card."))}</span></div>`) : ""}
+    ${(w.checks || []).length ? panel(t("Face checks"), `<div class="lst">${w.checks.map((x) => lrow({ img: x.live_photo, title: t(x.action), sub: esc(fdate(String(x.checked_at).slice(0, 10)) + " " + String(x.checked_at).slice(11, 16)), end: pill(ST(x.result) + (x.score ? ` ${x.score}%` : ""), x.result === "Match" ? "good" : x.result === "No match" ? "bad" : "warn"), chev: false })).join("")}</div>`) : ""}
+    </div>
+    <div class="row"><button class="btn big" data-act="edit">${icon("pencil")}${esc(t("Edit"))}</button>${c.owner ? "" : `<button class="btn pri big" data-act="card">${icon("card")}${esc(t("Print site card"))}</button>`}</div>
     ${w.phone ? `<button class="btn wide" data-act="call">${icon("phone")}${esc(t("Call {0}", w.phone))}</button>` : ""}`;
+  wireForm(el);
+  el.querySelectorAll("[data-doc]").forEach((b) => { b.onclick = async () => {
+    const k = b.dataset.doc;
+    try { const p = await takePhoto(t("Document"), { facing: k === "photo" ? "front" : "back", live: k === "photo", face: k === "photo" }); if (!p) return; await busy(api("worker_save", { data: { name: w.name, [k]: p.url } }), t("Saving…")); toast(t("Saved"), "good"); render(); } catch (e) { toast(e.message, "bad"); }
+  }; });
+  el.querySelectorAll("[data-open]").forEach((b) => { b.onclick = () => openOut(location.origin + b.dataset.open); });
   Object.assign(S.acts, {
-    edit: () => workerSheet(w),
-    // on the phone the card comes as a PDF (into Downloads, to print or send); on a computer the print window opens
+    edit: () => personSheet(w),
     card: () => openOut(NATIVE ? `${location.origin}/api/method/frappe.utils.print_format.download_pdf?doctype=Site%20Worker&name=${encodeURIComponent(w.name)}&format=Site%20Worker%20Card&no_letterhead=1`
       : `${location.origin}/printview?doctype=Site%20Worker&name=${encodeURIComponent(w.name)}&format=Site%20Worker%20Card&no_letterhead=1&trigger_print=1`),
     call: () => openOut(`tel:${w.phone}`),
+    async access() { const v = vals(el); try { await busy(api("worker_save", { data: { name: w.name, app_access: v.app_access, store_keeper: el.querySelector("[name=store_keeper]").checked ? 1 : 0 } }), t("Saving…")); toast(t("Access saved"), "good"); render(); } catch (e) { toast(e.message, "bad"); } },
+    async pin() { const pin = el.querySelector("[name=pin]").value.trim(); try { await busy(api("mimaar.identity.set_card_pin", { person: w.name, pin })); toast(t("PIN set. Card sign-in is on."), "good"); render(); } catch (e) { toast(e.message, "bad"); } },
+    async newcard() { if (!(await confirmBox(t("New card"), t("A new card makes the old site card stop working for signing in and for card scans. Print and hand over the new card."), t("New card")))) return; try { await busy(api("mimaar.identity.new_card", { person: w.name })); toast(t("New card made. Print it now."), "good"); render(); } catch (e) { toast(e.message, "bad"); } },
+    async off() { try { await busy(api("mimaar.identity.card_sign_in_off", { person: w.name })); toast(t("Card sign-in turned off"), "good"); render(); } catch (e) { toast(e.message, "bad"); } },
   });
 };
-function workerSheet(w = {}) {
+function personSheet(w = {}) {
+  const types = ["Labour", "Mistri", "Group head", "Supervisor", "Engineer", "Store keeper", "Accountant", "Owner", "Builder staff", "Supplier staff", "Consultant", "Other"];
   const trades = ["Mason", "Steel fixer", "Carpenter", "Shuttering", "Electrician", "Plumber", "Painter", "Tile and marble", "Welder", "Helper", "Other"];
-  const sh = sheet(w.name ? t("Edit worker") : t("Register a worker"), `<div class="form">
-    <div class="shots">${shot("photo", t("Face photo"), w.photo || "", { facing: "front" })}${shot("cnic_front", t("CNIC front"), w.cnic_front || "")}${shot("cnic_back", t("CNIC back"), w.cnic_back || "")}</div>
-    ${fld(t("Name"), inp("full_name", w.full_name || ""), { req: true })}
-    ${fld(t("Father's name"), inp("father_name", w.father_name || ""))}
-    ${fld(t("Type"), chips("worker_type", ["Labour", "Mistri", "Group head", "Supervisor", "Supplier staff", "Other"], w.worker_type || "Labour"))}
-    ${fld(t("Trade"), sel("trade", trades, w.trade || ""))}
-    ${fld(t("Contractor / supplier"), `<button type="button" class="btn wide" data-sup="1">${esc(w.contractor || t("Choose (optional)"))}</button><input type="hidden" name="contractor" value="${esc(w.contractor || "")}">`)}
-    <div class="two">${fld(t("Mobile"), inp("phone", w.phone || "", "tel"))}${C().money || C().owner ? fld(t("Daily wage"), inp("daily_wage", w.daily_wage || "", "number")) : ""}</div>
+  const c = C();
+  const sh = sheet(w.name ? t("Edit person") : t("New person"), `<div class="form">
+    <div class="shots">${shot("photo", t("Face photo"), w.photo || "", { facing: "front" })}${shot("cnic_front", t("CNIC front"), w.cnic_front || "")}${shot("cnic_back", t("CNIC back"), w.cnic_back || "")}${shot("entry_card_photo", t("BTK registration card"), w.entry_card_photo || "")}</div>
+    <div class="two">${fld(t("Name"), inp("full_name", w.full_name || ""), { req: true })}${fld(t("Name in Urdu (printed on the site card)"), inp("full_name_ur", w.full_name_ur || "", "text", 'dir="rtl"'))}</div>
+    <div class="two">${fld(t("Father's name"), inp("father_name", w.father_name || ""))}${fld(t("Father's name in Urdu"), inp("father_name_ur", w.father_name_ur || "", "text", 'dir="rtl"'))}</div>
+    <div class="two">${fld(t("Type"), sel("worker_type", types, w.worker_type || "Labour", false), { req: true })}${fld(t("Trade"), sel("trade", trades, w.trade || ""))}</div>
+    <div class="two">${fld(t("Group / team"), inp("gang", w.gang || ""))}${fld(t("Works for"), `<button type="button" class="btn wide" data-sup="1">${esc(w.contractor_name || w.contractor || t("Choose (optional)"))}</button><input type="hidden" name="contractor" value="${esc(w.contractor || "")}">`)}</div>
+    <div class="two">${fld(t("Mobile"), inp("phone", w.phone || "", "tel"))}${fld(t("Joined on"), inp("joined_on", w.joined_on || today(), "date"))}</div>
     <div class="two">${fld(t("CNIC"), inp("cnic", w.cnic || "", "text", 'inputmode="numeric" placeholder="42101-1234567-1"'))}${fld(t("CNIC expiry"), inp("cnic_expiry", w.cnic_expiry || "", "date"))}</div>
-    <div class="two">${fld(t("Society entry card no. (e.g. Bahria Town)"), inp("entry_card_no", w.entry_card_no || ""))}${fld(t("Entry card expiry"), inp("entry_card_expiry", w.entry_card_expiry || "", "date"))}</div>
+    <div class="two">${fld(t("BTK registration card no."), inp("entry_card_no", w.entry_card_no || ""))}${fld(t("BTK card expiry"), inp("entry_card_expiry", w.entry_card_expiry || "", "date"))}</div>
     ${fld(t("Police verification"), chips("police_verification", ["Not done", "Applied", "Verified"], w.police_verification || "Not done"))}
     ${w.name ? fld(t("Status"), chips("status", ["Active", "Left the site", "Blocked"], w.status || "Active")) : ""}
-  </div>`, { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(t("Save worker"))}</button>` });
+    ${c.money ? fld(t("Daily wage (Rs)"), inp("daily_wage", w.daily_wage || "", "number")) : ""}
+    ${fld(t("Emergency contact"), inp("emergency_contact", w.emergency_contact || ""))}
+    <div class="two">${fld(t("Address"), area("address", w.address || ""))}${fld(t("Address in Urdu"), area("address_ur", w.address_ur || "", 'dir="rtl"'))}</div>
+    ${fld(t("Notes"), area("notes", w.notes || ""))}
+  </div>`, { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(t("Save"))}</button>` });
   wireForm(sh);
-  sh.querySelector("[data-sup]").onclick = async (e) => { const s = await pickSupplier(); if (s && !s.__new) { sh.querySelector("[name=contractor]").value = s.name; e.target.closest("button").textContent = s.supplier_name; } };
+  sh.querySelector("[data-sup]").onclick = async (e) => { const s = await pickSupplier(t("Works for")); if (s && !s.__new) { sh.querySelector("[name=contractor]").value = s.name; e.target.closest("button").textContent = s.supplier_name; } };
   sh.querySelector("[data-save]").onclick = async () => {
     if (!need(sh, ["full_name"])) return;
     const v = vals(sh); if (w.name) v.name = w.name;
-    const r = await run(sh, () => api("worker_save", { data: v }), t("Worker saved"));
-    if (r) { closeAll(); if (r.warnings && r.warnings.length) toast(r.warnings.join(" · "), "warn"); go(`worker/${r.name}`); }
+    const r = await run(sh, () => api("worker_save", { data: v }), t("Saved"));
+    if (r) { closeAll(); if (r.warnings && r.warnings.length) toast(r.warnings.join(" · "), "warn"); go(`person/${r.name}`); }
   };
 }
 
@@ -1048,13 +1304,90 @@ VIEWS.connect = async (el) => {
       : `<span>${esc(t("Double-click 'Connect a phone' in the Mimaar ERP folder on this laptop. It shows the address and QR code for the phone."))}</span>`}</div>`);
 };
 
+/* ---------------- my settings: look, language, PIN ---------------- */
+const SKINS = [["site", "Site green", "Calm green, the original look", ["#0f6f5c", "#dcefe9", "#f3f2ef"]], ["slate", "Slate & copper", "Cool grey with a copper accent", ["#1b2430", "#52627a", "#b4642d"]],
+  ["sand", "Desert sand", "Warm sand with indigo", ["#2a241b", "#b07a1e", "#3b4fa0"]], ["colour", "Colourful", "Bright colours on every menu and panel", ["#8b5cf6", "#ec4899", "#f59e0b"]],
+  ["night", "Night", "Dark blue, easy on the eyes at night", ["#0b1220", "#111a2e", "#38bdf8"]], ["contrast", "High contrast", "Black and white, strongest readability", ["#000", "#fff", "#0040c0"]]];
+const UR_FONTS = [["Noto Nastaliq Urdu", "Nastaliq (Noto)", 1.95, "wght@400;600"], ["Gulzar", "Gulzar Nastaliq", 2.0, ""], ["Noto Naskh Arabic", "Naskh: clear and easy", 1.65, "wght@400;600"],
+  ["Lateef", "Lateef", 1.7, "wght@400;600"], ["Scheherazade New", "Scheherazade", 1.7, "wght@400;600"], ["Amiri", "Amiri", 1.7, "wght@400;700"], ["Noto Sans Arabic", "Modern sans (Noto Sans)", 1.6, "wght@400;600"], ["Vazirmatn", "Modern sans (Vazirmatn)", 1.6, "wght@400;600"]];
+const EN_FONTS = [["IBM Plex Sans", "IBM Plex Sans", "wght@400;500;600;700"], ["Source Sans 3", "Source Sans", "wght@400;600;700"], ["Nunito Sans", "Nunito Sans", "wght@400;600;700"], ["Lato", "Lato", "wght@400;700"], ["Work Sans", "Work Sans", "wght@400;600;700"]];
+const MODES = [["light", "Light"], ["dark", "Dark"], ["auto", "Follow the phone"]];
+const SIZES = [["s", "Small"], ["m", "Normal"], ["l", "Large"], ["xl", "Extra large"]];
+const UR_SAMPLE = "آج سائٹ پر 12 مزدور حاضر ہیں";
+function localLook() { try { return JSON.parse(localStorage.getItem("mimaar.look") || "{}"); } catch (e) { return {}; } }
+function look() { return Object.assign({ skin: "colour", mode: "light", ur: "Noto Nastaliq Urdu", en: "IBM Plex Sans", size: "m" }, localLook(), (S.b && S.b.ui) || {}); }
+const loaded = new Set(["IBM Plex Sans", "Noto Nastaliq Urdu"]);
+function loadFont(fam, spec) {
+  if (loaded.has(fam)) return; loaded.add(fam);
+  const l = document.createElement("link"); l.rel = "stylesheet";
+  l.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fam).replace(/%20/g, "+")}${spec ? ":" + spec : ""}&display=swap`;
+  document.head.appendChild(l);
+}
+function applyLook(l = look()) {
+  const h = document.documentElement;
+  h.dataset.skin = l.skin; h.dataset.size = l.size;
+  const dark = l.skin === "night" || l.mode === "dark" || (l.mode === "auto" && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+  if (dark) h.dataset.theme = "dark"; else delete h.dataset.theme;
+  const en = EN_FONTS.find((x) => x[0] === l.en) || EN_FONTS[0], ur = UR_FONTS.find((x) => x[0] === l.ur) || UR_FONTS[0];
+  loadFont(en[0], en[2]); loadFont(ur[0], ur[3]);
+  h.style.setProperty("--f-body", `"${en[0]}",system-ui,-apple-system,"Segoe UI",sans-serif`);
+  h.style.setProperty("--f-ur", `"${ur[0]}","Noto Nastaliq Urdu"`);
+  h.style.setProperty("--ur-lh", ur[2]);
+  const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = getComputedStyle(h).getPropertyValue("--accent").trim() || "#8b5cf6";
+}
+async function saveLook(change) {
+  const l = Object.assign(look(), change);
+  try { localStorage.setItem("mimaar.look", JSON.stringify(l)); } catch (e) { /* */ }
+  if (S.b) { S.b.ui = l; api("ui_save", { ui: l }).catch(() => {}); }
+  applyLook(l);
+}
+VIEWS.settings = async (el) => {
+  setTop(t("My settings"), true); setTab("more");
+  const b = S.b, c = C(), me = b.person, l = look();
+  const role = c.owner ? t("Owner") : c.accountant ? t("Accountant") : c.buy || c.people ? t("Site supervisor") : c.store ? t("Store keeper") : t("Site staff");
+  const urAll = el.dataset.urAll === "1";
+  el.innerHTML = `<button class="mo-me" ${me ? `data-go="person/${esc(me.name)}"` : ""}><span class="av">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc((b.full_name || "?").charAt(0))}</span><span><b>${esc(b.full_name)}</b><span class="small muted">${esc(role)}${me && me.entry_card_no ? " · BTK " + esc(me.entry_card_no) : ""}</span></span>${me ? icon("chev", "lch") : ""}</button>
+    ${panel(t("Language"), `<div class="body"><div class="seg"><button data-lang="en" aria-pressed="${S.lang === "en"}">English</button><button data-lang="ur" aria-pressed="${S.lang === "ur"}">اردو</button></div></div>`)}
+    ${panel(t("Theme"), `<div class="body stack"><div class="skins">${SKINS.map(([k, n, d, sw]) => `<button data-skin="${k}" aria-pressed="${l.skin === k}"><span class="sw">${sw.map((x) => `<i style="background:${x}"></i>`).join("")}</span><b>${esc(t(n))}</b><span class="small muted">${esc(t(d))}</span></button>`).join("")}</div>
+      <div class="seg">${MODES.map(([k, n]) => `<button data-mode="${k}" aria-pressed="${l.mode === k}">${esc(t(n))}</button>`).join("")}</div></div>`)}
+    ${panel(t("Text size"), `<div class="body"><div class="seg">${SIZES.map(([k, n]) => `<button data-size="${k}" aria-pressed="${l.size === k}">${esc(t(n))}</button>`).join("")}</div></div>`)}
+    ${panel(t("Urdu font"), `<div class="body stack"><span class="small muted">${esc(t("Used when the app is in Urdu. Naskh fonts are clearer on small phone screens; Nastaliq looks more traditional."))}</span>
+      <div class="fontlist">${UR_FONTS.slice(0, urAll ? 99 : 3).map(([f, n]) => `<button data-ur="${esc(f)}" aria-pressed="${l.ur === f}"><span style="font-family:'${f}',serif;line-height:2">${UR_SAMPLE}</span><small>${esc(t(n))}</small></button>`).join("")}</div>
+      ${urAll ? "" : `<button class="btn sm" data-urall="1">${esc(t("Show all"))} ${icon("chev")}</button>`}</div>`)}
+    ${panel(t("English font"), `<div class="body"><div class="chips">${EN_FONTS.map(([f, n]) => `<button data-en="${esc(f)}" aria-pressed="${l.en === f}" style="font-family:'${f}',sans-serif">${esc(n)}</button>`).join("")}</div></div>`)}
+    ${me ? panel(t("Sign in with site card"), `<div class="body form"><span class="small muted">${esc(me.pin_set ? t("If the owner turned on card sign-in for you, change your PIN here.") : t("The owner sets your first PIN."))}</span>
+      ${me.pin_set ? `${fld(t("Current PIN"), inp("cur", "", "password", 'inputmode="numeric" maxlength="6"'))}${fld(t("New PIN (4-6 digits)"), inp("new", "", "password", 'inputmode="numeric" maxlength="6"'))}<button class="btn pri wide" data-act="pin">${esc(t("Change PIN"))}</button>` : ""}</div>`) : ""}
+    <div class="stack">${c.owner || c.money ? `<button class="btn wide" data-act="desk">${icon("dash")}${esc(t("Open the full ERPNext (office)"))}</button>` : ""}
+      ${NATIVE ? `<button class="btn wide" data-act="site">${icon("globe")}${esc(t("Change site address"))}</button>` : ""}
+      <button class="btn wide bad" data-act="out">${icon("out")}${esc(t("Sign out"))}</button></div>`;
+  for (const f of UR_FONTS.slice(0, urAll ? 99 : 3)) loadFont(f[0], f[3]);
+  for (const f of EN_FONTS) loadFont(f[0], f[2]);
+  el.onclick = async (e) => {
+    const x = e.target.closest("[data-skin],[data-mode],[data-size],[data-ur],[data-en],[data-lang],[data-urall]"); if (!x) return;
+    if (x.dataset.lang) { if (x.dataset.lang !== S.lang) { await busy(api("set_language", { lang: x.dataset.lang })); location.reload(); } return; }
+    if (x.dataset.urall) { el.dataset.urAll = "1"; render(); return; }
+    const k = ["skin", "mode", "size", "ur", "en"].find((n) => x.dataset[n] !== undefined);
+    await saveLook({ [k]: x.dataset[k] });
+    $$(`[data-${k}]`, el).forEach((y) => y.setAttribute("aria-pressed", String(y === x)));
+  };
+  Object.assign(S.acts, {
+    desk() { location.href = "/desk/mimaar"; },
+    async site() { if (await confirmBox(t("Change site address"), t("The app will ask for the site address again."), t("Change"))) native("forget").catch(() => {}); },
+    async out() { await fetch("/api/method/logout", { credentials: "same-origin" }); if (NATIVE) native("signout").catch(() => {}); location.reload(); },
+    async pin() { const v = vals(el); try { await busy(api("mimaar.identity.change_my_pin", { current: v.cur, new: v.new })); toast(t("PIN changed"), "good"); render(); } catch (e) { toast(e.message, "bad"); } },
+  });
+};
+
 /* ---------------- sign in ---------------- */
 function loginScreen() {
   document.documentElement.lang = S.lang; document.documentElement.dir = S.lang === "ur" ? "rtl" : "ltr";
+  applyLook();
   $("#app").innerHTML = `<div class="login stack"><div class="logo">M</div><h1 style="text-align:center">${esc(t("Mimaar"))}</h1><p class="muted" style="text-align:center;margin:0">${esc(t("Sign in to your project"))}</p>
     <div class="seg"><button data-l="en" aria-pressed="${S.lang === "en"}">English</button><button data-l="ur" aria-pressed="${S.lang === "ur"}">اردو</button></div>
+    ${BOOT.card_sign_in ? `<button class="btn pri big wide" data-card="1">${icon("card")}${esc(t("Sign in with site card"))}</button><p class="small muted" style="text-align:center;margin:0">${esc(t("Scan your site card, type your PIN and take a photo of your face."))}</p>
+      <div class="small muted" style="text-align:center">— ${esc(t("or"))} —</div>` : ""}
     <div class="form"><div class="fld"><label>${esc(t("Email or user name"))}</label><input name="usr" autocomplete="username" autocapitalize="none" class="ltr"></div><div class="fld"><label>${esc(t("Password"))}</label><input name="pwd" type="password" autocomplete="current-password" class="ltr"></div>
-    <div data-err></div><button class="btn pri big wide" data-login="1">${esc(t("Sign in"))}</button></div></div>`;
+    <div data-err></div><button class="btn ${BOOT.card_sign_in ? "" : "pri"} big wide" data-login="1">${esc(t("Sign in"))}</button></div></div>`;
   $$("[data-l]").forEach((b) => { b.onclick = () => { S.lang = b.dataset.l; try { localStorage.setItem("mimaar.lang", S.lang); } catch (e) { /* */ } loginScreen(); }; });
   const go_ = async () => {
     const usr = $("[name=usr]").value.trim(), pwd = $("[name=pwd]").value;
@@ -1065,10 +1398,38 @@ function loginScreen() {
   };
   $("[data-login]").onclick = go_;
   $("[name=pwd]").addEventListener("keydown", (e) => { if (e.key === "Enter") go_(); });
+  const c = $("[data-card]"); if (c) c.onclick = cardSignIn;
+}
+/** Sign in with the site card: scan the card, type the PIN, take a photo of the face. */
+async function cardSignIn() {
+  const code = await scanCode(t("Scan your site card"));
+  if (!code) return;
+  if (!code.startsWith("MMR1:")) { toast(t("This is not a Mimaar site card."), "bad"); return; }
+  const pin = await new Promise((resolve) => {
+    let v = "", done = false;
+    const sh = sheet(t("Your PIN"), `<div class="stack" style="align-items:center"><p style="margin:0">${esc(t("Type your PIN"))}</p><div class="pindots">${[0, 1, 2, 3, 4, 5].map((i) => `<i data-d="${i}"></i>`).join("")}</div>
+      <div class="pinpad">${[1, 2, 3, 4, 5, 6, 7, 8, 9, "⌫", 0, "✓"].map((k) => `<button type="button" data-k="${k}">${k}</button>`).join("")}</div></div>`);
+    const dots = () => $$("[data-d]", sh).forEach((d) => d.classList.toggle("on", +d.dataset.d < v.length));
+    sh.addEventListener("click", (e) => { const b = e.target.closest("[data-k]"); if (!b) return; const k = b.dataset.k;
+      if (k === "⌫") v = v.slice(0, -1); else if (k === "✓") { if (v.length >= 4) { done = true; closeSheet(sh); resolve(v); } return; } else if (v.length < 6) v += k; dots(); });
+    const obs = new MutationObserver(() => { if (!document.body.contains(sh) || sh.parentElement.classList.contains("closing")) { obs.disconnect(); if (!done) { done = true; resolve(""); } } });
+    obs.observe($("#sheetRoot"), { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+  });
+  if (!pin) return;
+  const photo = await liveFaceData(t("Photo of your face"));
+  if (!photo) return;
+  try {
+    const r = await busy(fetch("/api/method/mimaar.identity.sign_in", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ code, pin, photo }) }), t("Checking…"));
+    let j = {}; try { j = await r.json(); } catch (e) { /* */ }
+    if (r.ok && j.message && j.message.ok) { location.reload(); return; }
+    $("[data-err]").innerHTML = `<div class="banner bad">${esc(serverMessage(j) || (r.status === 429 ? t("Too many tries. Wait a few minutes.") : t("This card and PIN were not accepted.")))}</div>`;
+  } catch (e) { $("[data-err]").innerHTML = `<div class="banner bad">${esc(t("No connection to Mimaar. Check the internet (or Wi-Fi) and try again."))}</div>`; }
 }
 
 /* ---------------- start ---------------- */
 function start() {
+  applyLook();
+  if (window.matchMedia) matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => applyLook());
   if (!S.b) { try { S.lang = localStorage.getItem("mimaar.lang") || S.lang; } catch (e) { /* */ } loginScreen(); return; }
   layout(); render();
   if (NATIVE) native("ready", { lang: S.lang }).catch(() => {});

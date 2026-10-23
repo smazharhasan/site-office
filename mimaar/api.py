@@ -240,22 +240,16 @@ def suppliers_for_items(items):
 # ---------------------------------------------------------------- site workers and attendance
 @frappe.whitelist()
 def find_worker(code):
-	"""A scanned site card (worker number), CNIC or society entry card number → the worker."""
+	"""A scanned site card, or a typed worker number, CNIC or society entry card number → the worker."""
 	frappe.has_permission("Site Worker", "read", throw=True)
-	code = (code or "").strip()
-	name = None
-	m = re.search(r"WRK-\d+", code, re.I)
-	if m and frappe.db.exists("Site Worker", m.group(0).upper()):
-		name = m.group(0).upper()
-	if not name:
-		digits = re.sub(r"\D", "", code)
-		if len(digits) == 13:
-			name = frappe.db.get_value("Site Worker", {"cnic": f"{digits[:5]}-{digits[5:12]}-{digits[12]}"})
-	if not name and code:
-		name = frappe.db.get_value("Site Worker", {"entry_card_no": code})
+	from mimaar.identity import person_from_code
+
+	name, scanned = person_from_code(code)
 	if not name:
 		return None
-	return frappe.db.get_value("Site Worker", name, ["name", "full_name", "trade", "status", "contractor", "daily_wage", "photo"], as_dict=True)
+	d = frappe.db.get_value("Site Worker", name, ["name", "full_name", "full_name_ur", "trade", "status", "contractor", "photo", "worker_type"], as_dict=True)
+	d.card_scanned = scanned
+	return d
 
 
 def qr_code(value):

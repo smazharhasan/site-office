@@ -53,6 +53,8 @@ CUSTOM_FIELDS = {
 		F("mimaar_received_by", "Data", "Received by", "mimaar_col"),
 		F("mimaar_vehicle", "Data", "Vehicle no.", "mimaar_received_by"),
 		F("mimaar_goods_photo", "Attach Image", "Photo of the material", "mimaar_vehicle"),
+		F("mimaar_receiver", "Link", "Receiver (site card)", "mimaar_goods_photo", options="Site Worker"),
+		F("mimaar_identity_check", "Link", "Receiver's face check", "mimaar_receiver", options="Identity Check", read_only=1),
 	],
 	"Purchase Invoice": [
 		F("mimaar_bill_scan", "Attach", "Bill / invoice scan", "bill_date"),
@@ -64,11 +66,14 @@ CUSTOM_FIELDS = {
 		F("mimaar_proof_2", "Attach Image", "Second proof (receipt from the supplier)", "mimaar_col"),
 	],
 	"Stock Entry": [
-		F("mimaar_section", "Section Break", "Release to work", "stock_entry_type", depends_on="eval:doc.stock_entry_type=='Material Issue'"),
-		F("mimaar_issued_to", "Data", "Released to (mistri or group head)", "mimaar_section"),
-		F("mimaar_work_area", "Data", "Area / activity", "mimaar_issued_to"),
+		F("mimaar_section", "Section Break", "Release to work / return to store", "stock_entry_type", depends_on="eval:in_list(['Material Issue','Material Receipt'], doc.stock_entry_type)"),
+		F("mimaar_issued_to", "Data", "Released to / returned by (mistri or group head)", "mimaar_section"),
+		F("mimaar_person", "Link", "Person (site card)", "mimaar_issued_to", options="Site Worker"),
+		F("mimaar_work_area", "Data", "Area / activity", "mimaar_person"),
 		F("mimaar_col", "Column Break", "", "mimaar_work_area"),
 		F("mimaar_photo", "Attach Image", "Photo", "mimaar_col"),
+		F("mimaar_identity_check", "Link", "Face check", "mimaar_photo", options="Identity Check", read_only=1),
+		F("mimaar_is_return", "Check", "Returned from work to the store", "mimaar_identity_check", read_only=1),
 	],
 }
 

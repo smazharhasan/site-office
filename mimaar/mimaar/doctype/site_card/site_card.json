@@ -1,0 +1,132 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-23 15:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mimaar",
+ "name": "Site Card",
+ "owner": "Administrator",
+ "modified": "2026-10-23 15:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "person",
+   "fieldtype": "Link",
+   "label": "Person",
+   "options": "Site Worker",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "person_name",
+   "fieldtype": "Data",
+   "label": "Name",
+   "fetch_from": "person.full_name",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "token",
+   "fieldtype": "Data",
+   "label": "Card code",
+   "read_only": 1,
+   "unique": 1,
+   "description": "Printed in the QR code. A new card gets a new code; the old card then stops working."
+  },
+  {
+   "fieldname": "version",
+   "fieldtype": "Int",
+   "label": "Card number",
+   "read_only": 1,
+   "default": "1"
+  },
+  {
+   "fieldname": "issued_on",
+   "fieldtype": "Datetime",
+   "label": "Issued on",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sign_in_enabled",
+   "fieldtype": "Check",
+   "label": "Sign in with this card",
+   "default": "0"
+  },
+  {
+   "fieldname": "pin_set",
+   "fieldtype": "Check",
+   "label": "PIN set",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pin_hash",
+   "fieldtype": "Data",
+   "label": "PIN hash",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "pin_salt",
+   "fieldtype": "Data",
+   "label": "PIN salt",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "failed_attempts",
+   "fieldtype": "Int",
+   "label": "Wrong PINs in a row",
+   "read_only": 1
+  },
+  {
+   "fieldname": "locked_until",
+   "fieldtype": "Datetime",
+   "label": "Locked until",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_sign_in",
+   "fieldtype": "Datetime",
+   "label": "Last sign-in",
+   "read_only": 1
+  }
+ ],
+ "field_order": [
+  "person",
+  "person_name",
+  "token",
+  "version",
+  "issued_on",
+  "col1",
+  "sign_in_enabled",
+  "pin_set",
+  "pin_hash",
+  "pin_salt",
+  "failed_attempts",
+  "locked_until",
+  "last_sign_in"
+ ],
+ "links": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "row_format": "Dynamic",
+ "autoname": "hash",
+ "title_field": "person_name",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1
+  }
+ ],
+ "track_changes": 1
+}

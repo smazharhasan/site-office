@@ -1,13 +1,13 @@
 {
  "actions": [],
  "allow_rename": 0,
- "creation": "2026-10-22 18:00:00.000000",
+ "creation": "2026-10-23 15:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "module": "Mimaar",
  "name": "Site Attendance Row",
  "owner": "Administrator",
- "modified": "2026-10-22 18:00:00.000000",
+ "modified": "2026-10-23 15:00:00.000000",
  "modified_by": "Administrator",
  "fields": [
   {
@@ -54,11 +54,25 @@
    "columns": 1
   },
   {
+   "fieldname": "time_out",
+   "fieldtype": "Time",
+   "label": "Time out",
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
    "fieldname": "photo",
    "fieldtype": "Attach Image",
    "label": "Photo",
    "in_list_view": 1,
    "columns": 1
+  },
+  {
+   "fieldname": "identity_check",
+   "fieldtype": "Link",
+   "label": "Face check",
+   "options": "Identity Check",
+   "read_only": 1
   },
   {
    "fieldname": "contractor",
@@ -88,7 +102,9 @@
   "trade",
   "status",
   "time_in",
+  "time_out",
   "photo",
+  "identity_check",
   "contractor",
   "daily_wage",
   "scanned"

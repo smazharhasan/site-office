@@ -1,13 +1,13 @@
 {
  "actions": [],
  "allow_rename": 0,
- "creation": "2026-10-22 18:00:00.000000",
+ "creation": "2026-10-23 15:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "module": "Mimaar",
  "name": "Mimaar Settings",
  "owner": "Administrator",
- "modified": "2026-10-22 18:00:00.000000",
+ "modified": "2026-10-23 15:00:00.000000",
  "modified_by": "Administrator",
  "fields": [
   {
@@ -94,6 +94,54 @@
    "default": "1"
   },
   {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Site cards and face check",
+   "description": "Wherever a person is identified for money or material (store issue and return, receiving, petty cash, sign-in with the card), their site card is scanned and a live photo is compared with the registered photo by the AI."
+  },
+  {
+   "fieldname": "face_check",
+   "fieldtype": "Select",
+   "label": "Face check",
+   "options": "Required\nRecord only\nOff",
+   "default": "Required",
+   "description": "Required: a different face stops the entry. Record only: the photo is kept and flagged for the owner."
+  },
+  {
+   "fieldname": "face_threshold",
+   "fieldtype": "Int",
+   "label": "Minimum match (%)",
+   "default": "70"
+  },
+  {
+   "fieldname": "col_id",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "card_for_store",
+   "fieldtype": "Check",
+   "label": "Store issue and return need the person's site card and face",
+   "default": "1"
+  },
+  {
+   "fieldname": "card_for_receiving",
+   "fieldtype": "Check",
+   "label": "Receiving needs the receiver's site card and face",
+   "default": "1"
+  },
+  {
+   "fieldname": "card_for_petty_cash",
+   "fieldtype": "Check",
+   "label": "Petty cash needs the person's site card and face",
+   "default": "1"
+  },
+  {
+   "fieldname": "card_sign_in",
+   "fieldtype": "Check",
+   "label": "Staff may sign in with the site card and PIN",
+   "default": "1"
+  },
+  {
    "fieldname": "share_section",
    "fieldtype": "Section Break",
    "label": "Sharing"
@@ -143,6 +191,14 @@
   "require_payment_proof",
   "pay_only_due",
   "require_attendance_photo",
+  "identity_section",
+  "face_check",
+  "face_threshold",
+  "col_id",
+  "card_for_store",
+  "card_for_receiving",
+  "card_for_petty_cash",
+  "card_sign_in",
   "share_section",
   "share_link_days",
   "country_code",
