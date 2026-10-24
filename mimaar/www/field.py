@@ -25,15 +25,16 @@ EXTRA = (
 )
 
 
-def _ur():
+def _tr(lang="ur"):
+	lang = lang if lang in ("ur", "ar") else "ur"
 	v = os.path.getmtime(JS)
-	key = f"mimaar_field_ur_{v}"
+	key = f"mimaar_field_{lang}_{v}"
 	cached = frappe.cache.get_value(key)
 	if cached:
 		return cached
 	from frappe.translate import get_all_translations
 
-	tr = get_all_translations("ur")
+	tr = get_all_translations(lang)
 	src = open(JS, encoding="utf-8").read()
 	# every stretch between two quote marks (both pairings), so strings inside HTML templates are found too
 	words = set(re.findall(r'(?=("([^"\n]{2,200})"))', src))
@@ -60,9 +61,11 @@ def get_context(context):
 		from mimaar.field import boot
 
 		b = boot()
-	lang = (b or {}).get("lang") or ("ur" if (frappe.request and frappe.request.cookies.get("preferred_language") == "ur") else "en")
+	pref = frappe.request.cookies.get("preferred_language") if frappe.request else None
+	lang = (b or {}).get("lang") or (pref if pref in ("ur", "ar") else "en")
 	context.lang = lang
 	context.v = int(os.path.getmtime(JS))
 	context.boot_json = _json({"boot": b, "lang": lang, "card_sign_in": bool(frappe.db.get_single_value("Mimaar Settings", "card_sign_in"))})
-	context.ur_json = _json(_ur())
+	context.tr_lang = lang if lang in ("ur", "ar") else "ur"
+	context.ur_json = _json(_tr(context.tr_lang))
 	return context

@@ -16,6 +16,9 @@ html,body{margin:0;min-height:100%;overflow-x:clip}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
 html[lang="ur"] body,html[lang="ur"] button,html[lang="ur"] input,html[lang="ur"] select,html[lang="ur"] textarea{font-family:var(--f-body),var(--f-ur),serif}
 html[lang="ur"] body{line-height:1.9}
+html[lang="ar"] body,html[lang="ar"] button,html[lang="ar"] input,html[lang="ar"] select,html[lang="ar"] textarea{font-family:var(--f-body),"IBM Plex Sans Arabic","Noto Sans Arabic",Tahoma,sans-serif}
+html[lang="ar"] body{line-height:1.6}
+html[lang="ar"] :is(h1,h2,h3){font-family:var(--f-display),"IBM Plex Sans Arabic","Noto Sans Arabic",sans-serif;font-stretch:normal}
 button,input,select,textarea{font:inherit;color:inherit}
 h1,h2,h3{font-family:var(--f-display);font-stretch:85%;letter-spacing:.01em;margin:0}
 html[lang="ur"] :is(h1,h2,h3){font-family:var(--f-display),var(--f-ur),serif;font-stretch:normal}

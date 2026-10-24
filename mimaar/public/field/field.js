@@ -15,19 +15,30 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const icon = (n, cls = "") => `<svg class="i ${cls}"><use href="#i-${n}"/></svg>`;
-function t(s, ...a) { let x = (S.lang === "ur" && UR[s]) || s; a.forEach((v, i) => { x = x.split(`{${i}}`).join(v); }); return x; }
+const RTL = () => S.lang === "ur" || S.lang === "ar";
+const LOCALE = () => (S.lang === "ur" ? "ur-PK" : S.lang === "ar" ? "ar-SA-u-nu-latn-ca-gregory" : "en-GB");
+function t(s, ...a) { let x = (S.lang !== "en" && S.lang === window.MIMAAR_TR_LANG && UR[s]) || s; a.forEach((v, i) => { x = x.split(`{${i}}`).join(v); }); return x; }
 const num = (n) => (+n || 0).toLocaleString("en-US", { maximumFractionDigits: 2 });
+/** Money in the company's currency: lakh and crore for rupees, thousands and millions elsewhere. */
+const CUR = () => (S.b && S.b.currency) || "PKR";
+const SOUTH_ASIA = () => ["PKR", "INR"].includes(CUR());
+const CUR_SYM = { PKR: "Rs", INR: "₹", USD: "$", GBP: "£", EUR: "€" };
 function money(n, short) {
-  n = +n || 0; const a = Math.abs(n);
-  if (short && a >= 1e7) return `${(n / 1e7).toFixed(2).replace(/\.?0+$/, "")} ${t("crore")}`;
-  if (short && a >= 1e5) return `${(n / 1e5).toFixed(1).replace(/\.0$/, "")} ${t("lac")}`;
-  return `Rs ${Math.round(n).toLocaleString("en-US")}`;
+  n = +n || 0; const a = Math.abs(n); const sym = CUR_SYM[CUR()] || CUR();
+  if (SOUTH_ASIA()) {
+    if (short && a >= 1e7) return `${(n / 1e7).toFixed(2).replace(/\.?0+$/, "")} ${t("crore")}`;
+    if (short && a >= 1e5) return `${(n / 1e5).toFixed(1).replace(/\.0$/, "")} ${t("lac")}`;
+    return `${sym} ${Math.round(n).toLocaleString("en-US")}`;
+  }
+  if (short && a >= 1e6) return `${sym} ${(n / 1e6).toFixed(2).replace(/\.?0+$/, "")} ${t("million")}`;
+  if (short && a >= 1e4) return `${sym} ${(n / 1e3).toFixed(1).replace(/\.0$/, "")} ${t("thousand")}`;
+  return `${sym} ${Math.round(n).toLocaleString("en-US")}`;
 }
 function fdate(d) {
   if (!d) return "";
   const x = new Date(String(d).length === 10 ? `${d}T00:00:00` : String(d).replace(" ", "T"));
   if (isNaN(x)) return String(d);
-  return x.toLocaleDateString(S.lang === "ur" ? "ur-PK" : "en-GB", { day: "numeric", month: "short", year: "numeric" });
+  return x.toLocaleDateString(LOCALE(), { day: "numeric", month: "short", year: "numeric" });
 }
 const today = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 const nowTime = () => new Date().toTimeString().slice(0, 5);
@@ -374,7 +385,7 @@ const PETTY = () => { const c = C(); return !c.partner && (c.owner || c.money ||
 const STORE = () => { const c = C(); return !c.partner && (c.store || c.site); };
 const TOP_OF = { dash: "dash", build: "build", store: "store", receive: "store", item: "store", money: "more", ask: "more" };
 function layout() {
-  document.documentElement.lang = S.lang; document.documentElement.dir = S.lang === "ur" ? "rtl" : "ltr";
+  document.documentElement.lang = S.lang; document.documentElement.dir = RTL() ? "rtl" : "ltr";
   const tabs = TABS.filter(([id]) => id !== "store" || !C().partner);
   $("#app").innerHTML = `<header class="top" id="top"></header><main class="content" id="content"></main>
     <nav class="bottombar" id="bar" style="grid-template-columns:repeat(${tabs.length},minmax(0,1fr))">${tabs.map(([id, l, ic]) => id === "+" ? `<button class="bb-plus" data-act="quick" aria-label="${esc(t("Quick actions"))}"><span>${icon("plus")}</span></button>` : `<button data-go="${id}" data-tab="${id}">${icon(ic)}<span>${esc(t(l))}</span></button>`).join("")}</nav>`;
@@ -383,7 +394,7 @@ function setTop(title, back) {
   const b = S.b || {}; const ini = (b.full_name || "?").trim().charAt(0).toUpperCase();
   $("#top").innerHTML = `${back ? `<button class="back" data-back="1" aria-label="${esc(t("Back"))}">${icon("chev", "flip")}</button>` : ""}<h1>${esc(title)}</h1>
     <div class="who"><button class="iconbtn" data-act="search" aria-label="${esc(t("Search"))}">${icon("search")}</button><button class="av" data-act="me" aria-label="${esc(b.full_name || "")}">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc(ini)}</button></div>`;
-  const back_ = $("#top [data-back]"); if (back_) { back_.querySelector(".i").style.transform = S.lang === "ur" ? "" : "scaleX(-1)"; }
+  const back_ = $("#top [data-back]"); if (back_) { back_.querySelector(".i").style.transform = RTL() ? "" : "scaleX(-1)"; }
 }
 function setTab(id) { $$("#bar [data-tab]").forEach((b) => b.toggleAttribute("aria-current", b.dataset.tab === id) || (b.dataset.tab === id && b.setAttribute("aria-current", "page"))); $$("#bar [data-tab]").forEach((b) => { if (b.dataset.tab === id) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); }); }
 function hubtabs(base, tabs, cur) { return `<nav class="hubtabs">${tabs.map(([id, l]) => `<button data-go="${base}/${id}" ${id === cur ? 'aria-current="page"' : ""}>${esc(t(l))}</button>`).join("")}</nav>`; }
@@ -1904,8 +1915,8 @@ function billSheet(r) {
 
 /* ---------------- budget ---------------- */
 /* ---------------- Money > Budget (owner and project accountant) ---------------- */
-const lac = (n) => `${(Math.round(((+n || 0) / 1e5) * 10) / 10).toLocaleString("en-US")} ${t("lac")}`;
-const monthLbl = (m) => new Date(m + "-01T00:00:00").toLocaleDateString(S.lang === "ur" ? "ur-PK" : "en-GB", { month: "short", year: "2-digit" });
+const lac = (n) => (SOUTH_ASIA() ? `${(Math.round(((+n || 0) / 1e5) * 10) / 10).toLocaleString("en-US")} ${t("lac")}` : money(n, 1));
+const monthLbl = (m) => new Date(m + "-01T00:00:00").toLocaleDateString(LOCALE(), { month: "short", year: "2-digit" });
 VIEWS.budget = async (el) => {
   setTop(t("Budget"), true);
   const d = await api("mimaar.money.budget_overview");
@@ -1926,7 +1937,7 @@ VIEWS.budget = async (el) => {
     end: `<b>${esc(money(x.budget, 1))}</b>${x.over ? pill(t("Over budget"), "bad") : pill(t("Within"), "good")}` });
   el.innerHTML = `<div class="ctiles">${tiles.join("")}</div>
     ${panel(t("Full project cost"), cost)}
-    ${panel(t("Projected cash flow, whole project (lac)"), flow)}
+    ${panel(t(SOUTH_ASIA() ? "Projected cash flow, whole project (lac)" : "Projected cash flow, whole project"), flow)}
     ${d.phases.map((p) => panel(t(p.phase), moreList(p.lines, lineRow, 6), `<span class="small muted">${esc(lac(p.budget))}</span>`)).join("")}
     ${d.owner ? `<button class="btn pri big wide" data-act="addline">${icon("plus")}${esc(t("Budget line"))}</button>` : ""}
     <p class="small muted" style="margin:0">${esc(t("Tap a line to see every order and payment behind it."))}</p>`;
@@ -2064,11 +2075,11 @@ VIEWS.settings = async (el) => {
   const role = c.owner ? t("Owner") : c.accountant ? t("Accountant") : c.buy || c.people ? t("Site supervisor") : c.store ? t("Store keeper") : t("Site staff");
   const urAll = el.dataset.urAll === "1";
   el.innerHTML = `<button class="mo-me" ${me ? `data-go="person/${esc(me.name)}"` : ""}><span class="av">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc((b.full_name || "?").charAt(0))}</span><span><b>${esc(b.full_name)}</b><span class="small muted">${esc(role)}${me && me.entry_card_no ? " · BTK " + esc(me.entry_card_no) : ""}</span></span>${me ? icon("chev", "lch") : ""}</button>
-    ${panel(t("Language"), `<div class="body"><div class="seg"><button data-lang="en" aria-pressed="${S.lang === "en"}">English</button><button data-lang="ur" aria-pressed="${S.lang === "ur"}">اردو</button></div></div>`)}
+    ${panel(t("Language"), `<div class="body"><div class="seg"><button data-lang="en" aria-pressed="${S.lang === "en"}">English</button><button data-lang="ur" aria-pressed="${S.lang === "ur"}">اردو</button><button data-lang="ar" aria-pressed="${S.lang === "ar"}">العربية</button></div></div>`)}
     ${panel(t("Theme"), `<div class="body stack"><div class="skins">${SKINS.map(([k, n, d, sw]) => `<button data-skin="${k}" aria-pressed="${l.skin === k}"><span class="sw">${sw.map((x) => `<i style="background:${x}"></i>`).join("")}</span><b>${esc(t(n))}</b><span class="small muted">${esc(t(d))}</span></button>`).join("")}</div>
       <div class="seg">${MODES.map(([k, n]) => `<button data-mode="${k}" aria-pressed="${l.mode === k}">${esc(t(n))}</button>`).join("")}</div></div>`)}
     ${panel(t("Text size"), `<div class="body"><div class="seg">${SIZES.map(([k, n]) => `<button data-size="${k}" aria-pressed="${l.size === k}">${esc(t(n))}</button>`).join("")}</div></div>`)}
-    ${panel(t("Urdu font"), `<div class="body stack"><span class="small muted">${esc(t("Used when the app is in Urdu. Naskh fonts are clearer on small phone screens; Nastaliq looks more traditional."))}</span>
+    ${S.lang !== "ur" ? "" : panel(t("Urdu font"), `<div class="body stack"><span class="small muted">${esc(t("Used when the app is in Urdu. Naskh fonts are clearer on small phone screens; Nastaliq looks more traditional."))}</span>
       <div class="fontlist">${UR_FONTS.slice(0, urAll ? 99 : 3).map(([f, n]) => `<button data-ur="${esc(f)}" aria-pressed="${l.ur === f}"><span style="font-family:'${f}',serif;line-height:2">${UR_SAMPLE}</span><small>${esc(t(n))}</small></button>`).join("")}</div>
       ${urAll ? "" : `<button class="btn sm" data-urall="1">${esc(t("Show all"))} ${icon("chev")}</button>`}</div>`)}
     ${panel(t("English font"), `<div class="body"><div class="chips">${EN_FONTS.map(([f, n]) => `<button data-en="${esc(f)}" aria-pressed="${l.en === f}" style="font-family:'${f}',sans-serif">${esc(n)}</button>`).join("")}</div></div>`)}
@@ -2097,15 +2108,19 @@ VIEWS.settings = async (el) => {
 
 /* ---------------- sign in ---------------- */
 function loginScreen() {
-  document.documentElement.lang = S.lang; document.documentElement.dir = S.lang === "ur" ? "rtl" : "ltr";
+  document.documentElement.lang = S.lang; document.documentElement.dir = RTL() ? "rtl" : "ltr";
   applyLook();
   $("#app").innerHTML = `<div class="login stack"><div class="logo"><svg viewBox="0 0 120 120" aria-hidden="true"><rect x="24" y="30" width="15" height="60" rx="3" fill="currentColor"/><rect x="81" y="30" width="15" height="60" rx="3" fill="currentColor"/><polyline points="39,52 55,70 81,34" fill="none" stroke="#F2B01E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h1 style="text-align:center">${esc(t("Mabni"))}</h1><p class="muted" style="text-align:center;margin:0">${esc(t("Sign in to your project"))}</p>
-    <div class="seg"><button data-l="en" aria-pressed="${S.lang === "en"}">English</button><button data-l="ur" aria-pressed="${S.lang === "ur"}">اردو</button></div>
+    <div class="seg"><button data-l="en" aria-pressed="${S.lang === "en"}">English</button><button data-l="ur" aria-pressed="${S.lang === "ur"}">اردو</button><button data-l="ar" aria-pressed="${S.lang === "ar"}">العربية</button></div>
     ${BOOT.card_sign_in ? `<button class="btn pri big wide" data-card="1">${icon("card")}${esc(t("Sign in with site card"))}</button><p class="small muted" style="text-align:center;margin:0">${esc(t("Scan your site card, type your PIN and take a photo of your face."))}</p>
       <div class="small muted" style="text-align:center">— ${esc(t("or"))} —</div>` : ""}
     <div class="form"><div class="fld"><label>${esc(t("Email or user name"))}</label><input name="usr" autocomplete="username" autocapitalize="none" class="ltr"></div><div class="fld"><label>${esc(t("Password"))}</label><input name="pwd" type="password" autocomplete="current-password" class="ltr"></div>
     <div data-err></div><button class="btn ${BOOT.card_sign_in ? "" : "pri"} big wide" data-login="1">${esc(t("Sign in"))}</button></div></div>`;
-  $$("[data-l]").forEach((b) => { b.onclick = () => { S.lang = b.dataset.l; try { localStorage.setItem("mimaar.lang", S.lang); } catch (e) { /* */ } loginScreen(); }; });
+  $$("[data-l]").forEach((b) => { b.onclick = () => {
+    S.lang = b.dataset.l; try { localStorage.setItem("mimaar.lang", S.lang); } catch (e) { /* */ }
+    // the page carries one language's words: switching between Urdu and Arabic reloads them
+    if (S.lang !== "en" && S.lang !== window.MIMAAR_TR_LANG) { document.cookie = `preferred_language=${S.lang};path=/;max-age=31536000;SameSite=Lax`; location.reload(); return; }
+    loginScreen(); }; });
   const go_ = async () => {
     const usr = $("[name=usr]").value.trim(), pwd = $("[name=pwd]").value;
     if (!usr || !pwd) return;

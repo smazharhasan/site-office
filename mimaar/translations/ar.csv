@@ -1,0 +1,1292 @@
++ Budget,+ ميزانية
+1. Supplier's delivery note (challan),1. مذكرة التسليم من المورّد
+2. What arrived,2. ما الذي وصل
+3. Who received it,3. من استلمه
+A failed inspection needs at least one corrective action.,الفحص غير الناجح يحتاج إجراءً تصحيحياً واحداً على الأقل.
+"A locked purchase order can't be changed or cancelled. Check the quantities, rates and terms first.",لا يمكن تعديل أمر الشراء المقفل أو إلغاؤه. راجع الكميات والأسعار والشروط أولاً.
+A new card makes the old site card stop working for signing in and for card scans. Print and hand over the new card.,البطاقة الجديدة توقف عمل بطاقة الموقع القديمة في الدخول والمسح. اطبع البطاقة الجديدة وسلّمها.
+"A submitted purchase order is locked and can't be cancelled or revised. If it is no longer needed, set its status to Closed.",أمر الشراء المعتمد مقفل ولا يمكن إلغاؤه أو تعديله. إن لم يعد مطلوباً فاجعل حالته «مغلق».
+"A submitted purchase order is locked: its items, quantities and rates can't be changed. For a change, get a revised quotation from the supplier and raise a new purchase order; close this one if it is no longer needed.",أمر الشراء المعتمد مقفل: لا يمكن تغيير أصنافه وكمياته وأسعاره. للتغيير اطلب عرض سعر معدّلاً من المورّد وأصدر أمر شراء جديداً، وأغلق هذا إن لم يعد مطلوباً.
+About {0} visible,يظهر نحو {0}
+Above {0} ppm is not fit for concrete or curing.,الماء فوق {0} جزء في المليون لا يصلح للخرسانة ولا للمعالجة.
+Absent,غائب
+"Access (ladders, scaffolding)",الوصول (السلالم والسقالات)
+Access saved,تم حفظ الصلاحيات
+Access to Mabni,الدخول إلى مبني
+Account,الحساب
+Account statement,كشف الحساب
+Accountant,المحاسب
+Active,نشط
+Add a check,إضافة بند فحص
+Add a photo after fixing before marking the snag {0}.,أضف صورة بعد الإصلاح قبل جعل الملاحظة {0}.
+Add a problem,إضافة مشكلة
+Add a tank,إضافة خزان
+Add as a new item,إضافة كصنف جديد
+Add as a new item: {0},إضافة كصنف جديد: {0}
+Add at least one item and its quantity.,أضف صنفاً واحداً على الأقل مع كميته.
+"Add at least one proof of the handover (signed receipt, photo, transfer screenshot or cheque).",أضف إثباتاً واحداً على الأقل للتسليم (إيصال موقّع أو صورة أو لقطة تحويل أو شيك).
+Add budget,إضافة ميزانية
+Add by name (no card),إضافة بالاسم (بدون بطاقة)
+Add item being returned,إضافة صنف مُرتجع
+Add item from the store,إضافة صنف من المستودع
+Add line,إضافة سطر
+Add the workers first.,أضف العمّال أولاً.
+Address,العنوان
+Address in Urdu,العنوان بالأردية
+Admixtures & chemicals,الإضافات والكيماويات
+Advance,دفعة مقدّمة
+Advance (%),الدفعة المقدّمة (%)
+Advance limit,حدّ الدفعة المقدّمة
+Advance must be between 0 and 100 percent.,يجب أن تكون الدفعة المقدّمة بين 0 و100 بالمئة.
+Advance on {0},دفعة مقدّمة على {0}
+Advance on {0} can't be more than {1} ({2}% of the order). Already paid: {3}.,لا يمكن أن تزيد الدفعة المقدّمة على {0} عن {1} ({2}% من الأمر). المدفوع حتى الآن: {3}.
+Advance with supplier,دفعات مقدّمة لدى المورّد
+Advances agreed,الدفعات المقدّمة المتفق عليها
+"After confirming, this quotation can't be changed; a change is a new revision.",بعد التأكيد لا يمكن تغيير عرض السعر هذا؛ أي تغيير يكون مراجعة جديدة.
+Against,مقابل
+AI error,خطأ في الذكاء الاصطناعي
+AI estimate (% full),تقدير الذكاء الاصطناعي (% الامتلاء)
+AI filled {0} lines. Check them against what you see.,عبّأ الذكاء الاصطناعي {0} سطراً. طابِقها مع ما تراه.
+AI found a mismatch on water tanker {0},وجد الذكاء الاصطناعي اختلافاً في وايت الماء {0}
+AI not set up,الذكاء الاصطناعي غير مُعدّ
+AI reading is off. Choose Gemini or Claude and paste the API key in Settings.,القراءة بالذكاء الاصطناعي متوقفة. اختر Gemini أو Claude والصق مفتاح API في الإعدادات.
+AI reading is off. The owner can turn it on in Settings.,القراءة بالذكاء الاصطناعي متوقفة. يستطيع المالك تشغيلها من الإعدادات.
+AI {0}%,الذكاء الاصطناعي {0}%
+AI ✓,الذكاء الاصطناعي ✓
+AI: check,الذكاء الاصطناعي: راجِع
+AI: mismatch,الذكاء الاصطناعي: اختلاف
+AI: not checked,الذكاء الاصطناعي: لم يُفحص
+All,الكل
+all above re-order level,الكل فوق حدّ إعادة الطلب
+All clear,لا شيء معلّق
+All received,تم استلام الكل
+All stages,كل المراحل
+"Also store keeper (receives, issues and returns material)",أمين مستودع أيضاً (يستلم المواد ويصرفها ويستقبل المرتجع)
+Aluminium & glass,الألمنيوم والزجاج
+Aluminium and glass,الألمنيوم والزجاج
+Amount,المبلغ
+Amount (Rs),المبلغ
+Amount to add to this budget line (Rs). It is saved as a budget in the ERP.,المبلغ المضاف إلى بند الميزانية هذا. يُحفظ كميزانية في النظام.
+Applied,مُطبَّق
+Approvals,الموافقات
+Approve,اعتماد
+Approve or reject.,اعتمد أو ارفض.
+Approved,معتمد
+Approved and booked,معتمد ومقيَّد
+Are we on schedule? What's behind?,هل نسير وفق الجدول؟ ما المتأخر؟
+Area / activity,المنطقة / النشاط
+Ask,اسأل
+Ask the project,اسأل المشروع
+Ask the project needs the AI. The owner adds the Gemini key in Settings.,«اسأل المشروع» يحتاج الذكاء الاصطناعي. يضيف المالك مفتاح Gemini في الإعدادات.
+Asked the supplier for their contract instead of a purchase order.,طُلب من المورّد عقده بدلاً من أمر شراء.
+"Assalam-o-Alaikum. Your account statement from {0}: billed {1}, paid {2}, balance {3}.",السلام عليكم. كشف حسابكم من {0}: المفوتر {1}، المدفوع {2}، الرصيد {3}.
+Assalam-o-Alaikum. {0} {1} from {2}.,السلام عليكم. {0} {1} من {2}.
+At most,بحدّ أقصى
+"Attach the proof of payment (transfer screenshot, cheque photo or receipt).",أرفق إثبات الدفع (لقطة التحويل أو صورة الشيك أو الإيصال).
+Attendance,الحضور
+Attendance by site card,الحضور ببطاقة الموقع
+Attendance for {0} is already marked in {1}. Open that one and add the workers there.,حضور {0} مسجّل مسبقاً في {1}. افتحه وأضف العمّال هناك.
+Attendance submitted,تم اعتماد الحضور
+auto,تلقائي
+Back,رجوع
+Bad water,ماء غير صالح
+Bag,كيس
+Balance,الرصيد
+Bank,البنك
+Bank transfer,تحويل بنكي
+Bar,قضيب
+Behind plan,متأخر عن الخطة
+"Behind plan: {0} ({1}% built, {2}% planned)",متأخر عن الخطة: {0} (المنجز {1}%، المخطط {2}%)
+Bill / receipt no.,رقم الفاتورة / الإيصال
+Bill date,تاريخ الفاتورة
+Bill needed,الفاتورة مطلوبة
+Bill no.,رقم الفاتورة
+Bill number needed,رقم الفاتورة مطلوب
+Bill or receipt,فاتورة أو إيصال
+Bill recorded,تم تسجيل الفاتورة
+Bill scan needed,صورة الفاتورة مطلوبة
+bill {0},فاتورة {0}
+Billed,المفوتر
+Bills and payments,الفواتير والدفعات
+Bills recorded against goods received show here.,تظهر هنا الفواتير المسجّلة مقابل البضائع المستلمة.
+Bills to pay,فواتير مستحقة الدفع
+Binding & fixing,الربط والتثبيت
+Blocked,محظور
+Blocks,البلوك
+Blockwork,أعمال البلوك
+"Blueprint blue with amber, the Mabni look",أزرق المخططات مع الكهرماني، مظهر مبني
+Booked in the accounts,مقيَّد في الحسابات
+Box,صندوق
+Brackish (rejected),مالح (مرفوض)
+Bringing the data across stopped with an error. Nothing half-done was kept; see Error Log.,توقف نقل البيانات بسبب خطأ. لم يُحفظ شيء ناقص؛ راجع سجل الأخطاء.
+BTK card expiry,انتهاء بطاقة BTK
+BTK registration card,بطاقة تسجيل BTK
+BTK registration card no.,رقم بطاقة تسجيل BTK
+Budget,الميزانية
+Budget added,تمت إضافة الميزانية
+Budget by category,الميزانية حسب الفئة
+Budget for {0},ميزانية {0}
+budget less paid · {0} still owed on contracts,الميزانية ناقص المدفوع · {0} ما زال مستحقاً على العقود
+Budget line,بند الميزانية
+Budget line added,تمت إضافة بند الميزانية
+Budget lines for petty cash,بنود ميزانية العهدة النقدية
+Budget mark,حدّ الميزانية
+Budget {0} · booked {1} · waiting {2},الميزانية {0} · المقيَّد {1} · بانتظار {2}
+Budget {0} · left {1},الميزانية {0} · المتبقي {1}
+Budget {0} · spent {1} · committed {2},الميزانية {0} · المصروف {1} · الملتزم به {2}
+Budgeted,المرصود
+Build,البناء
+Build progress,تقدّم البناء
+Builder,المقاول
+Builder staff,موظفو المقاول
+Building now,قيد البناء الآن
+Built,المنجز
+built,منجز
+Built (verified),المنجز (مُتحقَّق منه)
+built · {0}% planned by today,منجز · المخطط حتى اليوم {0}%
+Busiest month,أكثر الأشهر صرفاً
+Buying,المشتريات
+By name,بالاسم
+by {0},بواسطة {0}
+Call,اتصال
+Call {0},اتصل بـ {0}
+Came today,حضر اليوم
+can be paid,يمكن دفعه
+Cancel,إلغاء
+Cancelled,ملغى
+Cancelled.,أُلغي.
+Canteen & food,المقصف والطعام
+Canteen and food,المقصف والطعام
+Card,البطاقة
+card,بطاقة
+Card sign-in is off.,الدخول بالبطاقة متوقف.
+Card sign-in is on.,الدخول بالبطاقة مفعّل.
+Card sign-in turned off,تم إيقاف الدخول بالبطاقة
+Carpenter,نجّار
+Cash,نقداً
+Cash given,نقد مُسلَّم
+Cash holder,حامل العهدة
+Cash holders,حاملو العهدة
+Cash in hand,النقد في اليد
+Cash kept on site for small daily costs. Every expense needs a bill photo; the owner checks it.,نقد يُحفظ في الموقع للمصاريف اليومية الصغيرة. كل مصروف يحتاج صورة فاتورة، ويراجعه المالك.
+Cash returned,نقد مُعاد
+Category,الفئة
+Cement,الإسمنت
+challan {0},مذكرة تسليم {0}
+Change,تغيير
+Change PIN,تغيير الرمز السري
+Change site address,تغيير عنوان الموقع
+Change the receiver,تغيير المستلِم
+Check,راجِع
+Check again with AI,افحص مجدداً بالذكاء الاصطناعي
+"Check it, then lock it. Only a locked purchase order can be sent to the supplier.",راجعه ثم اقفله. لا يُرسل إلى المورّد إلا أمر الشراء المقفل.
+Check petty cash: Rs {0} by {1} ({2}),راجع العهدة: {0} من {1} ({2})
+Check saved,تم حفظ الفحص
+"Check the lines and terms, then confirm. A confirmed quotation can't be changed.",راجع الأسطر والشروط ثم أكّد. لا يمكن تغيير عرض السعر بعد تأكيده.
+Checked and closed,تمت المراجعة والإغلاق
+Checking the face…,جارٍ التحقق من الوجه…
+Checking…,جارٍ التحقق…
+Checklist,قائمة الفحص
+Cheque,شيك
+Choose 'Signs in as' first to give this person a sign-in.,اختر «يدخل بصفة» أولاً لتمنح هذا الشخص دخولاً.
+Choose (optional),اختر (اختياري)
+Choose a plan.,اختر باقة.
+"Choose English, Urdu or Arabic.",اختر الإنجليزية أو الأردية أو العربية.
+Choose from the phone (screenshot or PDF),اختر من الجوال (لقطة شاشة أو PDF)
+Choose the catalogue item for every line (or add it as a new item).,اختر صنف القائمة لكل سطر (أو أضفه كصنف جديد).
+Choose the category.,اختر الفئة.
+Choose the item,اختر الصنف
+Choose the kind of entry.,اختر نوع القيد.
+Choose the plan and how often you pay.,اختر الباقة ودورية الدفع.
+Choose the supplier,اختر المورّد
+Choose the supplier.,اختر المورّد.
+Choose the tank it was emptied into.,اختر الخزان الذي فُرّغ فيه.
+Choose the worker,اختر العامل
+Choose two photos of this stage.,اختر صورتين لهذه المرحلة.
+Choose what the money is spent on.,اختر بند الصرف.
+Choose what the money was spent on.,اختر ما صُرف عليه المبلغ.
+Choose your country.,اختر دولتك.
+clear,صافٍ
+Close,إغلاق
+Closed,مغلق
+Cloudy,غائم
+CNIC,الهوية
+CNIC back,ظهر الهوية
+CNIC expiry,انتهاء الهوية
+CNIC front,وجه الهوية
+"CNIC must have 13 digits, e.g. 42101-1234567-1.",رقم الهوية الباكستانية 13 رقماً، مثل 42101-1234567-1.
+Coil,لفّة
+Cold,بارد
+Colourful,ملوّن
+Coming on order,قادم بأمر شراء
+Committed,الملتزم به
+committed {0} · paid {1},الملتزم به {0} · المدفوع {1}
+"Committed, not yet paid",ملتزم به ولم يُدفع بعد
+Compare photos,قارِن الصور
+Compare photos: {0},قارِن الصور: {0}
+Completed,مكتمل
+Concrete pour,صبّ الخرسانة
+Confirm,تأكيد
+Confirm quotation,تأكيد عرض السعر
+Confirm quotation {0} from {1},تأكيد عرض السعر {0} من {1}
+Confirmed,مؤكَّد
+Connect a phone,ربط جوال
+Construction,البناء
+Construction Materials,مواد البناء
+Consultant,الاستشاري
+Consumable,مستهلكات
+Contact person,الشخص المسؤول
+Contingency,احتياطي الطوارئ
+Contracted (committed),المتعاقد عليه (الملتزم به)
+Contractor / supplier,المقاول / المورّد
+Corrective actions (each becomes a snag),الإجراءات التصحيحية (كل منها يصبح ملاحظة)
+Cost (Rs),التكلفة
+Couldn't load this,تعذّر التحميل
+Couldn't reach the AI service. Check the internet connection and try again.,تعذّر الوصول إلى خدمة الذكاء الاصطناعي. تحقق من الإنترنت وحاول مجدداً.
+crore,كرور
+Cubic Foot,قدم مكعّب
+Curing & cleaning,المعالجة والتنظيف
+Current PIN,الرمز السري الحالي
+Cutting & grinding,القص والجلخ
+Daily wage,الأجر اليومي
+Daily wage (Rs),الأجر اليومي
+Dark,داكن
+Dashboard,لوحة المتابعة
+Data brought across,تم نقل البيانات
+Data not brought across,لم تُنقل البيانات
+Date,التاريخ
+Day,يوم
+Days to the planned finish,الأيام المتبقية للإنجاز المخطط
+Days worked,أيام العمل
+Deliveries expected,التوريدات المتوقعة
+Delivery / completion time,مدة التوريد / الإنجاز
+Delivery expected: {0} from {1} ({2}% received),توريد متوقع: {0} من {1} (استُلم {2}%)
+Delivery note needed,مذكرة التسليم مطلوبة
+Delivery note no.,رقم مذكرة التسليم
+Delivery time,مدة التوريد
+Description,الوصف
+Desert sand,رمل الصحراء
+Design,التصميم
+Design & approvals,التصميم والموافقات
+Details,التفاصيل
+Diary,اليومية
+Diary saved,تم حفظ اليومية
+Direct use,استخدام مباشر
+Direct use on slab,استخدام مباشر على السقف
+Document,المستند
+Document type,نوع المستند
+Documents,المستندات
+Done,تم
+Doors & woodwork,الأبواب والنجارة
+Double-click 'Connect a phone' in the Mabni folder on this laptop. It shows the address and QR code for the phone.,انقر مرتين على «Connect a phone» في مجلد مبني على هذا الحاسوب. يظهر العنوان ورمز QR للجوال.
+Draft,مسودة
+Draft a weekly progress report for the owner,اكتب تقريراً أسبوعياً عن التقدّم للمالك
+Draft saved,تم حفظ المسودة
+Drinking,للشرب
+Drums,براميل
+Due now,مستحق الآن
+Due to supplier,مستحق للمورّد
+due {0},يستحق {0}
+Dust storm,عاصفة غبار
+"e.g. 30% advance, 60% on delivery, 10% after testing",مثال: 30% مقدّماً، 60% عند التوريد، 10% بعد الاختبار
+e.g. columns cast on grid A and B,مثال: صبّ الأعمدة على المحورين A وB
+e.g. first floor slab,مثال: سقف الدور الأول
+e.g. ground floor kitchen,مثال: مطبخ الدور الأرضي
+e.g. How much steel have we received against the estimate?,مثال: كم استلمنا من الحديد مقارنة بالتقدير؟
+e.g. Second overhead tank,مثال: الخزان العلوي الثاني
+"e.g. slab steel checked with the drawing, cover blocks in place",مثال: حديد السقف مطابق للمخطط، والبسكويت في مكانه
+e.g. Solar panels,مثال: ألواح شمسية
+e.g. wage advance for this week,مثال: سلفة أجور هذا الأسبوع
+Edit,تعديل
+Edit item,تعديل الصنف
+Edit person,تعديل الشخص
+Edit quotation {0},تعديل عرض السعر {0}
+Electrical (finishing),الكهرباء (تشطيب)
+Electrical (grey),الكهرباء (عظم)
+Electrical conduits,مواسير الكهرباء
+Electrician,كهربائي
+Email or user name,البريد الإلكتروني أو اسم المستخدم
+Emergency contact,جهة اتصال للطوارئ
+Emptied into,فُرّغ في
+empty,فارغ
+Engineer,مهندس
+English font,الخط الإنجليزي
+Enter a full phone number like 0300-1234567.,أدخل رقم جوال كاملاً مثل 0500000000.
+Enter a valid email address.,أدخل بريداً إلكترونياً صحيحاً.
+Enter the amount you paid.,أدخل المبلغ الذي دفعته.
+Enter the amount.,أدخل المبلغ.
+Enter the budget amount.,أدخل مبلغ الميزانية.
+Enter the budget line's name and amount.,أدخل اسم بند الميزانية ومبلغه.
+Enter the cost paid from petty cash.,أدخل التكلفة المدفوعة من العهدة.
+Enter the item name.,أدخل اسم الصنف.
+Enter the quantity received for at least one item.,أدخل الكمية المستلمة لصنف واحد على الأقل.
+Enter the supplier's delivery note / challan number.,أدخل رقم مذكرة التسليم من المورّد.
+Enter the supplier's invoice / bill number.,أدخل رقم فاتورة المورّد.
+Enter the supplier's name.,أدخل اسم المورّد.
+Enter the tank's name.,أدخل اسم الخزان.
+Enter the tanker number and its size in gallons.,أدخل رقم الوايت وسعته بالجالون.
+Enter the tanker size in gallons.,أدخل سعة الوايت بالجالون.
+Enter the tanker's vehicle number.,أدخل رقم لوحة الوايت.
+Enter the transaction or cheque number.,أدخل رقم العملية أو الشيك.
+Enter the transaction reference or add a photo of the receipt.,أدخل رقم العملية أو أرفق صورة الإيصال.
+Enter who takes or returns the material (mistri or group head).,أدخل من يأخذ المواد أو يعيدها (الأسطى أو رئيس المجموعة).
+Enter who the material is released to (mistri or group head).,أدخل من تُصرف له المواد (الأسطى أو رئيس المجموعة).
+Enter who was paid (the shop or the person).,أدخل من تم الدفع له (المحل أو الشخص).
+Entries,القيود
+Entry card,بطاقة الدخول
+entry card,بطاقة الدخول
+Everything still due arrived,وصل كل ما كان مستحقاً
+Excavation,الحفر
+Expense,مصروف
+Expired card,بطاقة منتهية
+Extra large,كبير جداً
+Face,الوجه
+Face check is off in Settings.,التحقق من الوجه متوقف في الإعدادات.
+Face checks,عمليات التحقق من الوجه
+Face did not match: {0} ({1}),الوجه غير مطابق: {0} ({1})
+Face matches ({0}%),الوجه مطابق ({0}%)
+Face not checked: {0},لم يُتحقق من الوجه: {0}
+"Face not clear ({0}). Allowed, and flagged for the owner.",الوجه غير واضح ({0}). سُمح بالإجراء مع تنبيه المالك.
+Face of {0},وجه {0}
+Face photo,صورة الوجه
+Face the camera in good light,واجه الكاميرا في إضاءة جيدة
+Face ✓,الوجه ✓
+Fail,راسب
+Father's name,اسم الأب
+Father's name in Urdu,اسم الأب بالأردية
+Fill in the marked fields.,عبّئ الحقول المحددة.
+Fill in when you pay it from petty cash.,عبّئه عند الدفع من العهدة.
+Final,نهائي
+Final handover,التسليم النهائي
+Final quotation needed,مطلوب عرض سعر نهائي
+Finding the person…,جارٍ البحث عن الشخص…
+Finishing,التشطيب
+Finishing labour,عمالة التشطيب
+Finishing materials,مواد التشطيب
+Finishing Materials,مواد التشطيب
+Fix by,يُصلح قبل
+Fixed,تم الإصلاح
+Fixed and closed,أُصلح وأُغلق
+Follow the phone,حسب الجوال
+Foot,قدم
+Foundation,الأساسات
+Free trial: {0} days left,التجربة المجانية: باقٍ {0} أيام
+from {0},من {0}
+Fuel & lubricants,الوقود والزيوت
+Full project cost,التكلفة الكاملة للمشروع
+Gallon,جالون
+Getting the location…,جارٍ تحديد الموقع…
+Give cash,تسليم نقد
+Give cash by site card,تسليم نقد ببطاقة الموقع
+Give this person access to Mabni first (Signs in as).,امنح هذا الشخص دخولاً إلى مبني أولاً (يدخل بصفة).
+Given by,سلّمه
+Given {0} · spent {1} · returned {2},المُسلَّم {0} · المصروف {1} · المُعاد {2}
+Goods received,البضائع المستلمة
+Goods received: record the bill,بضائع مستلمة: سجّل الفاتورة
+Grey labour,عمالة العظم
+Grey materials,مواد العظم
+Grey structure,العظم
+Group / team,المجموعة / الفريق
+Group head,رئيس المجموعة
+Gypsum & ceiling,الجبس والأسقف
+Half day,نصف يوم
+Hand tools,العدد اليدوية
+Handed over in front of (witness),سُلّم بحضور (شاهد)
+Handover,التسليم
+Hardware,الخردوات
+Heavy quarter,أعلى ربع صرفاً
+Helper,مساعد
+High contrast,تباين عالٍ
+Hold the person's site card in front of the camera.,ضع بطاقة الموقع للشخص أمام الكاميرا.
+"How much cement and steel went out this week, and to whom?",كم صُرف من الإسمنت والحديد هذا الأسبوع، ولمن؟
+"How much water came this week, and was any of it bad?",كم ورد من الماء هذا الأسبوع، وهل كان بعضه غير صالح؟
+Identify from a photo,التعرّف من صورة
+"If the owner turned on card sign-in for you, change your PIN here.",إن فعّل المالك دخولك بالبطاقة، غيّر رمزك السري هنا.
+in at {0},دخل {0}
+in hand,في اليد
+In progress,قيد التنفيذ
+In store,في المستودع
+in store: {0} {1},في المستودع: {0} {1}
+In the store list,في قائمة المستودع
+In the tanks about {0} gallons · in the books {1} gallons,في الخزانات نحو {0} جالون · في السجلات {1} جالون
+In use,قيد الاستخدام
+in {0},في {0}
+Inspection,الفحص
+Inspection submitted,تم اعتماد الفحص
+Inspections,الفحوصات
+Issue from store by site card,الصرف من المستودع ببطاقة الموقع
+It is saved in the ERP as an expense account with its budget for the project.,يُحفظ في النظام كحساب مصروف مع ميزانيته للمشروع.
+Item,الصنف
+Item being returned,الصنف المُرتجع
+Item from the store,صنف من المستودع
+Item name,اسم الصنف
+Items,الأصناف
+Items in store,الأصناف في المستودع
+JazzCash / Easypaisa,محفظة إلكترونية
+Joined on,تاريخ الانضمام
+Journal Entry,قيد يومية
+Kg,كجم
+Kind,النوع
+Kitchen,المطبخ
+Labour,عامل
+Labour advance,سلفة عمالة
+Labour and mistri,العمّال والأسطوات
+Labour: registered vs present today,العمالة: المسجّلون مقابل الحاضرين اليوم
+lac,لك
+Language,اللغة
+Large,كبير
+Last reading: {0}% on {1},آخر قراءة: {0}% في {1}
+Last used {0},آخر استخدام {0}
+Leave empty for no warning.,اتركه فارغاً بدون تنبيه.
+Leaving the site,مغادرة الموقع
+Left,غادر
+left,متبقٍ
+Left or blocked,غادر أو محظور
+Left the site,غادر الموقع
+Level (% full),المنسوب (% الامتلاء)
+Level reading,قراءة المنسوب
+Levels and lines are correct,المناسيب والخطوط صحيحة
+Light,فاتح
+Lighting,الإنارة
+"Line {0}: choose the item, or add it as a new item.",السطر {0}: اختر الصنف أو أضفه كصنف جديد.
+Lines,الأسطر
+Link,وصلة
+Litre,لتر
+Location / area,الموقع / المنطقة
+Location needed,الموقع الجغرافي مطلوب
+"Location not available: allow location for Mabni, then try again.",الموقع غير متاح: اسمح لمبني بالوصول إلى الموقع ثم حاول مجدداً.
+Location not taken yet,لم يُحدَّد الموقع بعد
+Lock,قفل
+Lock as final,قفل كنهائي
+Lock purchase order,قفل أمر الشراء
+"Lock the agreed quotation {0} ({1}) as final, or revise it",اقفل عرض السعر المتفق عليه {0} ({1}) كنهائي، أو عدّله
+Lock the quotation as final first.,اقفل عرض السعر كنهائي أولاً.
+Locked,مقفل
+Locked after wrong PINs.,مقفل بعد إدخال رموز خاطئة.
+Locked as final,مقفل كنهائي
+Locked as final. Raise the purchase order from it.,مقفل كنهائي. أصدر منه أمر الشراء.
+Locked as the final quotation. No more revisions.,مقفل كعرض السعر النهائي. لا مزيد من المراجعات.
+Locked purchase orders waiting for delivery appear here.,تظهر هنا أوامر الشراء المقفلة بانتظار التوريد.
+"Locked. {0}% received, {1}% billed.",مقفل. استُلم {0}%، فُوتر {1}%.
+"Log each tanker at the gate with its number plate, size, TDS reading and a photo.",سجّل كل وايت عند البوابة برقم لوحته وسعته وقراءة TDS وصورة.
+Looking through the project's records…,جارٍ البحث في سجلات المشروع…
+Looks about {0}% done,يبدو منجزاً بنحو {0}%
+Lot,دفعة
+Mabni,مبني
+Mabni blue,أزرق مبني
+Machinery,المعدات
+Make a revision,إجراء مراجعة
+Making the PDF…,جارٍ إنشاء ملف PDF…
+Mason,بنّاء
+Match,مطابق
+Material leaves the store only against a name: the mistri or group head who takes it.,لا تخرج المواد من المستودع إلا باسم: الأسطى أو رئيس المجموعة الذي يأخذها.
+Material leaves the store only against a person: scan their site card and take their photo.,لا تخرج المواد من المستودع إلا لشخص: امسح بطاقة الموقع والتقط صورته.
+Material quality is right,جودة المواد مطابقة
+"Material released, last 14 days",المواد المصروفة خلال آخر 14 يوماً
+Materials,المواد
+Materials used,المواد المستخدمة
+Measuring & levelling,القياس والتسوية
+million,مليون
+Mismatch,اختلاف
+Mistri,أسطى
+Mobile,الجوال
+Money,المالية
+More,المزيد
+Movements,الحركات
+MS & railings,الحديد والدرابزين
+My settings,إعداداتي
+N/A,غير متاح
+Name,الاسم
+Name in Urdu (printed on the site card),الاسم بالأردية (يُطبع على بطاقة الموقع)
+Name of the new item,اسم الصنف الجديد
+Needed by,مطلوب قبل
+needed by {0},مطلوب قبل {0}
+Needs your attention,يحتاج انتباهك
+new,جديد
+New budget line,بند ميزانية جديد
+New card,بطاقة جديدة
+New card made. Print it now.,صدرت بطاقة جديدة. اطبعها الآن.
+New diary entry,قيد يومية جديد
+New inspection,فحص جديد
+New item,صنف جديد
+New item: {0},صنف جديد: {0}
+New person,شخص جديد
+New PIN (4-6 digits),رمز سري جديد (4-6 أرقام)
+New quotation,عرض سعر جديد
+New sign-ups are closed for now. Please contact us.,التسجيل الجديد مغلق حالياً. يرجى التواصل معنا.
+New supplier,مورّد جديد
+New water tanker,وايت ماء جديد
+New: {0},جديد: {0}
+Next,التالي
+Next: {0} · {1},التالي: {0} · {1}
+Night,ليلي
+No,لا
+No advance in the terms,لا دفعة مقدّمة في الشروط
+No advances waiting,لا دفعات مقدّمة معلّقة
+"No bank account is set up. Pay in cash, or ask the owner to add the bank account in ERPNext.",لا يوجد حساب بنكي معدّ. ادفع نقداً أو اطلب من المالك إضافة الحساب البنكي في النظام.
+No bills to record,لا فواتير للتسجيل
+no budget,بلا ميزانية
+No budget,لا ميزانية
+No budget yet,لا ميزانية بعد
+No cash given yet,لم يُسلَّم نقد بعد
+No connection to Mabni. Check the internet (or Wi-Fi) and try again.,لا اتصال بمبني. تحقق من الإنترنت (أو الواي فاي) وحاول مجدداً.
+No entries yet,لا قيود بعد
+No inspections yet,لا فحوصات بعد
+No match,غير مطابق
+No movement yet,لا حركة بعد
+No movements yet,لا حركات بعد
+No one marked yet,لم يُسجَّل أحد بعد
+No open snags,لا ملاحظات مفتوحة
+No orders yet,لا أوامر بعد
+No payments yet,لا دفعات بعد
+No petty cash entries yet,لا قيود عهدة بعد
+No photo taken.,لم تُلتقط صورة.
+No purchase orders yet,لا أوامر شراء بعد
+No quotations yet,لا عروض أسعار بعد
+No reading yet,لا قراءة بعد
+No readings yet,لا قراءات بعد
+No registered photo for this person.,لا توجد صورة مسجّلة لهذا الشخص.
+No sign-in,بدون دخول
+No suppliers yet,لا مورّدين بعد
+No tanker above {0} ppm,لا وايت فوق {0} جزء في المليون
+No tankers logged,لا وايتات مسجّلة
+No tanks yet. The owner adds them under Tanks.,لا خزانات بعد. يضيفها المالك من «الخزانات».
+No updates yet,لا تحديثات بعد
+No workers registered yet,لا عمّال مسجّلون بعد
+Nobody here,لا أحد هنا
+none,لا شيء
+Normal,عادي
+Nos,عدد
+Not a water record.,ليس سجلاً للماء.
+Not allowed,غير مسموح
+Not checked,لم يُفحص
+Not checked: {0},لم يُفحص: {0}
+Not done,لم يُنجز
+Not enough cash,النقد غير كافٍ
+Not enough in the store,الكمية في المستودع غير كافية
+Not in the list: add as a new item,غير موجود في القائمة: أضفه كصنف جديد
+Not OK,غير سليم
+Not received yet,لم يُستلم بعد
+Not saved,لم يُحفظ
+Not sure what this is,لست متأكداً ما هذا
+Not uploaded,لم يُرفع
+not visible,غير مرئي
+Note,ملاحظة
+Notes,ملاحظات
+"Notes (cleanliness, leaks)",ملاحظات (النظافة، التسرّب)
+Nothing booked yet,لم يُقيَّد شيء بعد
+Nothing found,لم يُعثر على شيء
+Nothing here,لا شيء هنا
+Nothing here yet,لا شيء هنا بعد
+Nothing is waiting for you right now.,لا شيء بانتظارك الآن.
+Nothing released yet,لم يُصرف شيء بعد
+Nothing spent this month,لم يُصرف شيء هذا الشهر
+Nothing to pay,لا شيء للدفع
+Nothing to project yet,لا شيء للتوقّع بعد
+Nothing to receive,لا شيء للاستلام
+now,الآن
+Now,الآن
+Number plate: {0},رقم اللوحة: {0}
+of budget,من الميزانية
+of {0} ordered,من {0} مطلوب
+OK,سليم
+On order,تحت الطلب
+On site now,في الموقع الآن
+On site today,في الموقع اليوم
+On the paper: {0},على الورقة: {0}
+"On the phone, install and open the Mabni app, tap 'Scan the QR on the laptop' and point it at this code, or type the address above.",على الجوال، ثبّت تطبيق مبني وافتحه، واضغط «امسح QR على الحاسوب» ووجّهه إلى هذا الرمز، أو اكتب العنوان أعلاه.
+"On the phone, open the Mabni app, tap 'Scan the QR on the laptop' and point it here. The phone and this laptop must be on the same Wi-Fi.",على الجوال، افتح تطبيق مبني واضغط «امسح QR على الحاسوب» ووجّهه هنا. يجب أن يكون الجوال والحاسوب على شبكة الواي فاي نفسها.
+Only a draft quotation can be changed. Revise it to make a new version.,لا يُعدّل إلا عرض السعر المسودة. راجعه لإنشاء نسخة جديدة.
+Only a submitted (locked) document can be sent.,لا يُرسل إلا المستند المعتمد (المقفل).
+Only a submitted (locked) {0} can be sent.,لا يُرسل إلا {0} معتمد (مقفل).
+Only the owner (or the project manager) verifies progress.,يتحقق من التقدّم المالك (أو مدير المشروع) فقط.
+Only the owner adds budget lines.,يضيف بنود الميزانية المالك فقط.
+Only the owner and the project accountant see the budget.,لا يرى الميزانية إلا المالك ومحاسب المشروع.
+Only the owner can see the plan and pay. Ask the owner.,الباقة والدفع للمالك فقط. اطلب من المالك.
+Only the owner changes budget lines.,يغيّر بنود الميزانية المالك فقط.
+Only the owner changes the tanks.,يغيّر الخزانات المالك فقط.
+Only the owner or the accountant checks petty cash.,يراجع العهدة المالك أو المحاسب فقط.
+Only the owner or the accountant records cash given.,يسجّل النقد المُسلَّم المالك أو المحاسب فقط.
+Only the owner sets budgets.,يضع الميزانيات المالك فقط.
+Open,مفتوح
+Open NCRs,حالات عدم المطابقة المفتوحة
+Open PDF,فتح PDF
+Open purchase order {0},فتح أمر الشراء {0}
+Open snags,الملاحظات المفتوحة
+Open the full ERPNext (office),فتح النظام الكامل (المكتب)
+Opening balance,الرصيد الافتتاحي
+or,أو
+or type the size,أو اكتب السعة
+Ordered,المطلوب
+ordered {0} · received {1},المطلوب {0} · المستلم {1}
+Other,أخرى
+Other site expenses,مصاريف موقع أخرى
+out at {0},خرج {0}
+Out of stock: {0},نفد من المخزون: {0}
+out {0},خرج {0}
+Over budget,تجاوز الميزانية
+over budget,فوق الميزانية
+Overdue,متأخر
+Overhead,علوي
+Overhead tank,الخزان العلوي
+Own workers,عمّالنا
+Owner,المالك
+Owner's note,ملاحظة المالك
+Owner's supervisor,مشرف المالك
+Paid,مدفوع
+Paid and booked,مدفوع ومقيَّد
+Paid by,دفعه
+Paid from cash held by,مدفوع من العهدة لدى
+Paid in cash from petty cash,مدفوع نقداً من العهدة
+Paid recently,مدفوع مؤخراً
+Paid to / shop,المدفوع له / المحل
+Paid to suppliers,المدفوع للمورّدين
+paid {0},مدفوع {0}
+Paid {0},مدفوع {0}
+Paid: waiting for the owner's check,مدفوع: بانتظار مراجعة المالك
+Paint,الدهانات
+Painter,دهّان
+Pair,زوج
+Partner (builder or consultant),شريك (مقاول أو استشاري)
+Pass,ناجح
+Pass with remarks,ناجح مع ملاحظات
+Password,كلمة المرور
+Paste the API key in Settings.,الصق مفتاح API في الإعدادات.
+Pay,دفع
+Pay a supplier,الدفع لمورّد
+Pay advance (up to {0}),دفع مقدّم (حتى {0})
+Pay by (due date),يُدفع قبل (تاريخ الاستحقاق)
+Pay by site card,الدفع ببطاقة الموقع
+Pay from petty cash by site card,الدفع من العهدة ببطاقة الموقع
+Pay only against a bill or a purchase order advance.,ادفع فقط مقابل فاتورة أو دفعة مقدّمة لأمر شراء.
+Pay only what is due,ادفع المستحق فقط
+Pay {0},ادفع {0}
+Pay {0} to {1}?,دفع {0} إلى {1}؟
+Pay {0}: bill {1} ({2}),ادفع {0}: فاتورة {1} ({2})
+Payment,الدفعة
+Payment Entry,قيد دفع
+Payment saved,تم حفظ الدفعة
+Payment terms,شروط الدفع
+Payments,الدفعات
+Payments still due on purchase orders are placed on their due dates. Budget not yet ordered is spread month by month over the stages it is needed for.,الدفعات المستحقة على أوامر الشراء توضع في تواريخ استحقاقها. والميزانية التي لم تُطلب بعد توزَّع شهراً بشهر على المراحل التي تحتاجها.
+PDF,PDF
+Pending Review,بانتظار المراجعة
+People,الأشخاص
+People and access,الأشخاص والصلاحيات
+Person,الشخص
+Petty cash,العهدة النقدية
+Petty cash expense,مصروف من العهدة
+Petty cash given to {0} ({1}),عهدة مسلّمة إلى {0} ({1})
+Petty cash returned by {0} ({1}),عهدة أعادها {0} ({1})
+Petty cash to check,عهدة بانتظار المراجعة
+Petty cash: {0} paid to {1} by {2},العهدة: {0} دُفع إلى {1} بواسطة {2}
+Photo,صورة
+Photo 1,صورة 1
+Photo 2,صورة 2
+Photo 3,صورة 3
+Photo 4,صورة 4
+Photo after fixing,صورة بعد الإصلاح
+Photo inside the tank,صورة داخل الخزان
+Photo needed,الصورة مطلوبة
+Photo of the bill,صورة الفاتورة
+Photo of the bill or receipt,صورة الفاتورة أو الإيصال
+Photo of the delivery note,صورة مذكرة التسليم
+Photo of the item,صورة الصنف
+Photo of the material,صورة المواد
+Photo of the material going out,صورة المواد الخارجة
+Photo of the material returned,صورة المواد المُرتجعة
+Photo of the person receiving,صورة المستلِم
+Photo of the problem,صورة المشكلة
+Photo of your face,صورة وجهك
+Photo through the manhole,صورة من فتحة الخزان
+Photo: {0},صورة: {0}
+Photograph the inside of the tank through the manhole each morning; the AI estimates the level from the photo.,صوّر داخل الخزان من الفتحة كل صباح؛ يقدّر الذكاء الاصطناعي المنسوب من الصورة.
+Photos,الصور
+Photos of the work,صور العمل
+Photos today,صور اليوم
+PIN changed,تم تغيير الرمز السري
+PIN set. Card sign-in is on.,تم ضبط الرمز السري. الدخول بالبطاقة مفعّل.
+Plan & billing,الباقة والدفع
+Plan limit,حدّ الباقة
+Planned,المخطط
+Planned for today,المخطط حتى اليوم
+Plaster,اللياسة
+Please accept the terms to continue.,يرجى الموافقة على الشروط للمتابعة.
+Please fill in every field.,يرجى تعبئة جميع الحقول.
+Please sign in again.,يرجى تسجيل الدخول مجدداً.
+Please try again.,يرجى المحاولة مجدداً.
+Plumber,سبّاك
+Plumbing (grey),السباكة (عظم)
+Plumbing pressure test,اختبار ضغط السباكة
+Point the camera,وجّه الكاميرا
+Police verification,التحقق الأمني
+Police verification letter,خطاب التحقق الأمني
+Police verification pending,التحقق الأمني قيد الانتظار
+Police verification: {0},التحقق الأمني: {0}
+Power tools,العدد الكهربائية
+Present,حاضر
+Print site card,طباعة بطاقة الموقع
+Problem found,وُجدت مشكلة
+"Problems, delays, instructions",المشكلات والتأخيرات والتعليمات
+Products,المنتجات
+Progress photo,صورة التقدّم
+Progress saved,تم حفظ التقدّم
+Progress {0}%,التقدّم {0}%
+"Projected cash flow, whole project",التدفق النقدي المتوقع للمشروع كاملاً
+"Projected cash flow, whole project (lac)",التدفق النقدي المتوقع للمشروع كاملاً
+Projected purchases and labour (from budget),المشتريات والعمالة المتوقعة (من الميزانية)
+Proof 1,إثبات 1
+Proof 2,إثبات 2
+Proof 3,إثبات 3
+Proof 3 (optional),إثبات 3 (اختياري)
+Proof needed,الإثبات مطلوب
+Proof of payment,إثبات الدفع
+Proofs,الإثباتات
+Purchase Invoice,فاتورة شراء
+Purchase order,أمر شراء
+Purchase Order,أمر شراء
+Purchase order drafted,تم إعداد مسودة أمر الشراء
+Purchase order is locked,أمر الشراء مقفل
+Purchase order {0} ({1}) is a draft: check it and lock it,أمر الشراء {0} ({1}) مسودة: راجعه واقفله
+Purchase orders,أوامر الشراء
+Purchase orders are raised from a final quotation.,تصدر أوامر الشراء من عرض سعر نهائي.
+Purchase Receipt,إيصال استلام مشتريات
+Qty,الكمية
+Quality,الجودة
+Quantity,الكمية
+"Questions are answered from this project's live records: schedule, payments, budget, buying, stock, water, attendance, inspections and the site diary.",تُجاب الأسئلة من سجلات المشروع الحية: الجدول والدفعات والميزانية والمشتريات والمخزون والماء والحضور والفحوصات ويومية الموقع.
+Quick actions,إجراءات سريعة
+Quotation,عرض السعر
+Quotation {0} is locked as final. No more revisions can be made.,عرض السعر {0} مقفل كنهائي. لا يمكن إجراء مراجعات أخرى.
+Quotations,عروض الأسعار
+Raast,تحويل فوري
+Rain,مطر
+Raise the purchase order,إصدار أمر الشراء
+Raise the purchase order from final quotation {0} ({1}),أصدر أمر الشراء من عرض السعر النهائي {0} ({1})
+Rate,السعر
+Rate (Rs),السعر
+Raw Material,المواد الخام
+Read by AI. Check every line against the paper before saving.,قرأه الذكاء الاصطناعي. طابِق كل سطر مع الورقة قبل الحفظ.
+Read the level of every tank once ({0}) to work out the water used.,اقرأ منسوب كل خزان مرة واحدة ({0}) لحساب الماء المستهلك.
+Read the quantities with AI,اقرأ الكميات بالذكاء الاصطناعي
+Read today's water level: {0},اقرأ منسوب الماء اليوم: {0}
+Reading the delivery note…,جارٍ قراءة مذكرة التسليم…
+Reading the quotation…,جارٍ قراءة عرض السعر…
+Ready-mix,الخرسانة الجاهزة
+Receive,استلام
+Receive goods,استلام بضائع
+Receive goods: receiver's site card,استلام بضائع: بطاقة موقع المستلِم
+Received,المستلم
+received,مستلم
+Received (gallons),المستلم (جالون)
+Received at site,استُلم في الموقع
+Received at {0},استُلم في {0}
+Received by,استلمه
+Received from {0},مستلم من {0}
+Receiver's photo needed,صورة المستلِم مطلوبة
+Receiver's site card,بطاقة موقع المستلِم
+Receiver's site card and face,بطاقة موقع المستلِم ووجهه
+Receiving goods,استلام البضائع
+Record bill,تسجيل فاتورة
+Record each small expense with its bill photo.,سجّل كل مصروف صغير مع صورة فاتورته.
+Record the bill,سجّل الفاتورة
+Record the supplier's bill for goods received {0} ({1}),سجّل فاتورة المورّد للبضائع المستلمة {0} ({1})
+Recorded by the owner,سجّله المالك
+Register each worker to print their site card.,سجّل كل عامل لطباعة بطاقة موقعه.
+Register {0} as a new supplier,سجّل {0} كمورّد جديد
+Registered photo,الصورة المسجّلة
+"Registered, not here",مسجّل وغير موجود
+Reject,رفض
+Rejected,مرفوض
+Rejected at the gate (brackish water).,رُفض عند البوابة (ماء مالح).
+Release,صرف
+Release material,صرف مواد
+Release to work,صرف للعمل
+Released,المصروف
+Released recently,صُرف مؤخراً
+Released to,صُرف إلى
+Released to (mistri or group head),صُرف إلى (الأسطى أو رئيس المجموعة)
+Released to {0},صُرف إلى {0}
+Releases from the store,الصرف من المستودع
+Remaining,المتبقي
+Remarks,ملاحظات
+Repairs & maintenance,الإصلاح والصيانة
+Replace,استبدال
+Replaced by a newer revision.,استُبدل بمراجعة أحدث.
+Report a snag,الإبلاغ عن ملاحظة
+Report progress,الإبلاغ عن التقدّم
+Report progress: {0},الإبلاغ عن التقدّم: {0}
+Reported,المُبلَّغ عنه
+Reported {0}% · Planned {1}%,المُبلَّغ {0}% · المخطط {1}%
+Result,النتيجة
+result,النتيجة
+Retake,إعادة الالتقاط
+Return cash,إعادة نقد
+Return to store,إرجاع إلى المستودع
+Return to store by site card,الإرجاع إلى المستودع ببطاقة الموقع
+Returned,المُرتجع
+Returned by,أرجعه
+Returned by (cash holder),أعاده (حامل العهدة)
+Returned by {0},أعاده {0}
+Returned to the store,أُرجع إلى المستودع
+Revision made: change it and confirm again,تمت المراجعة: عدّلها وأكّد مجدداً
+Revision note needed,ملاحظة المراجعة مطلوبة
+revision {0},المراجعة {0}
+Roll,لفّة
+row,سطر
+Row {0} ({1}): a purchase order is raised only from the supplier's final quotation. Open the locked quotation and use Create → Purchase Order.,السطر {0} ({1}): يصدر أمر الشراء من عرض السعر النهائي للمورّد فقط. افتح عرض السعر المقفل واستخدم إنشاء ← أمر شراء.
+Row {0} ({1}): goods are received only against a purchase order.,السطر {0} ({1}): تُستلم البضائع مقابل أمر شراء فقط.
+Row {0} ({1}): supplier invoices are recorded only against a purchase order.,السطر {0} ({1}): تُسجّل فواتير المورّدين مقابل أمر شراء فقط.
+Row {0}: quantity must be more than 0.,السطر {0}: يجب أن تكون الكمية أكبر من 0.
+Row {0}: quotation {1} is from another supplier.,السطر {0}: عرض السعر {1} من مورّد آخر.
+Row {0}: quotation {1} is not locked as final.,السطر {0}: عرض السعر {1} غير مقفل كنهائي.
+Row {0}: rate must be more than 0.,السطر {0}: يجب أن يكون السعر أكبر من 0.
+Row {0}: rate {1} is above the quoted rate {2}.,السطر {0}: السعر {1} أعلى من سعر العرض {2}.
+Row {0}: {1} is entered twice.,السطر {0}: أُدخل {1} مرتين.
+Row {0}: {1} is marked {2} in the worker register and can't be marked present.,السطر {0}: {1} مسجّل بحالة {2} في سجل العمّال ولا يمكن تسجيله حاضراً.
+"Rs {0} of this payment is not set against any invoice. Suppliers are paid only against invoices that are due, or as an advance against a purchase order.",مبلغ {0} من هذه الدفعة غير مربوط بأي فاتورة. يُدفع للمورّدين مقابل الفواتير المستحقة فقط، أو كدفعة مقدّمة على أمر شراء.
+Running late: {0} ({1}% done),متأخر: {0} (منجز {1}%)
+Running low or out,قارب النفاد أو نفد
+Safety (PPE),السلامة (معدات الوقاية)
+"Salaam, {0}",السلام عليكم، {0}
+Sand & crush,الرمل والبحص
+Sanitary,الأدوات الصحية
+Save,حفظ
+Save access,حفظ الصلاحيات
+Save check,حفظ الفحص
+Save diary,حفظ اليومية
+Save draft,حفظ المسودة
+Save progress,حفظ التقدّم
+Save snag,حفظ الملاحظة
+Save supplier,حفظ المورّد
+Saved,تم الحفظ
+Saved and booked,حُفظ وقُيّد
+Saved. Water used since the last reading: about {0} gallons,تم الحفظ. الماء المستهلك منذ آخر قراءة: نحو {0} جالون
+Saved: waiting for the owner's check,تم الحفظ: بانتظار مراجعة المالك
+Saving the photo…,جارٍ حفظ الصورة…
+Saving…,جارٍ الحفظ…
+Scan a quotation,مسح عرض سعر
+Scan each worker's site card.,امسح بطاقة الموقع لكل عامل.
+Scan or photograph the supplier's bill.,امسح فاتورة المورّد أو صوّرها.
+Scan or photograph the supplier's delivery note or bill.,امسح مذكرة التسليم أو الفاتورة من المورّد أو صوّرها.
+Scan site card,مسح بطاقة الموقع
+Scan the card,امسح البطاقة
+Scan the person's site card. Typing the number is not enough here.,امسح بطاقة الموقع للشخص. لا تكفي كتابة الرقم هنا.
+Scan the receiver's site card and take their photo first.,امسح بطاقة موقع المستلِم والتقط صورته أولاً.
+Scan the site card,امسح بطاقة الموقع
+Scan the site card of the person being paid and take their photo.,امسح بطاقة الموقع للشخص المدفوع له والتقط صورته.
+Scan the site card of the person receiving the cash and take their photo.,امسح بطاقة الموقع لمستلم النقد والتقط صورته.
+"Scan the site card of the person taking or returning the material, and take their photo.",امسح بطاقة الموقع لمن يأخذ المواد أو يعيدها والتقط صورته.
+Scan the supplier's quotation to start.,امسح عرض سعر المورّد للبدء.
+Scan the tanker's bill or slip.,امسح فاتورة الوايت أو قسيمته.
+Scan your site card,امسح بطاقة موقعك
+"Scan your site card, type your PIN and take a photo of your face.",امسح بطاقة موقعك واكتب رمزك السري والتقط صورة لوجهك.
+Scan your site card.,امسح بطاقة موقعك.
+Scheduled payments,الدفعات المجدولة
+Search,بحث
+Search any item,ابحث عن أي صنف
+"Search name, phone, CNIC or card",ابحث بالاسم أو الجوال أو الهوية أو البطاقة
+Search suppliers,ابحث في المورّدين
+Send account statement,إرسال كشف الحساب
+"Send it to the supplier on WhatsApp, or open the PDF.",أرسله إلى المورّد عبر واتساب، أو افتح ملف PDF.
+Send purchase order,إرسال أمر الشراء
+Send to supplier (WhatsApp / PDF),إرسال إلى المورّد (واتساب / PDF)
+Service charges,رسوم الخدمات
+Services,الخدمات
+Services and Labour,الخدمات والعمالة
+Set,ضبط
+Set PIN,ضبط الرمز السري
+Setting out,التوقيع (تخطيط الموقع)
+Shared by WhatsApp link{0},تمت المشاركة برابط واتساب{0}
+short,ناقص
+Show,إظهار
+Show all,إظهار الكل
+Show all ({0}),إظهار الكل ({0})
+Shuttering,الشدّة
+Shuttering & formwork,الشدّات والقوالب
+Sign in,تسجيل الدخول
+Sign in first.,سجّل الدخول أولاً.
+Sign in to Mabni,الدخول إلى مبني
+Sign in to your project,سجّل الدخول إلى مشروعك
+Sign in with site card,الدخول ببطاقة الموقع
+Sign out,تسجيل الخروج
+Signed receipt or handover photo,إيصال موقّع أو صورة التسليم
+Signing in with the site card is turned off.,الدخول ببطاقة الموقع متوقف.
+Signing in with this card is not turned on. Ask the owner.,الدخول بهذه البطاقة غير مفعّل. اطلب من المالك.
+Signs in as,يدخل بصفة
+Site card,بطاقة الموقع
+Site Consumables,مستهلكات الموقع
+Site diary,يومية الموقع
+Site drums / curing,براميل الموقع / المعالجة
+Site green,أخضر الموقع
+Site is clean and safe,الموقع نظيف وآمن
+Site running costs,مصاريف تشغيل الموقع
+Site staff,فريق الموقع
+Site supervisor,مشرف الموقع
+Site work (water used),أعمال الموقع (ماء مستهلك)
+Size (gallons),السعة (جالون)
+Slate & copper,رمادي ونحاسي
+slightly turbid,عكر قليلاً
+Small,صغير
+Small tools & hardware,العدد الصغيرة والخردوات
+Snag,ملاحظة
+Snag past its target date: {0},ملاحظة تجاوزت موعدها: {0}
+Snag reported,تم الإبلاغ عن الملاحظة
+Snag updated,تم تحديث الملاحظة
+Snags,الملاحظات
+Society card on record,بطاقة الحي مسجّلة
+Some checks are not OK: add the corrective actions.,بعض البنود غير سليمة: أضف الإجراءات التصحيحية.
+Something went wrong while setting up. We have been told and will email you shortly.,حدث خطأ أثناء التجهيز. تم إبلاغنا وسنراسلك قريباً.
+Something went wrong. Try again.,حدث خطأ. حاول مجدداً.
+Spent,المصروف
+Spent on,صُرف على
+Spent this month,المصروف هذا الشهر
+Spent this month by type,مصروف هذا الشهر حسب النوع
+Square Foot,قدم مربع
+Stage status,حالة المراحل
+Starting work,بدء العمل
+Starts soon,يبدأ قريباً
+Stationery & phone,القرطاسية والهاتف
+Status,الحالة
+status:Draft,مسودة
+status:Fixed,تم الإصلاح
+status:Open,مفتوحة
+status:Overdue,متأخرة
+Steel,الحديد
+Steel before concrete,الحديد قبل الصبّ
+Steel fixer,حدّاد مسلّح
+Still due: {0} {1},ما زال مستحقاً: {0} {1}
+Still open,ما زال مفتوحاً
+Still to pay {0},المتبقي للدفع {0}
+Stock,المخزون
+Stock adjusted,تمت تسوية المخزون
+Stock alerts,تنبيهات المخزون
+Stock movements,حركات المخزون
+Stone & granite,الحجر والجرانيت
+Store issue,صرف من المستودع
+Store keeper,أمين المستودع
+Store return,إرجاع إلى المستودع
+Stores,المستودع
+Stores & water,المستودع والماء
+Sub Assemblies,التجميعات الفرعية
+Submit (confirm) the quotation before locking it as final.,اعتمد (أكّد) عرض السعر قبل قفله كنهائي.
+Submit attendance,اعتماد الحضور
+Submit inspection,اعتماد الفحص
+Summarise this week's site diary and open NCRs,لخّص يومية الموقع لهذا الأسبوع وحالات عدم المطابقة المفتوحة
+Sunny,مشمس
+Supervisor,المشرف
+Supervisor (cash holder),المشرف (حامل العهدة)
+Supplier,المورّد
+Supplier accounts,حسابات المورّدين
+Supplier name,اسم المورّد
+Supplier saved,تم حفظ المورّد
+Supplier staff,موظفو المورّد
+Supplier whose work is inspected,المورّد الذي يُفحص عمله
+Supplier's quotation,عرض سعر المورّد
+Supplier's receipt (optional),إيصال المورّد (اختياري)
+Suppliers,المورّدون
+Sweet (construction & curing),عذب (للبناء والمعالجة)
+Switch camera,تبديل الكاميرا
+Take a photo inside the tank (through the manhole).,التقط صورة لداخل الخزان (من الفتحة).
+Take a photo of the bill or receipt.,التقط صورة للفاتورة أو الإيصال.
+Take a photo of the tanker with its number plate.,التقط صورة للوايت مع رقم لوحته.
+Take a photo of your face to sign in.,التقط صورة لوجهك لتسجيل الدخول.
+Take a photo of {0}'s face now. The AI compares it with the registered photo.,التقط صورة لوجه {0} الآن. يقارنها الذكاء الاصطناعي بالصورة المسجّلة.
+Take at least one photo of the work.,التقط صورة واحدة على الأقل للعمل.
+Take at least two photos of this stage to compare.,التقط صورتين على الأقل لهذه المرحلة للمقارنة.
+Take face photo,التقاط صورة الوجه
+Take photo,التقاط صورة
+Take the photo again,أعد التقاط الصورة
+Take the photo first.,التقط الصورة أولاً.
+Take the photo of the delivery note first.,التقط صورة مذكرة التسليم أولاً.
+Take the photo of the person receiving the goods.,التقط صورة مستلِم البضائع.
+Take the team photo before submitting the attendance.,التقط صورة الفريق قبل اعتماد الحضور.
+Taken now,التُقطت الآن
+Tank,الخزان
+Tank level reading,قراءة منسوب الخزان
+Tank levels now,مناسيب الخزانات الآن
+Tank name,اسم الخزان
+Tank readings,قراءات الخزانات
+Tanker,الوايت
+Tanker bill / slip,فاتورة / قسيمة الوايت
+Tanker bill / slip no.,رقم فاتورة / قسيمة الوايت
+Tanker log,سجل الوايتات
+Tanker received,تم استلام الوايت
+Tanker saved,تم حفظ الوايت
+Tanker size (gallons),سعة الوايت (جالون)
+Tanker size about {0} gallons,سعة الوايت نحو {0} جالون
+Tanker vehicle no.,رقم لوحة الوايت
+Tanker with number plate,الوايت مع رقم اللوحة
+Tankers today,وايتات اليوم
+Tanks,الخزانات
+Tap a line to see every order and payment behind it.,اضغط على أي سطر لترى كل أمر ودفعة خلفه.
+TDS above {0} or rejected,TDS فوق {0} أو مرفوض
+TDS above {0} ppm: not fit for concrete or curing.,TDS فوق {0} جزء في المليون: لا يصلح للخرسانة أو المعالجة.
+TDS meter or water sample,جهاز TDS أو عيّنة الماء
+TDS on the meter: {0},قراءة جهاز TDS: {0}
+TDS reading (ppm),قراءة TDS (جزء في المليون)
+TDS {0} ppm is above {1}: not fit for concrete or curing.,قراءة TDS ‏{0} جزء في المليون أعلى من {1}: لا يصلح للخرسانة أو المعالجة.
+Team photo,صورة الفريق
+Team photo and location,صورة الفريق والموقع
+Team photo needed,صورة الفريق مطلوبة
+Termite,مكافحة النمل الأبيض
+Terms,الشروط
+Testing & verification,الاختبار والتحقق
+Text size,حجم النص
+That code is not right. Check the email and try again.,الرمز غير صحيح. تحقق من البريد وحاول مجدداً.
+The AI check runs after saving when an AI key is set in Settings.,يعمل فحص الذكاء الاصطناعي بعد الحفظ عند ضبط مفتاحه في الإعدادات.
+The AI couldn't read this document. Try a clearer photo.,لم يتمكن الذكاء الاصطناعي من قراءة هذا المستند. جرّب صورة أوضح.
+The AI is checking the photos…,يفحص الذكاء الاصطناعي الصور…
+The AI is checking the photo…,يفحص الذكاء الاصطناعي الصورة…
+The AI is comparing the photos…,يقارن الذكاء الاصطناعي الصور…
+The AI is looking at the photo…,يطّلع الذكاء الاصطناعي على الصورة…
+The AI service refused the request ({0}). Check the API key and model in Settings.,رفضت خدمة الذكاء الاصطناعي الطلب ({0}). تحقق من مفتاح API والنموذج في الإعدادات.
+The app will ask for the site address again.,سيطلب التطبيق عنوان الموقع مجدداً.
+"The camera can't be opened here. Allow the camera for this site, or use the Mabni app.",تعذّر فتح الكاميرا هنا. اسمح بالكاميرا لهذا الموقع أو استخدم تطبيق مبني.
+The current PIN is not correct.,الرمز السري الحالي غير صحيح.
+The diary date can't be in the future.,لا يمكن أن يكون تاريخ اليومية في المستقبل.
+The face check did not pass. Scan the card and take the photo again.,لم ينجح التحقق من الوجه. امسح البطاقة والتقط الصورة مجدداً.
+The face check is for another person.,التحقق من الوجه لشخص آخر.
+The face check is for someone else.,التحقق من الوجه يخص شخصاً آخر.
+The face check is too old. Scan the card again.,التحقق من الوجه قديم. امسح البطاقة مجدداً.
+The face does not match.,الوجه غير مطابق.
+"The face is not clear in the photo. Take it again, facing the camera in good light.",الوجه غير واضح في الصورة. أعد التقاطها مواجهاً الكاميرا في إضاءة جيدة.
+The file is too large to read (over 15 MB).,الملف كبير جداً للقراءة (أكثر من 15 ميجابايت).
+The final quotation can't be revised again. The purchase order is raised from it.,لا يمكن مراجعة عرض السعر النهائي مرة أخرى. منه يصدر أمر الشراء.
+The level is a percentage from 0 (empty) to 100 (full).,المنسوب نسبة من 0 (فارغ) إلى 100 (ممتلئ).
+The owner records cash handed to a supervisor with Give cash.,يسجّل المالك النقد المسلّم للمشرف من «تسليم نقد».
+The owner sets this tank's size under Tanks.,يضبط المالك سعة هذا الخزان من «الخزانات».
+The owner sets your first PIN.,يضع المالك رمزك السري الأول.
+The petty cash account isn't set up. Open Settings and choose it.,حساب العهدة غير معدّ. افتح الإعدادات واختره.
+"The phone's location is needed. Allow location for this site in the browser or app, then press Update location.",موقع الجوال مطلوب. اسمح بالموقع لهذا العنوان في المتصفح أو التطبيق ثم اضغط «تحديث الموقع».
+The photo couldn't be read. Take it again.,تعذّرت قراءة الصورة. التقطها مجدداً.
+The photo couldn't be saved. Try again.,تعذّر حفظ الصورة. حاول مجدداً.
+The photo does not match your registered photo. Face the camera in good light and try again.,الصورة لا تطابق صورتك المسجّلة. واجه الكاميرا في إضاءة جيدة وحاول مجدداً.
+"The photo does not match {0}'s registered photo. Take the photo again, facing the camera in good light.",الصورة لا تطابق صورة {0} المسجّلة. أعد التقاطها مواجهاً الكاميرا في إضاءة جيدة.
+The photo is too large. Send a smaller one (under 5 MB).,الصورة كبيرة جداً. أرسل صورة أصغر (أقل من 5 ميجابايت).
+The PIN must be 4 to 6 digits.,يجب أن يكون الرمز السري من 4 إلى 6 أرقام.
+The project's stages appear here.,تظهر هنا مراحل المشروع.
+The purchase order is now {0}% received.,استُلم الآن {0}% من أمر الشراء.
+The tanks hold about {0} gallons more than the tankers recorded. Was a tanker not entered?,في الخزانات نحو {0} جالون أكثر مما سُجّل من الوايتات. هل هناك وايت لم يُسجّل؟
+The terms of purchase order {0} don't include an advance.,شروط أمر الشراء {0} لا تتضمن دفعة مقدّمة.
+Their no.,رقمهم
+Their quotation no.,رقم عرض سعرهم
+Theme,المظهر
+There is no budget for {0} yet.,لا توجد ميزانية لـ {0} بعد.
+There is no budget for {0} yet. Ask the owner to add it before spending.,لا توجد ميزانية لـ {0} بعد. اطلب من المالك إضافتها قبل الصرف.
+There is no budget for {0} yet. Every expense is budgeted first: the owner adds it in the ERP (Accounting > Budget) or on the phone.,لا توجد ميزانية لـ {0} بعد. كل مصروف تُرصد له ميزانية أولاً: يضيفها المالك في النظام (المحاسبة > الميزانية) أو من الجوال.
+"This browser can't read QR codes. Use the Mabni app on the phone, or Chrome.",هذا المتصفح لا يقرأ رموز QR. استخدم تطبيق مبني على الجوال أو متصفح كروم.
+This budget line was not found.,لم يُعثر على بند الميزانية هذا.
+This can't be shared.,لا يمكن مشاركة هذا.
+This card and PIN were not accepted.,لم تُقبل هذه البطاقة والرمز السري.
+This card is not allowed to sign in. Ask the owner.,غير مسموح لهذه البطاقة بالدخول. اطلب من المالك.
+This card is not recognised. Is the person registered?,البطاقة غير معروفة. هل الشخص مسجّل؟
+This CNIC is already registered for {0} ({1}).,رقم الهوية هذا مسجّل مسبقاً لـ {0} ({1}).
+This code has expired. Ask for a new one.,انتهت صلاحية هذا الرمز. اطلب رمزاً جديداً.
+This document can't be shared.,لا يمكن مشاركة هذا المستند.
+This doesn't match any item in the store list.,لا يطابق أي صنف في قائمة المستودع.
+"This email already has a workspace at {0}. Sign in there, or contact us for another one.",لهذا البريد مساحة عمل على {0}. سجّل الدخول هناك، أو تواصل معنا لمساحة أخرى.
+This entry belongs to another cash holder.,هذا القيد يخص حامل عهدة آخر.
+This entry has already been checked.,تمت مراجعة هذا القيد مسبقاً.
+This face check was already used. Scan the card again.,استُخدم هذا التحقق من الوجه مسبقاً. امسح البطاقة مجدداً.
+"This face check was for {0}, not {1}.",كان التحقق من الوجه لـ {0} وليس لـ {1}.
+This is not a Mabni site card.,هذه ليست بطاقة موقع من مبني.
+This is not the data file from the old Mimaar app.,هذا ليس ملف البيانات من تطبيق معمار القديم.
+This line is over its budget. The owner will see it.,هذا البند تجاوز ميزانيته. سيرى المالك ذلك.
+This month,هذا الشهر
+This name is reserved. Try another.,هذا الاسم محجوز. جرّب اسماً آخر.
+This name is taken. Try another.,هذا الاسم مستخدم. جرّب اسماً آخر.
+This quotation is locked as final. It can't be cancelled or revised.,عرض السعر هذا مقفل كنهائي. لا يمكن إلغاؤه أو مراجعته.
+This sign-up has expired. Please start again.,انتهت صلاحية هذا التسجيل. يرجى البدء من جديد.
+This week,هذا الأسبوع
+This workspace isn't connected to Mabni Cloud.,مساحة العمل هذه غير مرتبطة بسحابة مبني.
+This workspace's plan has ended. The owner can renew it in Plan & billing.,انتهت باقة مساحة العمل هذه. يستطيع المالك تجديدها من «الباقة والدفع».
+thousand,ألف
+Tile and marble,البلاط والرخام
+Tiles & marble,البلاط والرخام
+Tiles and marble,البلاط والرخام
+Time in,وقت الدخول
+Time in / out,وقت الدخول / الخروج
+Time in marked for {0} at {1},سُجّل دخول {0} الساعة {1}
+Time out,وقت الخروج
+Time out by site card,الخروج ببطاقة الموقع
+Time out marked for {0} at {1},سُجّل خروج {0} الساعة {1}
+To Bill,بانتظار الفوترة
+to pay,للدفع
+To Pay,بانتظار الدفع
+To Receive,بانتظار الاستلام
+To Receive and Bill,بانتظار الاستلام والفوترة
+Today's attendance is already submitted.,حضور اليوم معتمد مسبقاً.
+Today's attendance is already submitted. Only time out can be marked now.,حضور اليوم معتمد مسبقاً. يمكن الآن تسجيل الخروج فقط.
+Today's attendance is submitted.,تم اعتماد حضور اليوم.
+Today's attendance is submitted. Only time out can be marked now.,تم اعتماد حضور اليوم. يمكن الآن تسجيل الخروج فقط.
+Today's level not read yet: {0},لم يُقرأ منسوب اليوم بعد: {0}
+Tonne,طن
+Too many tries. Wait a few minutes.,محاولات كثيرة. انتظر بضع دقائق.
+Too many wrong PINs. Try again after {0}.,رموز خاطئة كثيرة. حاول مجدداً بعد {0}.
+Tools & equipment,العدد والمعدات
+Tools and Equipment,العدد والمعدات
+Total,الإجمالي
+Total project budget,إجمالي ميزانية المشروع
+Total projected,الإجمالي المتوقع
+Total {0}. Please quote {1} on every delivery note and invoice.,الإجمالي {0}. يرجى ذكر {1} في كل مذكرة تسليم وفاتورة.
+Trade,الحرفة
+Transaction / cheque no.,رقم العملية / الشيك
+Transfer / cheque / receipt no.,رقم التحويل / الشيك / الإيصال
+Transfer screenshot or cheque photo,لقطة التحويل أو صورة الشيك
+"Transfer screenshot, cheque or receipt",لقطة التحويل أو الشيك أو الإيصال
+Transport & fuel,النقل والوقود
+Truck Load,حمولة شاحنة
+Try again,حاول مجدداً
+"Try another word, or identify the item from a photo.",جرّب كلمة أخرى، أو تعرّف على الصنف من صورة.
+turbid,عكر
+Turn off,إيقاف
+Type,النوع
+Type a quotation,إدخال عرض سعر يدوياً
+Type the number on the site card (or the CNIC).,اكتب الرقم المطبوع على بطاقة الموقع (أو رقم الهوية).
+Type your PIN,اكتب رمزك السري
+Unclear,غير واضح
+Underground,أرضي
+Underground tank,الخزان الأرضي
+Unit,الوحدة
+Unknown card,بطاقة غير معروفة
+Update location,تحديث الموقع
+Updates,التحديثات
+Upload,رفع
+Urdu font,الخط الأردي
+"Use 3 to 30 letters, numbers or dashes, starting with a letter.",استخدم من 3 إلى 30 حرفاً إنجليزياً أو رقماً أو شَرطة، يبدأ بحرف.
+Use a password of at least 8 characters with letters and numbers.,استخدم كلمة مرور من 8 أحرف على الأقل تجمع بين الحروف والأرقام.
+Use photo,استخدام الصورة
+Used (from tank levels),المستهلك (من مناسيب الخزانات)
+Used straight from tanker {0},استُخدم مباشرة من الوايت {0}
+Used when the app is in Urdu. Naskh fonts are clearer on small phone screens; Nastaliq looks more traditional.,يُستخدم عندما يكون التطبيق بالأردية. خطوط النسخ أوضح على شاشات الجوال الصغيرة، والنستعليق أكثر تقليدية.
+Value in store,القيمة في المستودع
+Vehicle no.,رقم المركبة
+Verified,مُتحقَّق منه
+Verified {0}%,المُتحقَّق منه {0}%
+Verify,تحقّق
+Verify with AI,تحقّق بالذكاء الاصطناعي
+Verify: {0},تحقّق: {0}
+Very hot,حار جداً
+"Visitors (consultant, engineer, client)",الزوار (الاستشاري، المهندس، العميل)
+Wages,الأجور
+Waiting for a site card… hold the card's QR inside the frame,بانتظار بطاقة الموقع… ضع رمز QR للبطاقة داخل الإطار
+Waiting for owner,بانتظار المالك
+Waiting for your check,بانتظار مراجعتك
+Warn at,التنبيه عند
+Warn when the store has this much or less,نبّه عندما يصل المستودع إلى هذه الكمية أو أقل
+Water,الماء
+Water already used,الماء المستهلك مسبقاً
+Water clarity,صفاء الماء
+Water quality,جودة الماء
+"Water received and used, last 14 days",الماء الوارد والمستهلك خلال آخر 14 يوماً
+Water supplier / hydrant,مورّد الماء / المحطة
+Water tanker,وايت الماء
+Water tanker {0} ({1} gallons),وايت الماء {0} ({1} جالون)
+"Water tanker {0}, {1} gallons",وايت الماء {0}، {1} جالون
+Water tanker: receiver's site card,وايت الماء: بطاقة موقع المستلِم
+Water today,ماء اليوم
+"Water used (tank levels, {0})",الماء المستهلك (مناسيب الخزانات، {0})
+Waterproofing,العزل المائي
+We are still checking your earlier payments. Please wait for them first.,ما زلنا نراجع دفعاتك السابقة. يرجى انتظارها أولاً.
+Weather,الطقس
+Week,أسبوع
+Welder,لحّام
+"What changed (price, discount or items)?",ما الذي تغيّر (السعر أو الخصم أو الأصناف)؟
+What changed in this revision,ما الذي تغيّر في هذه المراجعة
+What changed: {0},ما الذي تغيّر: {0}
+What changed? (AI),ما الذي تغيّر؟ (الذكاء الاصطناعي)
+What do I owe the builder next and when?,ما الدفعة القادمة للمقاول ومتى؟
+What is wrong,ما المشكلة
+What it was for,الغرض منه
+What must be done,ما يجب عمله
+What was checked,ما الذي فُحص
+What was done,ما الذي أُنجز
+What you checked on site,ما فحصته في الموقع
+"When the price is agreed, lock it as final. To change anything, make a revision.",عند الاتفاق على السعر اقفله كنهائي. لتغيير أي شيء أجرِ مراجعة.
+Where,المكان
+Which materials need ordering this week?,ما المواد التي تحتاج طلباً هذا الأسبوع؟
+Who will fix it,من سيصلحها
+Whole project,المشروع كاملاً
+Why is it rejected? The cash holder sees this.,لماذا رُفض؟ يرى حامل العهدة هذا السبب.
+with all cash holders,لدى جميع حاملي العهدة
+with you,لديك
+Within,ضمن
+Wood & boards,الخشب والألواح
+Woodwork,النجارة
+Work area,منطقة العمل
+Work done (%),العمل المنجز (%)
+Work done today,العمل المنجز اليوم
+Work matches the drawing,العمل مطابق للمخطط
+Work started,بدأ العمل
+Worker,العامل
+Workers,العمّال
+Workers can't be negative.,لا يمكن أن يكون عدد العمّال سالباً.
+Workers on site,العمّال في الموقع
+"Workers, suppliers, items, orders…",العمّال، المورّدون، الأصناف، الأوامر…
+Working,قيد العمل
+Works for,يعمل لدى
+"Write what changed in this revision (price, discount or items).",اكتب ما تغيّر في هذه المراجعة (السعر أو الخصم أو الأصناف).
+Write what happened on site today.,اكتب ما حدث في الموقع اليوم.
+Write why it is rejected.,اكتب سبب الرفض.
+Write your question.,اكتب سؤالك.
+Wrong user name or password.,اسم المستخدم أو كلمة المرور غير صحيحة.
+Yes,نعم
+You can pay at most {0} here.,يمكنك دفع {0} بحدّ أقصى هنا.
+You don't have access to petty cash. Ask the owner.,ليس لديك صلاحية على العهدة. اطلب من المالك.
+You don't have access to this. Ask the owner.,ليس لديك صلاحية على هذا. اطلب من المالك.
+Your data from the old Mimaar app has been brought across.,تم نقل بياناتك من تطبيق معمار القديم.
+Your face is not clear in the photo. Face the camera in good light and try again.,وجهك غير واضح في الصورة. واجه الكاميرا في إضاءة جيدة وحاول مجدداً.
+Your free trial ends today,تنتهي تجربتك المجانية اليوم
+Your PIN,رمزك السري
+"Your plan allows {0} people to sign in, and all are in use. Turn off someone who has left, or move to a bigger plan in Plan & billing.",تسمح باقتك بدخول {0} مستخدمين وكلها مستخدمة. أوقف من غادر، أو انتقل إلى باقة أكبر من «الباقة والدفع».
+Your plan allows {0} project(s). Close an old one or move to a bigger plan in Plan & billing.,تسمح باقتك بـ {0} مشروع/مشاريع. أغلق مشروعاً قديماً أو انتقل إلى باقة أكبر من «الباقة والدفع».
+Your plan ends in {0} days,تنتهي باقتك خلال {0} أيام
+Your plan has ended. Pay within {0} days to keep working.,انتهت باقتك. ادفع خلال {0} أيام لمواصلة العمل.
+Your question,سؤالك
+"Your sign-in isn't linked to a person on site, so you can't hold petty cash. Ask the owner.",حسابك غير مربوط بشخص في الموقع، فلا يمكنك حمل عهدة. اطلب من المالك.
+"Your sign-in isn't linked to a person on site, so you can't pay from petty cash. Ask the owner.",حسابك غير مربوط بشخص في الموقع، فلا يمكنك الدفع من العهدة. اطلب من المالك.
+Your user is not linked to a person in the register.,مستخدمك غير مربوط بشخص في السجل.
+{0} advance,دفعة مقدّمة {0}
+{0} already has a budget.,لـ {0} ميزانية مسبقاً.
+{0} bad,{0} غير صالح
+{0} bills,{0} فواتير
+{0} came and left · {1} registered,{0} حضروا وغادروا · {1} مسجّلون
+{0} checked by AI,{0} فحصها الذكاء الاصطناعي
+{0} committed,{0} ملتزم به
+{0} days worked,{0} يوم عمل
+{0} expired on {1},انتهت {0} في {1}
+{0} gal,{0} جالون
+{0} gal tank,خزان {0} جالون
+{0} has no level to read.,لا يوجد منسوب يُقرأ في {0}.
+{0} has no time in today.,لم يُسجَّل دخول {0} اليوم.
+{0} has only Rs {1} of petty cash in hand.,لدى {0} عهدة نقدية قدرها {1} فقط.
+{0} has only Rs {1} of petty cash in hand. The owner gives more cash first.,لدى {0} عهدة نقدية قدرها {1} فقط. يسلّمه المالك نقداً إضافياً أولاً.
+{0} inspections waiting,{0} فحوصات بانتظار
+{0} is already marked in at {1}.,سُجّل دخول {0} مسبقاً الساعة {1}.
+{0} is already marked.,{0} مسجّل مسبقاً.
+{0} is {1} in the register and can't be used here.,{0} بحالة {1} في السجل ولا يمكن استخدامه هنا.
+{0} is {1} in the worker register: not allowed on site.,{0} بحالة {1} في سجل العمّال: غير مسموح له بدخول الموقع.
+{0} low · {1} out,{0} قارب النفاد · {1} نفد
+{0} of {1},{0} من {1}
+{0} on order,{0} تحت الطلب
+{0} on site now,{0} في الموقع الآن
+{0} on site today,{0} في الموقع اليوم
+{0} over budget,{0} فوق الميزانية
+{0} overdue,{0} متأخرة
+{0} people,{0} أشخاص
+{0} present · {1} half day,{0} حاضر · {1} نصف يوم
+{0} tankers · {1} gal this week,{0} وايتات · {1} جالون هذا الأسبوع
+{0} within budget,{0} ضمن الميزانية
+{0} workers,{0} عمّال
+{0}% advance on {1},دفعة مقدّمة {0}% على {1}
+{0}% built · {1}% planned,منجز {0}% · مخطط {1}%
+"{0}% built, {1}% reported, {2}% planned",منجز {0}%، مُبلَّغ {1}%، مخطط {2}%
+{0}% of total,{0}% من الإجمالي
+{0}% received so far,استُلم {0}% حتى الآن
+{0}% received · {1}% billed,استُلم {0}% · فُوتر {1}%
+{0}: only {1} in the store,{0}: يوجد {1} فقط في المستودع
+{0}: present. Check the face matches.,{0}: حاضر. تأكد من مطابقة الوجه.
+{0}: {1} expired,{0}: انتهت {1}
+≈ {0} gal,≈ {0} جالون
+≈ {0} of {1} gallons,≈ {0} من {1} جالون
