@@ -12,6 +12,9 @@
 set -euo pipefail
 REGION="${REGION:-ap-south-1}"; export AWS_DEFAULT_REGION="$REGION"
 GH_REPO="${GH_REPO:-smazharhasan/site-office}"
+# how GitHub names this repository in its sign-in (owner and repository with their fixed GitHub ids,
+# so a deleted and re-created repository with the same name can't use the roles)
+GH_SUBJECT="${GH_SUBJECT:-repo:smazharhasan@6824215/site-office@1425456645}"
 SERVER_ROLE="${SERVER_ROLE:-mimaar-server}"
 ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
 REG="$ACCOUNT.dkr.ecr.$REGION.amazonaws.com"
@@ -44,7 +47,7 @@ role() {  # name branch store
   local name="$1" branch="$2" store="$3"
   local trust="{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Federated\":\"$OIDC\"},
     \"Action\":\"sts:AssumeRoleWithWebIdentity\",\"Condition\":{\"StringEquals\":{\"token.actions.githubusercontent.com:aud\":\"sts.amazonaws.com\",
-    \"token.actions.githubusercontent.com:sub\":\"repo:$GH_REPO:ref:refs/heads/$branch\"}}}]}"
+    \"token.actions.githubusercontent.com:sub\":\"$GH_SUBJECT:ref:refs/heads/$branch\"}}}]}"
   if aws iam get-role --role-name "$name" >/dev/null 2>&1; then
     aws iam update-assume-role-policy --role-name "$name" --policy-document "$trust"
   else
