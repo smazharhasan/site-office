@@ -22,12 +22,13 @@ if [ ! -f .env ]; then
 fi
 set -a; . ./.env; set +a
 
-# the theme, the site plugin and the pages, from the repository
-rm -rf theme mu-plugins content
-cp -r "$SRC/theme/mabni" theme
-cp -r "$SRC/mu-plugins" mu-plugins
-cp -r "$SRC/content" content
-cp "$SRC/import.php" import.php
+# the theme, the site plugin and the pages, from the repository (the folders are emptied and
+# refilled, not replaced, so the running WordPress container sees the new files)
+for d in theme mu-plugins content; do mkdir -p "$d"; find "$d" -mindepth 1 -delete; done
+cp -r "$SRC/theme/mabni/." theme/
+cp -r "$SRC/mu-plugins/." mu-plugins/
+cp -r "$SRC/content/." content/
+cat "$SRC/import.php" > import.php
 
 cat > compose.yml <<'EOF'
 # The Mabni website. Passwords are in .env (root only).
