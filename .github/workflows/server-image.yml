@@ -25,6 +25,13 @@ jobs:
         run: |
           printf '[{"url":"https://github.com/frappe/erpnext","branch":"version-16"},{"url":"https://x-access-token:%s@github.com/%s","branch":"%s"}]' \
             "$TOKEN" "${{ github.repository }}" "${{ github.ref_name }}" > apps.json
+      - name: The sign-in details GitHub gives AWS (no secret)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const t = await core.getIDToken('sts.amazonaws.com');
+            const c = JSON.parse(Buffer.from(t.split('.')[1], 'base64url').toString());
+            core.notice(`sub=${c.sub} aud=${c.aud} iss=${c.iss}`);
       - uses: aws-actions/configure-aws-credentials@v4
         with: { role-to-assume: "${{ env.AWS_ROLE }}", aws-region: "${{ env.AWS_REGION }}" }
       - uses: aws-actions/amazon-ecr-login@v2
