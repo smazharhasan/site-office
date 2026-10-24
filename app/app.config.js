@@ -14,7 +14,41 @@ const allowHttp = (cfg) => withAndroidManifest(cfg, (c) => {
   return c;
 });
 
+// "Mabni"  app.mabni  the Mabni Cloud app: opens the customer's workspace (<name>.mabni.app)
+const mabni = (config) => {
+  const version = fs.readFileSync(path.join(__dirname, "..", "MABNI_VERSION"), "utf8").trim();
+  const [a, b, c] = version.split(".").map(Number);
+  const blue = "#1E3A5F";
+  return allowHttp({
+    ...config,
+    name: "Mabni",
+    slug: "mabni",
+    scheme: "mabni",
+    version,
+    icon: "./assets/mabni-icon.png",
+    android: {
+      ...config.android,
+      package: "app.mabni",
+      versionCode: a * 10000 + b * 100 + c,
+      adaptiveIcon: { foregroundImage: "./assets/mabni-adaptive.png", backgroundColor: blue },
+    },
+    ios: {
+      bundleIdentifier: "app.mabni",
+      buildNumber: String(a * 10000 + b * 100 + c),
+      supportsTablet: true,
+      infoPlist: {
+        NSCameraUsageDescription: "The camera takes photos of materials, bills, site cards and progress on site.",
+        NSLocationWhenInUseUsageDescription: "Your location is stamped on site photos and attendance to show they were taken on site.",
+        ITSAppUsesNonExemptEncryption: false,
+      },
+    },
+    splash: { image: "./assets/mabni-splash.png", resizeMode: "contain", backgroundColor: blue },
+    extra: { ...config.extra, variant: "mabni", baseDomain: process.env.MABNI_BASE_DOMAIN || "mabni.app" },
+  });
+};
+
 module.exports = ({ config }) => {
+  if (process.env.APP_VARIANT === "mabni") return mabni(config);
   if (process.env.APP_VARIANT !== "erp") return { ...config, extra: { ...config.extra, variant: "classic" } };
   const version = fs.readFileSync(path.join(__dirname, "..", "ERP_VERSION"), "utf8").trim();
   const [a, b, c] = version.split(".").map(Number);

@@ -9,7 +9,7 @@ import * as ImageManipulator from "expo-image-manipulator";
 import { Button, useColors } from "./ui";
 import { freshFix, type Fix } from "../lib/evidence";
 
-type Lang = "en" | "ur";
+type Lang = "en" | "ur" | "ar";
 const W: Record<string, string> = {
   "Take photo": "تصویر لیں", "Retake": "دوبارہ لیں", "Use photo": "یہ تصویر لگائیں", "Cancel": "منسوخ", "Allow camera": "کیمرے کی اجازت دیں",
   "Camera permission is needed.": "کیمرے کی اجازت ضروری ہے۔", "Point the camera at the QR code": "کیمرہ QR کوڈ کی طرف کریں",
@@ -17,7 +17,14 @@ const W: Record<string, string> = {
   "Turn on the phone's location (GPS).": "فون کی لوکیشن (GPS) آن کریں۔",
   "Location is fake (mock GPS). Turn off mock location apps.": "لوکیشن جعلی ہے۔ جعلی لوکیشن والی ایپ بند کریں۔",
 };
-export const tr = (lang: Lang, s: string) => (lang === "ur" ? W[s] ?? s : s);
+const WA: Record<string, string> = {
+  "Take photo": "التقط صورة", "Retake": "إعادة الالتقاط", "Use photo": "استخدم الصورة", "Cancel": "إلغاء", "Allow camera": "اسمح بالكاميرا",
+  "Camera permission is needed.": "إذن الكاميرا مطلوب.", "Point the camera at the QR code": "وجّه الكاميرا إلى رمز QR",
+  "Location permission is required: every photo must show where it was taken.": "إذن الموقع مطلوب: كل صورة يجب أن تُظهر مكان التقاطها.",
+  "Turn on the phone's location (GPS).": "شغّل الموقع (GPS) في الجوال.",
+  "Location is fake (mock GPS). Turn off mock location apps.": "الموقع مزيّف. أوقف تطبيقات الموقع الوهمي.",
+};
+export const tr = (lang: Lang, s: string) => (lang === "ur" ? W[s] ?? s : lang === "ar" ? WA[s] ?? s : s);
 
 export interface ErpShot { base64: string; fix: Fix }
 

@@ -3,17 +3,38 @@ import { ActivityIndicator, BackHandler, Linking, Platform, Text, View } from "r
 import { WebView, type WebViewMessageEvent } from "react-native-webview";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Constants from "expo-constants";
 import { useCameraPermissions } from "expo-camera";
 import * as Location from "expo-location";
 import { Banner, Button, Field, Screen, useColors } from "../src/components/ui";
 import { ErpCamera, QrScan, tr } from "../src/components/ErpCamera";
 import { freshFix } from "../src/lib/evidence";
 
-const KEY = "mimaar.erp.site";
+const EXTRA = (Constants.expoConfig?.extra || {}) as { variant?: string; baseDomain?: string };
+/** The Mabni Cloud app: a customer types their workspace name ("alnoor" → https://alnoor.mabni.app). */
+const MABNI = EXTRA.variant === "mabni";
+const BASE = EXTRA.baseDomain || "mabni.app";
+const KEY = MABNI ? "mabni.site" : "mimaar.erp.site";
+type L3 = "en" | "ur" | "ar";
+const T: Record<string, Record<L3, string>> = {
+  open_t: { en: "Open your workspace", ur: "اپنا ورک اسپیس کھولیں", ar: "افتح مساحة عملك" },
+  open_d: { en: "Type your workspace name once, for example alnoor.", ur: "اپنے ورک اسپیس کا نام ایک بار لکھیں، مثلاً alnoor۔", ar: "اكتب اسم مساحة عملك مرة واحدة، مثل alnoor." },
+  field: { en: "Workspace", ur: "ورک اسپیس", ar: "مساحة العمل" },
+  open: { en: "Open", ur: "کھولیں", ar: "افتح" },
+  trial: { en: "No workspace yet? Start a free trial at mabni.app", ur: "ابھی ورک اسپیس نہیں؟ mabni.app پر مفت آزمائش شروع کریں۔", ar: "ليس لديك مساحة عمل؟ ابدأ تجربة مجانية على mabni.app" },
+  bad: { en: "Type your workspace name, for example alnoor.", ur: "اپنے ورک اسپیس کا نام لکھیں، مثلاً alnoor۔", ar: "اكتب اسم مساحة عملك، مثل alnoor." },
+  unreach: { en: "Couldn't reach a Mabni workspace at that address. Check the name and the internet connection.", ur: "اس پتے پر مبنی کا ورک اسپیس نہیں ملا۔ نام اور انٹرنیٹ چیک کریں۔", ar: "تعذّر الوصول إلى مساحة عمل مبني على هذا العنوان. تحقق من الاسم والاتصال بالإنترنت." },
+  noconn: { en: "No connection", ur: "رابطہ نہیں ہو سکا", ar: "لا يوجد اتصال" },
+  needweb: { en: "Mabni needs the internet to open {0}. Check your connection and try again.", ur: "{0} کھولنے کے لیے مبنی کو انٹرنیٹ چاہیے۔ کنکشن چیک کر کے دوبارہ کوشش کریں۔", ar: "يحتاج مبني إلى الإنترنت لفتح {0}. تحقق من الاتصال وحاول مجدداً." },
+  retry: { en: "Try again", ur: "دوبارہ کوشش کریں", ar: "حاول مجدداً" },
+  change: { en: "Change workspace", ur: "ورک اسپیس بدلیں", ar: "تغيير مساحة العمل" },
+};
+const t3 = (k: string, l: L3, ...a: string[]) => a.reduce((x, v, i) => x.split(`{${i}}`).join(v), T[k][l] || T[k].en);
 
 /** "villa31.frappe.cloud" → https://villa31.frappe.cloud ; "192.168.1.20:8081" (the laptop on Wi-Fi) → http://192.168.1.20:8081 */
 function siteUrl(s: string): string | null {
   let v = (s || "").trim(); if (!v) return null;
+  if (MABNI && /^[a-z][a-z0-9-]{1,29}$/i.test(v)) return `https://${v.toLowerCase()}.${BASE}`;
   const scheme = v.match(/^(https?):\/\//i)?.[1]?.toLowerCase();
   v = v.replace(/^https?:\/\//i, "").replace(/[/?#].*$/, "").toLowerCase();
   if (!/^[a-z0-9.-]+(:\d{2,5})?$/.test(v)) return null;
@@ -32,13 +53,13 @@ export default function Erp() {
   const [site, setSite] = useState<string | null | undefined>(undefined);
   const [input, setInput] = useState(""); const [busy, setBusy] = useState(false); const [msg, setMsg] = useState("");
   const [failed, setFailed] = useState(false); const [canBack, setCanBack] = useState(false);
-  const [lang, setLang] = useState<"en" | "ur">("en");
+  const [lang, setLang] = useState<L3>("en");
   const [cam, setCam] = useState<Msg | null>(null); const [scan, setScan] = useState<Msg | null>(null); const [connectScan, setConnectScan] = useState(false);
 
   const [perm, askCam] = useCameraPermissions();
   useEffect(() => {
     AsyncStorage.getItem(KEY).then((v) => setSite(v ? siteUrl(v) : null)).catch(() => setSite(null));
-    AsyncStorage.getItem("mimaar.erp.lang").then((v) => { if (v === "ur") setLang("ur"); }).catch(() => {});
+    AsyncStorage.getItem("mimaar.erp.lang").then((v) => { if (v === "ur" || v === "ar") setLang(v); }).catch(() => {});
   }, []);
   // the field screens use the camera (photos, site cards) and the location (every photo, attendance): ask once, up front
   useEffect(() => {
@@ -53,7 +74,7 @@ export default function Erp() {
 
   const open = async (raw: string) => {
     const base = siteUrl(raw);
-    if (!base) { setMsg("Type the site address, for example villa31.frappe.cloud"); return; }
+    if (!base) { setMsg(MABNI ? t3("bad", lang) : "Type the site address, for example villa31.frappe.cloud"); return; }
     setBusy(true); setMsg("");
     if (Platform.OS === "web") { await AsyncStorage.setItem(KEY, base); setSite(base); return; }
     try {
@@ -62,7 +83,7 @@ export default function Erp() {
       if (!r.ok || j.message !== "pong") throw new Error("not erpnext");
       await AsyncStorage.setItem(KEY, base); setSite(base);
     } catch {
-      setMsg(/^http:/.test(base)
+      setMsg(MABNI ? t3("unreach", lang) : /^http:/.test(base)
         ? "Couldn't reach the laptop. The phone and the laptop must be on the same Wi-Fi, and Mimaar ERP must be running on the laptop."
         : "Couldn't reach a Mimaar / ERPNext site at that address. Check the spelling and the internet connection.");
     }
@@ -74,7 +95,7 @@ export default function Erp() {
   const reply = (id: number, res: unknown) => web.current?.injectJavaScript(`window.MimaarNative && window.MimaarNative.resolve(${id}, ${JSON.stringify(res)}); true;`);
   const onMessage = async (e: WebViewMessageEvent) => {
     let m: Msg; try { m = JSON.parse(e.nativeEvent.data); } catch { return; }
-    if (m.lang === "ur" || m.lang === "en") { setLang(m.lang); AsyncStorage.setItem("mimaar.erp.lang", m.lang).catch(() => {}); }
+    if (m.lang === "ur" || m.lang === "en" || m.lang === "ar") { setLang(m.lang); AsyncStorage.setItem("mimaar.erp.lang", m.lang).catch(() => {}); }
     try {
       if (m.type === "photo") setCam(m);
       else if (m.type === "scan") setScan(m);
@@ -86,6 +107,24 @@ export default function Erp() {
   };
 
   if (site === undefined) return <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: c.bg }}><ActivityIndicator /></View>;
+  const pickLang = (l: L3) => { setLang(l); AsyncStorage.setItem("mimaar.erp.lang", l).catch(() => {}); };
+  const rtl = lang !== "en";
+  if (!site && MABNI) return (
+    <Screen title="Mabni">
+      <View style={{ flexDirection: "row", gap: 8, marginBottom: 14 }}>
+        {(["en", "ur", "ar"] as L3[]).map((l) => <View key={l} style={{ flex: 1 }}><Button title={{ en: "English", ur: "اردو", ar: "العربية" }[l]} kind={lang === l ? undefined : "plain"} onPress={() => pickLang(l)} /></View>)}
+      </View>
+      <Text style={{ color: c.ink, fontSize: 18, fontWeight: "700", marginBottom: 6, textAlign: rtl ? "right" : "left" }}>{t3("open_t", lang)}</Text>
+      <Text style={{ color: c.muted, marginBottom: 12, textAlign: rtl ? "right" : "left" }}>{t3("open_d", lang)}</Text>
+      <Field label={t3("field", lang)} value={input} onChangeText={setInput} autoCapitalize="none" autoCorrect={false} keyboardType="url" placeholder="alnoor" />
+      {siteUrl(input) ? <Text style={{ color: c.muted, marginTop: 4 }}>{siteUrl(input)}</Text> : null}
+      {msg ? <Banner kind="bad" text={msg} /> : null}
+      <View style={{ gap: 10, marginTop: 12 }}>
+        <Button title={t3("open", lang)} onPress={() => open(input)} busy={busy} />
+      </View>
+      <Text style={{ color: c.muted, marginTop: 16, textAlign: rtl ? "right" : "left" }} onPress={() => Linking.openURL(`https://${BASE}/start-trial/`).catch(() => {})}>{t3("trial", lang)}</Text>
+    </Screen>
+  );
   if (!site) return (
     <Screen title="Mimaar ERP">
       <Text style={{ color: c.ink, fontSize: 16, marginBottom: 6 }}>Open your project · اپنا پروجیکٹ کھولیں</Text>
@@ -103,12 +142,12 @@ export default function Erp() {
   );
   if (failed) return (
     <SafeAreaView style={{ flex: 1, backgroundColor: c.bg, padding: 24, gap: 12, justifyContent: "center" }}>
-      <Text style={{ color: c.ink, fontSize: 18, fontWeight: "700" }}>{lang === "ur" ? "رابطہ نہیں ہو سکا" : "No connection"}</Text>
-      <Text style={{ color: c.muted }}>{/^http:/.test(site)
+      <Text style={{ color: c.ink, fontSize: 18, fontWeight: "700" }}>{MABNI ? t3("noconn", lang) : lang === "ur" ? "رابطہ نہیں ہو سکا" : "No connection"}</Text>
+      <Text style={{ color: c.muted }}>{MABNI ? t3("needweb", lang, site) : /^http:/.test(site)
         ? `Mimaar can't reach the laptop at ${site}. Check that the phone is on the same Wi-Fi and that Mimaar ERP is running on the laptop.`
         : `Mimaar needs the internet to open ${site}. Check your connection and try again.`}</Text>
-      <Button title={lang === "ur" ? "دوبارہ کوشش کریں" : "Try again"} onPress={() => { setFailed(false); web.current?.reload(); }} />
-      <Button title={lang === "ur" ? "سائٹ کا پتہ بدلیں" : "Change site address"} kind="plain" onPress={forget} />
+      <Button title={MABNI ? t3("retry", lang) : lang === "ur" ? "دوبارہ کوشش کریں" : "Try again"} onPress={() => { setFailed(false); web.current?.reload(); }} />
+      <Button title={MABNI ? t3("change", lang) : lang === "ur" ? "سائٹ کا پتہ بدلیں" : "Change site address"} kind="plain" onPress={forget} />
     </SafeAreaView>
   );
   if (Platform.OS === "web") { window.location.href = `${site}/field`; return null; }

@@ -1,4 +1,4 @@
-# Builds the two Android apps (Mimaar, Mimaar ERP) and the web app on every change, with no setup on your side.
+# Builds the Android apps (Mabni, Mimaar, Mimaar ERP) and the web app on every change, with no setup on your side.
 #  - APK:  attached to the "latest" release  → https://github.com/<you>/<repo>/releases/latest
 #  - Web:  pushed to the gh-pages branch (Settings → Pages → Branch: gh-pages)        → https://<you>.github.io/<repo>/
 name: Build apps
@@ -16,6 +16,7 @@ jobs:
         include:
           - { variant: classic, apk: Mimaar, verfile: VERSION }
           - { variant: erp, apk: Mimaar-ERP, verfile: ERP_VERSION }
+          - { variant: mabni, apk: Mabni, verfile: MABNI_VERSION }
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: app } }
     env: { APP_VARIANT: "${{ matrix.variant }}" }
@@ -53,6 +54,7 @@ jobs:
         run: |
           echo "VER=$(cat VERSION)" >> $GITHUB_ENV
           echo "ERPVER=$(cat ERP_VERSION)" >> $GITHUB_ENV
+          echo "MABNIVER=$(cat MABNI_VERSION)" >> $GITHUB_ENV
       - name: Mark the first release (1.0.0) in the history
         env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
         run: |
@@ -62,13 +64,15 @@ jobs:
           tag_name: latest
           name: Mimaar (latest)
           body: |
-            Two apps; install either or both on the Android phone (they sit side by side):
+            Install on the Android phone (the apps sit side by side):
+            - **Mabni.apk**: Mabni, version ${{ env.MABNIVER }}; asks for your workspace name the first time (e.g. alnoor).
             - **Mimaar.apk**: the current Mimaar app, version ${{ env.VER }}.
             - **Mimaar-ERP.apk**: Mimaar ERP (ERPNext), version ${{ env.ERPVER }}; asks for your site address the first time.
             Built from ${{ github.sha }}.
           files: |
             out/Mimaar.apk
             out/Mimaar-ERP.apk
+            out/Mabni.apk
           make_latest: true
       - uses: softprops/action-gh-release@v2
         with:
@@ -83,6 +87,13 @@ jobs:
           name: Mimaar ERP ${{ env.ERPVER }}
           body: "Mimaar ERP (Android) ${{ env.ERPVER }}: opens your Mimaar ERP site. Built from ${{ github.sha }}."
           files: out/Mimaar-ERP-${{ env.ERPVER }}.apk
+          make_latest: false
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: mabni-v${{ env.MABNIVER }}
+          name: Mabni ${{ env.MABNIVER }}
+          body: "Mabni (Android) ${{ env.MABNIVER }}: opens your Mabni workspace. Built from ${{ github.sha }}."
+          files: out/Mabni-${{ env.MABNIVER }}.apk
           make_latest: false
 
   web:
