@@ -80,3 +80,19 @@ def payment_submit(tenant=None, key=None, data=None):
 		p.db_set("proof", f.file_url)
 	notify_admins(f"Mabni: payment to check from {t.company_name}", f"{p.currency} {p.amount} for {p.plan} ({p.billing_period}). Open Mabni Payment {p.name} in the console.")
 	return {"name": p.name}
+
+
+@frappe.whitelist(allow_guest=True)
+def public_plans():
+	"""Plans and prices for the website (USD, with PKR, SAR and AED)."""
+	if not is_control():
+		raise frappe.PermissionError
+	s = settings()
+	out = []
+	for p in plans(None):
+		row = {k: p[k] for k in ("name", "mode", "max_projects", "max_users", "storage_gb", "summary")}
+		row["usd"] = {"month": p["month"]["usd"], "year": p["year"]["usd"]}
+		for country, cur in (("Pakistan", "PKR"), ("Saudi Arabia", "SAR"), ("United Arab Emirates", "AED")):
+			row[cur] = {"month": local_price(p["month"]["usd"], country)["amount"], "year": local_price(p["year"]["usd"], country)["amount"]}
+		out.append(row)
+	return {"plans": out, "trial_days": s.trial_days, "signup": f"https://{s.control_host}/start"}

@@ -47,10 +47,11 @@ def _lines():
 		from `tabPayment Entry Reference` r join `tabPayment Entry` pe on pe.name = r.parent join `tabPurchase Order` po on po.name = r.reference_name
 		join `tabPurchase Order Item` poi on poi.parent = po.name
 		where pe.docstatus = 1 and r.reference_doctype = 'Purchase Order' and pe.company = %s group by poi.expense_account""", co))
-	paid_pi = dict(frappe.db.sql("""select pii.expense_account, sum(r.allocated_amount * pii.base_net_amount / nullif(pi.base_net_total, 0))
+	# a stock item's bill line is booked to "stock received but not billed"; its budget line is the order line's account
+	paid_pi = dict(frappe.db.sql("""select coalesce(nullif(poi.expense_account, ''), pii.expense_account) acc, sum(r.allocated_amount * pii.base_net_amount / nullif(pi.base_net_total, 0))
 		from `tabPayment Entry Reference` r join `tabPayment Entry` pe on pe.name = r.parent join `tabPurchase Invoice` pi on pi.name = r.reference_name
-		join `tabPurchase Invoice Item` pii on pii.parent = pi.name
-		where pe.docstatus = 1 and r.reference_doctype = 'Purchase Invoice' and pe.company = %s group by pii.expense_account""", co))
+		join `tabPurchase Invoice Item` pii on pii.parent = pi.name left join `tabPurchase Order Item` poi on poi.name = pii.po_detail
+		where pe.docstatus = 1 and r.reference_doctype = 'Purchase Invoice' and pe.company = %s group by acc""", co))
 	direct = dict(frappe.db.sql("""select account, sum(debit - credit) from `tabGL Entry` where is_cancelled = 0 and company = %s and voucher_type = 'Journal Entry' group by account""", co))
 	out = []
 	for r in rows:

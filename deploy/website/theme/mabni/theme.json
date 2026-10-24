@@ -1,0 +1,205 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": true,
+		"layout": {
+			"contentSize": "760px",
+			"wideSize": "1160px"
+		},
+		"color": {
+			"defaultPalette": false,
+			"defaultGradients": false,
+			"palette": [
+				{
+					"slug": "blueprint",
+					"name": "Blueprint blue",
+					"color": "#1E3A5F"
+				},
+				{
+					"slug": "blueprint-2",
+					"name": "Blueprint light",
+					"color": "#284B78"
+				},
+				{
+					"slug": "amber",
+					"name": "Amber",
+					"color": "#F2B01E"
+				},
+				{
+					"slug": "ink",
+					"name": "Ink",
+					"color": "#14202B"
+				},
+				{
+					"slug": "muted",
+					"name": "Muted",
+					"color": "#5B6875"
+				},
+				{
+					"slug": "concrete",
+					"name": "Concrete",
+					"color": "#EEF1F4"
+				},
+				{
+					"slug": "line",
+					"name": "Line",
+					"color": "#D5DBE1"
+				},
+				{
+					"slug": "white",
+					"name": "White",
+					"color": "#FFFFFF"
+				}
+			]
+		},
+		"typography": {
+			"fluid": true,
+			"fontFamilies": [
+				{
+					"slug": "display",
+					"name": "Archivo",
+					"fontFamily": "\"Archivo\", \"Arial Narrow\", Arial, sans-serif"
+				},
+				{
+					"slug": "body",
+					"name": "IBM Plex Sans",
+					"fontFamily": "\"IBM Plex Sans\", \"Segoe UI\", Roboto, Arial, sans-serif"
+				},
+				{
+					"slug": "arabic",
+					"name": "IBM Plex Sans Arabic",
+					"fontFamily": "\"IBM Plex Sans Arabic\", \"Noto Sans Arabic\", Tahoma, sans-serif"
+				},
+				{
+					"slug": "urdu",
+					"name": "Noto Nastaliq Urdu",
+					"fontFamily": "\"Noto Nastaliq Urdu\", \"Jameel Noori Nastaleeq\", serif"
+				},
+				{
+					"slug": "mono",
+					"name": "IBM Plex Mono",
+					"fontFamily": "\"IBM Plex Mono\", ui-monospace, Menlo, monospace"
+				}
+			],
+			"fontSizes": [
+				{
+					"slug": "small",
+					"name": "Small",
+					"size": "0.875rem"
+				},
+				{
+					"slug": "medium",
+					"name": "Medium",
+					"size": "1.0625rem"
+				},
+				{
+					"slug": "large",
+					"name": "Large",
+					"size": "1.25rem",
+					"fluid": {
+						"min": "1.125rem",
+						"max": "1.25rem"
+					}
+				},
+				{
+					"slug": "x-large",
+					"name": "Extra large",
+					"size": "2rem",
+					"fluid": {
+						"min": "1.6rem",
+						"max": "2rem"
+					}
+				},
+				{
+					"slug": "xx-large",
+					"name": "Huge",
+					"size": "3.2rem",
+					"fluid": {
+						"min": "2.2rem",
+						"max": "3.2rem"
+					}
+				}
+			]
+		},
+		"spacing": {
+			"units": [
+				"px",
+				"rem",
+				"%",
+				"vw"
+			]
+		},
+		"useRootPaddingAwareAlignments": true
+	},
+	"styles": {
+		"color": {
+			"background": "var(--wp--preset--color--white)",
+			"text": "var(--wp--preset--color--ink)"
+		},
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--body)",
+			"fontSize": "var(--wp--preset--font-size--medium)",
+			"lineHeight": "1.6"
+		},
+		"spacing": {
+			"blockGap": "1.1rem",
+			"padding": {
+				"left": "max(16px, env(safe-area-inset-left, 0px))",
+				"right": "max(16px, env(safe-area-inset-right, 0px))"
+			}
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--display)",
+					"fontWeight": "800",
+					"lineHeight": "1.12"
+				}
+			},
+			"h1": {
+				"typography": {
+					"fontSize": "var(--wp--preset--font-size--xx-large)"
+				}
+			},
+			"h2": {
+				"typography": {
+					"fontSize": "var(--wp--preset--font-size--x-large)"
+				}
+			},
+			"h3": {
+				"typography": {
+					"fontSize": "var(--wp--preset--font-size--large)"
+				}
+			},
+			"link": {
+				"color": {
+					"text": "var(--wp--preset--color--blueprint-2)"
+				}
+			},
+			"button": {
+				"color": {
+					"background": "var(--wp--preset--color--amber)",
+					"text": "#1B1405"
+				},
+				"border": {
+					"radius": "12px"
+				},
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--display)",
+					"fontWeight": "700"
+				}
+			}
+		}
+	},
+	"templateParts": [],
+	"customTemplates": [
+		{
+			"name": "page-plain",
+			"title": "Plain page (legal text)",
+			"postTypes": [
+				"page"
+			]
+		}
+	]
+}

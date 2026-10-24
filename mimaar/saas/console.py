@@ -10,8 +10,8 @@ from frappe.utils import now_datetime, nowdate
 
 PLANS = [
 	{"plan_name": "Owner", "mode": "Owner", "sort_order": 1, "price_month_usd": 15, "price_year_usd": 150, "max_projects": 2, "max_users": 10, "storage_gb": 10,
-		"summary_en": "For a family building its own home: one site, the builder and the site staff on your phone.",
-		"summary_ur": "اپنا گھر بنانے والے خاندان کے لیے: سائٹ، بلڈر اور سائٹ کا عملہ، سب آپ کے فون پر۔",
+		"summary_en": "For a family building its own home: your site, your builder and your site staff, on your phone.",
+		"summary_ur": "اپنا گھر بنانے والے خاندان کے لیے: آپ کی سائٹ، آپ کا بلڈر اور سائٹ کا عملہ، سب آپ کے فون پر۔",
 		"summary_ar": "للعائلة التي تبني بيتها: الموقع والمقاول وفريق العمل، كلها على جوالك."},
 	{"plan_name": "Builder", "mode": "Builder", "sort_order": 2, "price_month_usd": 49, "price_year_usd": 490, "max_projects": 10, "max_users": 40, "storage_gb": 50,
 		"summary_en": "For builders and contractors: several client sites, crews, stores and money in one place.",
@@ -52,6 +52,8 @@ def setup_console(base=None, control=None, company="SMH Global Services", countr
 	for p in PLANS:
 		if not frappe.db.exists("Mabni Plan", p["plan_name"]):
 			frappe.get_doc(dict(p, doctype="Mabni Plan", is_active=1)).insert(ignore_permissions=True)
+		elif frappe.db.get_value("Mabni Plan", p["plan_name"], "summary_en") == "For a family building its own home: one site, the builder and the site staff on your phone.":
+			frappe.db.set_value("Mabni Plan", p["plan_name"], {k: p[k] for k in ("summary_en", "summary_ur", "summary_ar")})
 	ws = frappe.get_single("Website Settings")
 	ws.home_page = "start"
 	ws.app_name = "Mabni"

@@ -1,0 +1,170 @@
+[
+ {
+  "lang": "en",
+  "slug": "home",
+  "title": "Mabni: construction site management for owners and builders",
+  "excerpt": "Mabni puts your construction site on your phone: deliveries, store, payments, progress photos and people, checked with AI. English, Urdu and Arabic. 7 days free.",
+  "template": "",
+  "file": "en/home.html"
+ },
+ {
+  "lang": "en",
+  "slug": "features",
+  "title": "Every part of the site, in one app",
+  "excerpt": "Stores, payments, budget, build progress, people, water tankers, petty cash and AI checks: what Mabni does for owners and builders.",
+  "template": "",
+  "file": "en/features.html"
+ },
+ {
+  "lang": "en",
+  "slug": "pricing",
+  "title": "Simple prices, in your currency",
+  "excerpt": "Mabni plans for home owners and builders, monthly or yearly, in USD, PKR or SAR. 7 days free.",
+  "template": "",
+  "file": "en/pricing.html"
+ },
+ {
+  "lang": "en",
+  "slug": "about",
+  "title": "Built on a real building site",
+  "excerpt": "Mabni is a product of SMH Global Services, made for home owners and builders who want to see their site clearly.",
+  "template": "",
+  "file": "en/about.html"
+ },
+ {
+  "lang": "en",
+  "slug": "contact",
+  "title": "Talk to us",
+  "excerpt": "Contact the Mabni team at SMH Global Services.",
+  "template": "",
+  "file": "en/contact.html"
+ },
+ {
+  "lang": "en",
+  "slug": "privacy",
+  "title": "Privacy policy",
+  "excerpt": "How Mabni handles the data of customers and the people who use their workspaces.",
+  "template": "page-plain",
+  "file": "en/privacy.html"
+ },
+ {
+  "lang": "en",
+  "slug": "terms",
+  "title": "Terms of service",
+  "excerpt": "The terms for using Mabni, including the free trial, plans, payments and data.",
+  "template": "page-plain",
+  "file": "en/terms.html"
+ },
+ {
+  "lang": "ur",
+  "slug": "home",
+  "title": "مبنی: گھر بنانے والوں اور بلڈرز کے لیے سائٹ مینجمنٹ",
+  "excerpt": "مبنی آپ کی تعمیراتی سائٹ کو آپ کے فون پر لے آتا ہے: سامان کی وصولی، اسٹور، ادائیگیاں، کام کی تصاویر اور لوگ، اے آئی کی جانچ کے ساتھ۔ انگریزی، اردو اور عربی میں۔ 7 دن مفت۔",
+  "template": "",
+  "file": "ur/home.html"
+ },
+ {
+  "lang": "ur",
+  "slug": "features",
+  "title": "سائٹ کا ہر حصہ، ایک ایپ میں",
+  "excerpt": "اسٹور، ادائیگیاں، بجٹ، تعمیر کی پیش رفت، لوگ، پانی کے ٹینکر، پیٹی کیش اور اے آئی کی جانچ: مبنی مالکان اور بلڈرز کے لیے کیا کرتا ہے۔",
+  "template": "",
+  "file": "ur/features.html"
+ },
+ {
+  "lang": "ur",
+  "slug": "pricing",
+  "title": "سادہ قیمتیں، آپ کی کرنسی میں",
+  "excerpt": "گھر بنانے والوں اور بلڈرز کے لیے مبنی کے پلان، ماہانہ یا سالانہ، ڈالر، روپے یا ریال میں۔ 7 دن مفت۔",
+  "template": "",
+  "file": "ur/pricing.html"
+ },
+ {
+  "lang": "ur",
+  "slug": "about",
+  "title": "ایک حقیقی تعمیراتی سائٹ پر بنا",
+  "excerpt": "مبنی ایس ایم ایچ گلوبل سروسز کی پیشکش ہے، ان مالکان اور بلڈرز کے لیے جو اپنی سائٹ صاف دیکھنا چاہتے ہیں۔",
+  "template": "",
+  "file": "ur/about.html"
+ },
+ {
+  "lang": "ur",
+  "slug": "contact",
+  "title": "ہم سے بات کریں",
+  "excerpt": "ایس ایم ایچ گلوبل سروسز میں مبنی کی ٹیم سے رابطہ کریں۔",
+  "template": "",
+  "file": "ur/contact.html"
+ },
+ {
+  "lang": "ur",
+  "slug": "privacy",
+  "title": "رازداری کی پالیسی",
+  "excerpt": "مبنی اپنے صارفین اور ان کے ورک اسپیس استعمال کرنے والوں کا ڈیٹا کیسے رکھتا ہے۔",
+  "template": "page-plain",
+  "file": "ur/privacy.html"
+ },
+ {
+  "lang": "ur",
+  "slug": "terms",
+  "title": "شرائطِ استعمال",
+  "excerpt": "مبنی کے استعمال کی شرائط، بشمول مفت آزمائش، پلان، ادائیگی اور ڈیٹا۔",
+  "template": "page-plain",
+  "file": "ur/terms.html"
+ },
+ {
+  "lang": "ar",
+  "slug": "home",
+  "title": "مبني: إدارة مواقع البناء للمالك والمقاول",
+  "excerpt": "مبني يضع موقع البناء على جوالك: التوريدات والمخزن والدفعات وصور التقدّم والعمّال، مع تدقيق بالذكاء الاصطناعي. بالعربية والإنجليزية والأردية. 7 أيام مجاناً.",
+  "template": "",
+  "file": "ar/home.html"
+ },
+ {
+  "lang": "ar",
+  "slug": "features",
+  "title": "كل جزء من الموقع، في تطبيق واحد",
+  "excerpt": "المخزن والدفعات والميزانية وتقدّم البناء والعمّال ووايتات الماء والعهدة النقدية وتدقيق الذكاء الاصطناعي: ما يقدّمه مبني للمالك والمقاول.",
+  "template": "",
+  "file": "ar/features.html"
+ },
+ {
+  "lang": "ar",
+  "slug": "pricing",
+  "title": "أسعار بسيطة، بعملتك",
+  "excerpt": "باقات مبني للمالك والمقاول، شهرياً أو سنوياً، بالدولار أو الريال أو الروبية. 7 أيام مجاناً.",
+  "template": "",
+  "file": "ar/pricing.html"
+ },
+ {
+  "lang": "ar",
+  "slug": "about",
+  "title": "وُلد في موقع بناء حقيقي",
+  "excerpt": "مبني منتج من SMH Global Services، للمالك والمقاول الذي يريد أن يرى موقعه بوضوح.",
+  "template": "",
+  "file": "ar/about.html"
+ },
+ {
+  "lang": "ar",
+  "slug": "contact",
+  "title": "تحدّث إلينا",
+  "excerpt": "تواصل مع فريق مبني في SMH Global Services.",
+  "template": "",
+  "file": "ar/contact.html"
+ },
+ {
+  "lang": "ar",
+  "slug": "privacy",
+  "title": "سياسة الخصوصية",
+  "excerpt": "كيف يتعامل مبني مع بيانات العملاء ومستخدمي مساحات العمل.",
+  "template": "page-plain",
+  "file": "ar/privacy.html"
+ },
+ {
+  "lang": "ar",
+  "slug": "terms",
+  "title": "شروط الخدمة",
+  "excerpt": "شروط استخدام مبني، بما فيها التجربة المجانية والباقات والدفع والبيانات.",
+  "template": "page-plain",
+  "file": "ar/terms.html"
+ }
+]
