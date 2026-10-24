@@ -1291,3 +1291,5 @@ Your user is not linked to a person in the register.,مستخدمك غير مر�
 ≈ {0} gal,≈ {0} جالون
 ≈ {0} of {1} gallons,≈ {0} من {1} جالون
 Later,لاحقاً
+Today's AI checks for this workspace are used up ({0}). They start again tomorrow.,استُنفدت فحوصات الذكاء الاصطناعي لهذا اليوم ({0}). تعود غداً.
+AI limit,حدّ الذكاء الاصطناعي

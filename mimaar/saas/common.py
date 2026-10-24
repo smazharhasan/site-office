@@ -172,7 +172,17 @@ def push(t):
 	key = t.get_password("tenant_key", raise_exception=False) if t.get("tenant_key") else None
 	if key:
 		update_site_config(t.site_host, "mabni_key", key)
+	update_site_config(t.site_host, "mabni_ai", ai_block())
 	return True
+
+
+def ai_block():
+	"""The console's AI key for the workspaces (empty when off)."""
+	s = settings()
+	if s.ai_provider in (None, "", "Off"):
+		return {}
+	key = s.get_password("ai_api_key", raise_exception=False)
+	return {"provider": s.ai_provider, "key": key, "model": s.ai_model or "", "daily_limit": int(s.ai_daily_limit or 0)} if key else {}
 
 
 def notify_admins(subject, message):

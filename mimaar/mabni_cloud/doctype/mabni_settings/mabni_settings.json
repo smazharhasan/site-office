@@ -162,6 +162,42 @@
    "options": "Mabni Bank Account"
   },
   {
+   "fieldname": "ai_section",
+   "fieldtype": "Section Break",
+   "label": "AI for customers",
+   "description": "With a key here, every workspace can read bills, check photos and answer questions without its own key. The workspace's own key, if it adds one, is used instead."
+  },
+  {
+   "fieldname": "ai_provider",
+   "fieldtype": "Select",
+   "label": "AI provider",
+   "options": "Off\nGemini\nClaude",
+   "default": "Off"
+  },
+  {
+   "fieldname": "ai_api_key",
+   "fieldtype": "Password",
+   "label": "API key",
+   "depends_on": "eval:doc.ai_provider!='Off'"
+  },
+  {
+   "fieldname": "col_ai",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "ai_model",
+   "fieldtype": "Data",
+   "label": "Model (leave empty for the default)",
+   "depends_on": "eval:doc.ai_provider!='Off'"
+  },
+  {
+   "fieldname": "ai_daily_limit",
+   "fieldtype": "Int",
+   "label": "AI checks per workspace per day",
+   "default": "300",
+   "depends_on": "eval:doc.ai_provider!='Off'"
+  },
+  {
    "fieldname": "legal_section",
    "fieldtype": "Section Break",
    "label": "Legal"
@@ -218,6 +254,12 @@
   "round_aed",
   "bank_section",
   "bank_accounts",
+  "ai_section",
+  "ai_provider",
+  "ai_api_key",
+  "col_ai",
+  "ai_model",
+  "ai_daily_limit",
   "legal_section",
   "terms_url",
   "privacy_url"

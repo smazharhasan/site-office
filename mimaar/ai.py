@@ -32,14 +32,36 @@ INVOICE_SHAPE = """{"supplierName": string, "invoiceNo": string, "date": "YYYY-M
 URDU = "It may be printed or handwritten, in English or Urdu (Urdu digits too), or a screenshot of a WhatsApp, SMS or e-mail message. Read handwriting and Urdu carefully."
 
 
+def cloud_ai():
+	"""On Mabni Cloud the console can give every workspace AI (its own key, with a daily limit)."""
+	m = frappe.conf.get("mabni_ai") or {}
+	return m if m.get("provider") in DEFAULT_MODEL and m.get("key") else None
+
+
+def available():
+	"""Is AI reading on for this site (its own key, or Mabni Cloud's)?"""
+	s = frappe.get_cached_doc("Mimaar Settings")
+	return bool((s.ai_provider and s.ai_provider != "Off") or cloud_ai() or frappe.conf.get("mimaar_fake_ai_file"))
+
+
 def _cfg():
 	s = frappe.get_single("Mimaar Settings")
-	if s.ai_provider in (None, "", "Off"):
+	if s.ai_provider not in (None, "", "Off"):
+		key = s.get_password("ai_api_key", raise_exception=False)
+		if not key:
+			frappe.throw(_("Paste the API key in Settings."), title=_("AI not set up"))
+		return s.ai_provider, key, (s.ai_model or DEFAULT_MODEL[s.ai_provider])
+	m = cloud_ai()
+	if not m:
 		frappe.throw(_("AI reading is off. Choose Gemini or Claude and paste the API key in Settings."), title=_("AI not set up"))
-	key = s.get_password("ai_api_key", raise_exception=False)
-	if not key:
-		frappe.throw(_("Paste the API key in Settings."), title=_("AI not set up"))
-	return s.ai_provider, key, (s.ai_model or DEFAULT_MODEL[s.ai_provider])
+	limit = int(m.get("daily_limit") or 0)
+	if limit:
+		k = frappe.cache.make_key(f"mabni_ai_calls:{frappe.utils.nowdate()}")
+		n = frappe.cache.incrby(k, 1)
+		frappe.cache.expire(k, 172800)
+		if n > limit:
+			frappe.throw(_("Today's AI checks for this workspace are used up ({0}). They start again tomorrow.").format(limit), title=_("AI limit"))
+	return m["provider"], m["key"], (m.get("model") or DEFAULT_MODEL[m["provider"]])
 
 
 def _file(file_url):

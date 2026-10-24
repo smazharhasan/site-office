@@ -304,7 +304,9 @@ def tank_save(data):
 # ---------------------------------------------------------------- AI checks (run in the background after saving)
 def _queue(method, **kw):
 	s = _settings()
-	if (s.ai_provider in (None, "", "Off")) and not frappe.conf.get("mimaar_fake_ai_file"):
+	from mimaar.ai import available
+
+	if not available():
 		return
 	if frappe.flags.in_test:
 		frappe.get_attr(method)(**kw)

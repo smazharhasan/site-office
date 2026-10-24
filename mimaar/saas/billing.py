@@ -77,6 +77,17 @@ def daily():
 			frappe.log_error(f"Mabni: daily check failed for {name}")
 
 
+def push_all():
+	"""Write every workspace's plan, dates and the AI settings into its site."""
+	if not is_control():
+		return
+	for name in frappe.get_all("Mabni Tenant", filters={"status": ["in", ["Trial", "Active", "Payment due", "Suspended"]]}, pluck="name"):
+		try:
+			push(frappe.get_doc("Mabni Tenant", name))
+		except Exception:
+			frappe.log_error(f"Mabni: could not update {name}")
+
+
 def check_tenant(t, reminders=True):
 	new = tenant_state(t)
 	if new != t.status:

@@ -100,7 +100,7 @@ def boot():
 		"project": project,
 		"project_name": frappe.db.get_value("Project", project, "project_name") if project else "",
 		"store": _store(),
-		"ai": bool((s.ai_provider and s.ai_provider != "Off") or frappe.conf.get("mimaar_fake_ai_file")),
+		"ai": __import__("mimaar.ai", fromlist=["available"]).available(),
 		"rules": {k: cint(s.get(k)) for k in ("require_dn_scan", "require_receiver_photo", "require_bill_scan", "require_payment_proof", "require_attendance_photo",
 			"card_for_store", "card_for_receiving", "card_for_petty_cash")},
 		"face_check": s.face_check or "Required",

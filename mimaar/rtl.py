@@ -33,7 +33,9 @@ def boot(bootinfo):
 	import frappe
 
 	try:
-		provider = frappe.db.get_single_value("Mimaar Settings", "ai_provider")
+		from mimaar.ai import available
+
+		provider = "On" if available() else "Off"
 		lock_po = frappe.db.get_single_value("Mimaar Settings", "lock_submitted_po")
 	except Exception:
 		provider, lock_po = None, 1
