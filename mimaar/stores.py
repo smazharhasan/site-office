@@ -9,7 +9,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt
 
-from mimaar.field import _hhmm, _need, _parse, _photo_ok, _store, caps
+from mimaar.field import _hhmm, _need, _parse, _photo_ok, _psql, _store, caps
 
 WATER = "WATER"
 
@@ -58,7 +58,7 @@ def _figures(wh, item=None):
 	returned = _sum_by_item(f"""select x.item_code, sum(x.transfer_qty) from `tabStock Entry Detail` x join `tabStock Entry` s on s.name = x.parent
 		where s.docstatus = 1 and s.stock_entry_type = 'Material Receipt' and s.mimaar_is_return = 1 and x.t_warehouse = %(wh)s{cond} group by x.item_code""", args)
 	on_order = _sum_by_item(f"""select x.item_code, sum(greatest(x.qty - x.received_qty, 0) * x.conversion_factor) from `tabPurchase Order Item` x
-		join `tabPurchase Order` p on p.name = x.parent where p.docstatus = 1 and p.status not in ('Closed', 'Completed', 'On Hold'){cond} group by x.item_code""", args)
+		join `tabPurchase Order` p on p.name = x.parent where p.docstatus = 1 and p.status not in ('Closed', 'Completed', 'On Hold'){cond}{_psql('p')} group by x.item_code""", args)
 	reorder = _sum_by_item(f"""select x.parent, x.warehouse_reorder_level from `tabItem Reorder` x where x.warehouse = %(wh)s{cond.replace('item_code', 'parent')}""", args)
 	return bins, received, released, returned, on_order, reorder
 
@@ -115,9 +115,9 @@ def item(code):
 		kind = "out" if r.typ == "Material Issue" else "back" if r.ret else "adj"
 		moves.append({"kind": kind, "name": r.name, "date": r.d, "time": _hhmm(r.t), "who": r.who, "ref": r.ref, "qty": flt(r.qty), "face": bool(r.idc), "photo": r.photo})
 	moves.sort(key=lambda m: (str(m["date"]), m["time"], m["name"]), reverse=True)
-	orders = frappe.db.sql("""select p.name, p.supplier_name, p.schedule_date, (x.qty - x.received_qty) * x.conversion_factor pending
+	orders = frappe.db.sql(f"""select p.name, p.supplier_name, p.schedule_date, (x.qty - x.received_qty) * x.conversion_factor pending
 		from `tabPurchase Order Item` x join `tabPurchase Order` p on p.name = x.parent
-		where p.docstatus = 1 and p.status not in ('Closed', 'Completed', 'On Hold') and x.item_code = %s and x.qty > x.received_qty order by p.schedule_date""", code, as_dict=True)
+		where p.docstatus = 1 and p.status not in ('Closed', 'Completed', 'On Hold') and x.item_code = %s and x.qty > x.received_qty{_psql('p')} order by p.schedule_date""", code, as_dict=True)
 	return {
 		"code": code, "name": it.item_name, "group": label, "top": G.get(top, (top, ""))[0] if top else "", "item_group": it.item_group, "uom": it.stock_uom,
 		"image": it.image, "description": it.description if it.description and it.description != it.item_name else "",

@@ -26,14 +26,30 @@ def _company():
 
 
 def _project():
-	return _settings().default_project or frappe.db.get_value("Project", {"status": "Open"}, "name")
+	"""The project this person works in now (see mimaar.projects)."""
+	from mimaar.projects import current
+
+	return current()
 
 
 def _store():
-	s = _settings().site_warehouse
-	if s:
-		return s
-	return frappe.db.get_value("Warehouse", {"company": _company(), "is_group": 0, "warehouse_name": "Stores"}) or frappe.db.get_value("Warehouse", {"company": _company(), "is_group": 0})
+	"""The current project's store."""
+	from mimaar.projects import store
+
+	return store()
+
+
+def _only(filters=None):
+	"""List filters limited to the current project (when the workspace has more than one)."""
+	from mimaar.projects import only
+
+	return only(filters)
+
+
+def _psql(alias=""):
+	from mimaar.projects import sql
+
+	return sql(alias)
 
 
 def _parse(v):
@@ -100,6 +116,7 @@ def boot():
 		"project": project,
 		"project_name": frappe.db.get_value("Project", project, "project_name") if project else "",
 		"store": _store(),
+		"projects": __import__("mimaar.projects", fromlist=["brief"]).brief(),
 		"ai": __import__("mimaar.ai", fromlist=["available"]).available(),
 		"rules": {k: cint(s.get(k)) for k in ("require_dn_scan", "require_receiver_photo", "require_bill_scan", "require_payment_proof", "require_attendance_photo",
 			"card_for_store", "card_for_receiving", "card_for_petty_cash")},
@@ -166,16 +183,17 @@ def dashboard():
 	co, today = _company(), nowdate()
 	project = _project()
 	k = {}
-	k["budget"] = _sum("select sum(budget_amount) from `tabBudget` where docstatus = 1 and company = %(co)s", {"co": co})
-	k["committed"] = _sum("select sum(base_grand_total) from `tabPurchase Order` where docstatus = 1 and company = %(co)s and status != 'Closed'", {"co": co})
-	k["paid"] = _sum("select sum(base_paid_amount) from `tabPayment Entry` where docstatus = 1 and payment_type = 'Pay' and party_type = 'Supplier' and company = %(co)s", {"co": co})
-	k["due"] = _sum("select sum(outstanding_amount) from `tabPurchase Invoice` where docstatus = 1 and company = %(co)s and outstanding_amount > 0", {"co": co})
-	k["due_now"] = _sum("select sum(outstanding_amount) from `tabPurchase Invoice` where docstatus = 1 and company = %(co)s and outstanding_amount > 0 and coalesce(due_date, posting_date) <= %(t)s", {"co": co, "t": today})
-	att = frappe.db.get_value("Site Attendance", {"date": today, "docstatus": ["<", 2]}, ["present", "half_day"], as_dict=True) or {}
+	pq = _psql()
+	k["budget"] = _sum(f"select sum(budget_amount) from `tabBudget` where docstatus = 1 and company = %(co)s{pq}", {"co": co})
+	k["committed"] = _sum(f"select sum(base_grand_total) from `tabPurchase Order` where docstatus = 1 and company = %(co)s and status != 'Closed'{pq}", {"co": co})
+	k["paid"] = _sum(f"select sum(base_paid_amount) from `tabPayment Entry` where docstatus = 1 and payment_type = 'Pay' and party_type = 'Supplier' and company = %(co)s{pq}", {"co": co})
+	k["due"] = _sum(f"select sum(outstanding_amount) from `tabPurchase Invoice` where docstatus = 1 and company = %(co)s and outstanding_amount > 0{pq}", {"co": co})
+	k["due_now"] = _sum(f"select sum(outstanding_amount) from `tabPurchase Invoice` where docstatus = 1 and company = %(co)s and outstanding_amount > 0 and coalesce(due_date, posting_date) <= %(t)s{pq}", {"co": co, "t": today})
+	att = frappe.db.get_value("Site Attendance", _only({"date": today, "docstatus": ["<", 2]}), ["present", "half_day"], as_dict=True) or {}
 	k["on_site"] = cint(att.get("present")) + cint(att.get("half_day"))
 	k["workers"] = frappe.db.count("Site Worker", {"status": "Active"})
-	k["snags_open"] = frappe.db.count("Site Snag", {"status": ["in", ["Open", "In progress"]]})
-	k["to_receive"] = frappe.db.count("Purchase Order", {"docstatus": 1, "status": ["in", ["To Receive and Bill", "To Receive"]]})
+	k["snags_open"] = frappe.db.count("Site Snag", _only({"status": ["in", ["Open", "In progress"]]}))
+	k["to_receive"] = frappe.db.count("Purchase Order", _only({"docstatus": 1, "status": ["in", ["To Receive and Bill", "To Receive"]]}))
 	k["stock_items"] = frappe.db.count("Bin", {"warehouse": _store(), "actual_qty": [">", 0]})
 	tasks = frappe.get_all("Task", filters={"project": project} if project else {}, fields=["progress", "exp_end_date", "status"])
 	k["progress"] = round(sum(flt(t.progress) for t in tasks) / len(tasks), 1) if tasks else 0
@@ -187,28 +205,28 @@ def dashboard():
 		acts.append({"k": kind, "t": text, "go": go, "n": n})
 
 	if c["buy"]:
-		for q in frappe.get_list("Supplier Quotation", filters={"docstatus": 0}, fields=["name", "supplier_name"], limit=10, order_by="creation desc"):
+		for q in frappe.get_list("Supplier Quotation", filters=_only({"docstatus": 0}), fields=["name", "supplier_name"], limit=10, order_by="creation desc"):
 			add("warn", _("Confirm quotation {0} from {1}").format(q.name, q.supplier_name), ["quote", q.name])
-		for q in frappe.get_list("Supplier Quotation", filters={"docstatus": 1, "mimaar_final": 0, "status": ["!=", "Expired"]}, fields=["name", "supplier_name"], limit=10, order_by="creation desc"):
+		for q in frappe.get_list("Supplier Quotation", filters=_only({"docstatus": 1, "mimaar_final": 0, "status": ["!=", "Expired"]}), fields=["name", "supplier_name"], limit=10, order_by="creation desc"):
 			if not frappe.db.exists("Supplier Quotation", {"amended_from": q.name, "docstatus": ["<", 2]}):
 				add("info", _("Lock the agreed quotation {0} ({1}) as final, or revise it").format(q.name, q.supplier_name), ["quote", q.name])
-		for q in frappe.get_list("Supplier Quotation", filters={"docstatus": 1, "mimaar_final": 1}, fields=["name", "supplier_name"], limit=20, order_by="creation desc"):
+		for q in frappe.get_list("Supplier Quotation", filters=_only({"docstatus": 1, "mimaar_final": 1}), fields=["name", "supplier_name"], limit=20, order_by="creation desc"):
 			if not frappe.db.exists("Purchase Order Item", {"supplier_quotation": q.name, "docstatus": ["<", 2]}):
 				add("warn", _("Raise the purchase order from final quotation {0} ({1})").format(q.name, q.supplier_name), ["quote", q.name])
-		for p in frappe.get_list("Purchase Order", filters={"docstatus": 0}, fields=["name", "supplier_name"], limit=10, order_by="creation desc"):
+		for p in frappe.get_list("Purchase Order", filters=_only({"docstatus": 0}), fields=["name", "supplier_name"], limit=10, order_by="creation desc"):
 			add("warn", _("Purchase order {0} ({1}) is a draft: check it and lock it").format(p.name, p.supplier_name), ["order", p.name])
 	if c["store"] or c["buy"]:
-		for p in frappe.get_list("Purchase Order", filters={"docstatus": 1, "status": ["in", ["To Receive and Bill", "To Receive"]]}, fields=["name", "supplier_name", "per_received", "schedule_date"], limit=10, order_by="schedule_date asc"):
+		for p in frappe.get_list("Purchase Order", filters=_only({"docstatus": 1, "status": ["in", ["To Receive and Bill", "To Receive"]]}), fields=["name", "supplier_name", "per_received", "schedule_date"], limit=10, order_by="schedule_date asc"):
 			late = p.schedule_date and getdate(p.schedule_date) < getdate(today)
 			add("bad" if late else "info", _("Delivery expected: {0} from {1} ({2}% received)").format(p.name, p.supplier_name, round(flt(p.per_received))), ["receive", p.name])
 	if c["money"]:
-		for b in frappe.get_list("Purchase Invoice", filters={"docstatus": 1, "outstanding_amount": [">", 0]}, fields=["name", "supplier_name", "outstanding_amount", "due_date"], limit=10, order_by="due_date asc"):
+		for b in frappe.get_list("Purchase Invoice", filters=_only({"docstatus": 1, "outstanding_amount": [">", 0]}), fields=["name", "supplier_name", "outstanding_amount", "due_date"], limit=10, order_by="due_date asc"):
 			due = not b.due_date or getdate(b.due_date) <= getdate(today)
 			add("bad" if due else "info", _("Pay {0}: bill {1} ({2})").format(b.supplier_name, b.name, frappe.utils.fmt_money(b.outstanding_amount, currency="PKR")), ["bill", b.name])
-		for r in frappe.get_list("Purchase Receipt", filters={"docstatus": 1, "status": "To Bill"}, fields=["name", "supplier_name"], limit=10, order_by="posting_date asc"):
+		for r in frappe.get_list("Purchase Receipt", filters=_only({"docstatus": 1, "status": "To Bill"}), fields=["name", "supplier_name"], limit=10, order_by="posting_date asc"):
 			add("info", _("Record the supplier's bill for goods received {0} ({1})").format(r.name, r.supplier_name), ["billnew", r.name])
 	if c["site"]:
-		for s in frappe.get_list("Site Snag", filters={"status": ["in", ["Open", "In progress"]], "target_date": ["<", today]}, fields=["name", "description"], limit=10):
+		for s in frappe.get_list("Site Snag", filters=_only({"status": ["in", ["Open", "In progress"]], "target_date": ["<", today]}), fields=["name", "description"], limit=10):
 			add("bad", _("Snag past its target date: {0}").format(cstr(s.description)[:80]), ["snag", s.name])
 		for t in frappe.get_list("Task", filters={"project": project, "status": ["not in", ["Completed", "Cancelled"]], "exp_end_date": ["<", today]} if project else {"name": ""}, fields=["name", "subject", "progress"], limit=8, order_by="exp_end_date asc"):
 			add("warn", _("Running late: {0} ({1}% done)").format(t.subject, round(flt(t.progress))), ["task", t.name])
@@ -275,7 +293,7 @@ def task_history(name):
 # ---------------------------------------------------------------- site diary
 @frappe.whitelist()
 def diary(limit=30):
-	return frappe.get_list("Site Diary", fields=["name", "date", "weather", "workers", "work_done", "issues", "photo_1", "photo_2", "recorded_by"], order_by="date desc, creation desc", limit_page_length=cint(limit))
+	return frappe.get_list("Site Diary", filters=_only(), fields=["name", "date", "weather", "workers", "work_done", "issues", "photo_1", "photo_2", "recorded_by"], order_by="date desc, creation desc", limit_page_length=cint(limit))
 
 
 @frappe.whitelist()
@@ -300,7 +318,7 @@ INSPECTION_TYPES = None
 
 @frappe.whitelist()
 def inspections(limit=30):
-	rows = frappe.get_list("Site Inspection", fields=["name", "date", "inspection_type", "location", "result", "docstatus", "supplier"], order_by="date desc, creation desc", limit_page_length=cint(limit))
+	rows = frappe.get_list("Site Inspection", filters=_only(), fields=["name", "date", "inspection_type", "location", "result", "docstatus", "supplier"], order_by="date desc, creation desc", limit_page_length=cint(limit))
 	return {"rows": rows, "types": frappe.get_meta("Site Inspection").get_field("inspection_type").options.split("\n")}
 
 
@@ -326,7 +344,7 @@ def inspection_save(data, submit=0):
 @frappe.whitelist()
 def snags(status="open"):
 	f = {"status": ["in", ["Open", "In progress"]]} if status == "open" else {"status": ["in", ["Fixed", "Closed"]]} if status == "done" else {}
-	rows = frappe.get_list("Site Snag", filters=f, fields=["name", "description", "location", "status", "supplier", "responsible_person", "target_date", "photo", "fixed_photo", "source_inspection"], order_by="target_date asc, creation desc", limit_page_length=200)
+	rows = frappe.get_list("Site Snag", filters=_only(f), fields=["name", "description", "location", "status", "supplier", "responsible_person", "target_date", "photo", "fixed_photo", "source_inspection"], order_by="target_date asc, creation desc", limit_page_length=200)
 	today = getdate(nowdate())
 	for r in rows:
 		r.late = bool(r.status in ("Open", "In progress") and r.target_date and getdate(r.target_date) < today)
@@ -387,7 +405,7 @@ def to_receive():
 	_need("store")
 	rows = frappe.get_list(
 		"Purchase Order",
-		filters={"docstatus": 1, "status": ["in", ["To Receive and Bill", "To Receive"]]},
+		filters=_only({"docstatus": 1, "status": ["in", ["To Receive and Bill", "To Receive"]]}),
 		fields=["name", "supplier", "supplier_name", "transaction_date", "schedule_date", "per_received"],
 		order_by="schedule_date asc",
 		limit_page_length=100,
@@ -441,6 +459,9 @@ def receive(po, lines, dn_no=None, dn_scan=None, receiver_photo=None, goods_phot
 	from erpnext.buying.doctype.purchase_order.purchase_order import make_purchase_receipt
 
 	want = {x.get("po_detail"): flt(x.get("qty")) for x in _parse(lines) or []}
+	from mimaar.projects import store
+
+	wh = store(frappe.db.get_value("Purchase Order", po, "project") or None)
 	pr = make_purchase_receipt(po)
 	keep = []
 	for r in pr.items:
@@ -448,12 +469,12 @@ def receive(po, lines, dn_no=None, dn_scan=None, receiver_photo=None, goods_phot
 		if q > 0:
 			r.qty = r.received_qty = q
 			r.rejected_qty = 0
-			r.warehouse = r.warehouse or _store()
+			r.warehouse = r.warehouse or wh
 			keep.append(r)
 	if not keep:
 		frappe.throw(_("Enter the quantity received for at least one item."))
 	pr.items = keep
-	pr.set_warehouse = pr.set_warehouse or _store()
+	pr.set_warehouse = pr.set_warehouse or wh
 	pr.supplier_delivery_note = (dn_no or "").strip()
 	pr.mimaar_dn_scan = dn_scan if _photo_ok(dn_scan) else None
 	pr.mimaar_receiver_photo = receiver_photo if _photo_ok(receiver_photo) else None
@@ -540,8 +561,8 @@ def return_to_store(items, check=None, returned_by=None, work_area=None, photo=N
 @frappe.whitelist()
 def movements(limit=40):
 	_need("store") if not caps()["site"] else None
-	pr = frappe.get_list("Purchase Receipt", filters={"docstatus": 1}, fields=["name", "posting_date", "supplier_name", "supplier_delivery_note", "mimaar_received_by"], order_by="posting_date desc, creation desc", limit_page_length=cint(limit))
-	se = frappe.get_list("Stock Entry", filters={"docstatus": 1, "stock_entry_type": ["in", ["Material Issue", "Material Receipt"]]}, fields=["name", "posting_date", "mimaar_issued_to", "mimaar_work_area", "stock_entry_type", "mimaar_is_return", "mimaar_identity_check"], order_by="posting_date desc, creation desc", limit_page_length=cint(limit))
+	pr = frappe.get_list("Purchase Receipt", filters=_only({"docstatus": 1}), fields=["name", "posting_date", "supplier_name", "supplier_delivery_note", "mimaar_received_by"], order_by="posting_date desc, creation desc", limit_page_length=cint(limit))
+	se = frappe.get_list("Stock Entry", filters=_only({"docstatus": 1, "stock_entry_type": ["in", ["Material Issue", "Material Receipt"]]}), fields=["name", "posting_date", "mimaar_issued_to", "mimaar_work_area", "stock_entry_type", "mimaar_is_return", "mimaar_identity_check"], order_by="posting_date desc, creation desc", limit_page_length=cint(limit))
 	out = []
 	for r in pr:
 		items = frappe.get_all("Purchase Receipt Item", filters={"parent": r.name}, fields=["item_name", "qty", "uom"], order_by="idx")
@@ -780,7 +801,7 @@ def _q_state(q):
 @frappe.whitelist()
 def quotations(state=None):
 	_need("buy")
-	rows = frappe.get_list("Supplier Quotation", filters={"docstatus": ["<", 2]}, fields=["name", "supplier", "supplier_name", "transaction_date", "grand_total", "docstatus", "mimaar_final", "mimaar_revision", "quotation_number"], order_by="creation desc", limit_page_length=200)
+	rows = frappe.get_list("Supplier Quotation", filters=_only({"docstatus": ["<", 2]}), fields=["name", "supplier", "supplier_name", "transaction_date", "grand_total", "docstatus", "mimaar_final", "mimaar_revision", "quotation_number"], order_by="creation desc", limit_page_length=200)
 	for r in rows:
 		r.state = _q_state(r)
 		r.has_po = bool(frappe.db.exists("Purchase Order Item", {"supplier_quotation": r.name, "docstatus": ["<", 2]}))
@@ -909,7 +930,7 @@ def quotation_revise(name, note):
 @frappe.whitelist()
 def orders(state=None):
 	_need("buy") if not caps()["money"] else None
-	rows = frappe.get_list("Purchase Order", filters={"docstatus": ["<", 2]}, fields=["name", "supplier", "supplier_name", "transaction_date", "schedule_date", "grand_total", "status", "per_received", "per_billed", "docstatus", "advance_paid", "mimaar_advance_percent"], order_by="creation desc", limit_page_length=200)
+	rows = frappe.get_list("Purchase Order", filters=_only({"docstatus": ["<", 2]}), fields=["name", "supplier", "supplier_name", "transaction_date", "schedule_date", "grand_total", "status", "per_received", "per_billed", "docstatus", "advance_paid", "mimaar_advance_percent"], order_by="creation desc", limit_page_length=200)
 	return [r for r in rows if not state or r.status == state]
 
 
@@ -937,12 +958,17 @@ def order_from_quotation(quotation, schedule_date=None):
 	from erpnext.buying.doctype.supplier_quotation.supplier_quotation import make_purchase_order
 
 	po = make_purchase_order(quotation)
+	po.project = frappe.db.get_value("Supplier Quotation", quotation, "project") or _project()
+	from mimaar.projects import store
+
+	wh = store(po.project)
 	sd = schedule_date or add_days(nowdate(), 7)
 	po.schedule_date = sd
 	for r in po.items:
 		r.schedule_date = r.schedule_date or sd
-		r.warehouse = r.warehouse or _store()
-	po.set_warehouse = po.set_warehouse or _store()
+		r.warehouse = r.warehouse or wh
+		r.project = r.project or po.project
+	po.set_warehouse = po.set_warehouse or wh
 	po.insert()
 	return po.name
 
@@ -975,20 +1001,20 @@ def statement_share(supplier):
 @frappe.whitelist()
 def bills():
 	_need("money")
-	open_ = frappe.get_list("Purchase Invoice", filters={"docstatus": 1, "outstanding_amount": [">", 0]}, fields=["name", "supplier", "supplier_name", "bill_no", "posting_date", "due_date", "grand_total", "outstanding_amount"], order_by="due_date asc", limit_page_length=200)
+	open_ = frappe.get_list("Purchase Invoice", filters=_only({"docstatus": 1, "outstanding_amount": [">", 0]}), fields=["name", "supplier", "supplier_name", "bill_no", "posting_date", "due_date", "grand_total", "outstanding_amount"], order_by="due_date asc", limit_page_length=200)
 	today = getdate(nowdate())
 	for b in open_:
 		b.due_now = not b.due_date or getdate(b.due_date) <= today
-	to_bill = frappe.get_list("Purchase Receipt", filters={"docstatus": 1, "status": "To Bill"}, fields=["name", "supplier", "supplier_name", "posting_date", "grand_total", "supplier_delivery_note"], order_by="posting_date asc", limit_page_length=200)
+	to_bill = frappe.get_list("Purchase Receipt", filters=_only({"docstatus": 1, "status": "To Bill"}), fields=["name", "supplier", "supplier_name", "posting_date", "grand_total", "supplier_delivery_note"], order_by="posting_date asc", limit_page_length=200)
 	advances = []
 	from mimaar.procurement import advance_limit
 
-	for p in frappe.get_list("Purchase Order", filters={"docstatus": 1, "status": ["not in", ["Closed", "Completed"]], "mimaar_advance_percent": [">", 0]}, fields=["name"], limit_page_length=100):
+	for p in frappe.get_list("Purchase Order", filters=_only({"docstatus": 1, "status": ["not in", ["Closed", "Completed"]], "mimaar_advance_percent": [">", 0]}), fields=["name"], limit_page_length=100):
 		po = frappe.get_doc("Purchase Order", p.name)
 		left = advance_limit(po) - flt(po.advance_paid)
 		if left > 1:
 			advances.append({"name": po.name, "supplier": po.supplier, "supplier_name": po.supplier_name, "left": left, "percent": po.mimaar_advance_percent, "grand_total": po.grand_total})
-	paid = frappe.get_list("Payment Entry", filters={"docstatus": 1, "payment_type": "Pay", "party_type": "Supplier"}, fields=["name", "party_name", "posting_date", "paid_amount", "mode_of_payment", "reference_no"], order_by="posting_date desc, creation desc", limit_page_length=30)
+	paid = frappe.get_list("Payment Entry", filters=_only({"docstatus": 1, "payment_type": "Pay", "party_type": "Supplier"}), fields=["name", "party_name", "posting_date", "paid_amount", "mode_of_payment", "reference_no"], order_by="posting_date desc, creation desc", limit_page_length=30)
 	return {"open": open_, "to_bill": to_bill, "advances": advances, "paid": paid}
 
 
@@ -1031,6 +1057,7 @@ def pay(doctype, name, amount, mode="Cash", reference_no=None, reference_date=No
 	if doctype not in ("Purchase Invoice", "Purchase Order"):
 		frappe.throw(_("Pay only against a bill or a purchase order advance."))
 	pe = get_payment_entry(doctype, name, party_amount=flt(amount))
+	pe.project = frappe.db.get_value(doctype, name, "project") or pe.get("project")
 	modes = {"Cash": "Cash", "Bank": "Wire Transfer", "Cheque": "Cheque"}
 	pe.mode_of_payment = modes.get(mode, "Cash")
 	acc = _bank_account("Cash" if mode == "Cash" else "Bank")
@@ -1058,21 +1085,22 @@ def budget():
 	"""Each budget line against what is ordered (locked purchase orders) and billed so far."""
 	_need("money")
 	co = _company()
+	pq = _psql("p")
 	rows = frappe.db.sql(
-		"""select account, sum(budget_amount) budget from `tabBudget` where docstatus = 1 and company = %(co)s
+		f"""select account, sum(budget_amount) budget from `tabBudget` p where docstatus = 1 and company = %(co)s{pq}
 		group by account order by account""",
 		{"co": co},
 		as_dict=True,
 	)
 	ordered = dict(frappe.db.sql(
-		"""select i.expense_account, sum(i.base_net_amount) from `tabPurchase Order Item` i join `tabPurchase Order` p on p.name = i.parent
-		where p.docstatus = 1 and p.company = %(co)s and p.status != 'Closed' group by i.expense_account""",
+		f"""select i.expense_account, sum(i.base_net_amount) from `tabPurchase Order Item` i join `tabPurchase Order` p on p.name = i.parent
+		where p.docstatus = 1 and p.company = %(co)s and p.status != 'Closed'{pq} group by i.expense_account""",
 		{"co": co},
 	))
 	billed = dict(frappe.db.sql(
-		"""select coalesce(poi.expense_account, i.expense_account) acc, sum(i.base_net_amount) from `tabPurchase Invoice Item` i
+		f"""select coalesce(poi.expense_account, i.expense_account) acc, sum(i.base_net_amount) from `tabPurchase Invoice Item` i
 		join `tabPurchase Invoice` p on p.name = i.parent left join `tabPurchase Order Item` poi on poi.name = i.po_detail
-		where p.docstatus = 1 and p.company = %(co)s group by acc""",
+		where p.docstatus = 1 and p.company = %(co)s{pq} group by acc""",
 		{"co": co},
 	))
 	for r in rows:
@@ -1098,9 +1126,9 @@ def search(q):
 		rows = stock(q)["rows"]
 		out["items"] = (sorted(rows, key=lambda r: -flt(r.qty)))[:8]
 	if c["buy"] or c["money"]:
-		out["orders"] = frappe.get_list("Purchase Order", filters={"docstatus": ["<", 2]}, or_filters={"name": ["like", like], "supplier_name": ["like", like]}, fields=["name", "supplier_name"], order_by="creation desc", limit_page_length=8)
+		out["orders"] = frappe.get_list("Purchase Order", filters=_only({"docstatus": ["<", 2]}), or_filters={"name": ["like", like], "supplier_name": ["like", like]}, fields=["name", "supplier_name"], order_by="creation desc", limit_page_length=8)
 	if c["buy"]:
-		out["quotes"] = frappe.get_list("Supplier Quotation", filters={"docstatus": ["<", 2]}, or_filters={"name": ["like", like], "supplier_name": ["like", like], "quotation_number": ["like", like]}, fields=["name", "supplier_name"], order_by="creation desc", limit_page_length=8)
+		out["quotes"] = frappe.get_list("Supplier Quotation", filters=_only({"docstatus": ["<", 2]}), or_filters={"name": ["like", like], "supplier_name": ["like", like], "quotation_number": ["like", like]}, fields=["name", "supplier_name"], order_by="creation desc", limit_page_length=8)
 	return out
 
 

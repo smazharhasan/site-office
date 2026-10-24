@@ -1293,3 +1293,43 @@ Your user is not linked to a person in the register.,مستخدمك غير مر�
 Later,لاحقاً
 Today's AI checks for this workspace are used up ({0}). They start again tomorrow.,استُنفدت فحوصات الذكاء الاصطناعي لهذا اليوم ({0}). تعود غداً.
 AI limit,حدّ الذكاء الاصطناعي
+Change project,تغيير المشروع
+Opening…,جارٍ الفتح…
+Now working in {0},تعمل الآن في {0}
+{0}% done,{0}% منجز
+Finished,منتهٍ
+Finish {0},الانتهاء {0}
+Choose the project,اختر المشروع
+All projects,كل المشاريع
+Add a project,أضف مشروعاً
+Projects,المشاريع
+{0} of {1} open projects on your plan,{0} من {1} مشاريع مفتوحة في باقتك
+Working here,تعمل هنا
+Planned {0}%,المخطط {0}%
+{0} behind plan,{0} متأخرة عن الخطة
+Work in this project,اعمل في هذا المشروع
+Go to the project,افتح المشروع
+"Each project has its own store, schedule, attendance, buying and budget. Workers and suppliers are shared.",لكل مشروع مستودعه وجدوله وحضوره ومشترياته وميزانيته. العمال والموردون مشتركون بين المشاريع.
+Change the project,تعديل المشروع
+Project name,اسم المشروع
+Start,البداية
+Finish (planned),الانتهاء (المخطط)
+Under construction,قيد الإنشاء
+Budget (optional),الميزانية (اختياري)
+"Start with the usual stages of building a house (design to handover), spread between the start and finish dates",ابدأ بالمراحل المعتادة لبناء منزل (من التصميم إلى التسليم) موزعة بين تاريخي البداية والانتهاء
+Add project,أضف المشروع
+Project added,تمت إضافة المشروع
+"e.g. House 14, DHA Phase 6",مثال: فيلا 14، حي النرجس
+Only the owner adds or changes projects.,المالك وحده يضيف المشاريع أو يعدلها.
+This project is not available.,هذا المشروع غير متاح.
+Enter the project's name.,اكتب اسم المشروع.
+The project's name is too long.,اسم المشروع طويل جداً.
+There is already a project called {0}.,يوجد مشروع باسم {0} بالفعل.
+The finish date must be after the start date.,يجب أن يكون تاريخ الانتهاء بعد تاريخ البداية.
+Your plan allows {0} open project(s). Close another one or move to a bigger plan in Plan & billing.,باقتك تسمح بـ {0} مشروع مفتوح. أغلق مشروعاً آخر أو انتقل إلى باقة أكبر من الباقة والدفع.
+Your plan allows {0} open project(s). Close a finished one or move to a bigger plan in Plan & billing.,باقتك تسمح بـ {0} مشروع مفتوح. أغلق مشروعاً منتهياً أو انتقل إلى باقة أكبر من الباقة والدفع.
+From {0},من {0}
+No stages yet.,لا توجد مراحل بعد.
+Add the usual stages of building,أضف المراحل المعتادة للبناء
+{0} stages added,تمت إضافة {0} مرحلة
+This project already has stages.,لهذا المشروع مراحل بالفعل.

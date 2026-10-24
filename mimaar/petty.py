@@ -17,7 +17,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt, get_first_day, getdate, now_datetime, nowdate
 
-from mimaar.field import _company, _parse, _photo_ok, _project, _roles, _settings, caps
+from mimaar.field import _company, _only, _parse, _photo_ok, _project, _psql, _roles, _settings, caps
 
 TYPES = ("Expense", "Cash given", "Cash returned")
 METHODS = ("Cash in hand", "Bank transfer", "Cheque", "JazzCash / Easypaisa", "Raast")
@@ -76,10 +76,10 @@ def budget_of(account):
 	"""The budget line behind an expense account: budget, booked so far, waiting for the owner, left."""
 	if not account:
 		return None
-	b = flt(frappe.db.sql("select sum(budget_amount) from `tabBudget` where docstatus = 1 and account = %s", account)[0][0])
-	used = flt(frappe.db.sql("select sum(debit - credit) from `tabGL Entry` where is_cancelled = 0 and account = %s", account)[0][0])
-	waiting = flt(frappe.db.sql("""select sum(p.amount) from `tabPetty Cash Entry` p join `tabPetty Cash Category` c on c.name = p.category
-		where p.docstatus = 0 and p.status = 'Waiting for owner' and p.entry_type = 'Expense' and c.expense_account = %s""", account)[0][0])
+	b = flt(frappe.db.sql(f"select sum(budget_amount) from `tabBudget` where docstatus = 1 and account = %s{_psql()}", account)[0][0])
+	used = flt(frappe.db.sql(f"select sum(debit - credit) from `tabGL Entry` where is_cancelled = 0 and account = %s{_psql()}", account)[0][0])
+	waiting = flt(frappe.db.sql(f"""select sum(p.amount) from `tabPetty Cash Entry` p join `tabPetty Cash Category` c on c.name = p.category
+		where p.docstatus = 0 and p.status = 'Waiting for owner' and p.entry_type = 'Expense' and c.expense_account = %s{_psql('p')}""", account)[0][0])
 	return {"account": account, "has_budget": b > 0, "budget": b, "used": used, "waiting": waiting, "left": b - used - waiting}
 
 
@@ -152,7 +152,7 @@ def overview():
 	if not full and not me:
 		return {"full": False, "me": None, "holders": [], "entries": [], "categories": _categories(False), "no_person": True}
 	filters = {} if full else {"holder": me}
-	entries = frappe.get_all("Petty Cash Entry", filters=dict(filters, docstatus=["<", 2]),
+	entries = frappe.get_all("Petty Cash Entry", filters=_only(dict(filters, docstatus=["<", 2])),
 		fields=["name", "entry_type", "date", "holder", "holder_name", "amount", "status", "category", "paid_to", "paid_to_person", "bill_no", "method", "reference", "witness",
 			"bill_photo", "proof_1", "proof_2", "proof_3", "identity_check", "notes", "check_note", "checked_by", "docstatus", "water_tanker", "creation"],
 		order_by="date desc, creation desc", limit_page_length=300)
@@ -326,7 +326,7 @@ def budget_add(category, amount):
 	from erpnext.accounts.utils import get_fiscal_year
 
 	fy = get_fiscal_year(nowdate(), company=co)[0]
-	ex = frappe.db.get_value("Budget", {"account": acc, "docstatus": 1, "company": co}, "name")
+	ex = frappe.db.get_value("Budget", {"account": acc, "docstatus": 1, "company": co, "project": _project()}, "name")
 	if ex:
 		b = frappe.get_doc("Budget", ex)
 		new = frappe.copy_doc(b)

@@ -7,7 +7,7 @@ import frappe
 from frappe import _
 from frappe.utils import add_months, cint, flt, get_first_day, getdate, nowdate
 
-from mimaar.field import _company, _project, caps
+from mimaar.field import _company, _only, _project, _psql, caps
 
 PHASE_ORDER = ["Design & approvals", "Grey structure", "Finishing", "Contingency", "Site running costs", "Other"]
 TASK_PHASES = {"Design & approvals": ("Design", "Approvals"), "Grey structure": ("Grey structure",), "Finishing": ("Finishing", "Handover")}
@@ -37,22 +37,22 @@ def phase_of(cat, name):
 
 def _lines():
 	co = _company()
-	rows = frappe.db.sql("""select b.account, a.account_name name, coalesce(nullif(a.mimaar_budget_category, ''), 'Other') cat, sum(b.budget_amount) budget
-		from `tabBudget` b join `tabAccount` a on a.name = b.account where b.docstatus = 1 and b.company = %s group by b.account order by a.account_name""", co, as_dict=True)
-	committed = dict(frappe.db.sql("""select i.expense_account, sum(i.base_net_amount) from `tabPurchase Order Item` i join `tabPurchase Order` p on p.name = i.parent
-		where p.docstatus = 1 and p.status != 'Closed' and p.company = %s group by i.expense_account""", co))
-	booked = dict(frappe.db.sql("select account, sum(debit - credit) from `tabGL Entry` where is_cancelled = 0 and company = %s group by account", co))
+	rows = frappe.db.sql(f"""select b.account, a.account_name name, coalesce(nullif(a.mimaar_budget_category, ''), 'Other') cat, sum(b.budget_amount) budget
+		from `tabBudget` b join `tabAccount` a on a.name = b.account where b.docstatus = 1 and b.company = %s{_psql('b')} group by b.account order by a.account_name""", co, as_dict=True)
+	committed = dict(frappe.db.sql(f"""select i.expense_account, sum(i.base_net_amount) from `tabPurchase Order Item` i join `tabPurchase Order` p on p.name = i.parent
+		where p.docstatus = 1 and p.status != 'Closed' and p.company = %s{_psql('p')} group by i.expense_account""", co))
+	booked = dict(frappe.db.sql(f"select account, sum(debit - credit) from `tabGL Entry` where is_cancelled = 0 and company = %s{_psql()} group by account", co))
 	# paid against each line: supplier payments allocated to the line's orders and bills (pro rata), plus direct postings (petty cash, journals)
-	paid_po = dict(frappe.db.sql("""select poi.expense_account, sum(r.allocated_amount * poi.base_net_amount / nullif(po.base_net_total, 0))
+	paid_po = dict(frappe.db.sql(f"""select poi.expense_account, sum(r.allocated_amount * poi.base_net_amount / nullif(po.base_net_total, 0))
 		from `tabPayment Entry Reference` r join `tabPayment Entry` pe on pe.name = r.parent join `tabPurchase Order` po on po.name = r.reference_name
 		join `tabPurchase Order Item` poi on poi.parent = po.name
-		where pe.docstatus = 1 and r.reference_doctype = 'Purchase Order' and pe.company = %s group by poi.expense_account""", co))
+		where pe.docstatus = 1 and r.reference_doctype = 'Purchase Order' and pe.company = %s{_psql('po')} group by poi.expense_account""", co))
 	# a stock item's bill line is booked to "stock received but not billed"; its budget line is the order line's account
-	paid_pi = dict(frappe.db.sql("""select coalesce(nullif(poi.expense_account, ''), pii.expense_account) acc, sum(r.allocated_amount * pii.base_net_amount / nullif(pi.base_net_total, 0))
+	paid_pi = dict(frappe.db.sql(f"""select coalesce(nullif(poi.expense_account, ''), pii.expense_account) acc, sum(r.allocated_amount * pii.base_net_amount / nullif(pi.base_net_total, 0))
 		from `tabPayment Entry Reference` r join `tabPayment Entry` pe on pe.name = r.parent join `tabPurchase Invoice` pi on pi.name = r.reference_name
 		join `tabPurchase Invoice Item` pii on pii.parent = pi.name left join `tabPurchase Order Item` poi on poi.name = pii.po_detail
-		where pe.docstatus = 1 and r.reference_doctype = 'Purchase Invoice' and pe.company = %s group by acc""", co))
-	direct = dict(frappe.db.sql("""select account, sum(debit - credit) from `tabGL Entry` where is_cancelled = 0 and company = %s and voucher_type = 'Journal Entry' group by account""", co))
+		where pe.docstatus = 1 and r.reference_doctype = 'Purchase Invoice' and pe.company = %s{_psql('pi')} group by acc""", co))
+	direct = dict(frappe.db.sql(f"""select account, sum(debit - credit) from `tabGL Entry` where is_cancelled = 0 and company = %s and voucher_type = 'Journal Entry'{_psql()} group by account""", co))
 	out = []
 	for r in rows:
 		c = flt(committed.get(r.account))
@@ -85,7 +85,7 @@ def cash_flow(lines):
 	co = _company()
 	this = _month(nowdate())
 	sched, proj = {}, {}
-	for po in frappe.get_all("Purchase Order", filters={"docstatus": 1, "status": ["not in", ["Closed", "Completed"]], "company": co}, fields=["name", "base_grand_total", "advance_paid", "per_billed"]):
+	for po in frappe.get_all("Purchase Order", filters=_only({"docstatus": 1, "status": ["not in", ["Closed", "Completed"]], "company": co}), fields=["name", "base_grand_total", "advance_paid", "per_billed"]):
 		paid = flt(po.advance_paid) + flt(frappe.db.sql("""select sum(pi.base_grand_total - pi.outstanding_amount) from `tabPurchase Invoice` pi
 			where pi.docstatus = 1 and exists (select 1 from `tabPurchase Invoice Item` x where x.parent = pi.name and x.purchase_order = %s)""", po.name)[0][0])
 		left = max(0.0, flt(po.base_grand_total) - paid)
@@ -147,10 +147,10 @@ def budget_line(account):
 	ln = next((x for x in _lines() if x["account"] == account), None)
 	if not ln:
 		frappe.throw(_("This budget line was not found."))
-	orders = frappe.db.sql("""select p.name, p.supplier_name, p.transaction_date, p.status, sum(i.base_net_amount) amount, p.per_billed, p.per_received
-		from `tabPurchase Order Item` i join `tabPurchase Order` p on p.name = i.parent where p.docstatus = 1 and i.expense_account = %s group by p.name order by p.transaction_date desc""", account, as_dict=True)
-	payments = frappe.db.sql("""select g.voucher_type, g.voucher_no, g.posting_date, sum(g.debit - g.credit) amount, g.remarks from `tabGL Entry` g
-		where g.is_cancelled = 0 and g.account = %s group by g.voucher_type, g.voucher_no order by g.posting_date desc limit 50""", account, as_dict=True)
+	orders = frappe.db.sql(f"""select p.name, p.supplier_name, p.transaction_date, p.status, sum(i.base_net_amount) amount, p.per_billed, p.per_received
+		from `tabPurchase Order Item` i join `tabPurchase Order` p on p.name = i.parent where p.docstatus = 1 and i.expense_account = %s{_psql('p')} group by p.name order by p.transaction_date desc""", account, as_dict=True)
+	payments = frappe.db.sql(f"""select g.voucher_type, g.voucher_no, g.posting_date, sum(g.debit - g.credit) amount, g.remarks from `tabGL Entry` g
+		where g.is_cancelled = 0 and g.account = %s{_psql('g')} group by g.voucher_type, g.voucher_no order by g.posting_date desc limit 50""", account, as_dict=True)
 	return {"line": ln, "orders": orders, "postings": payments}
 
 
@@ -167,7 +167,7 @@ def budget_line_add(name, category, amount):
 	abbr = frappe.db.get_value("Company", co, "abbr")
 	acc = f"{name} - {abbr}"
 	if frappe.db.exists("Account", acc):
-		if frappe.db.exists("Budget", {"account": acc, "docstatus": 1}):
+		if frappe.db.exists("Budget", {"account": acc, "docstatus": 1, "project": _project()}):
 			frappe.throw(_("{0} already has a budget.").format(name))
 	else:
 		any_line = frappe.db.get_value("Budget", {"company": co, "docstatus": 1}, "account")

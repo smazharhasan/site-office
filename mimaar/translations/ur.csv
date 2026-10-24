@@ -5353,3 +5353,41 @@ thousand,ہزار
 Later,بعد میں
 Today's AI checks for this workspace are used up ({0}). They start again tomorrow.,اس ورک اسپیس کی آج کی اے آئی جانچیں ({0}) پوری ہو گئیں۔ کل دوبارہ شروع ہوں گی۔
 AI limit,اے آئی کی حد
+Change project,پروجیکٹ بدلیں
+Opening…,کھل رہا ہے…
+Now working in {0},اب آپ {0} میں کام کر رہے ہیں
+{0}% done,{0}% مکمل
+Finished,مکمل ہو چکا
+Finish {0},تکمیل {0}
+Choose the project,پروجیکٹ چنیں
+All projects,تمام پروجیکٹس
+Add a project,نیا پروجیکٹ شامل کریں
+{0} of {1} open projects on your plan,آپ کے پلان میں {1} میں سے {0} جاری پروجیکٹس
+Working here,یہاں کام جاری
+Planned {0}%,منصوبہ {0}%
+{0} behind plan,{0} منصوبے سے پیچھے
+Work in this project,اس پروجیکٹ میں کام کریں
+Go to the project,پروجیکٹ کھولیں
+"Each project has its own store, schedule, attendance, buying and budget. Workers and suppliers are shared.",ہر پروجیکٹ کا اپنا اسٹور، شیڈول، حاضری، خریداری اور بجٹ ہوتا ہے۔ مزدور اور سپلائرز سب پروجیکٹس میں مشترک ہیں۔
+Change the project,پروجیکٹ میں تبدیلی
+Project name,پروجیکٹ کا نام
+Finish (planned),تکمیل (منصوبہ)
+Under construction,زیرِ تعمیر
+Budget (optional),بجٹ (اختیاری)
+"Start with the usual stages of building a house (design to handover), spread between the start and finish dates",مکان بنانے کے عام مراحل (نقشے سے حوالگی تک) شروع اور تکمیل کی تاریخوں کے درمیان خود بخود بن جائیں
+Add project,پروجیکٹ شامل کریں
+Project added,پروجیکٹ شامل ہو گیا
+"e.g. House 14, DHA Phase 6",مثلاً مکان 14، ڈی ایچ اے فیز 6
+Only the owner adds or changes projects.,پروجیکٹ صرف مالک شامل یا تبدیل کر سکتا ہے۔
+This project is not available.,یہ پروجیکٹ دستیاب نہیں۔
+Enter the project's name.,پروجیکٹ کا نام لکھیں۔
+The project's name is too long.,پروجیکٹ کا نام بہت لمبا ہے۔
+There is already a project called {0}.,{0} نام کا پروجیکٹ پہلے سے موجود ہے۔
+The finish date must be after the start date.,تکمیل کی تاریخ شروع کی تاریخ کے بعد ہونی چاہیے۔
+Your plan allows {0} open project(s). Close another one or move to a bigger plan in Plan & billing.,آپ کا پلان {0} جاری پروجیکٹ کی اجازت دیتا ہے۔ کوئی اور پروجیکٹ مکمل کریں یا پلان اور ادائیگی میں بڑا پلان لیں۔
+Your plan allows {0} open project(s). Close a finished one or move to a bigger plan in Plan & billing.,آپ کا پلان {0} جاری پروجیکٹ کی اجازت دیتا ہے۔ مکمل ہو چکا پروجیکٹ بند کریں یا پلان اور ادائیگی میں بڑا پلان لیں۔
+From {0},{0} سے
+No stages yet.,ابھی کوئی مرحلہ نہیں۔
+Add the usual stages of building,تعمیر کے عام مراحل شامل کریں
+{0} stages added,{0} مراحل شامل ہو گئے
+This project already has stages.,اس پروجیکٹ میں مراحل پہلے سے موجود ہیں۔

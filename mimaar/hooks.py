@@ -51,22 +51,28 @@ override_whitelisted_methods = {
 
 doc_events = {
 	"Site Worker": {"on_update": "mimaar.identity.on_worker_update"},
+	# each new document belongs to the person's current project (mimaar.projects)
+	**{dt: {"before_insert": "mimaar.projects.tag"} for dt in ("Site Diary", "Site Inspection", "Site Snag", "Site Attendance", "Petty Cash Entry",
+		"Water Tank", "Water Tank Reading", "Water Tanker")},
 	"Supplier Quotation": {
+		"before_insert": "mimaar.projects.tag",
 		"validate": "mimaar.procurement.sq_validate",
 		"before_cancel": "mimaar.procurement.sq_before_cancel",
 	},
 	"Purchase Order": {
+		"before_insert": "mimaar.projects.tag",
 		"validate": "mimaar.procurement.po_validate",
 		"before_cancel": "mimaar.procurement.po_before_cancel",
 	},
-	"Purchase Receipt": {"before_submit": "mimaar.procurement.pr_before_submit"},
-	"Purchase Invoice": {"before_submit": "mimaar.procurement.pi_before_submit"},
+	"Purchase Receipt": {"before_insert": "mimaar.projects.tag", "before_submit": "mimaar.procurement.pr_before_submit"},
+	"Purchase Invoice": {"before_insert": "mimaar.projects.tag", "before_submit": "mimaar.procurement.pi_before_submit"},
 	"Payment Entry": {
+		"before_insert": "mimaar.projects.tag",
 		"validate": "mimaar.procurement.pe_validate",
 		"before_submit": "mimaar.procurement.pe_before_submit",
 	},
 	"Communication": {"before_insert": "mimaar.procurement.comm_before_insert"},
-	"Stock Entry": {"before_submit": "mimaar.procurement.se_before_submit"},
+	"Stock Entry": {"before_insert": "mimaar.projects.tag", "before_submit": "mimaar.procurement.se_before_submit"},
 	# Mabni Cloud: a plan's limits on people and projects
 	"User": {"before_insert": "mimaar.saas.tenant.check_users"},
 	"Project": {"before_insert": "mimaar.saas.tenant.check_projects"},

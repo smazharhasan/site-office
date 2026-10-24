@@ -392,7 +392,7 @@ function layout() {
 }
 function setTop(title, back) {
   const b = S.b || {}; const ini = (b.full_name || "?").trim().charAt(0).toUpperCase();
-  $("#top").innerHTML = `${back ? `<button class="back" data-back="1" aria-label="${esc(t("Back"))}">${icon("chev", "flip")}</button>` : ""}<h1>${esc(title)}</h1>
+  $("#top").innerHTML = `${back ? `<button class="back" data-back="1" aria-label="${esc(t("Back"))}">${icon("chev", "flip")}</button>` : ""}<div class="ttl"><h1>${esc(title)}</h1>${projChip()}</div>
     <div class="who"><button class="iconbtn" data-act="search" aria-label="${esc(t("Search"))}">${icon("search")}</button><button class="av" data-act="me" aria-label="${esc(b.full_name || "")}">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc(ini)}</button></div>`;
   const back_ = $("#top [data-back]"); if (back_) { back_.querySelector(".i").style.transform = RTL() ? "" : "scaleX(-1)"; }
 }
@@ -1383,12 +1383,85 @@ VIEWS.more = async (el) => {
   if (STORE()) T.push(["Stock", "box", "store/items", "k3"], ["Water", "drop", "store/water", "k7"]);
   if (PETTY()) T.push(["Petty cash", "cash", "money/petty", "k1"]);
   if (S.b.ai) T.push(["Ask the project", "sparkle", "ask", "k5"]);
+  if (c.owner || PROJECTS().length > 1) T.push(["Projects", "house", "projects", "k2"]);
   T.push(["My settings", "gear", "settings", "k8"]);
   if (c.owner && S.b.plan) T.push(["Plan & billing", "pay", "@billing", "k6"]);
   if (c.owner && !NATIVE && !S.b.plan) T.push(["Connect a phone", "globe", "connect", "k2"]);
   el.innerHTML = `<button class="mo-me" data-go="settings"><span class="av">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc((b.full_name || "?").charAt(0))}</span><span><b>${esc(b.full_name)}</b><span class="small muted">${esc(b.project_name || "")}</span></span>${icon("chev", "lch")}</button>
     <div class="qa-grid">${T.map(([l, ic, to, tc]) => `<button class="qa" ${to.startsWith("@") ? `onclick="location.href='/${to.slice(1)}'"` : `data-go="${to}"`}><span class="qa-i" style="--tc:var(--${tc})">${icon(ic)}</span><span>${esc(t(l))}</span></button>`).join("")}</div>`;
 };
+
+/* ================================================================== projects (a builder's sites) */
+const PROJECTS = () => (S.b && S.b.projects) || [];
+/** Under the screen title: the project being worked in (only when there is more than one). */
+function projChip() {
+  if (PROJECTS().length < 2) return "";
+  return `<button class="projchip" data-act="project" aria-label="${esc(t("Change project"))}">${icon("house")}<span>${esc(S.b.project_name || "")}</span>${icon("chev", "dn")}</button>`;
+}
+async function switchProject(name) {
+  const r = await busy(api("mimaar.projects.switch", { name }), t("Opening…"));
+  S.b.project = r.project; S.b.project_name = r.project_name; S.b.store = r.store;
+  S.b.projects = PROJECTS().map((p) => Object.assign(p, { current: p.name === r.project }));
+  S.cache = {}; S.build = null; S.petty = null;
+  toast(t("Now working in {0}", r.project_name), "good");
+  render();
+}
+GLOBAL.project = () => {
+  const P = PROJECTS(); const c = C();
+  const row = (p) => `<button class="lrow ${p.current ? "cur" : ""}" data-p="${esc(p.name)}"><span class="lth">${icon(p.current ? "check" : "house")}</span><span class="lmain"><b>${esc(p.title)}</b><span class="lsub">${esc([p.status === "Open" ? t("{0}% done", p.done) : t("Finished"), p.end ? t("Finish {0}", fdate(p.end)) : ""].filter(Boolean).join(" · "))}</span></span></button>`;
+  const sh = sheet(t("Choose the project"), `<div class="lst">${P.map(row).join("")}</div>`,
+    { footer: `<button class="btn" data-all="1">${esc(t("All projects"))}</button>${c.owner ? `<button class="btn pri" data-new="1">${icon("plus")}${esc(t("Add a project"))}</button>` : ""}` });
+  sh.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-p]");
+    if (b) { closeSheet(sh); if (b.dataset.p !== S.b.project) switchProject(b.dataset.p).catch((er) => toast(er.message, "bad")); return; }
+    if (e.target.closest("[data-all]")) { closeSheet(sh); go("projects"); return; }
+    if (e.target.closest("[data-new]")) { closeSheet(sh); projectSheet(); }
+  });
+};
+VIEWS.projects = async (el) => {
+  setTop(t("Projects"), true);
+  const d = await api("mimaar.projects.projects");
+  S.b.projects = d.rows.map((r) => ({ name: r.name, title: r.title, status: r.status, done: r.done, start: r.start, end: r.end, current: r.current }));
+  const limit = d.limit ? `<p class="small muted" style="margin:0 0 10px">${esc(t("{0} of {1} open projects on your plan", d.open, d.limit))}</p>` : "";
+  const card = (r) => `<article class="pcard ${r.current ? "cur" : ""}">
+      <div class="pc-h"><span class="pc-t"><b>${esc(r.title)}</b><span class="small muted">${esc([r.address, r.start && r.end ? `${fdate(r.start)} → ${fdate(r.end)}` : r.start ? t("From {0}", fdate(r.start)) : ""].filter(Boolean).join(" · "))}</span></span>
+        ${r.current ? pill(t("Working here"), "good") : r.status !== "Open" ? pill(t("Finished")) : ""}</div>
+      ${r.stages ? `${bar(r.built)}<div class="row small" style="gap:8px;flex-wrap:wrap"><span><b>${num(r.built)}%</b> ${esc(t("built"))}</span><span class="muted">${esc(t("Planned {0}%", num(r.planned)))}</span>${r.behind ? pill(t("{0} behind plan", r.behind), "bad") : ""}</div>`
+        : `<p class="small muted" style="margin:0">${esc(t("No stages yet."))}</p>${d.can_add ? `<button class="btn sm" data-act="pstages" data-v="${esc(r.name)}">${icon("plus")}${esc(t("Add the usual stages of building"))}</button>` : ""}`}
+      <div class="sc-acts">${r.current ? `<button class="btn sm pri" data-go="build">${esc(t("Go to the project"))}</button>` : `<button class="btn sm pri" data-act="pswitch" data-v="${esc(r.name)}">${esc(t("Work in this project"))}</button>`}
+        ${d.can_add ? `<button class="btn sm" data-act="pedit" data-v="${esc(r.name)}">${icon("pencil")}${esc(t("Edit"))}</button>` : ""}</div></article>`;
+  el.innerHTML = `${limit}<div class="stack">${d.rows.map(card).join("")}</div>
+    ${d.can_add ? `<button class="btn pri wide" data-act="pnew" style="margin-top:14px">${icon("plus")}${esc(t("Add a project"))}</button>
+      <p class="small muted" style="margin-top:8px">${esc(t("Each project has its own store, schedule, attendance, buying and budget. Workers and suppliers are shared."))}</p>` : ""}`;
+  S.acts.pswitch = (v) => switchProject(v).catch((e) => toast(e.message, "bad"));
+  S.acts.pnew = () => projectSheet();
+  S.acts.pstages = async (v) => { try { const n = await busy(api("mimaar.projects.add_stages", { name: v }), t("Saving…")); toast(t("{0} stages added", n), "good"); S.build = null; render(); } catch (e) { toast(e.message, "bad"); } };
+  S.acts.pedit = (v) => projectSheet(d.rows.find((r) => r.name === v));
+};
+function projectSheet(p) {
+  const edit = !!p;
+  const sh = sheet(edit ? t("Change the project") : t("Add a project"), `<div class="form">
+    ${fld(t("Project name"), inp("title", edit ? p.title : "", "text", `placeholder="${esc(t("e.g. House 14, DHA Phase 6"))}" maxlength="80"`), { req: true })}
+    ${fld(t("Address"), inp("address", edit ? p.address : ""))}
+    <div class="two">${fld(t("Start"), inp("start", edit ? (p.start || "") : S.b.today, "date"))}${fld(t("Finish (planned)"), inp("end", edit ? (p.end || "") : "", "date"))}</div>
+    ${edit ? fld(t("Status"), chips("status", [["Open", t("Under construction")], ["Completed", t("Finished")]], p.status === "Open" ? "Open" : "Completed"))
+      : `${fld(t("Budget (optional)"), inp("budget", "", "number"))}
+        <label class="check"><input type="checkbox" name="schedule" value="1" checked><span>${esc(t("Start with the usual stages of building a house (design to handover), spread between the start and finish dates"))}</span></label>`}
+  </div>`, { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(edit ? t("Save") : t("Add project"))}</button>` });
+  wireForm(sh);
+  sh.querySelector("[data-save]").onclick = async () => {
+    if (!need(sh, ["title"])) return;
+    const v = vals(sh);
+    if (!edit) v.schedule = sh.querySelector("[name=schedule]").checked ? 1 : 0;
+    const r = await run(sh, () => edit ? api("mimaar.projects.edit", { name: p.name, data: v }) : api("mimaar.projects.new", { data: v }), edit ? t("Saved") : t("Project added"));
+    if (!r) return;
+    closeSheet(sh);
+    if (edit) { if (p.current) S.b.project_name = v.title; render(); return; }
+    const b = await api("boot"); S.b = Object.assign(S.b, { project: b.project, project_name: b.project_name, store: b.store, projects: b.projects });
+    S.cache = {}; S.build = null;
+    go("build");
+  };
+}
 
 /* ---------------- site card and face: the steps used wherever a person is identified ---------------- */
 const whoCard = (w) => `<div class="who-card">${w.photo ? `<img src="${esc(w.photo)}" alt="" class="zoomable">` : `<span class="ph"></span>`}<div style="min-width:0"><b>${esc(w.full_name)}</b>${w.full_name_ur ? `<span class="ur" style="display:block">${esc(w.full_name_ur)}</span>` : ""}<span class="small muted">${esc([t(w.worker_type || ""), t(w.trade || ""), w.name].filter(Boolean).join(" · "))}</span></div></div>`;

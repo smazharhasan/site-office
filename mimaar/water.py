@@ -14,7 +14,7 @@ import frappe
 from frappe import _
 from frappe.utils import add_days, cint, flt, get_first_day, getdate, nowdate, nowtime
 
-from mimaar.field import _company, _hhmm, _need, _parse, _photo_ok, _project, _settings, caps
+from mimaar.field import _company, _hhmm, _need, _only, _parse, _photo_ok, _project, _psql, _settings, caps
 
 ITEM = "WATER"
 REJECTED = "Brackish (rejected)"
@@ -49,7 +49,7 @@ def water_account():
 
 
 def _tanks(active=True):
-	return frappe.get_all("Water Tank", filters={"is_active": 1} if active else {}, fields=["name", "tank_name", "kind", "capacity_gallons", "sort_order"],
+	return frappe.get_all("Water Tank", filters=_only({"is_active": 1} if active else {}), fields=["name", "tank_name", "kind", "capacity_gallons", "sort_order"],
 		order_by="sort_order asc, tank_name asc")
 
 
@@ -164,7 +164,7 @@ def overview():
 		})
 	today = getdate(nowdate())
 	week0, month0 = add_days(today, -today.weekday()), get_first_day(today)
-	rows = frappe.get_all("Water Tanker", filters={"docstatus": 1, "date": [">=", add_days(today, -120)]},
+	rows = frappe.get_all("Water Tanker", filters=_only({"docstatus": 1, "date": [">=", add_days(today, -120)]}),
 		fields=["name", "date", "time", "vehicle_no", "supplier_text", "gallons", "water_type", "tds_ppm", "cost", "emptied_into", "received_by_name", "tanker_photo",
 			"tds_photo", "bill_scan", "ai_verdict", "ai_summary", "identity_check", "bill_no"],
 		order_by="date desc, time desc, creation desc", limit_page_length=500)
@@ -176,17 +176,17 @@ def overview():
 
 	bad = [r for r in rows if r.water_type == REJECTED or cint(r.tds_ppm) > limit]
 	used = frappe.db.sql(
-		"""select se.posting_date d, sum(sed.transfer_qty) q from `tabStock Entry Detail` sed join `tabStock Entry` se on se.name = sed.parent
-		where se.docstatus = 1 and se.stock_entry_type = 'Material Issue' and sed.item_code = %(item)s and se.posting_date >= %(d)s
+		f"""select se.posting_date d, sum(sed.transfer_qty) q from `tabStock Entry Detail` sed join `tabStock Entry` se on se.name = sed.parent
+		where se.docstatus = 1 and se.stock_entry_type = 'Material Issue' and sed.item_code = %(item)s and se.posting_date >= %(d)s{_psql('se')}
 		group by se.posting_date order by se.posting_date""",
 		{"item": ITEM, "d": add_days(today, -13)}, as_dict=True)
 	got = frappe.db.sql(
-		"""select date d, sum(gallons) q from `tabWater Tanker` where docstatus = 1 and water_type != %(rej)s and date >= %(d)s group by date""",
+		f"""select date d, sum(gallons) q from `tabWater Tanker` where docstatus = 1 and water_type != %(rej)s and date >= %(d)s{_psql()} group by date""",
 		{"rej": REJECTED, "d": add_days(today, -13)}, as_dict=True)
 	u, g = {str(x.d): flt(x.q) for x in used}, {str(x.d): flt(x.q) for x in got}
 	days = [str(add_days(today, -i)) for i in range(13, -1, -1)]
 	have, missing = in_tanks()
-	readings = frappe.get_all("Water Tank Reading", fields=["name", "date", "time", "tank", "level_pct", "gallons", "ai_level_pct", "ai_verdict", "ai_clarity", "ai_summary", "photo", "notes"],
+	readings = frappe.get_all("Water Tank Reading", filters=_only(), fields=["name", "date", "time", "tank", "level_pct", "gallons", "ai_level_pct", "ai_verdict", "ai_clarity", "ai_summary", "photo", "notes"],
 		order_by="date desc, time desc, creation desc", limit_page_length=40)
 	for r in readings + rows:
 		r.time = _hhmm(r.time)

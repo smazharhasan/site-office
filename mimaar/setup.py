@@ -89,6 +89,10 @@ CUSTOM_FIELDS["Task"] = [
 	F("mimaar_verified_by", "Link", "Verified by", "mimaar_verified", options="User", read_only=1),
 	F("mimaar_verified_on", "Date", "Verified on", "mimaar_verified_by", read_only=1),
 ]
+CUSTOM_FIELDS["Project"] = [
+	F("mabni_store", "Link", "Store (warehouse)", "company", options="Warehouse",
+		description="Where this project's materials are kept. Each project has its own store."),
+]
 CUSTOM_FIELDS["Account"] = [
 	F("mimaar_budget_category", "Select", "Budget category (Mimaar)", "account_type", options=BUDGET_CATEGORIES,
 		description="Groups the budget lines on the phone (Design, Grey, Finishing, Contingency ...)."),

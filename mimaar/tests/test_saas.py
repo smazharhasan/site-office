@@ -73,7 +73,7 @@ class TestSaas(IntegrationTestCase):
 		self.assertEqual(common.local_price(15, "Germany"), {"usd": 15.0, "currency": "USD", "amount": 15.0})
 
 	def test_project_limit(self):
-		have = frappe.db.count("Project", {"status": ["!=", "Cancelled"]})
+		have = frappe.db.count("Project", {"status": "Open"})
 		frappe.local.conf["mabni"] = {"limits": {"projects": have}}
 		with self.assertRaises(frappe.ValidationError):
 			frappe.get_doc({"doctype": "Project", "project_name": "Over the limit " + frappe.generate_hash(length=4)}).insert()

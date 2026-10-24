@@ -140,9 +140,9 @@ def check_projects(doc, method=None):
 	n = _limit("projects")
 	if not n or frappe.flags.in_install or frappe.flags.mabni_setup:
 		return
-	have = frappe.db.count("Project", {"status": ["!=", "Cancelled"]})
+	have = frappe.db.count("Project", {"status": "Open"})
 	if have >= n:
-		frappe.throw(_("Your plan allows {0} project(s). Close an old one or move to a bigger plan in Plan & billing.").format(n), title=_("Plan limit"))
+		frappe.throw(_("Your plan allows {0} open project(s). Close a finished one or move to a bigger plan in Plan & billing.").format(n), title=_("Plan limit"))
 
 
 # ---------------------------------------------------------------- first set-up (run by the console)
@@ -219,6 +219,12 @@ def setup(payload):
 	from mimaar.setup import apply_settings
 
 	apply_settings()
+	# the project's store, and the usual stages of building (changed later in Project > Tasks)
+	from mimaar.projects import standard_schedule
+
+	if store and frappe.db.has_column("Project", "mabni_store"):
+		frappe.db.set_value("Project", project, "mabni_store", store, update_modified=False)
+	standard_schedule(project, lang=lang)
 	frappe.db.commit()
 	frappe.clear_cache()
 	print("MABNI SETUP OK", d.company_name)
@@ -237,7 +243,7 @@ def usage(key=None):
 	if not _key_ok(key):
 		raise frappe.PermissionError
 	users = frappe.db.count("User", {"user_type": "System User", "enabled": 1, "name": ["not in", ["Administrator", "Guest"]]})
-	projects = frappe.db.count("Project", {"status": ["!=", "Cancelled"]})
+	projects = frappe.db.count("Project", {"status": "Open"})
 	size = 0
 	for sub in ("public/files", "private/files"):
 		for root, _dirs, files in os.walk(frappe.get_site_path(*sub.split("/"))):
