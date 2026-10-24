@@ -9,7 +9,7 @@ Deno.serve(handler(async (req) => {
   const key = `${lat.toFixed(4)},${lng.toFixed(4)}`; const db = admin();
   const { data: hit } = await db.from("geo_cache").select("address").eq("key", key).maybeSingle();
   if (hit) return json({ address: hit.address, cached: true });
-  const UA = { "User-Agent": "Mimaar construction site office (https://smazharhasan.github.io/site-office/)", "Accept": "application/json" };
+  const UA = { "User-Agent": "Mimaar construction site office (https://office.15-252-213-18.sslip.io/site-office/)", "Accept": "application/json" };
   const tidy = (parts: unknown[]) => parts.filter(Boolean).map(String).filter((x, i, arr) => arr.indexOf(x) === i).join(", ").slice(0, 140);
   let address = ""; const tried: string[] = [];
   try { // 1. OpenStreetMap Nominatim

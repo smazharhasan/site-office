@@ -1,6 +1,9 @@
-# Builds the Android apps (Mabni, Mimaar, Mimaar ERP) and the web app on every change, with no setup on your side.
-#  - APK:  attached to the "latest" release  → https://github.com/<you>/<repo>/releases/latest
-#  - Web:  pushed to the gh-pages branch (Settings → Pages → Branch: gh-pages)        → https://<you>.github.io/<repo>/
+# Builds the Android apps (Mabni, Mimaar, Mimaar ERP) and the old Mimaar web app on every change.
+#  - APK:  attached to the "latest" release (and one release per app version)
+#  - Web:  the old Mimaar web app as a small image in the private AWS image store (ECR), which the
+#          server serves at https://office.<base>/site-office/ (it checks every 15 minutes).
+#          GitHub signs in to AWS with no stored password: the role mabni-github-office only trusts
+#          this repository's main branch and may only upload to the "mabni-office" store.
 name: Build apps
 on:
   push: { branches: [main] }
@@ -98,6 +101,10 @@ jobs:
 
   web:
     runs-on: ubuntu-latest
+    permissions: { contents: read, id-token: write }
+    env:
+      IMAGE: 640538430239.dkr.ecr.ap-south-1.amazonaws.com/mabni-office
+      AWS_ROLE: arn:aws:iam::640538430239:role/mabni-github-office
     defaults: { run: { working-directory: app } }
     steps:
       - uses: actions/checkout@v4
@@ -110,9 +117,32 @@ jobs:
           npx expo export --platform web --output-dir web-dist/field
           cp web-dist/field/index.html web-dist/404.html && touch web-dist/.nojekyll
           V=$(cat ../VERSION); sed -i "s/__APP_VERSION__/$V/g" web-dist/index.html web-dist/shim.js
-      - name: Publish to the gh-pages branch (GitHub Pages serves it)
-        uses: peaceiris/actions-gh-pages@v4
+      - name: A small web server image with the app under /site-office/
+        run: |
+          mkdir -p ../office/srv && cp -r web-dist ../office/srv/site-office
+          cat > ../office/Caddyfile <<'CADDY'
+          :80 {
+          	root * /srv
+          	encode gzip
+          	@root path /
+          	redir @root /site-office/
+          	header /site-office/field/_expo/* Cache-Control "public, max-age=31536000, immutable"
+          	try_files {path} {path}/index.html /site-office/404.html
+          	file_server
+          }
+          CADDY
+          sed -i 's/^          //' ../office/Caddyfile
+          printf 'FROM caddy:2-alpine\nCOPY Caddyfile /etc/caddy/Caddyfile\nCOPY srv /srv\n' > ../office/Dockerfile
+      - uses: aws-actions/configure-aws-credentials@v4
+        with: { role-to-assume: "${{ env.AWS_ROLE }}", aws-region: ap-south-1 }
+      - uses: aws-actions/amazon-ecr-login@v2
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: app/web-dist
-          force_orphan: true
+          context: office
+          provenance: false
+          push: true
+          labels: org.opencontainers.image.revision=${{ github.sha }}
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:${{ github.sha }}

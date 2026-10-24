@@ -10,7 +10,7 @@ import { Button, useColors } from "../src/components/ui";
 import { supabase } from "../src/lib/supabase";
 import { useProject } from "../src/lib/project";
 
-export const OFFICE_URL = "https://smazharhasan.github.io/site-office/";
+export const OFFICE_URL = "https://office.15-252-213-18.sslip.io/site-office/";
 
 /** The full Site Office (dashboard, schedule, payments, procurement, quality …) inside the phone app.
  *  The phone app owns the sign-in: it hands its session to the page and pushes refreshed tokens,
