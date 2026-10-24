@@ -123,7 +123,7 @@ def set_card_pin(person, pin, enable=1):
 	"""Owner: set the PIN for signing in with the card, and turn card sign-in on."""
 	frappe.only_for("System Manager")
 	if not frappe.db.get_value("Site Worker", person, "user"):
-		frappe.throw(_("Give this person access to Mimaar first (Signs in as)."))
+		frappe.throw(_("Give this person access to Mabni first (Signs in as)."))
 	c = ensure_card(person)
 	_set_pin(c, pin)
 	c.sign_in_enabled = cint(enable)
@@ -193,7 +193,7 @@ def face_check(person, photo_url=None, photo_data=None, action="Other", card_sca
 		"registered_photo": p.photo, "card_scanned": cint(card_scanned), "location": location, "checked_at": now_datetime()})
 	result, score, notes = "Not checked", 0, ""
 	if s.face_check == "Off":
-		notes = _("Face check is off in Mimaar Settings.")
+		notes = _("Face check is off in Settings.")
 	elif not p.photo:
 		notes = _("No registered photo for this person.")
 	elif not photo_url:

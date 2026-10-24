@@ -5308,3 +5308,36 @@ Owner's supervisor,مالک کا سپروائزر
 Partner (builder or consultant),پارٹنر (بلڈر یا کنسلٹنٹ)
 "On the phone, install and open the Mimaar ERP app, tap 'Scan the QR on the laptop' and point it at this code, or type the address above.","فون پر معمار ERP ایپ انسٹال کر کے کھولیں، ""لیپ ٹاپ کا QR اسکین کریں"" پر ٹیپ کریں اور اس کوڈ کی طرف کریں، یا اوپر والا پتہ لکھ دیں۔"
 Choose from the phone (screenshot or PDF),فون سے چنیں (اسکرین شاٹ یا PDF)
+Ask the project needs the AI. The owner adds the Gemini key in Settings.,"""پروجیکٹ سے پوچھیں"" کے لیے AI ضروری ہے۔ مالک سیٹنگز میں Gemini کی کلید لگاتا ہے۔"
+Double-click 'Connect a phone' in the Mabni folder on this laptop. It shows the address and QR code for the phone.,اس لیپ ٹاپ پر مبنی فولڈر میں 'Connect a phone' پر ڈبل کلک کریں۔ یہ فون کے لیے پتا اور QR کوڈ دکھائے گا۔
+"On the phone, open the Mabni app, tap 'Scan the QR on the laptop' and point it here. The phone and this laptop must be on the same Wi-Fi.",فون پر مبنی ایپ کھولیں، 'لیپ ٹاپ کا QR اسکین کریں' دبائیں اور کیمرہ یہاں کریں۔ فون اور یہ لیپ ٹاپ ایک ہی وائی فائی پر ہوں۔
+"The camera can't be opened here. Allow the camera for this site, or use the Mabni app.",یہاں کیمرہ نہیں کھل سکا۔ اس سائٹ کو کیمرے کی اجازت دیں، یا مبنی ایپ استعمال کریں۔
+"Location not available: allow location for Mabni, then try again.",لوکیشن دستیاب نہیں: مبنی کو لوکیشن کی اجازت دیں، پھر دوبارہ کوشش کریں۔
+This is not a Mabni site card.,یہ مبنی کا سائٹ کارڈ نہیں ہے۔
+AI reading is off. The owner can turn it on in Settings.,AI سے پڑھنا بند ہے۔ مالک اسے سیٹنگز میں چالو کر سکتا ہے۔
+"On the phone, install and open the Mabni app, tap 'Scan the QR on the laptop' and point it at this code, or type the address above.","فون پر مبنی ایپ انسٹال کر کے کھولیں، ""لیپ ٹاپ کا QR اسکین کریں"" پر ٹیپ کریں اور اس کوڈ کی طرف کریں، یا اوپر والا پتہ لکھ دیں۔"
+The AI check runs after saving when an AI key is set in Settings.,جب سیٹنگز میں AI کی کلید لگی ہو تو محفوظ کرنے کے بعد AI جانچ ہوتی ہے۔
+"This browser can't read QR codes. Use the Mabni app on the phone, or Chrome.",یہ براؤزر QR کوڈ نہیں پڑھ سکتا۔ فون پر مبنی ایپ یا کروم استعمال کریں۔
+Access to Mabni,مبنی تک رسائی
+No connection to Mabni. Check the internet (or Wi-Fi) and try again.,مبنی سے رابطہ نہیں ہو سکا۔ انٹرنیٹ (یا وائی فائی) چیک کریں اور دوبارہ کوشش کریں۔
+Mabni,مبنی
+Paste the API key in Settings.,سیٹنگز میں API کی پیسٹ کریں۔
+The AI service refused the request ({0}). Check the API key and model in Settings.,AI سروس نے درخواست رد کر دی ({0})۔ سیٹنگز میں API کی اور ماڈل چیک کریں۔
+AI reading is off. Choose Gemini or Claude and paste the API key in Settings.,AI سے پڑھنا بند ہے۔ سیٹنگز میں Gemini یا Claude منتخب کریں اور API کی پیسٹ کریں۔
+Face check is off in Settings.,سیٹنگز میں چہرے کی جانچ بند ہے۔
+Give this person access to Mabni first (Signs in as).,پہلے اس شخص کو مبنی کی رسائی دیں (کس حیثیت سے سائن اِن)۔
+The petty cash account isn't set up. Open Settings and choose it.,پیٹی کیش کا کھاتہ نہیں بنا۔ سیٹنگز کھول کر اسے چنیں۔
+Sign in to Mabni,مبنی میں سائن اِن
+Free trial: {0} days left,مفت آزمائش: {0} دن باقی
+Your free trial ends today,آپ کی مفت آزمائش آج ختم ہو رہی ہے
+Your plan has ended. Pay within {0} days to keep working.,آپ کا پلان ختم ہو گیا ہے۔ کام جاری رکھنے کے لیے {0} دن کے اندر ادائیگی کریں۔
+Your plan ends in {0} days,آپ کا پلان {0} دن میں ختم ہو جائے گا
+Plan & billing,پلان اور ادائیگی
+"Choose English, Urdu or Arabic.",انگریزی، اردو یا عربی منتخب کریں۔
+This workspace's plan has ended. The owner can renew it in Plan & billing.,اس ورک اسپیس کا پلان ختم ہو گیا ہے۔ مالک اسے پلان اور ادائیگی میں دوبارہ فعال کر سکتا ہے۔
+"Your plan allows {0} people to sign in, and all are in use. Turn off someone who has left, or move to a bigger plan in Plan & billing.",آپ کے پلان میں {0} لوگ لاگ اِن کر سکتے ہیں اور سب جگہیں استعمال ہو چکی ہیں۔ جو چلا گیا ہو اسے بند کریں، یا پلان اور ادائیگی میں بڑا پلان لیں۔
+Your plan allows {0} project(s). Close an old one or move to a bigger plan in Plan & billing.,آپ کے پلان میں {0} پروجیکٹ کی گنجائش ہے۔ پرانا پروجیکٹ بند کریں یا پلان اور ادائیگی میں بڑا پلان لیں۔
+Plan limit,پلان کی حد
+Only the owner can see the plan and pay. Ask the owner.,پلان دیکھنا اور ادائیگی کرنا صرف مالک کا کام ہے۔ مالک سے کہیں۔
+Mabni blue,مبنی نیلا
+"Blueprint blue with amber, the Mabni look",نقشے والا نیلا اور زرد، مبنی کا انداز

@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1E3A5F">
+<title>Start your free trial · Mabni</title>
+<meta name="description" content="Mabni: construction site management for home owners and builders. Stores, payments, progress and people in English, Urdu and Arabic.">
+<link rel="icon" href="/assets/mimaar/images/mabni-logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..110,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&family=Noto+Kufi+Arabic:wght@400;600;700&family=Noto+Nastaliq+Urdu:wght@400;600&display=swap">
+<script>window.frappe = window.frappe || {};</script>
+<!-- csrf_token -->
+<style>
+/* Layout: blueprint panel with the pitch beside one form card that walks through sign-up → code → set-up → ready */
+:root{
+  --blue:#1E3A5F; --blue-2:#284B78; --amber:#F2B01E; --ink:#14202B; --muted:#5B6875; --bg:#EEF1F4; --card:#FFFFFF; --line:#D5DBE1; --field:#F7F9FA;
+  --ok:#1C7148; --bad:#B3402A; --on-blue:#E9F0F8; --on-blue-2:#B9CBE0;
+  --display:"Archivo","Arial Narrow",Arial,sans-serif; --body:"IBM Plex Sans","Segoe UI",Roboto,Arial,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --ur:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq",serif; --ar:"Noto Kufi Arabic","Geeza Pro",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root{--ink:#E6EBF0; --muted:#9EABB8; --bg:#0F151C; --card:#17202A; --line:#2B3744; --field:#121A22; --ok:#5FD198; --bad:#F08A72; color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--body);min-height:100vh}
+[dir=rtl] body{font-family:var(--ar)}
+html[lang=ur] body{font-family:var(--ur);line-height:2.05}
+html[lang=ur] .num, html[lang=ar] .num{font-family:var(--body)}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,520px);min-height:100vh}
+@media (max-width:900px){.wrap{grid-template-columns:1fr}}
+/* the blueprint side */
+.pitch{background:var(--blue);color:var(--on-blue);position:relative;overflow:hidden;
+  padding-block:32px 40px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:28px}
+.pitch::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.16;
+  background-image:linear-gradient(var(--on-blue-2) 1px,transparent 1px),linear-gradient(90deg,var(--on-blue-2) 1px,transparent 1px);background-size:28px 28px}
+.pitch>*{position:relative}
+.brand{display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
+.logo svg{width:40px;height:40px}
+.logo b{font:800 1.6rem/1 var(--display);letter-spacing:-.01em}
+.langs{display:flex;gap:4px;background:rgba(255,255,255,.08);border-radius:999px;padding:4px}
+.langs button{border:0;background:transparent;color:var(--on-blue);font:500 .85rem/1 var(--body);padding:8px 12px;border-radius:999px;cursor:pointer}
+.langs button[aria-pressed=true]{background:#fff;color:var(--blue)}
+.langs button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.langs .ur{font-family:var(--ur)} .langs .ar{font-family:var(--ar)}
+.hero{display:grid;gap:16px;max-width:34rem;margin-block:auto}
+.hero h1{font:800 clamp(2rem,4.2vw,3.1rem)/1.06 var(--display);margin:0;color:#fff;text-wrap:balance;letter-spacing:-.01em}
+html[lang=ur] .hero h1{font:600 clamp(1.7rem,3.4vw,2.5rem)/1.9 var(--ur)}
+html[lang=ar] .hero h1{font:700 clamp(1.8rem,3.6vw,2.6rem)/1.45 var(--ar)}
+.hero p{margin:0;color:var(--on-blue-2);font-size:1.06rem}
+.points{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.points li{display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;align-items:start}
+.points svg{width:22px;height:22px;margin-top:3px}
+.dim{display:flex;align-items:center;gap:10px;font:500 .8rem/1 var(--mono);color:var(--amber);letter-spacing:.06em;text-transform:uppercase}
+.dim::before,.dim::after{content:"";height:1px;flex:1;background:var(--amber);opacity:.6}
+.by{font-size:.85rem;color:var(--on-blue-2)}
+/* the form side */
+.side{padding-block:32px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;align-items:flex-start;justify-content:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;width:100%;max-width:480px;display:grid;gap:18px}
+.card h2{font:750 1.45rem/1.15 var(--display);margin:0}
+html[lang=ur] .card h2{font:600 1.35rem/2 var(--ur)} html[lang=ar] .card h2{font:700 1.35rem/1.5 var(--ar)}
+.lede{color:var(--muted);margin:0}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:420px){.modes{grid-template-columns:1fr}}
+.mode{position:relative;border:1.5px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:4px;cursor:pointer;background:var(--field)}
+.mode input{position:absolute;opacity:0;pointer-events:none}
+.mode b{font:700 1rem/1.3 var(--display)}
+html[lang=ur] .mode b{font:600 1rem/1.9 var(--ur)} html[lang=ar] .mode b{font:700 1rem/1.5 var(--ar)}
+.mode span{font-size:.86rem;color:var(--muted)}
+.mode .price{font:500 .8rem/1.4 var(--mono);color:var(--blue-2)}
+@media (prefers-color-scheme: dark){.mode .price{color:var(--on-blue-2)}}
+.mode:has(input:checked){border-color:var(--amber);background:color-mix(in srgb,var(--amber) 9%,var(--card))}
+.mode:has(input:focus-visible){outline:2px solid var(--amber);outline-offset:2px}
+.f{display:grid;gap:6px;min-width:0}
+.f label{font-weight:600;font-size:.92rem}
+.f .help{font-size:.82rem;color:var(--muted)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:420px){.row{grid-template-columns:1fr}}
+input[type=text],input[type=email],input[type=tel],input[type=password],select{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;min-height:46px}
+input:focus,select:focus{outline:none;border-color:var(--blue-2);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue-2) 22%,transparent)}
+@media (prefers-color-scheme: dark){input:focus,select:focus{border-color:var(--amber)}}
+.addr{display:flex;align-items:stretch;border:1.5px solid var(--line);border-radius:10px;background:var(--field);overflow:hidden;direction:ltr}
+.addr:focus-within{border-color:var(--blue-2)}
+.addr input{border:0;border-radius:0;background:transparent;min-width:0;flex:1;font-family:var(--mono);box-shadow:none!important}
+.addr span{display:flex;align-items:center;padding:0 12px;font:500 .85rem/1 var(--mono);color:var(--muted);background:color-mix(in srgb,var(--line) 40%,transparent);white-space:nowrap;max-width:60%;overflow:hidden;text-overflow:ellipsis}
+.state{font-size:.84rem;min-height:1.3em}
+.state.ok{color:var(--ok)} .state.bad{color:var(--bad)}
+.pw{position:relative}
+.pw button{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--blue-2);font:600 .8rem var(--body);padding:8px;cursor:pointer}
+@media (prefers-color-scheme: dark){.pw button{color:var(--amber)}}
+.agree{display:flex;gap:10px;align-items:flex-start;font-size:.9rem}
+.agree input{width:20px;height:20px;margin-top:3px;accent-color:var(--blue)}
+.agree a{color:inherit}
+.btn{appearance:none;border:0;border-radius:12px;background:var(--amber);color:#1B1405;font:700 1.02rem/1 var(--display);padding:16px 18px;cursor:pointer;min-height:52px;width:100%}
+html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem/1.4 var(--ar)}
+.btn:hover{filter:brightness(1.05)} .btn:focus-visible{outline:3px solid var(--blue-2);outline-offset:2px}
+.btn[disabled]{opacity:.6;cursor:wait}
+.btn.ghost{background:transparent;color:var(--blue-2);border:1.5px solid var(--line)}
+@media (prefers-color-scheme: dark){.btn.ghost{color:var(--ink)}}
+.err{background:color-mix(in srgb,var(--bad) 10%,var(--card));color:var(--bad);border-radius:10px;padding:10px 12px;font-size:.92rem}
+.hp{position:absolute;left:-5000px;width:1px;height:1px;overflow:hidden}
+.code{font:600 1.8rem/1 var(--mono)!important;letter-spacing:.4em;text-align:center}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.steps li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:center;color:var(--muted)}
+.steps i{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);display:block;position:relative}
+.steps li.on{color:var(--ink)} .steps li.on i{border-color:var(--amber);border-top-color:transparent;animation:spin 1s linear infinite}
+.steps li.done{color:var(--ink)} .steps li.done i{border-color:var(--ok);background:var(--ok)}
+.steps li.done i::after{content:"";position:absolute;left:6px;top:3px;width:6px;height:11px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.steps li.on i{animation:none}}
+.ready{display:grid;gap:12px;text-align:center;justify-items:center}
+.ready svg{width:64px;height:64px}
+.where{font:500 1rem/1.4 var(--mono);background:var(--field);border:1px dashed var(--line);border-radius:10px;padding:10px 12px;overflow-wrap:anywhere;direction:ltr}
+.small{font-size:.86rem;color:var(--muted)}
+.small a{color:inherit}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="pitch">
+    <div class="brand">
+      <a class="logo" href="#" aria-label="Mabni">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><rect width="120" height="120" rx="26" fill="#fff" fill-opacity=".1"/><rect x="24" y="30" width="15" height="60" rx="3" fill="#fff"/><rect x="81" y="30" width="15" height="60" rx="3" fill="#fff"/><polyline points="39,52 55,70 81,34" fill="none" stroke="#F2B01E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <b>Mabni</b>
+      </a>
+      <div class="langs" role="group" aria-label="Language">
+        <button type="button" data-lang="en">English</button>
+        <button type="button" data-lang="ur" class="ur">اردو</button>
+        <button type="button" data-lang="ar" class="ar">العربية</button>
+      </div>
+    </div>
+    <div class="hero">
+      <div class="dim" data-t="dim"></div>
+      <h1 data-t="hero"></h1>
+      <p data-t="sub"></p>
+      <ul class="points">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#F2B01E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span data-t="p1"></span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#F2B01E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span data-t="p2"></span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#F2B01E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span data-t="p3"></span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="#F2B01E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span data-t="p4"></span></li>
+      </ul>
+    </div>
+    <div class="by" data-t="by"></div>
+  </section>
+
+  <main class="side">
+    <!-- 1. sign-up -->
+    <form class="card" id="s-form" novalidate>
+      <div style="display:grid;gap:6px"><h2 data-t="title"></h2><p class="lede" id="trial-note"></p></div>
+      <div class="f">
+        <label data-t="q_mode"></label>
+        <div class="modes">
+          <label class="mode"><input type="radio" name="mode" value="Owner" id="m-owner" checked><b data-t="owner_t"></b><span data-t="owner_d"></span><span class="price num" id="price-Owner"></span></label>
+          <label class="mode"><input type="radio" name="mode" value="Builder" id="m-builder"><b data-t="builder_t"></b><span data-t="builder_d"></span><span class="price num" id="price-Builder"></span></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="f"><label for="contact_name" data-t="name"></label><input type="text" id="contact_name" autocomplete="name" required maxlength="120"></div>
+        <div class="f"><label for="phone" data-t="phone"></label><input type="tel" id="phone" autocomplete="tel" inputmode="tel" maxlength="40" dir="ltr"></div>
+      </div>
+      <div class="f"><label for="email" data-t="email"></label><input type="email" id="email" autocomplete="email" required maxlength="140" dir="ltr"></div>
+      <div class="row">
+        <div class="f"><label for="country" data-t="country"></label><select id="country"></select></div>
+        <div class="f"><label for="city" data-t="city"></label><input type="text" id="city" autocomplete="address-level2" maxlength="80"></div>
+      </div>
+      <div class="f"><label for="company_name" id="l-company"></label><input type="text" id="company_name" required maxlength="120"></div>
+      <div class="f">
+        <label for="subdomain" data-t="address"></label>
+        <div class="addr"><input type="text" id="subdomain" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="30" inputmode="url"><span id="base"></span></div>
+        <div class="state" id="sub-state" aria-live="polite"></div>
+        <div class="help" data-t="address_help"></div>
+      </div>
+      <div class="f">
+        <label for="password" data-t="password"></label>
+        <div class="pw"><input type="password" id="password" autocomplete="new-password" required minlength="8" dir="ltr"><button type="button" id="pw-toggle" data-t="show"></button></div>
+        <div class="help" data-t="password_help"></div>
+      </div>
+      <div class="hp" aria-hidden="true"><label for="website">Website</label><input type="text" id="website" tabindex="-1" autocomplete="off"></div>
+      <label class="agree"><input type="checkbox" id="agree"><span id="agree-text"></span></label>
+      <div class="err" id="s-err" hidden></div>
+      <button class="btn" type="submit" id="s-go" data-t="submit"></button>
+      <p class="small" data-t="have_account"></p>
+    </form>
+
+    <!-- 2. email code -->
+    <form class="card" id="s-verify" hidden novalidate>
+      <h2 data-t="verify_t"></h2>
+      <p class="lede" id="verify-d"></p>
+      <div class="f"><label for="code" data-t="code"></label><input type="text" id="code" class="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" dir="ltr"></div>
+      <div class="err" id="v-err" hidden></div>
+      <button class="btn" type="submit" id="v-go" data-t="verify_btn"></button>
+      <button class="btn ghost" type="button" id="v-resend" data-t="resend"></button>
+    </form>
+
+    <!-- 3. set-up -->
+    <section class="card" id="s-setup" hidden aria-live="polite">
+      <h2 data-t="setup_t"></h2>
+      <p class="lede" data-t="setup_d"></p>
+      <ul class="steps"><li id="st1"><i></i><span data-t="step1"></span></li><li id="st2"><i></i><span data-t="step2"></span></li><li id="st3"><i></i><span data-t="step3"></span></li></ul>
+      <div class="where" id="setup-where"></div>
+      <p class="small" id="slow" data-t="slow" hidden></p>
+    </section>
+
+    <!-- 4. ready -->
+    <section class="card" id="s-ready" hidden>
+      <div class="ready">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><rect width="120" height="120" rx="26" fill="#1E3A5F"/><rect x="24" y="30" width="15" height="60" rx="3" fill="#fff"/><rect x="81" y="30" width="15" height="60" rx="3" fill="#fff"/><polyline points="39,52 55,70 81,34" fill="none" stroke="#F2B01E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h2 data-t="ready_t"></h2>
+        <div class="where" id="ready-where"></div>
+        <p class="lede" id="ready-d"></p>
+        <a class="btn" id="ready-go" href="#" style="text-decoration:none;display:flex;align-items:center;justify-content:center" data-t="open"></a>
+        <p class="small" data-t="phone_tip"></p>
+      </div>
+    </section>
+
+    <!-- failed -->
+    <section class="card" id="s-failed" hidden>
+      <h2 data-t="failed_t"></h2>
+      <p class="lede" id="failed-d"></p>
+    </section>
+  </main>
+</div>
+
+<script>
+const CFG = {{ cfg }};
+const PAGE_LANG = "{{ lang }}";
+const I18N = {
+  en: {
+    dim: "Owner · Builder · Site", hero: "Every bag of cement, every payment, every day on site, in one place.",
+    sub: "Mabni keeps the owner and the builder on the same facts: stores, payments, progress photos and people, checked with AI.",
+    p1: "Stores and deliveries with photos and site cards", p2: "Payments, budget and petty cash that add up", p3: "Progress you can see, stage by stage", p4: "English, Urdu and Arabic, on any phone",
+    by: "A product of SMH Global Services", title: "Start your free trial", trial_note: "{n} days free. No card needed.",
+    q_mode: "What are you building?", owner_t: "My own home", owner_d: "I'm the owner and want to see everything my builder and site staff do.",
+    builder_t: "Projects for clients", builder_d: "I'm a builder or contractor running several sites.", per_month: "{p} a month after the trial",
+    name: "Your name", phone: "Mobile / WhatsApp", email: "Email", country: "Country", city: "City",
+    company_owner: "Name of your project", company_owner_ph: "e.g. Khan House, DHA Phase 6", company_builder: "Company name", company_builder_ph: "e.g. Al Noor Builders",
+    address: "Your workspace address", address_help: "Your team opens this on their phones.", checking: "Checking…", available: "Available",
+    password: "Choose a password", password_help: "At least 8 characters, with letters and numbers.", show: "Show", hide: "Hide",
+    agree: "I accept the {terms} and the {privacy}.", terms: "terms of service", privacy: "privacy policy",
+    submit: "Start my free trial", working: "Please wait…", have_account: "Already have a workspace? Sign in at its address.",
+    verify_t: "Check your email", verify_d: "We sent a 6-digit code to {email}.", code: "Code", verify_btn: "Confirm", resend: "Send a new code", sent: "A new code is on its way.",
+    setup_t: "Setting up your workspace", setup_d: "This takes about a minute. Keep this page open.",
+    step1: "Creating your company and accounts", step2: "Adding your project and store", step3: "Preparing your sign-in",
+    slow: "It's taking longer than usual. It can take up to 5 minutes; we'll also email you.",
+    ready_t: "Your workspace is ready", ready_d: "Sign in with {email} and the password you chose.", open: "Open my workspace",
+    phone_tip: "On your phone, open the address and choose “Add to Home Screen”.", failed_t: "We couldn't finish",
+    e_fill: "Please fill in every field.", e_email: "Enter a valid email address.", e_pw: "Use a password of at least 8 characters with letters and numbers.",
+    e_agree: "Please accept the terms to continue.", e_sub: "Use 3 to 30 letters, numbers or dashes, starting with a letter.", e_code: "Enter the 6-digit code.",
+    e_many: "Too many tries. Please wait a few minutes and try again.", e_net: "No connection. Check the internet and try again.", e_closed: "New sign-ups are closed for now.",
+    c_Pakistan: "Pakistan", "c_Saudi Arabia": "Saudi Arabia", "c_United Arab Emirates": "United Arab Emirates", other_countries: "Other countries",
+  },
+  ur: {
+    dim: "مالک · بلڈر · سائٹ", hero: "سیمنٹ کی ہر بوری، ہر ادائیگی، سائٹ کا ہر دن — ایک جگہ پر۔",
+    sub: "مبنی مالک اور بلڈر کو ایک ہی حقائق پر رکھتا ہے: اسٹور، ادائیگیاں، کام کی تصاویر اور لوگ، اے آئی کی جانچ کے ساتھ۔",
+    p1: "اسٹور اور سامان کی وصولی، تصاویر اور سائٹ کارڈ کے ساتھ", p2: "ادائیگیاں، بجٹ اور پیٹی کیش، جن کا حساب پورا ہو", p3: "کام کی پیش رفت، مرحلہ وار، آنکھوں کے سامنے", p4: "انگریزی، اردو اور عربی میں، ہر فون پر",
+    by: "ایس ایم ایچ گلوبل سروسز کی پیشکش", title: "مفت آزمائش شروع کریں", trial_note: "{n} دن مفت۔ کسی کارڈ کی ضرورت نہیں۔",
+    q_mode: "آپ کیا بنا رہے ہیں؟", owner_t: "اپنا گھر", owner_d: "میں مالک ہوں اور بلڈر اور سائٹ کے عملے کا ہر کام دیکھنا چاہتا ہوں۔",
+    builder_t: "کلائنٹس کے پروجیکٹ", builder_d: "میں بلڈر یا ٹھیکیدار ہوں اور کئی سائٹس چلاتا ہوں۔", per_month: "آزمائش کے بعد {p} ماہانہ",
+    name: "آپ کا نام", phone: "موبائل / واٹس ایپ", email: "ای میل", country: "ملک", city: "شہر",
+    company_owner: "پروجیکٹ کا نام", company_owner_ph: "مثلاً خان ہاؤس، ڈی ایچ اے فیز 6", company_builder: "کمپنی کا نام", company_builder_ph: "مثلاً النور بلڈرز",
+    address: "آپ کے ورک اسپیس کا پتہ", address_help: "آپ کی ٹیم یہی پتہ اپنے فون پر کھولے گی۔", checking: "دیکھ رہے ہیں…", available: "دستیاب ہے",
+    password: "پاس ورڈ بنائیں", password_help: "کم از کم 8 حروف، جن میں حروف اور ہندسے دونوں ہوں۔", show: "دکھائیں", hide: "چھپائیں",
+    agree: "میں {terms} اور {privacy} قبول کرتا ہوں۔", terms: "شرائطِ استعمال", privacy: "رازداری کی پالیسی",
+    submit: "میری مفت آزمائش شروع کریں", working: "انتظار کریں…", have_account: "پہلے سے ورک اسپیس ہے؟ اسی کے پتے پر لاگ اِن کریں۔",
+    verify_t: "اپنی ای میل دیکھیں", verify_d: "ہم نے {email} پر 6 ہندسوں کا کوڈ بھیجا ہے۔", code: "کوڈ", verify_btn: "تصدیق کریں", resend: "نیا کوڈ بھیجیں", sent: "نیا کوڈ بھیج دیا گیا ہے۔",
+    setup_t: "آپ کا ورک اسپیس تیار ہو رہا ہے", setup_d: "اس میں تقریباً ایک منٹ لگے گا۔ یہ صفحہ کھلا رہنے دیں۔",
+    step1: "آپ کی کمپنی اور کھاتے بن رہے ہیں", step2: "پروجیکٹ اور اسٹور شامل ہو رہے ہیں", step3: "آپ کا لاگ اِن تیار ہو رہا ہے",
+    slow: "معمول سے زیادہ وقت لگ رہا ہے۔ پانچ منٹ تک لگ سکتے ہیں؛ ہم آپ کو ای میل بھی کریں گے۔",
+    ready_t: "آپ کا ورک اسپیس تیار ہے", ready_d: "{email} اور اپنے پاس ورڈ سے لاگ اِن کریں۔", open: "میرا ورک اسپیس کھولیں",
+    phone_tip: "فون پر یہ پتہ کھولیں اور “Add to Home Screen” منتخب کریں۔", failed_t: "ہم مکمل نہیں کر سکے",
+    e_fill: "براہِ کرم تمام خانے پُر کریں۔", e_email: "درست ای میل لکھیں۔", e_pw: "کم از کم 8 حروف کا پاس ورڈ رکھیں جس میں حروف اور ہندسے ہوں۔",
+    e_agree: "آگے بڑھنے کے لیے شرائط قبول کریں۔", e_sub: "3 سے 30 انگریزی حروف، ہندسے یا ڈیش استعمال کریں، شروع میں حرف ہو۔", e_code: "6 ہندسوں کا کوڈ لکھیں۔",
+    e_many: "بہت زیادہ کوششیں ہو گئیں۔ چند منٹ بعد دوبارہ کوشش کریں۔", e_net: "انٹرنیٹ نہیں مل رہا۔ کنکشن دیکھ کر دوبارہ کوشش کریں۔", e_closed: "فی الحال نئی رجسٹریشن بند ہے۔",
+    c_Pakistan: "پاکستان", "c_Saudi Arabia": "سعودی عرب", "c_United Arab Emirates": "متحدہ عرب امارات", other_countries: "دوسرے ممالک",
+  },
+  ar: {
+    dim: "المالك · المقاول · الموقع", hero: "كل كيس إسمنت، وكل دفعة، وكل يوم في الموقع، في مكان واحد.",
+    sub: "مبني يجمع المالك والمقاول على الحقائق نفسها: المخزن والدفعات وصور التقدّم والعمّال، مع تدقيق بالذكاء الاصطناعي.",
+    p1: "المخزن والتوريدات بالصور وبطاقات الموقع", p2: "دفعات وميزانية وعهدة نقدية حساباتها مضبوطة", p3: "تقدّم العمل أمام عينيك، مرحلة بمرحلة", p4: "بالعربية والإنجليزية والأردية، على أي جوال",
+    by: "منتج من SMH Global Services", title: "ابدأ تجربتك المجانية", trial_note: "{n} أيام مجاناً. بدون بطاقة.",
+    q_mode: "ماذا تبني؟", owner_t: "بيتي الخاص", owner_d: "أنا المالك وأريد أن أرى كل ما يقوم به المقاول وفريق الموقع.",
+    builder_t: "مشاريع لعملائي", builder_d: "أنا مقاول أو شركة مقاولات أدير عدة مواقع.", per_month: "{p} شهرياً بعد التجربة",
+    name: "اسمك", phone: "الجوال / واتساب", email: "البريد الإلكتروني", country: "الدولة", city: "المدينة",
+    company_owner: "اسم مشروعك", company_owner_ph: "مثال: فيلا العتيبي، حي النرجس", company_builder: "اسم الشركة", company_builder_ph: "مثال: مؤسسة النور للمقاولات",
+    address: "عنوان مساحة عملك", address_help: "يفتح فريقك هذا العنوان على جوالاتهم.", checking: "جارٍ التحقق…", available: "متاح",
+    password: "اختر كلمة مرور", password_help: "8 أحرف على الأقل، تجمع بين الحروف والأرقام.", show: "إظهار", hide: "إخفاء",
+    agree: "أوافق على {terms} و{privacy}.", terms: "شروط الخدمة", privacy: "سياسة الخصوصية",
+    submit: "ابدأ تجربتي المجانية", working: "يرجى الانتظار…", have_account: "لديك مساحة عمل؟ سجّل الدخول من عنوانها.",
+    verify_t: "تحقق من بريدك", verify_d: "أرسلنا رمزاً من 6 أرقام إلى {email}.", code: "الرمز", verify_btn: "تأكيد", resend: "أرسل رمزاً جديداً", sent: "تم إرسال رمز جديد.",
+    setup_t: "نجهّز مساحة عملك", setup_d: "يستغرق ذلك دقيقة تقريباً. أبقِ هذه الصفحة مفتوحة.",
+    step1: "إنشاء شركتك وحساباتك", step2: "إضافة مشروعك والمخزن", step3: "تجهيز تسجيل دخولك",
+    slow: "يستغرق الأمر وقتاً أطول من المعتاد، قد يصل إلى 5 دقائق، وسنراسلك أيضاً.",
+    ready_t: "مساحة عملك جاهزة", ready_d: "سجّل الدخول بـ {email} وكلمة المرور التي اخترتها.", open: "افتح مساحة عملي",
+    phone_tip: "على جوالك، افتح العنوان واختر “إضافة إلى الشاشة الرئيسية”.", failed_t: "لم نتمكن من الإكمال",
+    e_fill: "يرجى تعبئة جميع الحقول.", e_email: "أدخل بريداً إلكترونياً صحيحاً.", e_pw: "استخدم كلمة مرور من 8 أحرف على الأقل تجمع بين الحروف والأرقام.",
+    e_agree: "يرجى الموافقة على الشروط للمتابعة.", e_sub: "استخدم من 3 إلى 30 حرفاً إنجليزياً أو رقماً أو شَرطة، يبدأ بحرف.", e_code: "أدخل الرمز المكوّن من 6 أرقام.",
+    e_many: "محاولات كثيرة. انتظر بضع دقائق ثم حاول مجدداً.", e_net: "لا يوجد اتصال. تحقق من الإنترنت وحاول مجدداً.", e_closed: "التسجيل الجديد مغلق حالياً.",
+    c_Pakistan: "باكستان", "c_Saudi Arabia": "السعودية", "c_United Arab Emirates": "الإمارات", other_countries: "دول أخرى",
+  },
+};
+const $ = (id) => document.getElementById(id);
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+const sess = { get(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }, del(k) { try { sessionStorage.removeItem(k); } catch (e) {} } };
+let LANG = PAGE_LANG || store.get("mabni_lang") || ((navigator.language || "").startsWith("ar") ? "ar" : (navigator.language || "").startsWith("ur") ? "ur" : "en");
+const t = (k, v) => { let s = (I18N[LANG] && I18N[LANG][k]) || I18N.en[k] || k; for (const x in v || {}) s = s.split("{" + x + "}").join(v[x]); return s; };
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+let EMAIL = "";
+
+function money(usd, country) {
+  const cur = { Pakistan: "PKR", "Saudi Arabia": "SAR", "United Arab Emirates": "AED" }[country];
+  const r = cur && CFG.rates[cur];
+  if (!r || !r[0]) return "$" + usd;
+  const v = Math.round((usd * r[0]) / r[1]) * r[1];
+  return cur + " " + v.toLocaleString("en") + " ($" + usd + ")";
+}
+function paint() {
+  document.documentElement.lang = LANG;
+  document.documentElement.dir = LANG === "en" ? "ltr" : "rtl";
+  document.title = t("title") + " · Mabni";
+  document.querySelectorAll("[data-t]").forEach((el) => { el.textContent = t(el.dataset.t); });
+  document.querySelectorAll(".langs button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.lang === LANG));
+  $("trial-note").textContent = t("trial_note", { n: CFG.trial });
+  const builder = $("m-builder").checked;
+  $("l-company").textContent = t(builder ? "company_builder" : "company_owner");
+  $("company_name").placeholder = t(builder ? "company_builder_ph" : "company_owner_ph");
+  const terms = CFG.terms ? `<a href="${esc(CFG.terms)}" target="_blank" rel="noopener">${esc(t("terms"))}</a>` : esc(t("terms"));
+  const privacy = CFG.privacy ? `<a href="${esc(CFG.privacy)}" target="_blank" rel="noopener">${esc(t("privacy"))}</a>` : esc(t("privacy"));
+  $("agree-text").innerHTML = esc(t("agree")).replace("{terms}", terms).replace("{privacy}", privacy);
+  $("pw-toggle").textContent = t($("password").type === "password" ? "show" : "hide");
+  const sel = $("country"), cur = sel.value || "Pakistan";
+  sel.innerHTML = "";
+  CFG.countries.forEach((c, i) => {
+    if (i === 3) { const g = document.createElement("option"); g.disabled = true; g.textContent = "── " + t("other_countries") + " ──"; sel.appendChild(g); }
+    const o = document.createElement("option"); o.value = c; o.textContent = i < 3 ? t("c_" + c) : c; sel.appendChild(o);
+  });
+  sel.value = cur;
+  prices();
+  if (EMAIL) { $("verify-d").textContent = t("verify_d", { email: EMAIL }); $("ready-d").textContent = t("ready_d", { email: EMAIL }); }
+}
+function prices() {
+  for (const mode of ["Owner", "Builder"]) {
+    const p = CFG.plans.find((x) => x.mode === mode);
+    $("price-" + mode).textContent = p ? t("per_month", { p: money(p.month, $("country").value) }) : "";
+  }
+}
+document.querySelectorAll(".langs button").forEach((b) => b.addEventListener("click", () => {
+  LANG = b.dataset.lang; store.set("mabni_lang", LANG);
+  document.cookie = "preferred_language=" + LANG + ";path=/;max-age=31536000;SameSite=Lax";
+  paint();
+}));
+document.querySelectorAll("input[name=mode]").forEach((r) => r.addEventListener("change", paint));
+$("country").addEventListener("change", prices);
+$("pw-toggle").addEventListener("click", () => { const p = $("password"); p.type = p.type === "password" ? "text" : "password"; paint(); });
+$("base").textContent = "." + CFG.base;
+
+function msgOf(j, status) {
+  if (status === 429) return t("e_many");
+  try {
+    if (j && j._server_messages) return JSON.parse(j._server_messages).map((x) => { try { return JSON.parse(x).message; } catch (e) { return x; } }).join(" ").replace(/<[^>]+>/g, "");
+  } catch (e) {}
+  if (j && j.exception) return String(j.exception).replace(/^[\w.]+:\s*/, "");
+  return "";
+}
+async function api(method, data, get) {
+  let url = "/api/method/" + method, opt;
+  if (get) { url += "?" + new URLSearchParams(data || {}); opt = { method: "GET", headers: { Accept: "application/json" } }; }
+  else opt = { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json", "X-Frappe-CSRF-Token": (window.frappe && frappe.csrf_token) || "" }, body: JSON.stringify(data || {}) };
+  let r;
+  try { r = await fetch(url, opt); } catch (e) { throw new Error(t("e_net")); }
+  let j = {};
+  try { j = await r.json(); } catch (e) {}
+  if (!r.ok) throw new Error(msgOf(j, r.status) || t("e_net"));
+  return j.message;
+}
+
+// workspace name: suggested from the company name until the person types their own
+let subTouched = false, subTimer = null, subOk = false;
+function subState(cls, text) { const s = $("sub-state"); s.className = "state " + (cls || ""); s.textContent = text || ""; }
+function checkSub(byCompany) {
+  clearTimeout(subTimer);
+  subTimer = setTimeout(async () => {
+    const name = $("subdomain").value.trim();
+    if (!byCompany && !/^[a-z][a-z0-9-]{1,28}[a-z0-9]$/.test(name)) { subOk = false; subState("bad", name ? t("e_sub") : ""); return; }
+    subState("", t("checking"));
+    try {
+      const r = byCompany ? await api("mimaar.saas.signup.check", { company: $("company_name").value }, true) : await api("mimaar.saas.signup.check", { name }, true);
+      if (byCompany && !subTouched) $("subdomain").value = r.name;
+      subOk = !!r.ok;
+      subState(r.ok ? "ok" : "bad", r.ok ? "✓ " + t("available") + " · " + r.host : r.message);
+    } catch (e) { subState("bad", e.message); }
+  }, 450);
+}
+$("company_name").addEventListener("input", () => { if (!subTouched && $("company_name").value.trim().length > 1) checkSub(true); });
+$("subdomain").addEventListener("input", () => {
+  subTouched = true;
+  const el = $("subdomain"), v = el.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
+  if (v !== el.value) el.value = v;
+  checkSub(false);
+});
+
+function show(id) { ["s-form", "s-verify", "s-setup", "s-ready", "s-failed"].forEach((x) => { $(x).hidden = x !== id; }); window.scrollTo({ top: 0, behavior: "smooth" }); }
+function fail(box, msg) { const e = $(box); e.textContent = msg; e.hidden = !msg; if (msg) e.scrollIntoView({ block: "nearest" }); }
+
+$("s-form").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  fail("s-err", "");
+  const d = {
+    mode: $("m-builder").checked ? "Builder" : "Owner", contact_name: $("contact_name").value.trim(), phone: $("phone").value.trim(), email: $("email").value.trim(),
+    country: $("country").value, city: $("city").value.trim(), company_name: $("company_name").value.trim(), subdomain: $("subdomain").value.trim(),
+    password: $("password").value, agree: $("agree").checked ? 1 : 0, language: LANG, website: $("website").value,
+  };
+  if (!CFG.open) return fail("s-err", t("e_closed"));
+  if (!d.contact_name || !d.email || !d.company_name || !d.subdomain || !d.password) return fail("s-err", t("e_fill"));
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email)) return fail("s-err", t("e_email"));
+  if (!/^[a-z][a-z0-9-]{1,28}[a-z0-9]$/.test(d.subdomain)) return fail("s-err", t("e_sub"));
+  if (d.password.length < 8 || !/[A-Za-z]/.test(d.password) || !/\d/.test(d.password)) return fail("s-err", t("e_pw"));
+  if (!d.agree) return fail("s-err", t("e_agree"));
+  const btn = $("s-go"); btn.disabled = true; btn.textContent = t("working");
+  try {
+    const r = await api("mimaar.saas.signup.start", { data: d });
+    EMAIL = r.email; sess.set("mabni_signup", JSON.stringify({ token: r.token, email: r.email, host: r.host }));
+    paint();
+    if (r.verify) { show("s-verify"); $("code").focus(); } else follow(r.token, r.host);
+  } catch (e) { fail("s-err", e.message); }
+  finally { btn.disabled = false; btn.textContent = t("submit"); }
+});
+
+$("s-verify").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  fail("v-err", "");
+  const code = $("code").value.replace(/\D/g, "");
+  if (code.length !== 6) return fail("v-err", t("e_code"));
+  const s = JSON.parse(sess.get("mabni_signup") || "{}");
+  const btn = $("v-go"); btn.disabled = true;
+  try { await api("mimaar.saas.signup.verify", { token: s.token, code }); follow(s.token, s.host); }
+  catch (e) { fail("v-err", e.message); }
+  finally { btn.disabled = false; }
+});
+$("v-resend").addEventListener("click", async () => {
+  const s = JSON.parse(sess.get("mabni_signup") || "{}");
+  try { await api("mimaar.saas.signup.resend", { token: s.token }); fail("v-err", ""); $("v-resend").textContent = t("sent"); }
+  catch (e) { fail("v-err", e.message); }
+});
+
+let pollT = null;
+function follow(token, host) {
+  show("s-setup");
+  $("setup-where").textContent = host || "";
+  const started = Date.now();
+  const steps = ["st1", "st2", "st3"];
+  const mark = (n) => steps.forEach((s, i) => { $(s).className = i < n ? "done" : i === n ? "on" : ""; });
+  mark(0);
+  const tick = async () => {
+    const secs = (Date.now() - started) / 1000;
+    mark(secs < 25 ? 0 : secs < 55 ? 1 : 2);
+    if (secs > 100) $("slow").hidden = false;
+    try {
+      const r = await api("mimaar.saas.signup.status", { token }, true);
+      if (r.url) {
+        mark(3); sess.del("mabni_signup");
+        EMAIL = r.email; paint();
+        $("ready-where").textContent = r.host; $("ready-go").href = r.url + "?usr=" + encodeURIComponent(r.email);
+        return setTimeout(() => show("s-ready"), 500);
+      }
+      if (r.status === "Failed") { $("failed-d").textContent = r.message || ""; sess.del("mabni_signup"); return show("s-failed"); }
+      if (r.status === "Verifying email") return show("s-verify");
+    } catch (e) {}
+    pollT = setTimeout(tick, 3000);
+  };
+  tick();
+}
+
+paint();
+const resume = JSON.parse(sess.get("mabni_signup") || "null");
+if (resume && resume.token) { EMAIL = resume.email; paint(); follow(resume.token, resume.host); }
+</script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-24 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mabni Cloud",
+ "name": "Mabni Bank Account",
+ "owner": "Administrator",
+ "modified": "2026-10-24 12:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "country",
+   "fieldtype": "Select",
+   "label": "For customers in",
+   "options": "Pakistan\nSaudi Arabia\nUnited Arab Emirates\nAny country",
+   "default": "Pakistan",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Select",
+   "label": "Currency",
+   "options": "PKR\nSAR\nAED\nUSD",
+   "default": "PKR",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "bank_name",
+   "fieldtype": "Data",
+   "label": "Bank",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "account_title",
+   "fieldtype": "Data",
+   "label": "Account title",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "account_number",
+   "fieldtype": "Data",
+   "label": "Account number"
+  },
+  {
+   "fieldname": "iban",
+   "fieldtype": "Data",
+   "label": "IBAN"
+  },
+  {
+   "fieldname": "swift",
+   "fieldtype": "Data",
+   "label": "SWIFT / BIC"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Data",
+   "label": "Branch"
+  },
+  {
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Show to customers",
+   "default": "1",
+   "in_list_view": 1
+  }
+ ],
+ "permissions": [],
+ "field_order": [
+  "country",
+  "currency",
+  "bank_name",
+  "account_title",
+  "col1",
+  "account_number",
+  "iban",
+  "swift",
+  "branch",
+  "is_active"
+ ],
+ "links": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "row_format": "Dynamic",
+ "istable": 1,
+ "editable_grid": 0
+}

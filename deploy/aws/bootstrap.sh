@@ -1,17 +1,23 @@
 #!/bin/bash
-# Mimaar ERP on one AWS server (Ubuntu 24.04): Docker, a Caddy front door with automatic
-# https (more apps and websites can be added beside Mimaar), the Mimaar ERP site, and
-# daily backups to S3.
+# Mabni (Mimaar ERP) on one AWS server (Ubuntu 24.04): Docker, a Caddy front door with automatic
+# https (more apps and websites can be added beside it), the first ERP site, the Mabni Cloud
+# set-up (one site per customer, picked by the address; certificates on demand) and daily
+# backups of every site to S3.
 #
 # Run as root, e.g. from EC2 user data:
 #   MIMAAR_DOMAIN=mimaar.1-2-3-4.sslip.io MIMAAR_DATA_FILE=/root/mimaar-data.json bash bootstrap.sh
-# Safe to run again: it keeps the site, the data and the passwords.
+# Customers' workspaces are <name>.$MABNI_BASE (default: MIMAAR_DOMAIN without its first part);
+# the console (sign-up page, customers, payments) is $MABNI_CONSOLE (default my.$MABNI_BASE),
+# created with /opt/mimaar/mabni-console.sh.
+# Safe to run again: it keeps the sites, the data and the passwords.
 set -uo pipefail
 exec > >(tee -a /var/log/mimaar-setup.log) 2>&1
 echo "== Mimaar setup $(date -u)"
 
 DOMAIN="${MIMAAR_DOMAIN:?set MIMAAR_DOMAIN}"
 DATA_FILE="${MIMAAR_DATA_FILE:-/root/mimaar-data.json}"
+BASE="${MABNI_BASE:-${DOMAIN#*.}}"
+CONSOLE="${MABNI_CONSOLE:-my.$BASE}"
 IMAGE="${MIMAAR_IMAGE:-ghcr.io/smazharhasan/mimaar-erpnext:16}"
 export DEBIAN_FRONTEND=noninteractive
 
@@ -59,9 +65,28 @@ volumes:
   caddy-data:
   caddy-config:
 EOF
-cat > /opt/edge/Caddyfile <<'EOF'
+cat > /opt/edge/Caddyfile <<EOF
 # One file per app or website in /opt/edge/sites/ ; after a change:
 #   docker compose -f /opt/edge/compose.yml exec caddy caddy reload --config /etc/caddy/Caddyfile
+{
+	# certificates for customers' workspaces are fetched on first visit, only for addresses
+	# the Mabni console knows (the :5555 block below asks it)
+	on_demand_tls {
+		ask http://localhost:5555/check
+	}
+	servers {
+		strict_sni_host on
+	}
+}
+
+http://localhost:5555 {
+	bind 127.0.0.1
+	rewrite * /api/method/mimaar.saas.api.tls_ask?{query}
+	reverse_proxy mimaar-frontend:8080 {
+		header_up Host $CONSOLE
+	}
+}
+
 import /etc/caddy/sites/*.caddy
 EOF
 cat > /opt/edge/sites/mimaar.caddy <<EOF
@@ -70,7 +95,22 @@ $DOMAIN {
 	reverse_proxy mimaar-frontend:8080
 }
 EOF
+cat > /opt/edge/sites/zz-mabni.caddy <<'EOF'
+# Mabni Cloud: every other address (customers' workspaces, the console) goes to the ERP,
+# which picks the site by the address. Sites named in other files win over this one.
+https:// {
+	tls {
+		on_demand
+	}
+	encode zstd gzip
+	reverse_proxy mimaar-frontend:8080
+}
+http:// {
+	redir https://{host}{uri} permanent
+}
+EOF
 docker compose -f /opt/edge/compose.yml up -d
+docker compose -f /opt/edge/compose.yml exec -T caddy caddy reload --config /etc/caddy/Caddyfile || true
 
 # ---- 4. Mimaar ERP
 mkdir -p /opt/mimaar/data
@@ -81,6 +121,8 @@ if [ ! -f .env ]; then
     "$DOMAIN" "$IMAGE" "$(gen 12)" "$(gen 28)" "$BUCKET" "$REGION" > .env
   chmod 600 .env
 fi
+grep -q '^MABNI_BASE=' .env || printf 'MABNI_BASE=%s\nMABNI_CONSOLE=%s\nMABNI_OWN_COMPANY="%s"\nMABNI_OWN_EMAIL=%s\n' \
+  "$BASE" "$CONSOLE" "${MABNI_OWN_COMPANY:-Villa 31}" "${MABNI_OWN_EMAIL:-info@smhglobal.com.pk}" >> .env
 set -a; . ./.env; set +a
 [ -f "$DATA_FILE" ] && cp "$DATA_FILE" data/mimaar-data.json
 
@@ -190,7 +232,8 @@ services:
     command: ["nginx-entrypoint.sh"]
     environment:
       BACKEND: backend:8000
-      FRAPPE_SITE_NAME_HEADER: ${SITE}
+      # one site per address (customers' workspaces, the console, the first site)
+      FRAPPE_SITE_NAME_HEADER: $$host
       SOCKETIO: websocket:9000
       UPSTREAM_REAL_IP_ADDRESS: 172.16.0.0/12
       UPSTREAM_REAL_IP_HEADER: X-Forwarded-For
@@ -208,7 +251,10 @@ services:
   queue-long:
     <<: *app
     command: ["bench", "worker", "--queue", "long,default,short"]
-    environment: *redis-env
+    environment:
+      <<: *redis-env
+      # Mabni Cloud prepares new customers' sites in this worker
+      DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     depends_on:
       configurator:
         condition: service_completed_successfully
@@ -257,15 +303,28 @@ volumes:
 EOF
 
 # ---- 5. Helper scripts: backup (daily, to S3) and update (new version of Mimaar)
+cat > sites.sh <<'EOF'
+#!/bin/bash
+# Lists the real sites (not the blank ones kept ready for new customers).
+cd /opt/mimaar
+docker compose exec -T backend bash -c 'cd sites && for d in */; do d=${d%/}; [ -f "$d/site_config.json" ] || continue; case "$d" in pool-*) ;; *) echo "$d";; esac; done'
+EOF
 cat > backup.sh <<'EOF'
 #!/bin/bash
-# Full backup (database and files) kept 14 days on the server and 60 days in S3.
+# Full backup (database and files) of every site, kept 14 days on the server and 60 days in S3.
 cd /opt/mimaar && set -a && . ./.env && set +a
 export PATH="$PATH:/snap/bin"
-docker compose exec -T backend bench --site "$SITE" backup --with-files --compress || exit 1
-docker compose exec -T backend bash -c "find sites/$SITE/private/backups -type f -mtime +14 -delete"
-DIR="$(docker volume inspect mimaar_sites -f '{{.Mountpoint}}')/$SITE/private/backups"
-aws s3 sync "$DIR" "s3://$BUCKET/mimaar/" --region "$REGION" --only-show-errors && echo "Backup copied to s3://$BUCKET/mimaar/"
+VOL="$(docker volume inspect mimaar_sites -f '{{.Mountpoint}}')"
+FAIL=0
+for S in $(./sites.sh); do
+  if docker compose exec -T backend bench --site "$S" backup --with-files --compress >/dev/null; then
+    docker compose exec -T backend bash -c "find sites/$S/private/backups -type f -mtime +14 -delete"
+    aws s3 sync "$VOL/$S/private/backups" "s3://$BUCKET/sites/$S/" --region "$REGION" --only-show-errors && echo "$(date '+%F %T') $S backed up"
+  else
+    echo "$(date '+%F %T') $S backup FAILED"; FAIL=1
+  fi
+done
+exit $FAIL
 EOF
 cat > update.sh <<'EOF'
 #!/bin/bash
@@ -276,7 +335,29 @@ cd /opt/mimaar && set -a && . ./.env && set +a
 docker compose pull && docker compose up -d || exit 1
 CODE=$(docker wait "$(docker compose ps -a -q create-site)")
 [ "$CODE" = "0" ] || { docker compose logs --tail 60 create-site; exit 1; }
-docker compose exec -T backend bench --site "$SITE" migrate && docker compose exec -T backend bench --site "$SITE" clear-cache && echo "MIMAAR UPDATED"
+OK=1
+for S in $(./sites.sh) $(docker compose exec -T backend bash -c 'cd sites && ls -d pool-* 2>/dev/null'); do
+  docker compose exec -T backend bench --site "$S" migrate >/dev/null && docker compose exec -T backend bench --site "$S" clear-cache || { echo "$S: migrate FAILED"; OK=0; }
+done
+docker image prune -af --filter "until=72h" >/dev/null 2>&1 || true
+[ "$OK" = 1 ] && echo "MIMAAR UPDATED"
+EOF
+cat > mabni-console.sh <<'EOF'
+#!/bin/bash
+# Creates the Mabni console (sign-up page, customers, payments) at https://$MABNI_CONSOLE and
+# registers the first site as SMH Global's own (free) workspace. Safe to run again.
+cd /opt/mimaar && set -a && . ./.env && set +a
+C="$MABNI_CONSOLE"
+if ! docker compose exec -T backend test -f "sites/$C/site_config.json"; then
+  docker compose exec -T backend bench new-site "$C" --mariadb-user-host-login-scope='%' --admin-password="$ADMIN_PASSWORD" \
+    --db-root-username=root --db-root-password="$DB_ROOT_PASSWORD" --install-app erpnext --install-app mimaar || exit 1
+fi
+docker compose exec -T backend bench --site "$C" set-config host_name "https://$C"
+docker compose exec -T backend bench --site "$C" execute mimaar.saas.console.setup_console --kwargs "{'base': '$MABNI_BASE', 'control': '$C'}" || exit 1
+docker compose exec -T backend bench --site "$C" execute mimaar.saas.console.register_site --kwargs "{'host': '$SITE', 'company': '$MABNI_OWN_COMPANY', 'email': '$MABNI_OWN_EMAIL'}" || exit 1
+docker compose exec -T backend bench --site "$C" enable-scheduler
+docker compose exec -T backend bench --site "$C" clear-cache
+echo "MABNI CONSOLE READY: https://$C (sign in as Administrator)"
 EOF
 cat > autoupdate.sh <<'EOF'
 #!/bin/bash
@@ -291,7 +372,7 @@ echo "$(date '+%F %T') new image $(docker image inspect -f '{{index .Config.Labe
 exec 9>&-
 /opt/mimaar/update.sh
 EOF
-chmod 700 backup.sh update.sh autoupdate.sh
+chmod 700 backup.sh update.sh autoupdate.sh sites.sh mabni-console.sh
 echo "*/15 * * * * root /opt/mimaar/autoupdate.sh >> /var/log/mimaar-update.log 2>&1" > /etc/cron.d/mimaar-autoupdate
 echo "30 2 * * * root /opt/mimaar/backup.sh >> /var/log/mimaar-backup.log 2>&1" > /etc/cron.d/mimaar-backup
 

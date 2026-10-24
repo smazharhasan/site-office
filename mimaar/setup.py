@@ -99,7 +99,7 @@ TRACKED = ["Supplier", "Supplier Quotation", "Request for Quotation", "Purchase 
 
 def before_install():
 	"""Roles the Mimaar doctypes refer to; created before the doctypes are synced."""
-	for role in ("Site Supervisor", "Mimaar Partner"):
+	for role in ("Site Supervisor", "Mimaar Partner", "Mabni Admin"):
 		if not frappe.db.exists("Role", role):
 			frappe.get_doc({"doctype": "Role", "role_name": role, "desk_access": 1}).insert(ignore_permissions=True)
 
@@ -121,6 +121,14 @@ def after_migrate():
 	if frappe.is_setup_complete():
 		apply_settings()
 	frappe.clear_cache()
+
+
+def brand():
+	"""The product's name and logo on the sign-in page and in the browser tab."""
+	if (frappe.db.get_single_value("Website Settings", "app_name") or "") in ("", "Frappe", "ERPNext", "Mimaar"):
+		frappe.db.set_single_value("Website Settings", "app_name", "Mabni")
+	if not frappe.db.get_single_value("Website Settings", "app_logo"):
+		frappe.db.set_single_value("Website Settings", "app_logo", "/assets/mimaar/images/mabni-logo.svg")
 
 
 def after_setup(args=None):
@@ -151,7 +159,11 @@ def apply_settings():
 	_single("Stock Settings", {"allow_negative_stock": 0, "over_delivery_receipt_allowance": 0, "item_naming_by": "Item Code", "stock_uom": "Nos"})
 	_single("Accounts Settings", {"over_billing_allowance": 0, "check_supplier_invoice_uniqueness": 1, "unlink_payment_on_cancellation_of_invoice": 0, "automatically_fetch_payment_terms": 0})
 	_single("Print Settings", {"allow_print_for_draft": 0, "allow_print_for_cancelled": 0, "send_print_as_pdf": 1})
-	_single("System Settings", {"date_format": "dd-mm-yyyy", "country": "Pakistan", "time_zone": "Asia/Karachi", "float_precision": "3", "currency_precision": "2"})
+	brand()
+	ss = {"date_format": "dd-mm-yyyy", "float_precision": "3", "currency_precision": "2"}
+	if not frappe.db.get_single_value("System Settings", "country"):
+		ss.update(country="Pakistan", time_zone="Asia/Karachi")
+	_single("System Settings", ss)
 	if not frappe.db.exists("Item Group", "Construction Materials"):
 		root = frappe.db.get_value("Item Group", {"is_group": 1, "parent_item_group": ["in", ["", None]]}, "name") or "All Item Groups"
 		for g in ("Construction Materials", "Finishing Materials", "Services and Labour", "Tools and Equipment", "Site Consumables"):

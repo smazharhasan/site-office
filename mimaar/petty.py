@@ -61,7 +61,7 @@ def _cash_account():
 		frappe.clear_document_cache("Mimaar Settings", "Mimaar Settings")
 		acc = frappe.db.get_single_value("Mimaar Settings", "petty_cash_account")
 	if not acc:
-		frappe.throw(_("The petty cash account isn't set up. Open Mimaar Settings and choose it."))
+		frappe.throw(_("The petty cash account isn't set up. Open Settings and choose it."))
 	return acc
 
 

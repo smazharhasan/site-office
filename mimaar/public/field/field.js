@@ -52,7 +52,7 @@ async function api(method, args = {}) {
   let r;
   try {
     r = await fetch(`/api/method/${path}`, { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", Accept: "application/json", "X-Frappe-CSRF-Token": CSRF() }, body: JSON.stringify(args) });
-  } catch (e) { throw new UserError(t("No connection to Mimaar. Check the internet (or Wi-Fi) and try again.")); }
+  } catch (e) { throw new UserError(t("No connection to Mabni. Check the internet (or Wi-Fi) and try again.")); }
   let j = {}; try { j = await r.json(); } catch (e) { /* not json */ }
   if (r.status === 401 || r.status === 403) {
     const who = await fetch("/api/method/frappe.auth.get_logged_user", { credentials: "same-origin", headers: { Accept: "application/json" } }).catch(() => null);
@@ -144,7 +144,7 @@ function liveCamera(title, { facing = "environment", face = false } = {}) {
     const start = async () => {
       stop();
       try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: mode, width: { ideal: 1280 }, height: { ideal: 1280 } }, audio: false }); video.srcObject = stream; await video.play().catch(() => {}); note.hidden = false; }
-      catch (e) { note.textContent = t("The camera can't be opened here. Allow the camera for this site, or use the Mimaar app."); }
+      catch (e) { note.textContent = t("The camera can't be opened here. Allow the camera for this site, or use the Mabni app."); }
     };
     const finish = (v) => { if (done) return; done = true; stop(); closeSheet(sh); resolve(v); };
     sh.querySelector("[data-flip]").onclick = () => { mode = mode === "user" ? "environment" : "user"; start(); };
@@ -169,12 +169,12 @@ function qrReader(box, flipBtn) {
   const video = box.querySelector("video"), note = box.querySelector(".note");
   const stop = () => { stopped = true; if (stream) stream.getTracks().forEach((x) => x.stop()); stream = null; };
   const result = new Promise(async (resolve, reject) => {
-    if (!("BarcodeDetector" in window)) { reject(new UserError(t("This browser can't read QR codes. Use the Mimaar app on the phone, or Chrome."))); return; }
+    if (!("BarcodeDetector" in window)) { reject(new UserError(t("This browser can't read QR codes. Use the Mabni app on the phone, or Chrome."))); return; }
     const det = new window.BarcodeDetector({ formats: ["qr_code"] });
     const open = async () => {
       if (stream) stream.getTracks().forEach((x) => x.stop());
       try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: mode }, audio: false }); video.srcObject = stream; await video.play().catch(() => {}); }
-      catch (e) { reject(new UserError(t("The camera can't be opened here. Allow the camera for this site, or use the Mimaar app."))); }
+      catch (e) { reject(new UserError(t("The camera can't be opened here. Allow the camera for this site, or use the Mabni app."))); }
     };
     if (flipBtn) flipBtn.onclick = () => { mode = mode === "user" ? "environment" : "user"; open(); };
     await open();
@@ -460,6 +460,18 @@ const GLOBAL = {
 };
 
 /* ================================================================== dashboard */
+/** Mabni Cloud: the trial or plan line on the home screen (only on a Mabni workspace). */
+function planBanner() {
+  const p = S.b.plan;
+  if (!p || !p.show) return "";
+  const own = C().owner;
+  let msg, cls = "";
+  if (p.status === "Trial") msg = p.days_left > 0 ? t("Free trial: {0} days left", p.days_left) : t("Your free trial ends today");
+  else if (p.status === "Payment due") { msg = t("Your plan has ended. Pay within {0} days to keep working.", p.grace_left == null ? "" : p.grace_left); cls = "bad"; }
+  else { msg = t("Your plan ends in {0} days", p.days_left); cls = "warn"; }
+  return `<div class="banner ${cls} plan-line"><span>${esc(msg)}</span>${own ? `<a class="btn sm pri" href="/billing">${esc(t("Plan & billing"))}</a>` : ""}</div>`;
+}
+
 VIEWS.dash = async (el) => {
   const b = S.b; setTop(t("Dashboard"));
   const d = await api("mimaar.dash.overview"); const T = d.tiles; const c = C();
@@ -515,7 +527,7 @@ VIEWS.dash = async (el) => {
     parts.push(fold("released", t("Material released, last 14 days"), `<div class="body"><div class="wbars">${P.released.days.map((day, i) => `<div class="wb"><div class="wbb"><span class="u" style="width:70%;height:${(P.released.count[i] / max) * 100}%"></span></div><em>${new Date(day + "T00:00:00").getDate()}</em></div>`).join("")}</div>
       <div class="legend"><span><i class="u"></i>${esc(t("Releases from the store"))}</span></div></div>`));
   }
-  el.innerHTML = `<div class="hero"><span class="muted small">${esc(fdate(b.today))}</span><b>${esc(t("Salaam, {0}", (b.full_name || "").split(" ")[0]))}</b><span class="small muted">${esc(b.project_name || "")}</span></div>
+  el.innerHTML = `${planBanner()}<div class="hero"><span class="muted small">${esc(fdate(b.today))}</span><b>${esc(t("Salaam, {0}", (b.full_name || "").split(" ")[0]))}</b><span class="small muted">${esc(b.project_name || "")}</span></div>
     ${tiles.length ? `<div class="ctiles">${tiles.join("")}</div>` : ""}
     ${A.length ? panel(t("Quick actions"), `<div class="body"><div class="qa-grid">${A.slice(0, 12).join("")}</div></div>`) : ""}
     ${panel(t("Needs your attention"), `<div class="body stack" style="gap:6px">${att}</div>`, d.acts.length ? `<span class="cnt">${d.acts.length}</span>` : "")}
@@ -1098,7 +1110,7 @@ function tanksSheet(d) {
 }
 const photoFig = (src, cap) => (src ? `<figure class="pfig"><img src="${esc(src)}" alt="" class="zoomable"><figcaption>${esc(cap)}</figcaption></figure>` : "");
 function aiBox(verdict, summary, extra = "") {
-  if (!verdict) return `<div class="banner">${esc(t("The AI check runs after saving when an AI key is set in Mimaar Settings."))}</div>`;
+  if (!verdict) return `<div class="banner">${esc(t("The AI check runs after saving when an AI key is set in Settings."))}</div>`;
   return `<div class="verdict ${VERD[verdict] || "warn"}">${icon(verdict === "Verified" ? "check" : "alert")}<span><b>${esc(t(verdict))}</b> ${esc(summary || "")}${extra}</span></div>`;
 }
 function tankerDetail(r) {
@@ -1361,9 +1373,10 @@ VIEWS.more = async (el) => {
   if (PETTY()) T.push(["Petty cash", "cash", "money/petty", "k1"]);
   if (S.b.ai) T.push(["Ask the project", "sparkle", "ask", "k5"]);
   T.push(["My settings", "gear", "settings", "k8"]);
-  if (c.owner && !NATIVE) T.push(["Connect a phone", "globe", "connect", "k2"]);
+  if (c.owner && S.b.plan) T.push(["Plan & billing", "pay", "@billing", "k6"]);
+  if (c.owner && !NATIVE && !S.b.plan) T.push(["Connect a phone", "globe", "connect", "k2"]);
   el.innerHTML = `<button class="mo-me" data-go="settings"><span class="av">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc((b.full_name || "?").charAt(0))}</span><span><b>${esc(b.full_name)}</b><span class="small muted">${esc(b.project_name || "")}</span></span>${icon("chev", "lch")}</button>
-    <div class="qa-grid">${T.map(([l, ic, to, tc]) => `<button class="qa" data-go="${to}"><span class="qa-i" style="--tc:var(--${tc})">${icon(ic)}</span><span>${esc(t(l))}</span></button>`).join("")}</div>`;
+    <div class="qa-grid">${T.map(([l, ic, to, tc]) => `<button class="qa" ${to.startsWith("@") ? `onclick="location.href='/${to.slice(1)}'"` : `data-go="${to}"`}><span class="qa-i" style="--tc:var(--${tc})">${icon(ic)}</span><span>${esc(t(l))}</span></button>`).join("")}</div>`;
 };
 
 /* ---------------- site card and face: the steps used wherever a person is identified ---------------- */
@@ -1530,7 +1543,7 @@ VIEWS.att = async (el) => {
     async add() { const w = await pickWorker(); if (w) addWorker(w); },
     rm(i) { A.rows.splice(+i, 1); draw(); persist(true); },
     st(v) { const [i, s] = v.split("|"); A.rows[+i].status = s; draw(); persist(true); },
-    async loc() { const l = await busy(getLocation(), t("Getting the location…")); if (!l) { toast(t("Location not available: allow location for Mimaar, then try again."), "bad"); return; } A.location = l; el.querySelector("[data-loc]").textContent = l; el.querySelector("[name=location]").value = l; },
+    async loc() { const l = await busy(getLocation(), t("Getting the location…")); if (!l) { toast(t("Location not available: allow location for Mabni, then try again."), "bad"); return; } A.location = l; el.querySelector("[data-loc]").textContent = l; el.querySelector("[name=location]").value = l; },
     save() { persist(false); },
     async submit() {
       const v = vals(el); A.group_photo = v.group_photo || A.group_photo; A.location = v.location || A.location;
@@ -1542,7 +1555,7 @@ VIEWS.att = async (el) => {
 
 /* ---------------- people and access ---------------- */
 const STAFF_TYPES = ["Supervisor", "Engineer", "Store keeper", "Accountant", "Owner", "Builder staff", "Consultant"];
-const PEOPLE_FILTERS = [["all", "All"], ["site", "On site today"], ["labour", "Labour and mistri"], ["staff", "Site staff"], ["access", "Sign in to Mimaar"], ["left", "Left or blocked"]];
+const PEOPLE_FILTERS = [["all", "All"], ["site", "On site today"], ["labour", "Labour and mistri"], ["staff", "Site staff"], ["access", "Sign in to Mabni"], ["left", "Left or blocked"]];
 VIEWS.workers = (el) => VIEWS.people(el);
 VIEWS.people = async (el) => {
   setTop(t("People and access"), true); setTab("more");
@@ -1593,7 +1606,7 @@ VIEWS.person = async (el, [name]) => {
       ${kv(t("Police verification"), t(w.police_verification || "Not done"))}${kv(t("Joined on"), fdate(w.joined_on))}${c.money ? kv(t("Daily wage"), w.daily_wage ? money(w.daily_wage) : "") : ""}
       ${kv(t("Emergency contact"), w.emergency_contact)}${kv(t("Address"), [w.address, w.address_ur].filter(Boolean).join(" · "))}${kv(t("Notes"), w.notes)}</div>`)}
     ${panel(t("Documents"), `<div class="body docs">${doc("photo", t("Photo"))}${doc("cnic_front", t("CNIC front"))}${doc("cnic_back", t("CNIC back"))}${doc("entry_card_photo", t("BTK registration card"))}${doc("police_document", t("Police verification letter"))}</div>`)}
-    ${c.owner ? panel(t("Access to Mimaar"), `<div class="body form">${fld(t("Signs in as"), chips("app_access", [["No sign-in", t("No sign-in")], ["Site supervisor", t("Site supervisor")], ["Owner's supervisor", t("Owner's supervisor")], ["Partner (builder or consultant)", t("Partner (builder or consultant)")], ["Accountant", t("Accountant")], ["Owner", t("Owner")]], w.app_access || "No sign-in"))}
+    ${c.owner ? panel(t("Access to Mabni"), `<div class="body form">${fld(t("Signs in as"), chips("app_access", [["No sign-in", t("No sign-in")], ["Site supervisor", t("Site supervisor")], ["Owner's supervisor", t("Owner's supervisor")], ["Partner (builder or consultant)", t("Partner (builder or consultant)")], ["Accountant", t("Accountant")], ["Owner", t("Owner")]], w.app_access || "No sign-in"))}
       <label class="row" style="gap:10px"><input type="checkbox" name="store_keeper" ${w.store_keeper ? "checked" : ""} style="width:22px;height:22px"><span>${esc(t("Also store keeper (receives, issues and returns material)"))}</span></label>
       <button class="btn wide" data-act="access">${icon("check")}${esc(t("Save access"))}</button></div>`) : ""}
     ${c.owner ? panel(t("Sign in with site card"), `<div class="body form">
@@ -1719,7 +1732,7 @@ VIEWS.quotes = async (el) => {
   Object.assign(S.acts, { scan: () => scanQuote(), type: () => quoteEditor({}) });
 };
 async function scanQuote() {
-  if (!S.b.ai) { toast(t("AI reading is off. The owner can turn it on in Mimaar Settings."), "bad"); return quoteEditor({}); }
+  if (!S.b.ai) { toast(t("AI reading is off. The owner can turn it on in Settings."), "bad"); return quoteEditor({}); }
   const p = await takePhoto(t("Supplier's quotation")); if (!p) return;
   try {
     const d = await busy(api("quotation_read", { file_url: p.url }), t("Reading the quotation…"));
@@ -1961,7 +1974,7 @@ const ASK_SUGGEST = () => [t("Are we on schedule? What's behind?"), ...(C().mone
   t("Summarise this week's site diary and open NCRs"), t("Draft a weekly progress report for the owner"), t("How much cement and steel went out this week, and to whom?"), t("How much water came this week, and was any of it bad?")];
 VIEWS.ask = async (el) => {
   setTop(t("Ask the project"), true);
-  if (!S.b.ai) { el.innerHTML = `<div class="banner warn">${esc(t("Ask the project needs the AI. The owner adds the Gemini key in Mimaar Settings."))}</div>`; return; }
+  if (!S.b.ai) { el.innerHTML = `<div class="banner warn">${esc(t("Ask the project needs the AI. The owner adds the Gemini key in Settings."))}</div>`; return; }
   S.askLog = S.askLog || [];
   el.innerHTML = panel(t("Ask the project"), `<div class="body stack"><p class="small muted" style="margin:0">${esc(t("Questions are answered from this project's live records: schedule, payments, budget, buying, stock, water, attendance, inspections and the site diary."))}</p>
       <div class="asks">${ASK_SUGGEST().map((q) => `<button class="btn sm" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div>
@@ -2003,13 +2016,13 @@ VIEWS.connect = async (el) => {
   let img = ""; if (u) { try { img = await api("qr", { text: u }); } catch (e) { /* */ } }
   el.innerHTML = panel(t("Connect a phone"), `<div class="body stack" style="align-items:center;text-align:center">
     ${u ? `${img ? `<img src="${esc(img)}" alt="" style="width:240px;height:240px;background:#fff;padding:10px;border-radius:14px">` : ""}<b class="ltr" style="font-size:20px;overflow-wrap:anywhere">${esc(u)}</b>
-      <span>${esc(local || /^\d+\.\d+\.\d+\.\d+(:\d+)?$/.test(u) ? t("On the phone, open the Mimaar ERP app, tap 'Scan the QR on the laptop' and point it here. The phone and this laptop must be on the same Wi-Fi.")
-        : t("On the phone, install and open the Mimaar ERP app, tap 'Scan the QR on the laptop' and point it at this code, or type the address above."))}</span>`
-      : `<span>${esc(t("Double-click 'Connect a phone' in the Mimaar ERP folder on this laptop. It shows the address and QR code for the phone."))}</span>`}</div>`);
+      <span>${esc(local || /^\d+\.\d+\.\d+\.\d+(:\d+)?$/.test(u) ? t("On the phone, open the Mabni app, tap 'Scan the QR on the laptop' and point it here. The phone and this laptop must be on the same Wi-Fi.")
+        : t("On the phone, install and open the Mabni app, tap 'Scan the QR on the laptop' and point it at this code, or type the address above."))}</span>`
+      : `<span>${esc(t("Double-click 'Connect a phone' in the Mabni folder on this laptop. It shows the address and QR code for the phone."))}</span>`}</div>`);
 };
 
 /* ---------------- my settings: look, language, PIN ---------------- */
-const SKINS = [["site", "Site green", "Calm green, the original look", ["#0f6f5c", "#dcefe9", "#f3f2ef"]], ["slate", "Slate & copper", "Cool grey with a copper accent", ["#1b2430", "#52627a", "#b4642d"]],
+const SKINS = [["mabni", "Mabni blue", "Blueprint blue with amber, the Mabni look", ["#1e3a5f", "#f2b01e", "#eef1f4"]], ["site", "Site green", "Calm green, the original look", ["#0f6f5c", "#dcefe9", "#f3f2ef"]], ["slate", "Slate & copper", "Cool grey with a copper accent", ["#1b2430", "#52627a", "#b4642d"]],
   ["sand", "Desert sand", "Warm sand with indigo", ["#2a241b", "#b07a1e", "#3b4fa0"]], ["colour", "Colourful", "Bright colours on every menu and panel", ["#8b5cf6", "#ec4899", "#f59e0b"]],
   ["night", "Night", "Dark blue, easy on the eyes at night", ["#0b1220", "#111a2e", "#38bdf8"]], ["contrast", "High contrast", "Black and white, strongest readability", ["#000", "#fff", "#0040c0"]]];
 const UR_FONTS = [["Noto Nastaliq Urdu", "Nastaliq (Noto)", 1.95, "wght@400;600"], ["Gulzar", "Gulzar Nastaliq", 2.0, ""], ["Noto Naskh Arabic", "Naskh: clear and easy", 1.65, "wght@400;600"],
@@ -2019,7 +2032,7 @@ const MODES = [["light", "Light"], ["dark", "Dark"], ["auto", "Follow the phone"
 const SIZES = [["s", "Small"], ["m", "Normal"], ["l", "Large"], ["xl", "Extra large"]];
 const UR_SAMPLE = "آج سائٹ پر 12 مزدور حاضر ہیں";
 function localLook() { try { return JSON.parse(localStorage.getItem("mimaar.look") || "{}"); } catch (e) { return {}; } }
-function look() { return Object.assign({ skin: "colour", mode: "light", ur: "Noto Nastaliq Urdu", en: "IBM Plex Sans", size: "m" }, localLook(), (S.b && S.b.ui) || {}); }
+function look() { return Object.assign({ skin: "mabni", mode: "light", ur: "Noto Nastaliq Urdu", en: "IBM Plex Sans", size: "m" }, localLook(), (S.b && S.b.ui) || {}); }
 const loaded = new Set(["IBM Plex Sans", "Noto Nastaliq Urdu"]);
 function loadFont(fam, spec) {
   if (loaded.has(fam)) return; loaded.add(fam);
@@ -2086,7 +2099,7 @@ VIEWS.settings = async (el) => {
 function loginScreen() {
   document.documentElement.lang = S.lang; document.documentElement.dir = S.lang === "ur" ? "rtl" : "ltr";
   applyLook();
-  $("#app").innerHTML = `<div class="login stack"><div class="logo">M</div><h1 style="text-align:center">${esc(t("Mimaar"))}</h1><p class="muted" style="text-align:center;margin:0">${esc(t("Sign in to your project"))}</p>
+  $("#app").innerHTML = `<div class="login stack"><div class="logo"><svg viewBox="0 0 120 120" aria-hidden="true"><rect x="24" y="30" width="15" height="60" rx="3" fill="currentColor"/><rect x="81" y="30" width="15" height="60" rx="3" fill="currentColor"/><polyline points="39,52 55,70 81,34" fill="none" stroke="#F2B01E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h1 style="text-align:center">${esc(t("Mabni"))}</h1><p class="muted" style="text-align:center;margin:0">${esc(t("Sign in to your project"))}</p>
     <div class="seg"><button data-l="en" aria-pressed="${S.lang === "en"}">English</button><button data-l="ur" aria-pressed="${S.lang === "ur"}">اردو</button></div>
     ${BOOT.card_sign_in ? `<button class="btn pri big wide" data-card="1">${icon("card")}${esc(t("Sign in with site card"))}</button><p class="small muted" style="text-align:center;margin:0">${esc(t("Scan your site card, type your PIN and take a photo of your face."))}</p>
       <div class="small muted" style="text-align:center">— ${esc(t("or"))} —</div>` : ""}
@@ -2108,7 +2121,7 @@ function loginScreen() {
 async function cardSignIn() {
   const code = await scanCode(t("Scan your site card"));
   if (!code) return;
-  if (!code.startsWith("MMR1:")) { toast(t("This is not a Mimaar site card."), "bad"); return; }
+  if (!code.startsWith("MMR1:")) { toast(t("This is not a Mabni site card."), "bad"); return; }
   const pin = await new Promise((resolve) => {
     let v = "", done = false;
     const sh = sheet(t("Your PIN"), `<div class="stack" style="align-items:center"><p style="margin:0">${esc(t("Type your PIN"))}</p><div class="pindots">${[0, 1, 2, 3, 4, 5].map((i) => `<i data-d="${i}"></i>`).join("")}</div>
@@ -2127,7 +2140,7 @@ async function cardSignIn() {
     let j = {}; try { j = await r.json(); } catch (e) { /* */ }
     if (r.ok && j.message && j.message.ok) { location.reload(); return; }
     $("[data-err]").innerHTML = `<div class="banner bad">${esc(serverMessage(j) || (r.status === 429 ? t("Too many tries. Wait a few minutes.") : t("This card and PIN were not accepted.")))}</div>`;
-  } catch (e) { $("[data-err]").innerHTML = `<div class="banner bad">${esc(t("No connection to Mimaar. Check the internet (or Wi-Fi) and try again."))}</div>`; }
+  } catch (e) { $("[data-err]").innerHTML = `<div class="banner bad">${esc(t("No connection to Mabni. Check the internet (or Wi-Fi) and try again."))}</div>`; }
 }
 
 /* ---------------- start ---------------- */

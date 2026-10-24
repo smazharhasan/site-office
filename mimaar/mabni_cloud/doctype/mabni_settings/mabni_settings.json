@@ -1,0 +1,232 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-24 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mabni Cloud",
+ "name": "Mabni Settings",
+ "owner": "Administrator",
+ "modified": "2026-10-24 12:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "domain_section",
+   "fieldtype": "Section Break",
+   "label": "Addresses"
+  },
+  {
+   "fieldname": "base_domain",
+   "fieldtype": "Data",
+   "label": "Customer workspaces end with",
+   "reqd": 1,
+   "description": "e.g. mabni.app — a customer named alnoor gets alnoor.mabni.app"
+  },
+  {
+   "fieldname": "control_host",
+   "fieldtype": "Data",
+   "label": "This console's address",
+   "description": "e.g. my.mabni.app (sign-up page and this console)"
+  },
+  {
+   "fieldname": "website_url",
+   "fieldtype": "Data",
+   "label": "Website",
+   "description": "e.g. https://mabni.app"
+  },
+  {
+   "fieldname": "col_d",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "support_email",
+   "fieldtype": "Data",
+   "label": "Support email",
+   "options": "Email"
+  },
+  {
+   "fieldname": "support_whatsapp",
+   "fieldtype": "Data",
+   "label": "Support WhatsApp number",
+   "description": "With country code, e.g. 923001234567"
+  },
+  {
+   "fieldname": "admin_emails",
+   "fieldtype": "Small Text",
+   "label": "Tell these people about sign-ups and payments",
+   "description": "One email per line"
+  },
+  {
+   "fieldname": "trial_section",
+   "fieldtype": "Section Break",
+   "label": "Sign-ups and trial"
+  },
+  {
+   "fieldname": "signups_open",
+   "fieldtype": "Check",
+   "label": "Accept new sign-ups",
+   "default": "1"
+  },
+  {
+   "fieldname": "require_email_verification",
+   "fieldtype": "Check",
+   "label": "New customers confirm their email with a code",
+   "default": "0",
+   "description": "Switch on once outgoing email works (Email Account)."
+  },
+  {
+   "fieldname": "trial_days",
+   "fieldtype": "Int",
+   "label": "Free trial (days)",
+   "default": "7"
+  },
+  {
+   "fieldname": "grace_days",
+   "fieldtype": "Int",
+   "label": "Days to pay after the trial or plan ends",
+   "default": "3"
+  },
+  {
+   "fieldname": "col_t",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pool_size",
+   "fieldtype": "Int",
+   "label": "Workspaces kept ready for new customers",
+   "default": "1",
+   "description": "Each ready workspace makes sign-up take about a minute instead of five."
+  },
+  {
+   "fieldname": "reserved_names",
+   "fieldtype": "Small Text",
+   "label": "Names customers can't take",
+   "default": "www\nmy\napp\napi\nadmin\nconsole\nmail\nsmtp\nftp\nhelp\nsupport\ndocs\nstatus\nblog\nshop\ndemo\ntest\nstaging\nmabni\nsmh\nsmhglobal\nbilling\npay\nsecure\nlogin\naccount\naccounts\ncdn\nstatic\nassets\nfiles\nns1\nns2"
+  },
+  {
+   "fieldname": "money_section",
+   "fieldtype": "Section Break",
+   "label": "Prices in local money",
+   "description": "Plans are priced in US dollars. Customers in Pakistan, Saudi Arabia and the UAE also see their own currency."
+  },
+  {
+   "fieldname": "usd_to_pkr",
+   "fieldtype": "Float",
+   "label": "1 USD in PKR",
+   "default": "280"
+  },
+  {
+   "fieldname": "round_pkr",
+   "fieldtype": "Int",
+   "label": "Round PKR prices to",
+   "default": "100"
+  },
+  {
+   "fieldname": "col_m",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "usd_to_sar",
+   "fieldtype": "Float",
+   "label": "1 USD in SAR",
+   "default": "3.75"
+  },
+  {
+   "fieldname": "round_sar",
+   "fieldtype": "Int",
+   "label": "Round SAR prices to",
+   "default": "5"
+  },
+  {
+   "fieldname": "usd_to_aed",
+   "fieldtype": "Float",
+   "label": "1 USD in AED",
+   "default": "3.6725"
+  },
+  {
+   "fieldname": "round_aed",
+   "fieldtype": "Int",
+   "label": "Round AED prices to",
+   "default": "5"
+  },
+  {
+   "fieldname": "bank_section",
+   "fieldtype": "Section Break",
+   "label": "Where customers pay",
+   "description": "Bank accounts shown on the customer's Plan & billing page."
+  },
+  {
+   "fieldname": "bank_accounts",
+   "fieldtype": "Table",
+   "label": "Bank accounts",
+   "options": "Mabni Bank Account"
+  },
+  {
+   "fieldname": "legal_section",
+   "fieldtype": "Section Break",
+   "label": "Legal"
+  },
+  {
+   "fieldname": "terms_url",
+   "fieldtype": "Data",
+   "label": "Terms of service link"
+  },
+  {
+   "fieldname": "privacy_url",
+   "fieldtype": "Data",
+   "label": "Privacy policy link"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "Mabni Admin",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  }
+ ],
+ "field_order": [
+  "domain_section",
+  "base_domain",
+  "control_host",
+  "website_url",
+  "col_d",
+  "support_email",
+  "support_whatsapp",
+  "admin_emails",
+  "trial_section",
+  "signups_open",
+  "require_email_verification",
+  "trial_days",
+  "grace_days",
+  "col_t",
+  "pool_size",
+  "reserved_names",
+  "money_section",
+  "usd_to_pkr",
+  "round_pkr",
+  "col_m",
+  "usd_to_sar",
+  "round_sar",
+  "usd_to_aed",
+  "round_aed",
+  "bank_section",
+  "bank_accounts",
+  "legal_section",
+  "terms_url",
+  "privacy_url"
+ ],
+ "links": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "row_format": "Dynamic",
+ "issingle": 1,
+ "track_changes": 1
+}

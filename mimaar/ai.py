@@ -35,10 +35,10 @@ URDU = "It may be printed or handwritten, in English or Urdu (Urdu digits too), 
 def _cfg():
 	s = frappe.get_single("Mimaar Settings")
 	if s.ai_provider in (None, "", "Off"):
-		frappe.throw(_("AI reading is off. Choose Gemini or Claude and paste the API key in Mimaar Settings."), title=_("AI not set up"))
+		frappe.throw(_("AI reading is off. Choose Gemini or Claude and paste the API key in Settings."), title=_("AI not set up"))
 	key = s.get_password("ai_api_key", raise_exception=False)
 	if not key:
-		frappe.throw(_("Paste the API key in Mimaar Settings."), title=_("AI not set up"))
+		frappe.throw(_("Paste the API key in Settings."), title=_("AI not set up"))
 	return s.ai_provider, key, (s.ai_model or DEFAULT_MODEL[s.ai_provider])
 
 
@@ -114,7 +114,7 @@ def _call(prompt, files, max_tokens=8192):
 			text = "".join(b.get("text", "") for b in r.json().get("content", []) if b.get("type") == "text")
 	except requests.HTTPError as e:
 		code = e.response.status_code if e.response is not None else 0
-		frappe.throw(_("The AI service refused the request ({0}). Check the API key and model in Mimaar Settings.").format(code), title=_("AI error"))
+		frappe.throw(_("The AI service refused the request ({0}). Check the API key and model in Settings.").format(code), title=_("AI error"))
 	except requests.RequestException:
 		frappe.throw(_("Couldn't reach the AI service. Check the internet connection and try again."), title=_("AI error"))
 	m = re.search(r"\{[\s\S]*\}", text or "")

@@ -1,17 +1,17 @@
 app_name = "mimaar"
-app_title = "Mimaar"
+app_title = "Mabni"
 app_publisher = "SMH Global Services (Pvt) Ltd"
 app_description = "Construction procurement, stores, supplier accounts and site management on ERPNext"
 app_email = "info@smhglobal.com.pk"
 app_license = "mit"
 required_apps = ["frappe/erpnext"]
-app_logo_url = "/assets/mimaar/images/mimaar-logo.svg"
+app_logo_url = "/assets/mimaar/images/mabni-logo.svg"
 app_home = "/desk/mimaar"
 
 add_to_apps_screen = [
 	{
 		"name": app_name,
-		"logo": "/assets/mimaar/images/mimaar-logo.svg",
+		"logo": "/assets/mimaar/images/mabni-logo.svg",
 		"title": app_title,
 		"route": app_home,
 	}
@@ -33,6 +33,11 @@ doctype_js = {
 doctype_list_js = {
 	"Supplier Quotation": "public/js/supplier_quotation_list.js",
 	"Supplier": "public/js/supplier_list.js",
+}
+
+website_context = {
+	"favicon": "/assets/mimaar/images/mabni-logo.svg",
+	"splash_image": "/assets/mimaar/images/mabni-logo.svg",
 }
 
 jinja = {"methods": ["mimaar.api.qr_code", "mimaar.identity.card_code"]}
@@ -62,10 +67,20 @@ doc_events = {
 	},
 	"Communication": {"before_insert": "mimaar.procurement.comm_before_insert"},
 	"Stock Entry": {"before_submit": "mimaar.procurement.se_before_submit"},
+	# Mabni Cloud: a plan's limits on people and projects
+	"User": {"before_insert": "mimaar.saas.tenant.check_users"},
+	"Project": {"before_insert": "mimaar.saas.tenant.check_projects"},
 }
 
+# Mabni Cloud: the console keeps the pool of ready workspaces, checks plans every day
+scheduler_events = {
+	"daily": ["mimaar.saas.billing.daily"],
+	"cron": {"*/10 * * * *": ["mimaar.saas.provision.tick"]},
+}
+get_website_user_home_page = "mimaar.saas.tenant.home_page"
+
 # Urdu is written right to left (Frappe's list of RTL languages doesn't include it)
-before_request = ["mimaar.rtl.apply"]
+before_request = ["mimaar.rtl.apply", "mimaar.saas.tenant.enforce"]
 boot_session = "mimaar.rtl.boot"
 
 after_install = "mimaar.setup.after_install"

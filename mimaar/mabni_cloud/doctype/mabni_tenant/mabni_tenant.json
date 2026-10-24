@@ -1,0 +1,389 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-24 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mabni Cloud",
+ "name": "Mabni Tenant",
+ "owner": "Administrator",
+ "modified": "2026-10-24 12:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "customer_section",
+   "fieldtype": "Section Break",
+   "label": "Customer"
+  },
+  {
+   "fieldname": "company_name",
+   "fieldtype": "Data",
+   "label": "Company or project",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "contact_name",
+   "fieldtype": "Data",
+   "label": "Contact person",
+   "reqd": 1
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email",
+   "options": "Email",
+   "reqd": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "label": "Phone / WhatsApp"
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country",
+   "default": "Pakistan",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "language",
+   "fieldtype": "Select",
+   "label": "Language",
+   "options": "en\nur\nar",
+   "default": "en"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Data",
+   "label": "Currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "time_zone",
+   "fieldtype": "Data",
+   "label": "Time zone",
+   "read_only": 1
+  },
+  {
+   "fieldname": "workspace_section",
+   "fieldtype": "Section Break",
+   "label": "Workspace"
+  },
+  {
+   "fieldname": "subdomain",
+   "fieldtype": "Data",
+   "label": "Workspace name",
+   "reqd": 1,
+   "unique": 1,
+   "set_only_once": 1,
+   "description": "Lower-case letters, numbers and dashes."
+  },
+  {
+   "fieldname": "site_host",
+   "fieldtype": "Data",
+   "label": "Address",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Verifying email\nWaiting\nSetting up\nTrial\nActive\nPayment due\nSuspended\nCancelled\nFailed",
+   "default": "Waiting",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "is_internal",
+   "fieldtype": "Check",
+   "label": "Free (SMH Global's own, never suspended)"
+  },
+  {
+   "fieldname": "paused_by_admin",
+   "fieldtype": "Check",
+   "label": "Paused by us",
+   "description": "The workspace stays closed until this is unticked, whatever the dates."
+  },
+  {
+   "fieldname": "col2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mode",
+   "fieldtype": "Select",
+   "label": "Mode",
+   "options": "Owner\nBuilder",
+   "default": "Owner",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "plan",
+   "fieldtype": "Link",
+   "label": "Plan",
+   "options": "Mabni Plan",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "billing_period",
+   "fieldtype": "Select",
+   "label": "Billing",
+   "options": "Monthly\nYearly",
+   "default": "Monthly"
+  },
+  {
+   "fieldname": "dates_section",
+   "fieldtype": "Section Break",
+   "label": "Dates"
+  },
+  {
+   "fieldname": "signed_up_on",
+   "fieldtype": "Datetime",
+   "label": "Signed up",
+   "read_only": 1
+  },
+  {
+   "fieldname": "trial_ends",
+   "fieldtype": "Date",
+   "label": "Trial ends",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "paid_until",
+   "fieldtype": "Date",
+   "label": "Paid until",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "col3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "suspended_on",
+   "fieldtype": "Date",
+   "label": "Suspended on",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_reminder",
+   "fieldtype": "Data",
+   "label": "Last reminder sent",
+   "read_only": 1
+  },
+  {
+   "fieldname": "usage_section",
+   "fieldtype": "Section Break",
+   "label": "Usage",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "users",
+   "fieldtype": "Int",
+   "label": "People who sign in",
+   "read_only": 1
+  },
+  {
+   "fieldname": "projects",
+   "fieldtype": "Int",
+   "label": "Projects",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "storage_mb",
+   "fieldtype": "Float",
+   "label": "Storage used (MB)",
+   "read_only": 1,
+   "precision": "1"
+  },
+  {
+   "fieldname": "last_active",
+   "fieldtype": "Datetime",
+   "label": "Last active",
+   "read_only": 1
+  },
+  {
+   "fieldname": "usage_on",
+   "fieldtype": "Datetime",
+   "label": "Usage checked",
+   "read_only": 1
+  },
+  {
+   "fieldname": "signup_section",
+   "fieldtype": "Section Break",
+   "label": "Sign-up",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "email_verified",
+   "fieldtype": "Check",
+   "label": "Email confirmed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "verify_code",
+   "fieldtype": "Data",
+   "label": "Code (hash)",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "verify_expires",
+   "fieldtype": "Datetime",
+   "label": "Code valid until",
+   "read_only": 1
+  },
+  {
+   "fieldname": "verify_tries",
+   "fieldtype": "Int",
+   "label": "Wrong codes",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "signup_ip",
+   "fieldtype": "Data",
+   "label": "Signed up from (IP)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "signup_token",
+   "fieldtype": "Data",
+   "label": "Sign-up token",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "first_password",
+   "fieldtype": "Password",
+   "label": "First password",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "tenant_key",
+   "fieldtype": "Password",
+   "label": "Workspace key",
+   "hidden": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "pool_site",
+   "fieldtype": "Data",
+   "label": "Prepared workspace used",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notes_section",
+   "fieldtype": "Section Break",
+   "label": "Notes and log"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "log",
+   "fieldtype": "Long Text",
+   "label": "Set-up log",
+   "read_only": 1
+  }
+ ],
+ "permissions": [
+  {
+   "role": "Mabni Admin",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  }
+ ],
+ "field_order": [
+  "customer_section",
+  "company_name",
+  "contact_name",
+  "email",
+  "phone",
+  "col1",
+  "country",
+  "city",
+  "language",
+  "currency",
+  "time_zone",
+  "workspace_section",
+  "subdomain",
+  "site_host",
+  "status",
+  "is_internal",
+  "paused_by_admin",
+  "col2",
+  "mode",
+  "plan",
+  "billing_period",
+  "dates_section",
+  "signed_up_on",
+  "trial_ends",
+  "paid_until",
+  "col3",
+  "suspended_on",
+  "last_reminder",
+  "usage_section",
+  "users",
+  "projects",
+  "col4",
+  "storage_mb",
+  "last_active",
+  "usage_on",
+  "signup_section",
+  "email_verified",
+  "verify_code",
+  "verify_expires",
+  "verify_tries",
+  "col5",
+  "signup_ip",
+  "signup_token",
+  "first_password",
+  "tenant_key",
+  "pool_site",
+  "notes_section",
+  "notes",
+  "log"
+ ],
+ "links": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "row_format": "Dynamic",
+ "autoname": "field:subdomain",
+ "title_field": "company_name",
+ "search_fields": "company_name,email",
+ "show_title_field_in_link": 1,
+ "track_changes": 1
+}

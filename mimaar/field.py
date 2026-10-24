@@ -13,7 +13,7 @@ import frappe
 from frappe import _
 from frappe.utils import add_days, cint, cstr, flt, get_fullname, getdate, now_datetime, nowdate, nowtime
 
-LANGS = ("en", "ur")
+LANGS = ("en", "ur", "ar")
 
 
 # ---------------------------------------------------------------- helpers
@@ -105,9 +105,17 @@ def boot():
 			"card_for_store", "card_for_receiving", "card_for_petty_cash")},
 		"face_check": s.face_check or "Required",
 		"today": nowdate(),
+		"plan": _plan(),
 		"ui": _ui(),
 		"person": _me(),
 	}
+
+
+def _plan():
+	"""Mabni Cloud: the trial or plan state (None on a laptop or own server)."""
+	from mimaar.saas.tenant import banner
+
+	return banner()
 
 
 def _ui():
@@ -140,7 +148,7 @@ def ui_save(ui):
 @frappe.whitelist()
 def set_language(lang):
 	if lang not in LANGS:
-		frappe.throw(_("Choose English or Urdu."))
+		frappe.throw(_("Choose English, Urdu or Arabic."))
 	frappe.db.set_value("User", frappe.session.user, "language", lang)
 	frappe.clear_cache(user=frappe.session.user)
 	return lang

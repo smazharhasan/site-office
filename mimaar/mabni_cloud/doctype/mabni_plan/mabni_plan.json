@@ -1,0 +1,149 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-24 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mabni Cloud",
+ "name": "Mabni Plan",
+ "owner": "Administrator",
+ "modified": "2026-10-24 12:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "plan_name",
+   "fieldtype": "Data",
+   "label": "Plan",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "mode",
+   "fieldtype": "Select",
+   "label": "Mode",
+   "options": "Owner\nBuilder",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "Owner: a person building their own home. Builder: a contractor running several client projects."
+  },
+  {
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Offered to customers",
+   "default": "1",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "sort_order",
+   "fieldtype": "Int",
+   "label": "Order on the price list",
+   "default": "1"
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "price_month_usd",
+   "fieldtype": "Float",
+   "label": "Price per month (USD)",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "price_year_usd",
+   "fieldtype": "Float",
+   "label": "Price per year (USD)",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "limits_section",
+   "fieldtype": "Section Break",
+   "label": "What the plan includes"
+  },
+  {
+   "fieldname": "max_projects",
+   "fieldtype": "Int",
+   "label": "Projects (sites)",
+   "default": "1"
+  },
+  {
+   "fieldname": "max_users",
+   "fieldtype": "Int",
+   "label": "People who sign in",
+   "default": "10"
+  },
+  {
+   "fieldname": "col2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "storage_gb",
+   "fieldtype": "Int",
+   "label": "Photo and file storage (GB)",
+   "default": "10"
+  },
+  {
+   "fieldname": "text_section",
+   "fieldtype": "Section Break",
+   "label": "Shown to customers"
+  },
+  {
+   "fieldname": "summary_en",
+   "fieldtype": "Small Text",
+   "label": "In one line (English)"
+  },
+  {
+   "fieldname": "summary_ur",
+   "fieldtype": "Small Text",
+   "label": "In one line (Urdu)"
+  },
+  {
+   "fieldname": "summary_ar",
+   "fieldtype": "Small Text",
+   "label": "In one line (Arabic)"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "Mabni Admin",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  }
+ ],
+ "field_order": [
+  "plan_name",
+  "mode",
+  "is_active",
+  "sort_order",
+  "col1",
+  "price_month_usd",
+  "price_year_usd",
+  "limits_section",
+  "max_projects",
+  "max_users",
+  "col2",
+  "storage_gb",
+  "text_section",
+  "summary_en",
+  "summary_ur",
+  "summary_ar"
+ ],
+ "links": [],
+ "sort_field": "sort_order",
+ "sort_order": "ASC",
+ "states": [],
+ "row_format": "Dynamic",
+ "autoname": "field:plan_name",
+ "title_field": "plan_name",
+ "track_changes": 1
+}

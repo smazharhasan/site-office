@@ -1,0 +1,82 @@
+{
+ "app": "mimaar",
+ "charts": [],
+ "content": "[{\"id\": \"mabnihdr0\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Mabni Cloud</b></span>\", \"col\": 12}}, {\"id\": \"mabnisc00\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Customers\", \"col\": 4}}, {\"id\": \"mabnisc01\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Payments to check\", \"col\": 4}}, {\"id\": \"mabnisc02\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"On free trial\", \"col\": 4}}, {\"id\": \"mabnisc03\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Payment due\", \"col\": 4}}, {\"id\": \"mabnisc04\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Plans and prices\", \"col\": 4}}, {\"id\": \"mabnisc05\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Settings and bank accounts\", \"col\": 4}}]",
+ "creation": "2026-10-24 12:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "cloud",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "Mabni Cloud",
+ "modified": "2026-10-24 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Mabni Cloud",
+ "name": "Mabni Cloud",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "Mabni Admin"
+  }
+ ],
+ "sequence_id": 0.1,
+ "standard": 1,
+ "title": "Mabni Cloud",
+ "type": "Workspace",
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Customers",
+   "link_to": "Mabni Tenant",
+   "type": "DocType"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "label": "Payments to check",
+   "link_to": "Mabni Payment",
+   "type": "DocType",
+   "stats_filter": "{\"status\":\"Waiting for check\"}"
+  },
+  {
+   "color": "Cyan",
+   "doc_view": "List",
+   "label": "On free trial",
+   "link_to": "Mabni Tenant",
+   "type": "DocType",
+   "stats_filter": "{\"status\":\"Trial\"}"
+  },
+  {
+   "color": "Red",
+   "doc_view": "List",
+   "label": "Payment due",
+   "link_to": "Mabni Tenant",
+   "type": "DocType",
+   "stats_filter": "{\"status\":[\"in\",[\"Payment due\",\"Suspended\"]]}"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Plans and prices",
+   "link_to": "Mabni Plan",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "label": "Settings and bank accounts",
+   "link_to": "Mabni Settings",
+   "type": "DocType"
+  }
+ ],
+ "links": []
+}

@@ -1,0 +1,225 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-24 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Mabni Cloud",
+ "name": "Mabni Payment",
+ "owner": "Administrator",
+ "modified": "2026-10-24 12:00:00.000000",
+ "modified_by": "Administrator",
+ "fields": [
+  {
+   "fieldname": "tenant",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Mabni Tenant",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "company_name",
+   "fieldtype": "Data",
+   "label": "Company or project",
+   "fetch_from": "tenant.company_name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "plan",
+   "fieldtype": "Link",
+   "label": "Plan",
+   "options": "Mabni Plan",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "billing_period",
+   "fieldtype": "Select",
+   "label": "Billing",
+   "options": "Monthly\nYearly",
+   "default": "Monthly",
+   "reqd": 1
+  },
+  {
+   "fieldname": "periods",
+   "fieldtype": "Int",
+   "label": "Months or years paid for",
+   "default": "1",
+   "reqd": 1
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Waiting for check\nVerified\nRejected",
+   "default": "Waiting for check",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "period_from",
+   "fieldtype": "Date",
+   "label": "Covers from",
+   "read_only": 1
+  },
+  {
+   "fieldname": "period_to",
+   "fieldtype": "Date",
+   "label": "Covers until",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "money_section",
+   "fieldtype": "Section Break",
+   "label": "Payment"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Select",
+   "label": "Currency",
+   "options": "USD\nPKR\nSAR\nAED",
+   "default": "USD",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Float",
+   "label": "Amount paid",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "amount_usd",
+   "fieldtype": "Float",
+   "label": "In USD",
+   "read_only": 1
+  },
+  {
+   "fieldname": "method",
+   "fieldtype": "Select",
+   "label": "How",
+   "options": "Bank transfer\nCash\nCard\nOther",
+   "default": "Bank transfer"
+  },
+  {
+   "fieldname": "col2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "paid_to",
+   "fieldtype": "Data",
+   "label": "Paid into"
+  },
+  {
+   "fieldname": "reference",
+   "fieldtype": "Data",
+   "label": "Transaction reference"
+  },
+  {
+   "fieldname": "paid_on",
+   "fieldtype": "Date",
+   "label": "Paid on"
+  },
+  {
+   "fieldname": "proof",
+   "fieldtype": "Attach Image",
+   "label": "Proof (receipt or screenshot)"
+  },
+  {
+   "fieldname": "check_section",
+   "fieldtype": "Section Break",
+   "label": "Check"
+  },
+  {
+   "fieldname": "submitted_by",
+   "fieldtype": "Data",
+   "label": "Sent by",
+   "read_only": 1
+  },
+  {
+   "fieldname": "checked_by",
+   "fieldtype": "Link",
+   "label": "Checked by",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "checked_on",
+   "fieldtype": "Datetime",
+   "label": "Checked on",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reject_reason",
+   "fieldtype": "Small Text",
+   "label": "Why rejected (the customer sees this)",
+   "depends_on": "eval:doc.status=='Rejected'"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  }
+ ],
+ "permissions": [
+  {
+   "role": "Mabni Admin",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  }
+ ],
+ "field_order": [
+  "tenant",
+  "company_name",
+  "plan",
+  "billing_period",
+  "periods",
+  "col1",
+  "status",
+  "period_from",
+  "period_to",
+  "money_section",
+  "currency",
+  "amount",
+  "amount_usd",
+  "method",
+  "col2",
+  "paid_to",
+  "reference",
+  "paid_on",
+  "proof",
+  "check_section",
+  "submitted_by",
+  "checked_by",
+  "checked_on",
+  "col3",
+  "reject_reason",
+  "note"
+ ],
+ "links": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "row_format": "Dynamic",
+ "autoname": "MP-.YYYY.-.#####",
+ "title_field": "company_name",
+ "track_changes": 1
+}
