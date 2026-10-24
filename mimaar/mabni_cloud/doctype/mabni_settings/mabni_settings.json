@@ -101,7 +101,7 @@
    "fieldname": "reserved_names",
    "fieldtype": "Small Text",
    "label": "Names customers can't take",
-   "default": "www\nmy\napp\napi\nadmin\nconsole\nmail\nsmtp\nftp\nhelp\nsupport\ndocs\nstatus\nblog\nshop\ndemo\ntest\nstaging\nmabni\nsmh\nsmhglobal\nbilling\npay\nsecure\nlogin\naccount\naccounts\ncdn\nstatic\nassets\nfiles\nns1\nns2"
+   "default": "www\nmy\napp\napi\nadmin\nconsole\nmail\nsmtp\nftp\nhelp\nsupport\ndocs\nstatus\nblog\nshop\ndemo\ntest\nstaging\nmabni\nsmh\nsmhglobal\nbilling\npay\nsecure\nlogin\naccount\naccounts\ncdn\nstatic\nassets\nfiles\nns1\nns2\noffice\nmimaar"
   },
   {
    "fieldname": "money_section",

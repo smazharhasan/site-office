@@ -1,0 +1,51 @@
+# Builds the Mabni server image (Frappe 16 + ERPNext 16 + Mabni, with the website files) using
+# frappe_docker's official layered build, and puts it in the private image store in AWS (ECR).
+# GitHub signs in to AWS with no stored password: the role mabni-github-server only trusts this
+# repository's erpnext-app branch and may only upload to the "mabni" store (deploy/aws/private-images.sh).
+# The server checks for a new image every 15 minutes and applies it (backup first).
+name: Build the Mabni server image
+on:
+  push: { branches: [erpnext-app], paths-ignore: ["deploy/aws/**", "docs/**", "*.md", ".github/**"] }
+  workflow_dispatch:
+permissions: { contents: read, id-token: write }
+concurrency: { group: mabni-image, cancel-in-progress: true }
+env:
+  IMAGE: 640538430239.dkr.ecr.ap-south-1.amazonaws.com/mabni
+  AWS_ROLE: arn:aws:iam::640538430239:role/mabni-github-server
+  AWS_REGION: ap-south-1
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with: { repository: frappe/frappe_docker, path: frappe_docker }
+      - name: Apps in the image (this repository is read with the job's own short-lived token)
+        env: { TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+        run: |
+          printf '[{"url":"https://github.com/frappe/erpnext","branch":"version-16"},{"url":"https://x-access-token:%s@github.com/%s","branch":"%s"}]' \
+            "$TOKEN" "${{ github.repository }}" "${{ github.ref_name }}" > apps.json
+      - uses: aws-actions/configure-aws-credentials@v4
+        with: { role-to-assume: "${{ env.AWS_ROLE }}", aws-region: "${{ env.AWS_REGION }}" }
+      - uses: aws-actions/amazon-ecr-login@v2
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          context: frappe_docker
+          file: frappe_docker/images/layered/Containerfile
+          platforms: linux/amd64
+          build-args: |
+            FRAPPE_BRANCH=version-16
+            CACHE_BUST=${{ github.sha }}
+          secret-files: apps_json=apps.json
+          labels: |
+            org.opencontainers.image.description=Mabni on Frappe 16 + ERPNext 16
+            org.opencontainers.image.revision=${{ github.sha }}
+          provenance: false
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:16
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:${{ github.sha }}
+      - name: Done
+        run: echo "Pushed $IMAGE:16 (${{ github.sha }})"

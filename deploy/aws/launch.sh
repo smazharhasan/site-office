@@ -1,13 +1,15 @@
 #!/bin/bash
 # Creates the Mimaar ERP server in an AWS account. Run in AWS CloudShell:
 #   bash launch.sh            (Mumbai by default; REGION=... to change; TYPE=... for the server size)
-# Needs mimaar-data.json.gz.b64 (the project data from the old Mimaar app) in the same folder.
+# Run it from a copy of this deploy/aws folder (it needs bootstrap.sh beside it, and
+# mimaar-data.json.gz.b64, the project data from the old Mimaar app, in the current folder).
+# Run private-images.sh first, so the server can download Mabni's private images.
 # Safe to run again: it reuses what already exists.
 set -euo pipefail
 REGION="${REGION:-ap-south-1}"; export AWS_DEFAULT_REGION="$REGION"
 TYPE="${TYPE:-m7i-flex.large}"
 NAME=mimaar-server
-REF="${REF:-erpnext-app}"
+HERE="$(cd "$(dirname "$0")" && pwd)"
 say() { printf '\n== %s\n' "$*"; }
 
 ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
@@ -25,7 +27,12 @@ fi
 aws iam put-role-policy --role-name "$NAME" --policy-name mimaar-backups-and-password --policy-document "{
   \"Version\":\"2012-10-17\",\"Statement\":[
    {\"Effect\":\"Allow\",\"Action\":\"s3:*\",\"Resource\":[\"arn:aws:s3:::mimaar-backups-$ACCOUNT-*\",\"arn:aws:s3:::mimaar-backups-$ACCOUNT-*/*\"]},
-   {\"Effect\":\"Allow\",\"Action\":[\"ssm:PutParameter\",\"ssm:GetParameter\"],\"Resource\":\"arn:aws:ssm:*:$ACCOUNT:parameter/mimaar/*\"}]}"
+   {\"Effect\":\"Allow\",\"Action\":[\"ssm:PutParameter\",\"ssm:GetParameter\"],\"Resource\":[\"arn:aws:ssm:*:$ACCOUNT:parameter/mimaar/*\",\"arn:aws:ssm:*:$ACCOUNT:parameter/mabni/*\"]}]}"
+# ... and it may download Mabni's private images (the stores are made by private-images.sh)
+aws iam put-role-policy --role-name "$NAME" --policy-name download-images --policy-document "{\"Version\":\"2012-10-17\",\"Statement\":[
+  {\"Effect\":\"Allow\",\"Action\":\"ecr:GetAuthorizationToken\",\"Resource\":\"*\"},
+  {\"Effect\":\"Allow\",\"Action\":[\"ecr:BatchCheckLayerAvailability\",\"ecr:BatchGetImage\",\"ecr:GetDownloadUrlForLayer\",\"ecr:DescribeImages\"],
+   \"Resource\":[\"arn:aws:ecr:$REGION:$ACCOUNT:repository/mabni\",\"arn:aws:ecr:$REGION:$ACCOUNT:repository/mabni-office\"]}]}"
 if ! aws iam get-instance-profile --instance-profile-name "$NAME" >/dev/null 2>&1; then
   aws iam create-instance-profile --instance-profile-name "$NAME" >/dev/null
   aws iam add-role-to-instance-profile --instance-profile-name "$NAME" --role-name "$NAME"
@@ -65,18 +72,24 @@ if [ "$ID" = "None" ]; then
     cat mimaar-data.json.gz.b64
     echo 'DATA'
     echo 'base64 -d /root/mimaar-data.json.gz.b64 | gunzip > /root/mimaar-data.json && rm -f /root/mimaar-data.json.gz.b64'
-    echo "curl -fsSL https://raw.githubusercontent.com/smazharhasan/site-office/$REF/deploy/aws/bootstrap.sh -o /root/mimaar-bootstrap.sh"
+    # the set-up script travels inside the user data (the repository is private)
+    echo "base64 -d > /root/mimaar-bootstrap.sh.gz <<'BOOT'"
+    gzip -9c "$HERE/bootstrap.sh" | base64
+    echo 'BOOT'
+    echo 'gunzip -f /root/mimaar-bootstrap.sh.gz'
     echo "MIMAAR_DOMAIN=$DOMAIN MIMAAR_DATA_FILE=/root/mimaar-data.json bash /root/mimaar-bootstrap.sh"
   } > user-data.sh
+  gzip -9f user-data.sh
+  [ "$(stat -c %s user-data.sh.gz)" -le 16000 ] || { echo "The start-up data is over AWS's 16 KB limit; make mimaar-data.json.gz.b64 smaller"; exit 1; }
   say "Starting the server ($TYPE, Ubuntu 24.04, 40 GB disk)"
   ID=$(aws ec2 run-instances --image-id "$AMI" --instance-type "$TYPE" \
     --iam-instance-profile Name="$NAME" --security-group-ids "$SG" \
     --block-device-mappings '[{"DeviceName":"/dev/sda1","Ebs":{"VolumeSize":40,"VolumeType":"gp3","Encrypted":true,"DeleteOnTermination":true}}]' \
     --metadata-options HttpTokens=required,HttpPutResponseHopLimit=2,HttpEndpoint=enabled \
-    --user-data file://user-data.sh \
+    --user-data fileb://user-data.sh.gz \
     --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$NAME}]" "ResourceType=volume,Tags=[{Key=Name,Value=$NAME}]" \
     --query 'Instances[0].InstanceId' --output text)
-  rm -f user-data.sh
+  rm -f user-data.sh.gz
 fi
 echo "Server: $ID"
 aws ec2 wait instance-running --instance-ids "$ID"

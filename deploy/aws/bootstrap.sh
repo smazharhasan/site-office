@@ -18,7 +18,6 @@ DOMAIN="${MIMAAR_DOMAIN:?set MIMAAR_DOMAIN}"
 DATA_FILE="${MIMAAR_DATA_FILE:-/root/mimaar-data.json}"
 BASE="${MABNI_BASE:-${DOMAIN#*.}}"
 CONSOLE="${MABNI_CONSOLE:-my.$BASE}"
-IMAGE="${MIMAAR_IMAGE:-ghcr.io/smazharhasan/mimaar-erpnext:16}"
 export DEBIAN_FRONTEND=noninteractive
 
 tok() { curl -s -X PUT http://169.254.169.254/latest/api/token -H 'X-aws-ec2-metadata-token-ttl-seconds: 300'; }
@@ -26,6 +25,8 @@ idoc() { curl -s -H "X-aws-ec2-metadata-token: $(tok)" http://169.254.169.254/la
 REGION="$(idoc | sed -n 's/.*"region" *: *"\([^"]*\)".*/\1/p')"
 ACCOUNT="$(idoc | sed -n 's/.*"accountId" *: *"\([^"]*\)".*/\1/p')"
 BUCKET="${MIMAAR_BACKUP_BUCKET:-mimaar-backups-$ACCOUNT-$REGION}"
+# the private image store in this account (deploy/aws/private-images.sh)
+IMAGE="${MIMAAR_IMAGE:-$ACCOUNT.dkr.ecr.$REGION.amazonaws.com/mabni:16}"
 
 # ---- 1. memory safety net and time zone
 if ! swapon --show | grep -q /swapfile; then
@@ -41,6 +42,20 @@ systemctl enable --now docker
 command -v aws >/dev/null || snap install aws-cli --classic
 export PATH="$PATH:/snap/bin"
 docker network inspect web >/dev/null 2>&1 || docker network create web
+# private images (Amazon ECR): Docker signs in with the server's own AWS role, no stored password
+mkdir -p /opt/mimaar
+if [[ "$IMAGE" == *.dkr.ecr.* ]]; then
+  cat > /opt/mimaar/ecr-login.sh <<EOF
+#!/bin/bash
+# Signs Docker in to the private image store with the server's own AWS role (valid 12 hours).
+export PATH="\$PATH:/snap/bin"
+aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin ${IMAGE%%/*} >/dev/null
+EOF
+else
+  printf '#!/bin/bash\ntrue\n' > /opt/mimaar/ecr-login.sh
+fi
+chmod 700 /opt/mimaar/ecr-login.sh
+/opt/mimaar/ecr-login.sh || echo "Could not sign in to the image store"
 
 # ---- 3. The front door: Caddy, automatic https. One file per app or website in /opt/edge/sites
 mkdir -p /opt/edge/sites /opt/edge/www
@@ -331,6 +346,7 @@ cat > update.sh <<'EOF'
 # Gets the latest Mimaar ERP image and applies it to the site, keeping all data (backup first).
 exec 9>/run/mimaar-update.lock; flock 9
 cd /opt/mimaar && set -a && . ./.env && set +a
+/opt/mimaar/ecr-login.sh || echo "Could not sign in to the image store"
 ./backup.sh || echo "Backup failed; continuing"
 docker compose pull && docker compose up -d || exit 1
 CODE=$(docker wait "$(docker compose ps -a -q create-site)")
@@ -364,6 +380,7 @@ cat > autoupdate.sh <<'EOF'
 # Every 15 minutes: when a newer Mimaar ERP image has been published, apply it (update.sh backs up first).
 exec 9>/run/mimaar-update.lock; flock -n 9 || exit 0
 cd /opt/mimaar && set -a && . ./.env && set +a
+/opt/mimaar/ecr-login.sh || echo "Could not sign in to the image store"
 docker pull -q "$IMAGE" >/dev/null 2>&1 || exit 0
 NEW=$(docker image inspect -f '{{.Id}}' "$IMAGE" 2>/dev/null)
 RUNNING=$(docker inspect -f '{{.Image}}' "$(docker compose ps -q backend)" 2>/dev/null)

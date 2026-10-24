@@ -68,6 +68,19 @@ def setup_console(base=None, control=None, company="SMH Global Services", countr
 	print("MABNI CONSOLE READY", s.control_host, s.base_domain)
 
 
+def reserve(names):
+	"""Adds names customers can't take for their workspace (e.g. a name used by another app on the server)."""
+	s = frappe.get_single("Mabni Settings")
+	have = [x.strip().lower() for x in (s.reserved_names or "").split() if x.strip()]
+	add = [n for n in str(names).lower().split() if n and n not in have]
+	if add:
+		s.reserved_names = "\n".join(have + add)
+		s.flags.ignore_permissions = True
+		s.save()
+		frappe.db.commit()
+	print("RESERVED", " ".join(have + add))
+
+
 def register_site(host, company, email, contact_name="Owner", sub=None, internal=1, mode="Owner", country="Pakistan", language="en"):
 	"""A workspace made outside sign-up (e.g. SMH Global's own) joins the console."""
 	from mimaar.saas.common import push
