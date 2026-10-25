@@ -15,7 +15,14 @@ from frappe.utils import add_days, cint, flt, getdate, nowdate
 
 # the month a financial year starts (January when not listed)
 FY_START = {"Pakistan": 7, "India": 4, "United Kingdom": 4, "Australia": 7, "Egypt": 7, "Bangladesh": 7, "New Zealand": 4}
-LOCAL_CURRENCIES = ("PKR", "SAR", "AED")
+# customers in these countries see and pay their own money; everyone else sees USD
+COUNTRY_CURRENCY = {"Pakistan": "PKR", "Saudi Arabia": "SAR", "United Arab Emirates": "AED", "Qatar": "QAR"}
+LOCAL_CURRENCIES = tuple(COUNTRY_CURRENCY.values())
+# first in country lists (sign-up), the rest follow by name
+TOP_COUNTRIES = ["Pakistan", "Saudi Arabia", "United Arab Emirates", "Qatar", "Kuwait", "Bahrain", "Oman"]
+# which of our bank accounts a customer pays into: Pakistan's, the UAE's, or the Saudi ones for everyone else
+BANK_OTHERS = "Saudi Arabia and all other countries"
+BANK_REGIONS = ("Pakistan", "United Arab Emirates", BANK_OTHERS)
 LANG_NAME = {"en": "English", "ur": "اردو", "ar": "العربية"}
 NAME_RE = re.compile(r"^[a-z][a-z0-9-]{1,28}[a-z0-9]$")
 
@@ -91,16 +98,30 @@ def country_info(country):
 		"fy_month": FY_START.get(country, 1)}
 
 
-def local_price(usd, country):
-	"""A price in USD and in the customer's own money (rounded the way people pay)."""
-	s = settings()
-	cur = country_info(country)["currency"] if country else "USD"
-	if cur not in LOCAL_CURRENCIES:
+def currency_for(country):
+	return COUNTRY_CURRENCY.get(country or "", "USD")
+
+
+def local_price(usd, country, fixed=None):
+	"""A price in USD and in the customer's own money: the plan's fixed local price when one is set,
+	otherwise converted at the console's rate and rounded the way people pay."""
+	cur = currency_for(country)
+	if cur == "USD":
 		return {"usd": flt(usd), "currency": "USD", "amount": flt(usd)}
+	if flt(fixed) > 0:
+		return {"usd": flt(usd), "currency": cur, "amount": flt(fixed)}
+	s = settings()
 	rate = flt(s.get(f"usd_to_{cur.lower()}"))
 	step = cint(s.get(f"round_{cur.lower()}")) or 1
 	amount = round(flt(usd) * rate / step) * step if rate else 0
 	return {"usd": flt(usd), "currency": cur if rate else "USD", "amount": amount or flt(usd)}
+
+
+def plan_price(plan, period, country):
+	"""What one month or one year of a plan costs a customer in this country."""
+	p = plan if isinstance(plan, dict) else frappe.db.get_value("Buildiary Plan", plan, ["*"], as_dict=True)
+	key = "year" if period in ("Yearly", "year") else "month"
+	return local_price(p.get(f"price_{key}_usd"), country, p.get(f"price_{key}_{currency_for(country).lower()}"))
 
 
 def to_usd(amount, currency):
@@ -110,15 +131,59 @@ def to_usd(amount, currency):
 	return round(flt(amount) / rate, 2) if rate else 0
 
 
+def bank_region(country):
+	return country if country in ("Pakistan", "United Arab Emirates") else BANK_OTHERS
+
+
+def bank_accounts(country):
+	"""The accounts a customer from this country pays into (Pakistan, the UAE, or the Saudi ones for everyone else)."""
+	region = bank_region(country)
+	return [b for b in settings().bank_accounts if b.is_active and b.country == region]
+
+
 def plans(country=None, active_only=True):
 	out = []
 	for p in frappe.get_all("Buildiary Plan", filters={"is_active": 1} if active_only else {}, fields=["*"], order_by="sort_order asc"):
 		out.append({
 			"name": p.name, "mode": p.mode, "max_projects": cint(p.max_projects), "max_users": cint(p.max_users), "storage_gb": cint(p.storage_gb),
 			"summary": {"en": p.summary_en, "ur": p.summary_ur, "ar": p.summary_ar},
-			"month": local_price(p.price_month_usd, country), "year": local_price(p.price_year_usd, country),
+			"month": plan_price(p, "Monthly", country), "year": plan_price(p, "Yearly", country),
 		})
 	return out
+
+
+def phone_check(phone, country):
+	"""A mobile number in the country's own format. Returns (international format, None) or (None, problem)."""
+	import phonenumbers
+	from phonenumbers import PhoneNumberFormat, PhoneNumberType
+
+	code = (frappe.db.get_value("Country", country, "code") or "").upper()
+	raw = (phone or "").strip()
+	if not raw:
+		return None, "empty"
+	try:
+		n = phonenumbers.parse(raw, code or None)
+	except phonenumbers.NumberParseException:
+		return None, "invalid"
+	if not phonenumbers.is_valid_number(n):
+		return None, "invalid"
+	kind = phonenumbers.number_type(n)
+	if kind not in (PhoneNumberType.MOBILE, PhoneNumberType.FIXED_LINE_OR_MOBILE, PhoneNumberType.VOIP, PhoneNumberType.PERSONAL_NUMBER):
+		return None, "not_mobile"
+	return phonenumbers.format_number(n, PhoneNumberFormat.INTERNATIONAL), None
+
+
+def phone_example(code):
+	"""A sample mobile number of a country (ISO code), as people write it there, and its calling code."""
+	import phonenumbers
+	from phonenumbers import PhoneNumberFormat, PhoneNumberType
+
+	try:
+		n = phonenumbers.example_number_for_type(code.upper(), PhoneNumberType.MOBILE)
+	except Exception:
+		n = None
+	dial = phonenumbers.country_code_for_region(code.upper()) if code else 0
+	return (phonenumbers.format_number(n, PhoneNumberFormat.NATIONAL) if n else ""), (f"+{dial}" if dial else "")
 
 
 def tenant_state(t):

@@ -7,7 +7,7 @@
  "module": "Buildiary Cloud",
  "name": "Buildiary Plan",
  "owner": "Administrator",
- "modified": "2026-10-25 21:00:00.000000",
+ "modified": "2026-10-26 01:00:00.000000",
  "modified_by": "Administrator",
  "fields": [
   {
@@ -49,7 +49,8 @@
    "fieldtype": "Float",
    "label": "Price per month (USD)",
    "reqd": 1,
-   "in_list_view": 1
+   "in_list_view": 1,
+   "description": "Customers outside Pakistan, Saudi Arabia, the UAE and Qatar pay this."
   },
   {
    "fieldname": "price_year_usd",
@@ -57,6 +58,65 @@
    "label": "Price per year (USD)",
    "reqd": 1,
    "in_list_view": 1
+  },
+  {
+   "fieldname": "local_section",
+   "fieldtype": "Section Break",
+   "label": "Fixed prices in local money",
+   "collapsible": 1,
+   "description": "Leave a price empty to convert it from USD at the rate in Buildiary Cloud Settings. Customers in other countries pay in USD."
+  },
+  {
+   "fieldname": "price_month_pkr",
+   "fieldtype": "Float",
+   "label": "Per month in PKR (Pakistan)",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "price_year_pkr",
+   "fieldtype": "Float",
+   "label": "Per year in PKR (Pakistan)",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "price_month_sar",
+   "fieldtype": "Float",
+   "label": "Per month in SAR (Saudi Arabia)",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "price_year_sar",
+   "fieldtype": "Float",
+   "label": "Per year in SAR (Saudi Arabia)",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "col_local",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "price_month_aed",
+   "fieldtype": "Float",
+   "label": "Per month in AED (UAE)",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "price_year_aed",
+   "fieldtype": "Float",
+   "label": "Per year in AED (UAE)",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "price_month_qar",
+   "fieldtype": "Float",
+   "label": "Per month in QAR (Qatar)",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "price_year_qar",
+   "fieldtype": "Float",
+   "label": "Per year in QAR (Qatar)",
+   "non_negative": 1
   },
   {
    "fieldname": "limits_section",
@@ -128,6 +188,16 @@
   "col1",
   "price_month_usd",
   "price_year_usd",
+  "local_section",
+  "price_month_pkr",
+  "price_year_pkr",
+  "price_month_sar",
+  "price_year_sar",
+  "col_local",
+  "price_month_aed",
+  "price_year_aed",
+  "price_month_qar",
+  "price_year_qar",
   "limits_section",
   "max_projects",
   "max_users",

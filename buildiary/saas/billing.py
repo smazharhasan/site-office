@@ -3,6 +3,7 @@ console updates each customer's status (trial → payment due → suspended), se
 and reads each workspace's usage."""
 
 import frappe
+from frappe import _
 from frappe.utils import add_days, add_months, date_diff, escape_html, get_datetime, getdate, now_datetime, nowdate
 
 from buildiary.saas.common import call_site, is_control, notify_admins, push, settings, tenant_state
@@ -53,6 +54,8 @@ def apply_payment(p):
 	t.status = "Active"
 	t.suspended_on = None
 	t.save(ignore_permissions=True)
+	frappe.msgprint(_("{0}'s {1} licence is active until {2}. The customer has been emailed.").format(
+		frappe.bold(t.company_name), plan.name, frappe.bold(frappe.format(end, "Date"))), title=_("Licence activated"), indicator="green")
 	_send(t, "Payment received – thank you", f"""<p>Dear {escape_html(t.contact_name)},</p>
 <p>We have received your payment of <b>{escape_html(p.currency)} {frappe.format(p.amount, 'Float')}</b> (reference {escape_html(p.reference or p.name)}).</p>
 <p>Your <b>{escape_html(plan.name)}</b> plan is active until <b>{frappe.format(end, 'Date')}</b>.</p>""")

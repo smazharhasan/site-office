@@ -84,7 +84,7 @@ html[lang=ur] .mode b{font:600 1rem/1.9 var(--ur)} html[lang=ar] .mode b{font:70
 @media (prefers-color-scheme: dark){.mode .price{color:var(--on-blue-2)}}
 .mode:has(input:checked){border-color:var(--amber);background:color-mix(in srgb,var(--amber) 9%,var(--card))}
 .mode:has(input:focus-visible){outline:2px solid var(--amber);outline-offset:2px}
-.f{display:grid;gap:6px;min-width:0}
+.f{display:grid;gap:6px;min-width:0;align-content:start}
 .f label{font-weight:600;font-size:.92rem}
 .f .help{font-size:.82rem;color:var(--muted)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -96,6 +96,27 @@ input:focus,select:focus{outline:none;border-color:var(--blue-2);box-shadow:0 0 
 .addr:focus-within{border-color:var(--blue-2)}
 .addr input{border:0;border-radius:0;background:transparent;min-width:0;flex:1;font-family:var(--mono);box-shadow:none!important}
 .addr span{display:flex;align-items:center;padding:0 12px;font:500 .85rem/1 var(--mono);color:var(--muted);background:color-mix(in srgb,var(--line) 40%,transparent);white-space:nowrap;max-width:60%;overflow:hidden;text-overflow:ellipsis}
+.tel{display:flex;align-items:stretch;border:1.5px solid var(--line);border-radius:10px;background:var(--field);overflow:hidden;direction:ltr}
+.tel:focus-within{border-color:var(--blue-2);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue-2) 22%,transparent)}
+.tel .dial{direction:ltr;unicode-bidi:isolate;display:flex;align-items:center;gap:8px;padding:0 10px;font:500 .95rem/1 var(--mono);color:var(--muted);background:color-mix(in srgb,var(--line) 40%,transparent);white-space:nowrap}
+.tel input{border:0;border-radius:0;background:transparent;min-width:0;flex:1;box-shadow:none!important}
+.flag{width:24px;height:18px;border-radius:3px;object-fit:cover;flex:none;background:var(--line);box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.cp{position:relative}
+.cp-btn{width:100%;display:flex;align-items:center;gap:10px;font:inherit;font-size:16px;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:10px;padding:0 12px;min-height:46px;cursor:pointer;text-align:start}
+.cp-btn:focus-visible,.cp-btn[aria-expanded=true]{outline:none;border-color:var(--blue-2);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue-2) 22%,transparent)}
+.cp-btn .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cp-btn svg{width:16px;height:16px;flex:none;color:var(--muted)}
+.cp-pop{position:absolute;z-index:30;inset-inline:0;top:calc(100% + 6px);min-width:260px;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 40px rgba(15,25,40,.2);padding:8px;display:grid;gap:6px}
+.cp-pop input{min-height:40px}
+.cp-pop ul{list-style:none;margin:0;padding:0;max-height:min(330px,52vh);overflow-y:auto;overscroll-behavior:contain}
+.cp-pop li{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:.95rem}
+.cp-pop li.on{background:color-mix(in srgb,var(--blue-2) 12%,transparent)}
+.cp-pop li[aria-selected=true]{font-weight:600}
+.cp-pop li .dc{margin-inline-start:auto;color:var(--muted);font:500 .8rem var(--mono);direction:ltr;unicode-bidi:isolate}
+#phone-state{unicode-bidi:plaintext;text-align:start}
+.cp-pop li.sep{cursor:default;padding:8px 10px 4px;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--line);margin-top:4px;border-radius:0}
+html[lang=ur] .cp-pop li.sep,html[lang=ar] .cp-pop li.sep{letter-spacing:0;text-transform:none;font-size:.82rem}
+.cp-pop li.none{cursor:default;color:var(--muted)}
 .state{font-size:.84rem;min-height:1.3em}
 .state.ok{color:var(--ok)} .state.bad{color:var(--bad)}
 .pw{position:relative}
@@ -175,11 +196,17 @@ html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem
       </div>
       <div class="row">
         <div class="f"><label for="contact_name" data-t="name"></label><input type="text" id="contact_name" autocomplete="name" required maxlength="120"></div>
-        <div class="f"><label for="phone" data-t="phone"></label><input type="tel" id="phone" autocomplete="tel" inputmode="tel" maxlength="40" dir="ltr"></div>
+        <div class="f"><label for="email" data-t="email"></label><input type="email" id="email" autocomplete="email" required maxlength="140" dir="ltr"></div>
       </div>
       <div class="row">
-        <div class="f"><label for="email" data-t="email"></label><input type="email" id="email" autocomplete="email" required maxlength="140" dir="ltr"></div>
-        <div class="f"><label for="country" data-t="country"></label><select id="country"></select></div>
+        <div class="f"><label for="country-btn" data-t="country"></label>
+          <div class="cp" id="cp">
+            <button type="button" class="cp-btn" id="country-btn" aria-haspopup="listbox" aria-expanded="false" aria-controls="cp-pop"><img class="flag" id="cp-flag" alt="" width="24" height="18"><span class="nm" id="cp-name"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+            <input type="hidden" id="country">
+            <div class="cp-pop" id="cp-pop" hidden><input type="search" id="cp-q" autocomplete="off" spellcheck="false" aria-controls="cp-list"><ul role="listbox" id="cp-list" aria-labelledby="country-btn"></ul></div>
+          </div>
+        </div>
+        <div class="f"><label for="phone" data-t="phone"></label><div class="tel"><span class="dial" id="dial"></span><input type="tel" id="phone" autocomplete="tel-national" inputmode="tel" maxlength="40" required></div><div class="state" id="phone-state" aria-live="polite"></div></div>
       </div>
       <div class="row">
         <div class="f"><label for="city" data-t="city"></label><input type="text" id="city" autocomplete="address-level2" maxlength="80"></div>
@@ -270,6 +297,8 @@ const I18N = {
     e_agree: "Please accept the terms to continue.", e_sub: "Use 3 to 30 letters, numbers or dashes, starting with a letter.", e_code: "Enter the 6-digit code.",
     e_many: "Too many tries. Please wait a few minutes and try again.", e_net: "No connection. Check the internet and try again.", e_closed: "New sign-ups are closed for now.",
     c_Pakistan: "Pakistan", "c_Saudi Arabia": "Saudi Arabia", "c_United Arab Emirates": "United Arab Emirates", other_countries: "Other countries",
+    search: "Search country", no_match: "No country found",
+    e_phone_empty: "Enter your mobile number.", e_phone_invalid: "This is not a valid mobile number for {country}. Example: {ex}", e_phone_not_mobile: "Enter a mobile number (for WhatsApp), for example {ex}.",
   },
   ur: {
     dim: "مالک · بلڈر · سائٹ", hero: "سیمنٹ کی ہر بوری، ہر ادائیگی، سائٹ کا ہر دن — ایک جگہ پر۔",
@@ -295,6 +324,8 @@ const I18N = {
     e_agree: "آگے بڑھنے کے لیے شرائط قبول کریں۔", e_sub: "3 سے 30 انگریزی حروف، ہندسے یا ڈیش استعمال کریں، شروع میں حرف ہو۔", e_code: "6 ہندسوں کا کوڈ لکھیں۔",
     e_many: "بہت زیادہ کوششیں ہو گئیں۔ چند منٹ بعد دوبارہ کوشش کریں۔", e_net: "انٹرنیٹ نہیں مل رہا۔ کنکشن دیکھ کر دوبارہ کوشش کریں۔", e_closed: "فی الحال نئی رجسٹریشن بند ہے۔",
     c_Pakistan: "پاکستان", "c_Saudi Arabia": "سعودی عرب", "c_United Arab Emirates": "متحدہ عرب امارات", other_countries: "دوسرے ممالک",
+    search: "ملک تلاش کریں", no_match: "کوئی ملک نہیں ملا",
+    e_phone_empty: "اپنا موبائل نمبر لکھیں۔", e_phone_invalid: "یہ {country} کا درست موبائل نمبر نہیں۔ مثال: {ex}", e_phone_not_mobile: "موبائل نمبر لکھیں (واٹس ایپ کے لیے)، مثلاً {ex}۔",
   },
   ar: {
     dim: "المالك · المقاول · الموقع", hero: "كل كيس إسمنت، وكل دفعة، وكل يوم في الموقع، في مكان واحد.",
@@ -320,6 +351,8 @@ const I18N = {
     e_agree: "يرجى الموافقة على الشروط للمتابعة.", e_sub: "استخدم من 3 إلى 30 حرفاً إنجليزياً أو رقماً أو شَرطة، يبدأ بحرف.", e_code: "أدخل الرمز المكوّن من 6 أرقام.",
     e_many: "محاولات كثيرة. انتظر بضع دقائق ثم حاول مجدداً.", e_net: "لا يوجد اتصال. تحقق من الإنترنت وحاول مجدداً.", e_closed: "التسجيل الجديد مغلق حالياً.",
     c_Pakistan: "باكستان", "c_Saudi Arabia": "السعودية", "c_United Arab Emirates": "الإمارات", other_countries: "دول أخرى",
+    search: "ابحث عن الدولة", no_match: "لا توجد دولة بهذا الاسم",
+    e_phone_empty: "أدخل رقم جوالك.", e_phone_invalid: "هذا ليس رقم جوال صحيحاً في {country}. مثال: {ex}", e_phone_not_mobile: "أدخل رقم جوال (لواتساب)، مثل {ex}.",
   },
 };
 const $ = (id) => document.getElementById(id);
@@ -330,12 +363,30 @@ const t = (k, v) => { let s = (I18N[LANG] && I18N[LANG][k]) || I18N.en[k] || k; 
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 let EMAIL = "";
 
-function money(usd, country) {
-  const cur = { Pakistan: "PKR", "Saudi Arabia": "SAR", "United Arab Emirates": "AED" }[country];
-  const r = cur && CFG.rates[cur];
-  if (!r || !r[0]) return "$" + usd;
-  const v = Math.round((usd * r[0]) / r[1]) * r[1];
-  return cur + " " + v.toLocaleString("en") + " ($" + usd + ")";
+// countries: Pakistan and the Gulf first; names in the page's language; flags; calling codes; the money each pays in
+const BY_CODE = {}, BY_NAME = {};
+CFG.countries.forEach((c) => { BY_CODE[c.c] = c; BY_NAME[c.n] = c; });
+const flagUrl = (code) => "/assets/buildiary/flags/" + code + ".svg";
+const DN = {};
+function cname(c) {
+  if (LANG === "en") return c.n;
+  try { DN[LANG] = DN[LANG] || new Intl.DisplayNames([LANG], { type: "region" }); const v = DN[LANG].of(c.c.toUpperCase()); if (v && v !== c.c.toUpperCase()) return v; } catch (e) {}
+  return I18N[LANG] && I18N[LANG]["c_" + c.n] || c.n;
+}
+function guessCountry() {
+  const q = (CFG.country || "").trim();
+  if (q) { const c = BY_NAME[q] || BY_CODE[q.toLowerCase()]; if (c) return c.n; }
+  const saved = store.get("buildiary_country"); if (saved && BY_NAME[saved]) return saved;
+  try { const code = CFG.zones[Intl.DateTimeFormat().resolvedOptions().timeZone]; if (code && BY_CODE[code]) return BY_CODE[code].n; } catch (e) {}
+  const m = (navigator.language || "").match(/-([A-Za-z]{2})$/);
+  if (m && BY_CODE[m[1].toLowerCase()]) return BY_CODE[m[1].toLowerCase()].n;
+  return "Pakistan";
+}
+let COUNTRY = guessCountry();
+function money(p, country) {
+  const c = BY_NAME[country], cur = c && c.m, v = cur && cur !== "USD" && p.local && p.local[cur];
+  if (!v) return "$" + p.month;
+  return cur + " " + Number(v).toLocaleString("en") + " ($" + p.month + ")";
 }
 function paint() {
   document.documentElement.lang = LANG;
@@ -351,20 +402,16 @@ function paint() {
   const privacy = CFG.privacy ? `<a href="${esc(CFG.privacy)}" target="_blank" rel="noopener">${esc(t("privacy"))}</a>` : esc(t("privacy"));
   $("agree-text").innerHTML = esc(t("agree")).replace("{terms}", terms).replace("{privacy}", privacy);
   $("pw-toggle").textContent = t($("password").type === "password" ? "show" : "hide");
-  const sel = $("country"), cur = sel.value || "Pakistan";
-  sel.innerHTML = "";
-  CFG.countries.forEach((c, i) => {
-    if (i === 3) { const g = document.createElement("option"); g.disabled = true; g.textContent = "── " + t("other_countries") + " ──"; sel.appendChild(g); }
-    const o = document.createElement("option"); o.value = c; o.textContent = i < 3 ? t("c_" + c) : c; sel.appendChild(o);
-  });
-  sel.value = cur;
+  $("cp-q").placeholder = t("search");
+  paintCountry();
+  if (!$("cp-pop").hidden) renderList($("cp-q").value);
   prices();
   if (EMAIL) { $("verify-d").textContent = t("verify_d", { email: EMAIL }); $("ready-d").textContent = t("ready_d", { email: EMAIL }); }
 }
 function prices() {
   for (const mode of ["Owner", "Builder"]) {
     const p = CFG.plans.find((x) => x.mode === mode);
-    $("price-" + mode).textContent = p ? t("per_month", { p: money(p.month, $("country").value) }) : "";
+    $("price-" + mode).textContent = p ? t("per_month", { p: money(p, COUNTRY) }) : "";
   }
 }
 document.querySelectorAll(".langs button").forEach((b) => b.addEventListener("click", () => {
@@ -373,7 +420,89 @@ document.querySelectorAll(".langs button").forEach((b) => b.addEventListener("cl
   paint();
 }));
 document.querySelectorAll("input[name=mode]").forEach((r) => r.addEventListener("change", paint));
-$("country").addEventListener("change", prices);
+
+// the country picker
+let ACTIVE = -1;
+function paintCountry() {
+  const c = BY_NAME[COUNTRY] || BY_NAME.Pakistan;
+  $("country").value = c.n; $("cp-flag").src = flagUrl(c.c); $("cp-name").textContent = cname(c);
+  $("dial").textContent = c.d; $("phone").placeholder = c.e || "";
+}
+function setCountry(name, byUser) {
+  COUNTRY = name; if (byUser) store.set("buildiary_country", name);
+  paintCountry(); prices(); if ($("phone").value.trim()) checkPhone(true);
+}
+function options() { return [...$("cp-list").querySelectorAll("li[role=option]")]; }
+function mark(i) {
+  const o = options(); if (!o.length) return;
+  ACTIVE = Math.max(0, Math.min(i, o.length - 1));
+  o.forEach((li, k) => li.classList.toggle("on", k === ACTIVE));
+  o[ACTIVE].scrollIntoView({ block: "nearest" });
+  $("cp-q").setAttribute("aria-activedescendant", o[ACTIVE].id);
+}
+function renderList(q) {
+  const ul = $("cp-list"), qq = (q || "").trim().toLowerCase().replace(/^\+/, "");
+  ul.innerHTML = ""; let shown = 0, sel = 0;
+  // while searching: names that start with the text first, then the rest that contain it
+  const rank = (c) => { const a = cname(c).toLowerCase(), b = c.n.toLowerCase(); return a.startsWith(qq) || b.startsWith(qq) || c.d.replace("+", "").startsWith(qq) ? 0 : 1; };
+  const list = qq ? CFG.countries.filter((c) => { const a = cname(c).toLowerCase(); return a.includes(qq) || c.n.toLowerCase().includes(qq) || c.d.replace("+", "").startsWith(qq); }).sort((x, y) => rank(x) - rank(y)) : CFG.countries;
+  list.forEach((c, i) => {
+    const name = cname(c);
+    if (!qq && i === CFG.top) { const s = document.createElement("li"); s.className = "sep"; s.setAttribute("role", "presentation"); s.textContent = t("other_countries"); ul.appendChild(s); }
+    const li = document.createElement("li");
+    li.setAttribute("role", "option"); li.id = "cp-" + c.c; li.dataset.n = c.n; li.setAttribute("aria-selected", c.n === COUNTRY ? "true" : "false");
+    li.innerHTML = `<img class="flag" loading="lazy" src="${flagUrl(c.c)}" alt="" width="24" height="18"><span>${esc(name)}</span><span class="dc">${esc(c.d)}</span>`;
+    if (c.n === COUNTRY) sel = shown;
+    ul.appendChild(li); shown++;
+  });
+  if (!shown) { const n = document.createElement("li"); n.className = "none"; n.textContent = t("no_match"); ul.appendChild(n); ACTIVE = -1; return; }
+  mark(qq ? 0 : sel);
+}
+function openPicker() {
+  $("cp-pop").hidden = false; $("country-btn").setAttribute("aria-expanded", "true");
+  $("cp-q").value = ""; renderList(""); $("cp-q").focus();
+}
+function closePicker(focusBtn) {
+  $("cp-pop").hidden = true; $("country-btn").setAttribute("aria-expanded", "false");
+  if (focusBtn) $("country-btn").focus();
+}
+$("country-btn").addEventListener("click", () => { if ($("cp-pop").hidden) openPicker(); else closePicker(true); });
+$("country-btn").addEventListener("keydown", (e) => { if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); openPicker(); } });
+$("cp-q").addEventListener("input", () => renderList($("cp-q").value));
+$("cp-q").addEventListener("keydown", (e) => {
+  if (e.key === "ArrowDown") { e.preventDefault(); mark(ACTIVE + 1); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); mark(ACTIVE - 1); }
+  else if (e.key === "Enter") { e.preventDefault(); const o = options()[ACTIVE]; if (o) { setCountry(o.dataset.n, true); closePicker(true); } }
+  else if (e.key === "Escape") { e.preventDefault(); closePicker(true); }
+  else if (e.key === "Tab") closePicker(false);
+});
+$("cp-list").addEventListener("click", (e) => { const li = e.target.closest("li[role=option]"); if (li) { setCountry(li.dataset.n, true); closePicker(true); } });
+document.addEventListener("pointerdown", (e) => { if (!$("cp-pop").hidden && !$("cp").contains(e.target)) closePicker(false); });
+
+// the mobile number, checked in the country's own format
+let phoneT = null, PHONE_OK = null, PHONE_MSG = "";
+function phoneState(cls, text) { const s = $("phone-state"); s.className = "state " + (cls || ""); s.textContent = text || ""; }
+function phoneMsg(r) {
+  const c = BY_NAME[COUNTRY] || {}, ex = (c.e ? c.e + " (" + c.d + ")" : c.d || "");
+  return t("e_phone_" + (r.problem || "invalid"), { country: cname(c), ex });
+}
+function checkPhone(now) {
+  clearTimeout(phoneT);
+  const v = $("phone").value.trim();
+  if (!v) { PHONE_OK = null; phoneState("", ""); return Promise.resolve(); }
+  return new Promise((done) => {
+    phoneT = setTimeout(async () => {
+      try {
+        const r = await api("buildiary.saas.signup.check_phone", { phone: v, country: COUNTRY }, true);
+        PHONE_OK = !!r.ok; PHONE_MSG = r.ok ? "" : phoneMsg(r);
+        phoneState(r.ok ? "ok" : "bad", r.ok ? "✓ " + r.number : PHONE_MSG);
+      } catch (e) { PHONE_OK = null; }
+      done();
+    }, now ? 0 : 700);
+  });
+}
+$("phone").addEventListener("input", () => { const el = $("phone"), v = el.value.replace(/[^\d+\s()-]/g, ""); if (v !== el.value) el.value = v; checkPhone(false); });
+$("phone").addEventListener("blur", () => checkPhone(true));
 $("pw-toggle").addEventListener("click", () => { const p = $("password"); p.type = p.type === "password" ? "text" : "password"; paint(); });
 $("base").textContent = "." + CFG.base;
 
@@ -430,11 +559,14 @@ $("s-form").addEventListener("submit", async (ev) => {
   fail("s-err", "");
   const d = {
     mode: $("m-builder").checked ? "Builder" : "Owner", contact_name: $("contact_name").value.trim(), phone: $("phone").value.trim(), email: $("email").value.trim(),
-    country: $("country").value, city: $("city").value.trim(), company_name: $("company_name").value.trim(), subdomain: $("subdomain").value.trim(),
+    country: COUNTRY, city: $("city").value.trim(), company_name: $("company_name").value.trim(), subdomain: $("subdomain").value.trim(),
     password: $("password").value, agree: $("agree").checked ? 1 : 0, language: LANG, website: $("website").value,
   };
   if (!CFG.open) return fail("s-err", t("e_closed"));
   if (!d.contact_name || !d.email || !d.company_name || !d.subdomain || !d.password) return fail("s-err", t("e_fill"));
+  if (!d.phone) { $("phone").focus(); return fail("s-err", t("e_phone_empty")); }
+  await checkPhone(true);
+  if (PHONE_OK === false) { $("phone").focus(); return fail("s-err", PHONE_MSG); }
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email)) return fail("s-err", t("e_email"));
   if (!/^[a-z][a-z0-9-]{1,28}[a-z0-9]$/.test(d.subdomain)) return fail("s-err", t("e_sub"));
   if (d.password.length < 8 || !/[A-Za-z]/.test(d.password) || !/\d/.test(d.password)) return fail("s-err", t("e_pw"));

@@ -2,3 +2,4 @@
 buildiary.patches.rename_records
 
 [post_model_sync]
+buildiary.patches.bank_regions

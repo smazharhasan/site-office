@@ -7,7 +7,7 @@
  "module": "Buildiary Cloud",
  "name": "Buildiary Payment",
  "owner": "Administrator",
- "modified": "2026-10-25 21:00:00.000000",
+ "modified": "2026-10-26 01:00:00.000000",
  "modified_by": "Administrator",
  "fields": [
   {
@@ -84,7 +84,7 @@
    "fieldname": "currency",
    "fieldtype": "Select",
    "label": "Currency",
-   "options": "USD\nPKR\nSAR\nAED",
+   "options": "USD\nPKR\nSAR\nAED\nQAR",
    "default": "USD",
    "reqd": 1
   },
@@ -130,7 +130,8 @@
   {
    "fieldname": "proof",
    "fieldtype": "Attach Image",
-   "label": "Proof (receipt or screenshot)"
+   "label": "Receipt (bank slip, screenshot or statement)",
+   "description": "Needed to confirm a bank transfer."
   },
   {
    "fieldname": "check_section",

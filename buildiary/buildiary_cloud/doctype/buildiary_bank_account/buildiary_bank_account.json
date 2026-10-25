@@ -7,14 +7,14 @@
  "module": "Buildiary Cloud",
  "name": "Buildiary Bank Account",
  "owner": "Administrator",
- "modified": "2026-10-25 21:00:00.000000",
+ "modified": "2026-10-26 01:00:00.000000",
  "modified_by": "Administrator",
  "fields": [
   {
    "fieldname": "country",
    "fieldtype": "Select",
    "label": "For customers in",
-   "options": "Pakistan\nSaudi Arabia\nUnited Arab Emirates\nAny country",
+   "options": "Pakistan\nUnited Arab Emirates\nSaudi Arabia and all other countries",
    "default": "Pakistan",
    "in_list_view": 1,
    "reqd": 1
@@ -23,7 +23,7 @@
    "fieldname": "currency",
    "fieldtype": "Select",
    "label": "Currency",
-   "options": "PKR\nSAR\nAED\nUSD",
+   "options": "PKR\nSAR\nAED\nQAR\nUSD",
    "default": "PKR",
    "in_list_view": 1,
    "reqd": 1

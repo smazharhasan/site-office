@@ -9,7 +9,8 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt, getdate
 
-from buildiary.saas.common import base_domain, is_control, local_price, notify_admins, plans, settings, site_dir, tenant_state, to_usd
+from buildiary.saas.common import (COUNTRY_CURRENCY, bank_accounts, base_domain, currency_for, is_control, local_price, notify_admins, plan_price, plans, settings,
+	site_dir, tenant_state, to_usd)
 
 
 def _tenant(tenant, key):
@@ -45,7 +46,7 @@ def account(tenant=None, key=None):
 	s = settings()
 	cur = local_price(1, t.country)["currency"]
 	banks = [{k: b.get(k) for k in ("country", "currency", "bank_name", "account_title", "account_number", "iban", "swift", "branch")}
-		for b in s.bank_accounts if b.is_active and (b.country == t.country or b.country == "Any country" or b.currency == "USD")]
+		for b in bank_accounts(t.country)]
 	pays = frappe.get_all("Buildiary Payment", filters={"tenant": t.name}, fields=["name", "creation", "plan", "billing_period", "periods", "currency", "amount", "status",
 		"period_from", "period_to", "reference", "reject_reason"], order_by="creation desc", limit=20)
 	return {
@@ -65,7 +66,7 @@ def payment_submit(tenant=None, key=None, data=None):
 		frappe.throw(_("Choose a plan."))
 	if frappe.db.count("Buildiary Payment", {"tenant": t.name, "status": "Waiting for check"}) >= 5:
 		frappe.throw(_("We are still checking your earlier payments. Please wait for them first."))
-	cur = d.currency if d.currency in ("USD", "PKR", "SAR", "AED") else "USD"
+	cur = d.currency if d.currency in ("USD", *COUNTRY_CURRENCY.values()) else "USD"
 	p = frappe.get_doc({
 		"doctype": "Buildiary Payment", "tenant": t.name, "plan": d.plan, "billing_period": d.billing_period, "periods": max(1, min(cint(d.periods) or 1, 36)),
 		"currency": cur, "amount": flt(d.amount), "amount_usd": to_usd(d.amount, cur), "method": "Bank transfer", "paid_to": (d.paid_to or "")[:140],
@@ -84,15 +85,32 @@ def payment_submit(tenant=None, key=None, data=None):
 
 @frappe.whitelist(allow_guest=True)
 def public_plans():
-	"""Plans and prices for the website (USD, with PKR, SAR and AED)."""
+	"""Plans and prices for the website (USD, with each local currency: PKR, SAR, AED, QAR)."""
 	if not is_control():
 		raise frappe.PermissionError
 	s = settings()
 	out = []
-	for p in plans(None):
-		row = {k: p[k] for k in ("name", "mode", "max_projects", "max_users", "storage_gb", "summary")}
-		row["usd"] = {"month": p["month"]["usd"], "year": p["year"]["usd"]}
-		for country, cur in (("Pakistan", "PKR"), ("Saudi Arabia", "SAR"), ("United Arab Emirates", "AED")):
-			row[cur] = {"month": local_price(p["month"]["usd"], country)["amount"], "year": local_price(p["year"]["usd"], country)["amount"]}
+	for p in frappe.get_all("Buildiary Plan", filters={"is_active": 1}, fields=["*"], order_by="sort_order asc"):
+		row = {"name": p.name, "mode": p.mode, "max_projects": p.max_projects, "max_users": p.max_users, "storage_gb": p.storage_gb,
+			"summary": {"en": p.summary_en, "ur": p.summary_ur, "ar": p.summary_ar}, "usd": {"month": p.price_month_usd, "year": p.price_year_usd}}
+		for country, cur in COUNTRY_CURRENCY.items():
+			row[cur] = {"month": plan_price(p, "Monthly", country)["amount"], "year": plan_price(p, "Yearly", country)["amount"]}
 		out.append(row)
-	return {"plans": out, "trial_days": s.trial_days, "signup": f"https://{s.control_host}/start"}
+	return {"plans": out, "trial_days": s.trial_days, "signup": f"https://{s.control_host}/start", "currencies": COUNTRY_CURRENCY}
+
+
+@frappe.whitelist()
+def payment_defaults(tenant, plan=None, billing_period=None, periods=1):
+	"""For the console's payment form: what this customer owes for the plan, in their money, and our account they pay into."""
+	frappe.only_for(("System Manager", "Buildiary Admin"))
+	t = frappe.get_doc("Buildiary Tenant", tenant)
+	plan = plan or t.plan
+	period = billing_period or t.billing_period or "Monthly"
+	price = plan_price(plan, period, t.country) if plan else {"currency": currency_for(t.country), "amount": 0}
+	banks = bank_accounts(t.country)
+	paid_to = ""
+	if banks:
+		b = banks[0]
+		paid_to = ", ".join(x for x in (b.bank_name, b.account_title, b.iban or b.account_number) if x)
+	return {"currency": price["currency"], "amount": flt(price["amount"]) * max(1, cint(periods) or 1), "paid_to": paid_to[:140],
+		"plan": plan, "billing_period": period, "country": t.country}

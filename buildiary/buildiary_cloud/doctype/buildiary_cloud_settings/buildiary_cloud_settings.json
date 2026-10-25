@@ -7,7 +7,7 @@
  "module": "Buildiary Cloud",
  "name": "Buildiary Cloud Settings",
  "owner": "Administrator",
- "modified": "2026-10-25 21:00:00.000000",
+ "modified": "2026-10-26 01:00:00.000000",
  "modified_by": "Administrator",
  "fields": [
   {
@@ -78,7 +78,8 @@
    "fieldname": "trial_days",
    "fieldtype": "Int",
    "label": "Free trial (days)",
-   "default": "7"
+   "default": "7",
+   "description": "New customers use every feature free for this many days."
   },
   {
    "fieldname": "grace_days",
@@ -107,7 +108,7 @@
    "fieldname": "money_section",
    "fieldtype": "Section Break",
    "label": "Prices in local money",
-   "description": "Plans are priced in US dollars. Customers in Pakistan, Saudi Arabia and the UAE also see their own currency."
+   "description": "Customers in Pakistan, Saudi Arabia, the UAE and Qatar see prices in their own money (converted from the plans' USD prices, unless a plan has a fixed local price). Everyone else sees USD."
   },
   {
    "fieldname": "usd_to_pkr",
@@ -150,10 +151,22 @@
    "default": "5"
   },
   {
+   "fieldname": "usd_to_qar",
+   "fieldtype": "Float",
+   "label": "1 USD in QAR",
+   "default": "3.64"
+  },
+  {
+   "fieldname": "round_qar",
+   "fieldtype": "Int",
+   "label": "Round QAR prices to",
+   "default": "5"
+  },
+  {
    "fieldname": "bank_section",
    "fieldtype": "Section Break",
    "label": "Where customers pay",
-   "description": "Bank accounts shown on the customer's Plan & billing page."
+   "description": "Customers see only the accounts for their country: Pakistan accounts for Pakistan, UAE accounts for the UAE, and the Saudi accounts for Saudi Arabia and every other country."
   },
   {
    "fieldname": "bank_accounts",
@@ -252,6 +265,8 @@
   "round_sar",
   "usd_to_aed",
   "round_aed",
+  "usd_to_qar",
+  "round_qar",
   "bank_section",
   "bank_accounts",
   "ai_section",

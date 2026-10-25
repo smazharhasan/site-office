@@ -9,7 +9,7 @@ from frappe import _
 from frappe.rate_limiter import rate_limit
 from frappe.utils import add_to_date, cint, get_datetime, now_datetime, validate_email_address
 
-from buildiary.saas.common import NAME_RE, host_for, is_control, notify_admins, settings, site_dir
+from buildiary.saas.common import NAME_RE, host_for, is_control, notify_admins, phone_check, phone_example, settings, site_dir
 
 
 def _need_control():
@@ -56,6 +56,32 @@ def check(name=None, company=None):
 	return {"ok": not p, "message": p, "name": (name or "").lower(), "host": host_for((name or "").lower())}
 
 
+def _phone_problem(phone, country):
+	"""(international number, None) or (None, a message with an example for the country)."""
+	num, problem = phone_check(phone, country)
+	if not problem:
+		return num, None
+	code = frappe.db.get_value("Country", country, "code") or ""
+	ex, dial = phone_example(code) if code else ("", "")
+	if problem == "empty":
+		return None, _("Enter your mobile number.")
+	if problem == "not_mobile":
+		return None, _("Enter a mobile number (for WhatsApp), for example {0}.").format(f"{ex} ({dial})" if ex else dial)
+	return None, _("This is not a valid mobile number for {0}. Example: {1}").format(_(country), f"{ex} ({dial})" if ex else dial)
+
+
+@frappe.whitelist(allow_guest=True)
+@rate_limit(limit=120, seconds=600)
+def check_phone(phone=None, country=None):
+	"""The sign-up page checks the mobile number as it is typed."""
+	_need_control()
+	if not country or not frappe.db.exists("Country", country):
+		return {"ok": False}
+	num, kind = phone_check(phone, country)
+	_num, message = _phone_problem(phone, country) if kind else (num, None)
+	return {"ok": bool(num), "number": num, "problem": kind, "message": message}
+
+
 def _hash(code):
 	return hashlib.sha256(f"{frappe.local.site}:{code}".encode()).hexdigest()
 
@@ -80,7 +106,7 @@ def start(data=None):
 	d = frappe._dict(frappe.parse_json(data) or {})
 	if d.website:  # a field people don't see; robots fill it
 		frappe.throw(_("Please try again."))
-	for k in ("contact_name", "email", "company_name", "subdomain", "password", "country", "mode"):
+	for k in ("contact_name", "phone", "email", "company_name", "subdomain", "password", "country", "mode"):
 		if not (d.get(k) or "").strip():
 			frappe.throw(_("Please fill in every field."))
 	if not cint(d.agree):
@@ -96,6 +122,9 @@ def start(data=None):
 		frappe.throw(p)
 	if not frappe.db.exists("Country", d.country):
 		frappe.throw(_("Choose your country."))
+	phone, problem = _phone_problem(d.phone, d.country)
+	if problem:
+		frappe.throw(problem)
 	mode = "Builder" if d.mode == "Builder" else "Owner"
 	have = frappe.db.get_value("Buildiary Tenant", {"email": email, "status": ["not in", ["Failed", "Cancelled", "Verifying email"]]}, ["name", "site_host"], as_dict=True)
 	if have:
@@ -104,7 +133,7 @@ def start(data=None):
 	verify = bool(s.require_email_verification)
 	t = frappe.get_doc({
 		"doctype": "Buildiary Tenant", "subdomain": sub, "company_name": d.company_name.strip()[:120], "contact_name": d.contact_name.strip()[:120], "email": email,
-		"phone": (d.phone or "").strip()[:40], "country": d.country, "city": (d.city or "").strip()[:80], "language": d.language if d.language in ("en", "ur", "ar") else "en",
+		"phone": phone[:40], "country": d.country, "city": (d.city or "").strip()[:80], "language": d.language if d.language in ("en", "ur", "ar") else "en",
 		"mode": mode, "plan": plan, "billing_period": "Monthly", "status": "Verifying email" if verify else "Waiting", "signed_up_on": now_datetime(),
 		"signup_ip": (frappe.local.request_ip or "")[:60], "signup_token": frappe.generate_hash(length=32), "first_password": d.password,
 	}).insert(ignore_permissions=True)
