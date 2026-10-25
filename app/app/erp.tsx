@@ -11,9 +11,9 @@ import { ErpCamera, QrScan, tr } from "../src/components/ErpCamera";
 import { freshFix } from "../src/lib/evidence";
 
 const EXTRA = (Constants.expoConfig?.extra || {}) as { variant?: string; baseDomain?: string };
-/** The Mabni Cloud app: a customer types their workspace name ("alnoor" → https://alnoor.mabni.app). */
+/** The Buildiary app: a customer types their workspace name ("alnoor" → https://alnoor.buildiary.app). */
 const MABNI = EXTRA.variant === "mabni";
-const BASE = EXTRA.baseDomain || "mabni.app";
+const BASE = EXTRA.baseDomain || "buildiary.app";
 const KEY = MABNI ? "mabni.site" : "mimaar.erp.site";
 type L3 = "en" | "ur" | "ar";
 const T: Record<string, Record<L3, string>> = {
@@ -21,11 +21,11 @@ const T: Record<string, Record<L3, string>> = {
   open_d: { en: "Type your workspace name once, for example alnoor.", ur: "اپنے ورک اسپیس کا نام ایک بار لکھیں، مثلاً alnoor۔", ar: "اكتب اسم مساحة عملك مرة واحدة، مثل alnoor." },
   field: { en: "Workspace", ur: "ورک اسپیس", ar: "مساحة العمل" },
   open: { en: "Open", ur: "کھولیں", ar: "افتح" },
-  trial: { en: "No workspace yet? Start a free trial at mabni.app", ur: "ابھی ورک اسپیس نہیں؟ mabni.app پر مفت آزمائش شروع کریں۔", ar: "ليس لديك مساحة عمل؟ ابدأ تجربة مجانية على mabni.app" },
+  trial: { en: "No workspace yet? Start a free trial at buildiary.app", ur: "ابھی ورک اسپیس نہیں؟ buildiary.app پر مفت آزمائش شروع کریں۔", ar: "ليس لديك مساحة عمل؟ ابدأ تجربة مجانية على buildiary.app" },
   bad: { en: "Type your workspace name, for example alnoor.", ur: "اپنے ورک اسپیس کا نام لکھیں، مثلاً alnoor۔", ar: "اكتب اسم مساحة عملك، مثل alnoor." },
-  unreach: { en: "Couldn't reach a Mabni workspace at that address. Check the name and the internet connection.", ur: "اس پتے پر مبنی کا ورک اسپیس نہیں ملا۔ نام اور انٹرنیٹ چیک کریں۔", ar: "تعذّر الوصول إلى مساحة عمل مبني على هذا العنوان. تحقق من الاسم والاتصال بالإنترنت." },
+  unreach: { en: "Couldn't reach a Buildiary workspace at that address. Check the name and the internet connection.", ur: "اس پتے پر بلڈیاری کا ورک اسپیس نہیں ملا۔ نام اور انٹرنیٹ چیک کریں۔", ar: "تعذّر الوصول إلى مساحة عمل بيلدياري على هذا العنوان. تحقق من الاسم والاتصال بالإنترنت." },
   noconn: { en: "No connection", ur: "رابطہ نہیں ہو سکا", ar: "لا يوجد اتصال" },
-  needweb: { en: "Mabni needs the internet to open {0}. Check your connection and try again.", ur: "{0} کھولنے کے لیے مبنی کو انٹرنیٹ چاہیے۔ کنکشن چیک کر کے دوبارہ کوشش کریں۔", ar: "يحتاج مبني إلى الإنترنت لفتح {0}. تحقق من الاتصال وحاول مجدداً." },
+  needweb: { en: "Buildiary needs the internet to open {0}. Check your connection and try again.", ur: "{0} کھولنے کے لیے بلڈیاری کو انٹرنیٹ چاہیے۔ کنکشن چیک کر کے دوبارہ کوشش کریں۔", ar: "يحتاج بيلدياري إلى الإنترنت لفتح {0}. تحقق من الاتصال وحاول مجدداً." },
   retry: { en: "Try again", ur: "دوبارہ کوشش کریں", ar: "حاول مجدداً" },
   change: { en: "Change workspace", ur: "ورک اسپیس بدلیں", ar: "تغيير مساحة العمل" },
 };
@@ -110,7 +110,7 @@ export default function Erp() {
   const pickLang = (l: L3) => { setLang(l); AsyncStorage.setItem("mimaar.erp.lang", l).catch(() => {}); };
   const rtl = lang !== "en";
   if (!site && MABNI) return (
-    <Screen title="Mabni">
+    <Screen title="Buildiary">
       <View style={{ flexDirection: "row", gap: 8, marginBottom: 14 }}>
         {(["en", "ur", "ar"] as L3[]).map((l) => <View key={l} style={{ flex: 1 }}><Button title={{ en: "English", ur: "اردو", ar: "العربية" }[l]} kind={lang === l ? undefined : "plain"} onPress={() => pickLang(l)} /></View>)}
       </View>

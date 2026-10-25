@@ -7,7 +7,7 @@ import { t } from "../lib/i18n";
 export const palette = (dark: boolean) => dark
   ? { bg: "#141615", panel: "#1c1f1d", line: "#343835", ink: "#e7e8e4", muted: "#9da19a", accent: "#4fbf9f", bad: "#f2867c", good: "#7cc97f", warn: "#f0b04f" }
   : { bg: "#f3f2ef", panel: "#ffffff", line: "#d9d6cf", ink: "#1d2021", muted: "#62655f", accent: "#0f6f5c", bad: "#b3261e", good: "#2f7d32", warn: "#a35d00" };
-// the Mabni app uses its own blue and amber; the Mimaar apps keep their green
+// the Buildiary app uses its own blue and amber; the Mimaar apps keep their green
 const MABNI = ((Constants.expoConfig?.extra || {}) as { variant?: string }).variant === "mabni";
 const mabni = (dark: boolean) => (dark
   ? { bg: "#0f151c", panel: "#17202a", line: "#2b3744", ink: "#e6ebf0", muted: "#9eabb8", accent: "#f2b01e", bad: "#f08a72", good: "#5fd198", warn: "#f0b33a" }

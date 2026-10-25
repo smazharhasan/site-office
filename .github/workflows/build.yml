@@ -1,4 +1,4 @@
-# Builds the Android apps (Mabni, Mimaar, Mimaar ERP) and the old Mimaar web app on every change.
+# Builds the Android apps (Buildiary, Mimaar, Mimaar ERP) and the old Mimaar web app on every change.
 #  - APK:  attached to the "latest" release (and one release per app version)
 #  - Web:  the old Mimaar web app as a small image in the private AWS image store (ECR), which the
 #          server serves at https://office.<base>/site-office/ (it checks every 15 minutes).
@@ -19,7 +19,7 @@ jobs:
         include:
           - { variant: classic, apk: Mimaar, verfile: VERSION }
           - { variant: erp, apk: Mimaar-ERP, verfile: ERP_VERSION }
-          - { variant: mabni, apk: Mabni, verfile: MABNI_VERSION }
+          - { variant: mabni, apk: Buildiary, verfile: MABNI_VERSION }
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: app } }
     env: { APP_VARIANT: "${{ matrix.variant }}" }
@@ -68,14 +68,14 @@ jobs:
           name: Mimaar (latest)
           body: |
             Install on the Android phone (the apps sit side by side):
-            - **Mabni.apk**: Mabni, version ${{ env.MABNIVER }}; asks for your workspace name the first time (e.g. alnoor).
+            - **Buildiary.apk**: Buildiary, version ${{ env.MABNIVER }}; asks for your workspace name the first time (e.g. alnoor).
             - **Mimaar.apk**: the current Mimaar app, version ${{ env.VER }}.
             - **Mimaar-ERP.apk**: Mimaar ERP (ERPNext), version ${{ env.ERPVER }}; asks for your site address the first time.
             Built from ${{ github.sha }}.
           files: |
             out/Mimaar.apk
             out/Mimaar-ERP.apk
-            out/Mabni.apk
+            out/Buildiary.apk
           make_latest: true
       - uses: softprops/action-gh-release@v2
         with:
@@ -93,10 +93,10 @@ jobs:
           make_latest: false
       - uses: softprops/action-gh-release@v2
         with:
-          tag_name: mabni-v${{ env.MABNIVER }}
-          name: Mabni ${{ env.MABNIVER }}
-          body: "Mabni (Android) ${{ env.MABNIVER }}: opens your Mabni workspace. Built from ${{ github.sha }}."
-          files: out/Mabni-${{ env.MABNIVER }}.apk
+          tag_name: buildiary-v${{ env.MABNIVER }}
+          name: Buildiary ${{ env.MABNIVER }}
+          body: "Buildiary (Android) ${{ env.MABNIVER }}: opens your Buildiary workspace. Built from ${{ github.sha }}."
+          files: out/Buildiary-${{ env.MABNIVER }}.apk
           make_latest: false
 
   web:

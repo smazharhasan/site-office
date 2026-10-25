@@ -14,26 +14,26 @@ const allowHttp = (cfg) => withAndroidManifest(cfg, (c) => {
   return c;
 });
 
-// "Mabni"  app.mabni  the Mabni Cloud app: opens the customer's workspace (<name>.mabni.app)
+// "Buildiary"  app.buildiary  the Buildiary cloud app (internal variant name "mabni"): opens the customer's workspace (<name>.buildiary.app)
 const mabni = (config) => {
   const version = fs.readFileSync(path.join(__dirname, "..", "MABNI_VERSION"), "utf8").trim();
   const [a, b, c] = version.split(".").map(Number);
   const blue = "#1E3A5F";
   return allowHttp({
     ...config,
-    name: "Mabni",
-    slug: "mabni",
-    scheme: "mabni",
+    name: "Buildiary",
+    slug: "buildiary",
+    scheme: "buildiary",
     version,
-    icon: "./assets/mabni-icon.png",
+    icon: "./assets/buildiary-icon.png",
     android: {
       ...config.android,
-      package: "app.mabni",
+      package: "app.buildiary",
       versionCode: a * 10000 + b * 100 + c,
-      adaptiveIcon: { foregroundImage: "./assets/mabni-adaptive.png", backgroundColor: blue },
+      adaptiveIcon: { foregroundImage: "./assets/buildiary-adaptive.png", backgroundColor: blue },
     },
     ios: {
-      bundleIdentifier: "app.mabni",
+      bundleIdentifier: "app.buildiary",
       buildNumber: String(a * 10000 + b * 100 + c),
       supportsTablet: true,
       infoPlist: {
@@ -42,8 +42,8 @@ const mabni = (config) => {
         ITSAppUsesNonExemptEncryption: false,
       },
     },
-    splash: { image: "./assets/mabni-splash.png", resizeMode: "contain", backgroundColor: blue },
-    extra: { ...config.extra, variant: "mabni", baseDomain: process.env.MABNI_BASE_DOMAIN || "mabni.app" },
+    splash: { image: "./assets/buildiary-splash.png", resizeMode: "contain", backgroundColor: blue },
+    extra: { ...config.extra, variant: "mabni", baseDomain: process.env.BUILDIARY_BASE_DOMAIN || process.env.MABNI_BASE_DOMAIN || "buildiary.app" },
   });
 };
 
