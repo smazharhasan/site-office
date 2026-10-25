@@ -6,7 +6,7 @@
 
 import frappe
 from frappe.installer import update_site_config
-from frappe.utils import now_datetime, nowdate
+from frappe.utils import cint, now_datetime, nowdate
 
 PLANS = [
 	{"plan_name": "Owner", "mode": "Owner", "sort_order": 1, "price_month_usd": 15, "price_year_usd": 150, "max_projects": 2, "max_users": 10, "storage_gb": 10,
@@ -66,6 +66,51 @@ def setup_console(base=None, control=None, company="SMH Global Services", countr
 		admin.save(ignore_permissions=True)
 	frappe.db.commit()
 	print("MABNI CONSOLE READY", s.control_host, s.base_domain)
+
+
+def rebase(base, dry_run=0):
+	"""Moves the platform to a new main address, e.g. from the temporary sslip.io address to
+	buildiary.app. Run on the console after its own folder was renamed to my.<new> (deploy/aws/rebase.sh):
+	the settings take the new address, and each customer's workspace <name>.<old> becomes
+	<name>.<new> (the site folder is renamed; the data stays). SMH Global's own registered sites keep
+	their addresses. Prints "MOVED <old> <new>" for each workspace (the script adds redirects)."""
+	import os
+
+	from mimaar.saas.common import push, site_dir, update_site_config
+
+	base = (base or "").strip().lower().strip(".")
+	if not base:
+		frappe.throw("Give the new main address, e.g. buildiary.app")
+	s = frappe.get_single("Mabni Settings")
+	old = (s.base_domain or "").strip().lower()
+	moved = []
+	for name in frappe.get_all("Mabni Tenant", pluck="name"):
+		t = frappe.get_doc("Mabni Tenant", name)
+		host = (t.site_host or "").lower()
+		if t.is_internal or not old or not host.endswith("." + old):
+			continue
+		new = host[: -len(old)] + base
+		if not cint(dry_run):
+			if os.path.isdir(site_dir(host)) and not os.path.exists(site_dir(new)):
+				os.rename(site_dir(host), site_dir(new))
+			if os.path.isdir(site_dir(new)):
+				update_site_config(new, "host_name", f"https://{new}")
+			frappe.db.set_value("Mabni Tenant", t.name, "site_host", new, update_modified=False)
+		moved.append((host, new))
+	if not cint(dry_run):
+		s.base_domain = base
+		s.control_host = f"my.{base}"
+		if s.meta.has_field("website_url"):
+			s.website_url = f"https://{base}"
+		s.flags.ignore_permissions = True
+		s.save()
+		frappe.db.commit()
+		for name in frappe.get_all("Mabni Tenant", pluck="name"):
+			push(frappe.get_doc("Mabni Tenant", name))
+		frappe.db.commit()
+	for a, b in moved:
+		print("MOVED", a, b)
+	print("BASE", old, "->", base, "(dry run)" if cint(dry_run) else "")
 
 
 def reserve(names):

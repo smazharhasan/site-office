@@ -36,3 +36,12 @@ app's data, gzip + base64) beside `launch.sh`, run `bash private-images.sh` and 
 Updates are automatic: every 15 minutes the server checks for a newer image and applies it with
 `/opt/mimaar/update.sh` (backup first, then migrate every site), then refreshes the website from the
 same image. Logs: `/var/log/mimaar-update.log`, `/var/log/mabni-website.log`, `/var/log/mabni-office.log`.
+
+## Moving to the product's own domain
+
+1. Register the domain (e.g. buildiary.app) at a registrar.
+2. In CloudShell: `bash domain-dns.sh buildiary.app buildiaryapp.com` creates the Route 53 zones
+   (the domain and *.domain point at the server) and prints the nameservers to set at the registrar.
+3. Once the names resolve, on the server as root: `bash rebase.sh buildiary.app buildiaryapp.com`.
+   It backs up, moves the console and every customer's workspace to the new domain, moves the
+   website, and makes the old addresses redirect to the new ones.
