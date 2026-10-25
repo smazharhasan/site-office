@@ -31,7 +31,8 @@ def _k():
 def _r(v, k, step=1):
 	x = flt(v) * k
 	if k < 1:
-		step = 1 if x < 200 else 5 if x < 5000 else 50
+		step = 0.05 if x < 10 else 0.5 if x < 50 else 1 if x < 200 else 5 if x < 5000 else 50
+		return round(round(x / step) * step, 2)
 	return round(x / step) * step if step else x
 
 

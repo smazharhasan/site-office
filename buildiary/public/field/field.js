@@ -30,9 +30,11 @@ function money(n, short) {
     if (short && a >= 1e5) return `${(n / 1e5).toFixed(1).replace(/\.0$/, "")} ${t("lac")}`;
     return `${sym} ${Math.round(n).toLocaleString("en-US")}`;
   }
-  if (short && a >= 1e6) return `${sym} ${(n / 1e6).toFixed(2).replace(/\.?0+$/, "")} ${t("million")}`;
-  if (short && a >= 1e4) return `${sym} ${(n / 1e3).toFixed(1).replace(/\.0$/, "")} ${t("thousand")}`;
-  return `${sym} ${Math.round(n).toLocaleString("en-US")}`;
+  // short amounts: SAR 87.2K and $1.25M in English; the words (ألف، مليون) in Arabic and Urdu
+  const pre = sym.length > 1 ? sym + " " : sym, en = S.lang === "en";
+  if (short && a >= 1e6) return `${pre}${(n / 1e6).toFixed(2).replace(/\.?0+$/, "")}${en ? "M" : " " + t("million")}`;
+  if (short && a >= 1e4) return `${pre}${(n / 1e3).toFixed(1).replace(/\.0$/, "")}${en ? "K" : " " + t("thousand")}`;
+  return `${pre}${Math.round(n).toLocaleString("en-US")}`;
 }
 function fdate(d) {
   if (!d) return "";
