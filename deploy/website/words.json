@@ -123,7 +123,7 @@
   "local_lede": "Buildiary speaks your team's language and counts in your currency.",
   "local_points": [
    "English, Urdu and Arabic, each person in their own language",
-   "Prices in PKR, SAR or USD, paid by bank transfer",
+   "Prices in PKR, SAR, AED, QAR or USD, paid by bank transfer",
    "Runs in any phone's browser; Android app for site staff",
    "Each workspace is separate, with daily backups"
   ],
@@ -174,7 +174,7 @@
    "Your data can be exported whenever you ask"
   ],
   "pricing_title": "Simple prices, in your currency",
-  "pricing_excerpt": "Buildiary plans for home owners and builders, monthly or yearly, in USD, PKR or SAR. 7 days free.",
+  "pricing_excerpt": "Buildiary plans for home owners and builders, monthly or yearly, in USD, PKR, SAR, AED or QAR. 7 days free.",
   "pricing_lede": "Start free for 7 days. Then pay monthly, or yearly and get two months free.",
   "included_title": "Every plan includes",
   "included": [
@@ -190,7 +190,7 @@
   "price_faq": [
    [
     "How do I pay?",
-    "By bank transfer to our account in Pakistan or Saudi Arabia, or in US dollars. Send the receipt from Plan & billing in your workspace; we activate your plan once we confirm it."
+    "By bank transfer: to our account in Pakistan if you are in Pakistan, our UAE account if you are in the UAE, and our Saudi account from Saudi Arabia and everywhere else. Send the receipt from Plan & billing in your workspace; we activate your plan once we confirm it."
    ],
    [
     "Is there a discount for paying yearly?",
@@ -437,7 +437,7 @@
   "local_lede": "بلڈیاری آپ کی ٹیم کی زبان بولتا ہے اور آپ کی کرنسی میں حساب رکھتا ہے۔",
   "local_points": [
    "انگریزی، اردو اور عربی، ہر شخص اپنی زبان میں",
-   "قیمتیں روپے، ریال یا ڈالر میں، بینک ٹرانسفر سے ادائیگی",
+   "قیمتیں روپے، ریال، درہم یا ڈالر میں، بینک ٹرانسفر سے ادائیگی",
    "کسی بھی فون کے براؤزر میں چلتا ہے؛ سائٹ کے عملے کے لیے اینڈرائیڈ ایپ",
    "ہر ورک اسپیس الگ، روزانہ بیک اپ کے ساتھ"
   ],
@@ -488,7 +488,7 @@
    "آپ کا ڈیٹا جب چاہیں ایکسپورٹ ہو سکتا ہے"
   ],
   "pricing_title": "سادہ قیمتیں، آپ کی کرنسی میں",
-  "pricing_excerpt": "گھر بنانے والوں اور بلڈرز کے لیے بلڈیاری کے پلان، ماہانہ یا سالانہ، ڈالر، روپے یا ریال میں۔ 7 دن مفت۔",
+  "pricing_excerpt": "گھر بنانے والوں اور بلڈرز کے لیے بلڈیاری کے پلان، ماہانہ یا سالانہ، روپے، ریال، درہم یا ڈالر میں۔ 7 دن مفت۔",
   "pricing_lede": "7 دن مفت شروع کریں۔ پھر ماہانہ ادائیگی کریں، یا سالانہ کریں اور دو مہینے مفت پائیں۔",
   "included_title": "ہر پلان میں شامل",
   "included": [
@@ -504,7 +504,7 @@
   "price_faq": [
    [
     "ادائیگی کیسے کروں؟",
-    "پاکستان یا سعودی عرب میں ہمارے بینک اکاؤنٹ میں ٹرانسفر سے، یا امریکی ڈالر میں۔ اپنے ورک اسپیس میں پلان اور ادائیگی سے رسید بھیجیں؛ تصدیق کے بعد ہم پلان فعال کر دیتے ہیں۔"
+    "بینک ٹرانسفر سے: پاکستان میں ہوں تو ہمارے پاکستانی اکاؤنٹ میں، متحدہ عرب امارات میں ہوں تو اماراتی اکاؤنٹ میں، اور سعودی عرب یا کسی بھی دوسرے ملک سے سعودی اکاؤنٹ میں۔ اپنے ورک اسپیس میں پلان اور ادائیگی سے رسید بھیجیں؛ تصدیق کے بعد ہم پلان فعال کر دیتے ہیں۔"
    ],
    [
     "کیا سالانہ ادائیگی پر رعایت ہے؟",
@@ -715,7 +715,7 @@
   "local_lede": "بيلدياري يتحدث لغة فريقك ويحسب بعملتك.",
   "local_points": [
    "العربية والإنجليزية والأردية، كلٌ بلغته",
-   "الأسعار بالريال أو الدولار أو الروبية، والدفع بالتحويل البنكي",
+   "الأسعار بالريال أو الدرهم أو الدولار أو الروبية، والدفع بالتحويل البنكي",
    "يعمل من متصفح أي جوال، وتطبيق أندرويد لفريق الموقع",
    "كل مساحة عمل منفصلة، مع نسخ احتياطي يومي"
   ],
@@ -766,7 +766,7 @@
    "يمكن تصدير بياناتك متى طلبت"
   ],
   "pricing_title": "أسعار بسيطة، بعملتك",
-  "pricing_excerpt": "باقات بيلدياري للمالك والمقاول، شهرياً أو سنوياً، بالدولار أو الريال أو الروبية. 7 أيام مجاناً.",
+  "pricing_excerpt": "باقات بيلدياري للمالك والمقاول، شهرياً أو سنوياً، بالريال أو الدرهم أو الدولار أو الروبية. 7 أيام مجاناً.",
   "pricing_lede": "ابدأ مجاناً لمدة 7 أيام. ثم ادفع شهرياً، أو سنوياً واحصل على شهرين مجاناً.",
   "included_title": "كل باقة تشمل",
   "included": [
@@ -782,7 +782,7 @@
   "price_faq": [
    [
     "كيف أدفع؟",
-    "بالتحويل البنكي إلى حسابنا في السعودية أو باكستان، أو بالدولار الأمريكي. أرسل الإيصال من «الباقة والدفع» في مساحة عملك، ونفعّل باقتك بعد التأكيد."
+    "بالتحويل البنكي: إلى حسابنا في الإمارات إن كنت في الإمارات، وإلى حسابنا في باكستان إن كنت في باكستان، وإلى حسابنا في السعودية من السعودية ومن أي بلد آخر. أرسل الإيصال من «الباقة والدفع» في مساحة عملك، ونفعّل باقتك بعد التأكيد."
    ],
    [
     "هل يوجد خصم للدفع السنوي؟",

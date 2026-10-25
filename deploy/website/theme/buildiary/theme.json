@@ -5,7 +5,7 @@
 		"appearanceTools": true,
 		"layout": {
 			"contentSize": "760px",
-			"wideSize": "1160px"
+			"wideSize": "1200px"
 		},
 		"color": {
 			"defaultPalette": false,
@@ -39,17 +39,22 @@
 				{
 					"slug": "concrete",
 					"name": "Concrete",
-					"color": "#EEF1F4"
+					"color": "#F2F5F8"
 				},
 				{
 					"slug": "line",
 					"name": "Line",
-					"color": "#D5DBE1"
+					"color": "#DCE2E8"
 				},
 				{
 					"slug": "white",
 					"name": "White",
 					"color": "#FFFFFF"
+				},
+				{
+					"slug": "navy",
+					"name": "Navy",
+					"color": "#0F2238"
 				}
 			]
 		},
@@ -58,8 +63,8 @@
 			"fontFamilies": [
 				{
 					"slug": "display",
-					"name": "Archivo",
-					"fontFamily": "\"Archivo\", \"Arial Narrow\", Arial, sans-serif"
+					"name": "Poppins",
+					"fontFamily": "\"Poppins\", \"Segoe UI\", Arial, sans-serif"
 				},
 				{
 					"slug": "body",
@@ -75,11 +80,6 @@
 					"slug": "urdu",
 					"name": "Noto Nastaliq Urdu",
 					"fontFamily": "\"Noto Nastaliq Urdu\", \"Jameel Noori Nastaleeq\", serif"
-				},
-				{
-					"slug": "mono",
-					"name": "IBM Plex Mono",
-					"fontFamily": "\"IBM Plex Mono\", ui-monospace, Menlo, monospace"
 				}
 			],
 			"fontSizes": [
@@ -153,7 +153,7 @@
 			"heading": {
 				"typography": {
 					"fontFamily": "var(--wp--preset--font-family--display)",
-					"fontWeight": "800",
+					"fontWeight": "700",
 					"lineHeight": "1.12"
 				}
 			},
@@ -183,11 +183,11 @@
 					"text": "#1B1405"
 				},
 				"border": {
-					"radius": "12px"
+					"radius": "999px"
 				},
 				"typography": {
 					"fontFamily": "var(--wp--preset--font-family--display)",
-					"fontWeight": "700"
+					"fontWeight": "600"
 				}
 			}
 		}

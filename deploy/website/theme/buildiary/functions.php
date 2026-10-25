@@ -6,7 +6,7 @@
 
 add_action('wp_enqueue_scripts', function () {
 	$lang = function_exists('buildiary_lang') ? buildiary_lang() : 'en';
-	$families = 'family=Archivo:wdth,wght@75..110,600..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500';
+	$families = 'family=Poppins:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700';
 	if ($lang === 'ar') {
 		$families .= '&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700';
 	}

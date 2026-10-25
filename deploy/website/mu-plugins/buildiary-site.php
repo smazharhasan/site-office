@@ -14,6 +14,8 @@ defined('BUILDIARY_CONSOLE') || define('BUILDIARY_CONSOLE', 'my.buildiary.app');
 defined('BUILDIARY_CONSOLE_INTERNAL') || define('BUILDIARY_CONSOLE_INTERNAL', '');
 defined('BUILDIARY_SUPPORT_EMAIL') || define('BUILDIARY_SUPPORT_EMAIL', 'info@smhglobal.com.pk');
 defined('BUILDIARY_WHATSAPP') || define('BUILDIARY_WHATSAPP', '');
+// customers' workspaces are <name>.<this domain>
+defined('BUILDIARY_WORKSPACE_DOMAIN') || define('BUILDIARY_WORKSPACE_DOMAIN', 'buildiary.app');
 
 const BUILDIARY_LANGS = ['en', 'ur', 'ar'];
 
@@ -82,7 +84,8 @@ add_action('init', function () {
 	$path = trim((string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
 	if (preg_match('#^(?:(ur|ar)/)?start-trial$#', $path, $m)) {
 		$lang = $m[1] ?? 'en';
-		wp_redirect('https://' . BUILDIARY_CONSOLE . '/start?lang=' . ($lang ?: 'en'), 302);
+		$country = strtoupper(preg_replace('/[^A-Za-z]/', '', (string) ($_GET['country'] ?? '')));
+		wp_redirect('https://' . BUILDIARY_CONSOLE . '/start?lang=' . ($lang ?: 'en') . (strlen($country) === 2 ? '&country=' . $country : ''), 302);
 		exit;
 	}
 });
@@ -98,7 +101,23 @@ function buildiary_t($key) {
 			'month' => 'Monthly', 'year' => 'Yearly', 'per_month' => 'a month', 'per_year' => 'a year', 'save' => '2 months free',
 			'projects' => '%d projects', 'project1' => '1 project', 'users' => '%d people sign in', 'storage' => '%d GB for photos and files',
 			'start' => 'Start 7-day free trial', 'owner' => 'Owner', 'builder' => 'Builder', 'popular' => 'For builders',
-			'trial_note' => '7 days free, no card needed. Pay by bank transfer when you are ready.', 'currency' => 'Currency',
+			'trial_note' => '7 days free, no card needed.', 'currency' => 'Currency',
+			'solutions' => 'Solutions', 'company_menu' => 'Company', 'all_features' => 'See all features', 'all_guides' => 'All guides', 'mega_note' => 'One app for the owner, the builder and the site team.',
+			'f_stores' => 'Stores and deliveries', 'fd_stores' => 'Receive against orders, release with a photo',
+			'f_money' => 'Payments and budget', 'fd_money' => 'Bills, payments with proof, budget by phase',
+			'f_build' => 'Build progress', 'fd_build' => 'Planned against built, stage by stage',
+			'f_people' => 'People and site cards', 'fd_people' => 'QR site cards, face check and attendance',
+			'f_water' => 'Water and petty cash', 'fd_water' => 'Tankers with TDS, tank levels, petty cash',
+			'f_ask' => 'Ask the project', 'fd_ask' => 'Plain-word answers from your own records',
+			's_owners' => 'Home owners', 'sd_owners' => 'Building your own house',
+			's_abroad' => 'Building from abroad', 'sd_abroad' => 'Follow your site from the Gulf or anywhere',
+			's_builders' => 'Builders and contractors', 'sd_builders' => 'Run several client sites in one place',
+			's_team' => 'Site teams', 'sd_team' => 'Big buttons, site cards, their own language',
+			'about_d' => 'Who makes Buildiary and why', 'contact_d' => 'Email or WhatsApp us', 'smh_d' => 'Our parent company',
+			'region' => 'Language and currency', 'cur_note' => 'Screenshots and prices follow the currency you pick.',
+			'cur_pkr' => 'Pakistani rupee', 'cur_sar' => 'Saudi riyal', 'cur_aed' => 'UAE dirham', 'cur_qar' => 'Qatari riyal', 'cur_usd' => 'US dollar',
+			'signin_btn' => 'Sign in', 'ws_label' => 'Your workspace address', 'ws_go' => 'Continue', 'ws_help' => 'It is in the welcome email we sent when you started.',
+			'ws_bad' => 'Use letters, numbers and dashes only.', 'ws_new' => 'New to Buildiary?', 'pay_note' => 'Pay by bank transfer in Pakistan, the UAE or Saudi Arabia.', 'close' => 'Close',
 		],
 		'ur' => [
 			'features' => 'خصوصیات', 'pricing' => 'قیمتیں', 'about' => 'ہمارے بارے میں', 'contact' => 'رابطہ', 'trial' => 'مفت آزمائش', 'menu' => 'مینو', 'guides' => 'رہنمائی', 'owners' => 'گھر بنوانے والوں کے لیے', 'builders' => 'بلڈرز کے لیے',
@@ -108,7 +127,23 @@ function buildiary_t($key) {
 			'month' => 'ماہانہ', 'year' => 'سالانہ', 'per_month' => 'ماہانہ', 'per_year' => 'سالانہ', 'save' => '2 مہینے مفت',
 			'projects' => '%d پروجیکٹ', 'project1' => '1 پروجیکٹ', 'users' => '%d لوگ لاگ اِن کر سکیں', 'storage' => '%d جی بی تصاویر اور فائلوں کے لیے',
 			'start' => '7 دن کی مفت آزمائش شروع کریں', 'owner' => 'مالک', 'builder' => 'بلڈر', 'popular' => 'بلڈرز کے لیے',
-			'trial_note' => '7 دن مفت، کارڈ کی ضرورت نہیں۔ جب تیار ہوں تو بینک ٹرانسفر سے ادائیگی کریں۔', 'currency' => 'کرنسی',
+			'trial_note' => '7 دن مفت، کارڈ کی ضرورت نہیں۔', 'currency' => 'کرنسی',
+			'solutions' => 'کن کے لیے', 'company_menu' => 'کمپنی', 'all_features' => 'تمام خصوصیات دیکھیں', 'all_guides' => 'تمام رہنمائی', 'mega_note' => 'مالک، بلڈر اور سائٹ ٹیم کے لیے ایک ہی ایپ۔',
+			'f_stores' => 'اسٹور اور سامان کی وصولی', 'fd_stores' => 'آرڈر کے مطابق وصولی، تصویر کے ساتھ اجرا',
+			'f_money' => 'ادائیگیاں اور بجٹ', 'fd_money' => 'بل، ثبوت کے ساتھ ادائیگیاں، مرحلہ وار بجٹ',
+			'f_build' => 'تعمیر کی پیش رفت', 'fd_build' => 'ہر مرحلے میں منصوبہ بمقابلہ اصل کام',
+			'f_people' => 'لوگ اور سائٹ کارڈ', 'fd_people' => 'کیو آر سائٹ کارڈ، چہرے کی جانچ اور حاضری',
+			'f_water' => 'پانی اور پیٹی کیش', 'fd_water' => 'ٹی ڈی ایس کے ساتھ ٹینکر، ٹینکی کی سطح، پیٹی کیش',
+			'f_ask' => 'پروجیکٹ سے پوچھیں', 'fd_ask' => 'آپ کے اپنے ریکارڈ سے سیدھے جواب',
+			's_owners' => 'گھر بنوانے والے', 'sd_owners' => 'اپنا گھر خود بنوا رہے ہیں',
+			's_abroad' => 'بیرونِ ملک سے', 'sd_abroad' => 'خلیج یا کہیں سے بھی اپنی سائٹ دیکھیں',
+			's_builders' => 'بلڈرز اور ٹھیکیدار', 'sd_builders' => 'کئی کلائنٹ سائٹس ایک جگہ',
+			's_team' => 'سائٹ کی ٹیم', 'sd_team' => 'بڑے بٹن، سائٹ کارڈ، اپنی زبان',
+			'about_d' => 'بلڈیاری کون بناتا ہے اور کیوں', 'contact_d' => 'ای میل یا واٹس ایپ کریں', 'smh_d' => 'ہماری کمپنی',
+			'region' => 'زبان اور کرنسی', 'cur_note' => 'اسکرین شاٹس اور قیمتیں آپ کی چنی ہوئی کرنسی میں دکھائی جاتی ہیں۔',
+			'cur_pkr' => 'پاکستانی روپیہ', 'cur_sar' => 'سعودی ریال', 'cur_aed' => 'اماراتی درہم', 'cur_qar' => 'قطری ریال', 'cur_usd' => 'امریکی ڈالر',
+			'signin_btn' => 'لاگ اِن', 'ws_label' => 'آپ کے ورک اسپیس کا پتا', 'ws_go' => 'آگے بڑھیں', 'ws_help' => 'یہ اس خوش آمدیدی ای میل میں ہے جو آغاز پر بھیجی گئی تھی۔',
+			'ws_bad' => 'صرف انگریزی حروف، اعداد اور ڈیش استعمال کریں۔', 'ws_new' => 'بلڈیاری پر نئے ہیں؟', 'pay_note' => 'پاکستان، متحدہ عرب امارات یا سعودی عرب میں بینک ٹرانسفر سے ادائیگی۔', 'close' => 'بند کریں',
 		],
 		'ar' => [
 			'features' => 'المزايا', 'pricing' => 'الأسعار', 'about' => 'من نحن', 'contact' => 'تواصل معنا', 'trial' => 'ابدأ مجاناً', 'menu' => 'القائمة', 'guides' => 'الأدلة', 'owners' => 'لمن يبني بيته', 'builders' => 'للمقاولين',
@@ -118,7 +153,23 @@ function buildiary_t($key) {
 			'month' => 'شهري', 'year' => 'سنوي', 'per_month' => 'شهرياً', 'per_year' => 'سنوياً', 'save' => 'شهران مجاناً',
 			'projects' => '%d مشاريع', 'project1' => 'مشروع واحد', 'users' => '%d مستخدمين', 'storage' => '%d جيجابايت للصور والملفات',
 			'start' => 'ابدأ تجربة مجانية لمدة 7 أيام', 'owner' => 'المالك', 'builder' => 'المقاول', 'popular' => 'للمقاولين',
-			'trial_note' => '7 أيام مجاناً، بدون بطاقة. ادفع بالتحويل البنكي عندما تكون جاهزاً.', 'currency' => 'العملة',
+			'trial_note' => '7 أيام مجاناً، بدون بطاقة.', 'currency' => 'العملة',
+			'solutions' => 'الحلول', 'company_menu' => 'الشركة', 'all_features' => 'شاهد كل المزايا', 'all_guides' => 'كل الأدلة', 'mega_note' => 'تطبيق واحد للمالك والمقاول وفريق الموقع.',
+			'f_stores' => 'المخزن والتوريدات', 'fd_stores' => 'استلام مقابل الطلب، وصرف مع صورة',
+			'f_money' => 'الدفعات والميزانية', 'fd_money' => 'الفواتير والدفعات بالإثبات والميزانية حسب المرحلة',
+			'f_build' => 'تقدّم البناء', 'fd_build' => 'المخطط مقابل المنجز، مرحلة بمرحلة',
+			'f_people' => 'العمّال وبطاقات الموقع', 'fd_people' => 'بطاقات QR وتحقق من الوجه وحضور',
+			'f_water' => 'الماء والعهدة النقدية', 'fd_water' => 'الوايتات مع TDS ومنسوب الخزان والعهدة',
+			'f_ask' => 'اسأل المشروع', 'fd_ask' => 'إجابات بكلمات بسيطة من سجلاتك',
+			's_owners' => 'من يبني بيته', 'sd_owners' => 'تبني بيتك بنفسك',
+			's_abroad' => 'البناء من الخارج', 'sd_abroad' => 'تابع موقعك من الخليج أو من أي مكان',
+			's_builders' => 'المقاولون', 'sd_builders' => 'أدِر عدة مواقع لعملائك في مكان واحد',
+			's_team' => 'فريق الموقع', 'sd_team' => 'أزرار كبيرة وبطاقات موقع وبلغتهم',
+			'about_d' => 'من يصنع بيلدياري ولماذا', 'contact_d' => 'راسلنا بالبريد أو واتساب', 'smh_d' => 'الشركة الأم',
+			'region' => 'اللغة والعملة', 'cur_note' => 'تظهر الصور والأسعار بالعملة التي تختارها.',
+			'cur_pkr' => 'روبية باكستانية', 'cur_sar' => 'ريال سعودي', 'cur_aed' => 'درهم إماراتي', 'cur_qar' => 'ريال قطري', 'cur_usd' => 'دولار أمريكي',
+			'signin_btn' => 'تسجيل الدخول', 'ws_label' => 'عنوان مساحة عملك', 'ws_go' => 'متابعة', 'ws_help' => 'تجده في رسالة الترحيب التي أرسلناها عند البدء.',
+			'ws_bad' => 'استخدم الحروف الإنجليزية والأرقام والشرطة فقط.', 'ws_new' => 'جديد على بيلدياري؟', 'pay_note' => 'ادفع بالتحويل البنكي في باكستان أو الإمارات أو السعودية.', 'close' => 'إغلاق',
 		],
 	];
 	return $T[buildiary_lang()][$key] ?? $T['en'][$key] ?? $key;
@@ -144,17 +195,127 @@ function buildiary_lang_links($class = 'mb-langs') {
 	return $out . '</div>';
 }
 
-add_shortcode('buildiary_header', function () {
-	$nav = '';
-	$here = buildiary_current_slug();
-	foreach (['features', 'pricing', 'guides', 'about', 'contact'] as $s) {
-		$cur = ($here === $s || strpos($here, $s . '/') === 0) ? ' aria-current="page"' : '';
-		$nav .= '<a href="' . esc_url(buildiary_url($s)) . '"' . $cur . '>' . esc_html(buildiary_t($s)) . '</a>';
+const BUILDIARY_CURS = ['pkr', 'sar', 'aed', 'qar', 'usd'];
+
+/** The money shown before the page's script picks the visitor's own (from their time zone or their choice). */
+function buildiary_default_cur() {
+	return ['en' => 'usd', 'ur' => 'pkr', 'ar' => 'sar'][buildiary_lang()];
+}
+
+function buildiary_flag($cur, $class = 'mb-flag') {
+	return '<img class="' . esc_attr($class) . '" src="' . esc_url(get_theme_file_uri('assets/flags/' . $cur . '.svg')) . '" alt="" width="20" height="15">';
+}
+
+function buildiary_icon($k) {
+	return '<i class="mb-fi mb-fi-' . esc_attr($k) . '" aria-hidden="true"></i>';
+}
+
+function buildiary_chev() {
+	return '<svg class="mb-chev" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+
+function buildiary_mega_item($href, $icon, $title, $desc = '') {
+	return '<a class="mb-mega-item" href="' . esc_url($href) . '">' . buildiary_icon($icon) . '<span><b>' . esc_html($title) . '</b>' . ($desc ? '<small>' . esc_html($desc) . '</small>' : '') . '</span></a>';
+}
+
+function buildiary_dropdown($id, $label, $inner, $current = false, $small = false) {
+	return '<div class="mb-dd' . ($small ? ' mb-dd-sm' : '') . '"><button type="button" class="mb-dd-btn" aria-expanded="false" aria-controls="' . esc_attr($id) . '"' . ($current ? ' data-current="true"' : '') . '>'
+		. esc_html($label) . buildiary_chev() . '</button><div class="mb-mega" id="' . esc_attr($id) . '">' . $inner . '</div></div>';
+}
+
+/** The guides in this language: [address => title]. */
+function buildiary_guides() {
+	static $out = null;
+	if ($out !== null) {
+		return $out;
 	}
+	$out = [];
+	$lang = buildiary_lang();
+	$parent = get_page_by_path(($lang === 'en' ? '' : $lang . '/') . 'guides', OBJECT, 'page');
+	if ($parent) {
+		foreach (get_pages(['parent' => $parent->ID, 'sort_column' => 'menu_order,post_date,ID']) as $g) {
+			$out[get_permalink($g)] = get_the_title($g);
+		}
+	}
+	return $out;
+}
+
+/** Sign in: the customer types their workspace's name and goes to its sign-in page. */
+function buildiary_signin_form($id) {
+	return '<form class="mb-ws" data-domain="' . esc_attr(BUILDIARY_WORKSPACE_DOMAIN) . '" novalidate>'
+		. '<label for="' . esc_attr($id) . '">' . esc_html(buildiary_t('ws_label')) . '</label>'
+		. '<div class="mb-ws-row" dir="ltr"><input id="' . esc_attr($id) . '" name="ws" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="yourcompany" required><span>.' . esc_html(BUILDIARY_WORKSPACE_DOMAIN) . '</span></div>'
+		. '<p class="mb-ws-err" role="alert" hidden>' . esc_html(buildiary_t('ws_bad')) . '</p>'
+		. '<button class="mb-btn mb-btn-block" type="submit">' . esc_html(buildiary_t('ws_go')) . '</button>'
+		. '<p class="mb-pop-note">' . esc_html(buildiary_t('ws_help')) . '</p>'
+		. '<p class="mb-pop-note">' . esc_html(buildiary_t('ws_new')) . ' <a href="' . esc_url(buildiary_url('start-trial')) . '">' . esc_html(buildiary_t('trial')) . '</a></p></form>';
+}
+
+/** Language and currency: the languages are pages; the currency is remembered in the browser. */
+function buildiary_region_panel() {
+	$slug = buildiary_current_slug();
+	$names = ['en' => 'English', 'ur' => 'اردو', 'ar' => 'العربية'];
+	$langs = '';
+	foreach ($names as $code => $name) {
+		$langs .= '<a class="lang-' . $code . '" lang="' . $code . '" href="' . esc_url(buildiary_url($slug, $code)) . '"' . ($code === buildiary_lang() ? ' aria-current="true"' : '') . '>' . esc_html($name) . '</a>';
+	}
+	$cur0 = buildiary_default_cur();
+	$curs = '';
+	foreach (BUILDIARY_CURS as $c) {
+		$curs .= '<button type="button" data-set-cur="' . $c . '" aria-pressed="' . ($c === $cur0 ? 'true' : 'false') . '">' . buildiary_flag($c) . '<span><b>' . strtoupper($c) . '</b><small>' . esc_html(buildiary_t('cur_' . $c)) . '</small></span></button>';
+	}
+	return '<p class="mb-pop-h">' . esc_html(buildiary_t('langs')) . '</p><div class="mb-rg-langs">' . $langs . '</div>'
+		. '<p class="mb-pop-h">' . esc_html(buildiary_t('currency')) . '</p><div class="mb-rg-curs">' . $curs . '</div>'
+		. '<p class="mb-pop-note">' . esc_html(buildiary_t('cur_note')) . '</p>';
+}
+
+add_shortcode('buildiary_header', function () {
+	$here = buildiary_current_slug();
+	$is = function ($s) use ($here) {
+		return $here === $s || strpos($here, $s . '/') === 0;
+	};
+	$feat = buildiary_url('features');
+	$items = '';
+	foreach (['stores', 'money', 'build', 'people', 'water', 'ask'] as $k) {
+		$items .= buildiary_mega_item($feat . '#' . $k, $k, buildiary_t('f_' . $k), buildiary_t('fd_' . $k));
+	}
+	$photo = get_theme_file_uri('assets/photos/frame-800.webp');
+	$product = '<div class="mb-mega-in"><div class="mb-mega-grid">' . $items . '</div>'
+		. '<div class="mb-mega-side"><img src="' . esc_url($photo) . '" alt="" width="800" height="533" loading="lazy" decoding="async"><p>' . esc_html(buildiary_t('mega_note')) . '</p>'
+		. '<a class="mb-link" href="' . esc_url($feat) . '">' . esc_html(buildiary_t('all_features')) . '</a></div></div>';
+	$solutions = '<div class="mb-mega-in mb-mega-list">'
+		. buildiary_mega_item(buildiary_url('home-owners'), 'home', buildiary_t('s_owners'), buildiary_t('sd_owners'))
+		. buildiary_mega_item(buildiary_url('home-owners'), 'lang', buildiary_t('s_abroad'), buildiary_t('sd_abroad'))
+		. buildiary_mega_item(buildiary_url('builders'), 'hat', buildiary_t('s_builders'), buildiary_t('sd_builders'))
+		. buildiary_mega_item($feat . '#people', 'people', buildiary_t('s_team'), buildiary_t('sd_team')) . '</div>';
+	$g = '';
+	foreach (buildiary_guides() as $href => $title) {
+		$g .= buildiary_mega_item($href, 'book', $title);
+	}
+	$guides = '<div class="mb-mega-in mb-mega-list">' . $g . '<a class="mb-link" href="' . esc_url(buildiary_url('guides')) . '">' . esc_html(buildiary_t('all_guides')) . '</a></div>';
+	$company = '<div class="mb-mega-in mb-mega-list">'
+		. buildiary_mega_item(buildiary_url('about'), 'info', buildiary_t('about'), buildiary_t('about_d'))
+		. buildiary_mega_item(buildiary_url('contact'), 'mail', buildiary_t('contact'), buildiary_t('contact_d'))
+		. buildiary_mega_item('https://www.smhglobal.com.pk', 'share', 'SMH Global Services', buildiary_t('smh_d')) . '</div>';
+	$nav = buildiary_dropdown('mb-dd-product', buildiary_t('product'), $product, $is('features'))
+		. buildiary_dropdown('mb-dd-solutions', buildiary_t('solutions'), $solutions, $is('home-owners') || $is('builders'), true)
+		. '<a class="mb-nav-link" href="' . esc_url(buildiary_url('pricing')) . '"' . ($is('pricing') ? ' aria-current="page"' : '') . '>' . esc_html(buildiary_t('pricing')) . '</a>'
+		. buildiary_dropdown('mb-dd-guides', buildiary_t('guides'), $guides, $is('guides'), true)
+		. buildiary_dropdown('mb-dd-company', buildiary_t('company_menu'), $company, $is('about') || $is('contact'), true);
+	// on a phone the menu also holds the trial button and sign-in
+	$extra = '<div class="mb-nav-extra"><a class="mb-btn mb-btn-block" href="' . esc_url(buildiary_url('start-trial')) . '">' . esc_html(buildiary_t('trial')) . '</a>'
+		. '<details class="mb-nav-signin"><summary>' . esc_html(buildiary_t('signin')) . '</summary>' . buildiary_signin_form('mb-ws-m') . '</details></div>';
+	$cur0 = buildiary_default_cur();
+	$short = ['en' => 'EN', 'ur' => 'اردو', 'ar' => 'عربي'][buildiary_lang()];
+	$region = '<div class="mb-pop-wrap mb-region"><button type="button" class="mb-region-btn" aria-expanded="false" aria-controls="mb-region-pop" title="' . esc_attr(buildiary_t('region')) . '">'
+		. buildiary_flag($cur0, 'mb-flag mb-region-flag') . '<span class="mb-region-txt">' . esc_html($short) . ' · <bdi data-cur-code>' . strtoupper($cur0) . '</bdi></span>' . buildiary_chev() . '</button>'
+		. '<div class="mb-pop" id="mb-region-pop" role="dialog" aria-label="' . esc_attr(buildiary_t('region')) . '">' . buildiary_region_panel() . '</div></div>';
+	$signin = '<div class="mb-pop-wrap mb-signin"><button type="button" class="mb-signin-btn" aria-expanded="false" aria-controls="mb-signin-pop">' . esc_html(buildiary_t('signin_btn')) . '</button>'
+		. '<div class="mb-pop" id="mb-signin-pop" role="dialog" aria-label="' . esc_attr(buildiary_t('signin')) . '"><p class="mb-pop-h">' . esc_html(buildiary_t('signin')) . '</p>' . buildiary_signin_form('mb-ws-d') . '</div></div>';
 	return '<header class="mb-head"><div class="mb-wrap mb-head-in">'
-		. '<a class="mb-brand" href="' . esc_url(buildiary_url('')) . '">' . buildiary_logo_svg(36) . buildiary_name_svg() . '</a>'
-		. '<nav class="mb-nav" id="mb-nav" aria-label="' . esc_attr(buildiary_t('menu')) . '">' . $nav . buildiary_lang_links('mb-langs mb-langs-nav') . '</nav>'
-		. '<div class="mb-head-end">' . buildiary_lang_links() . '<a class="mb-btn mb-btn-sm" href="' . esc_url(buildiary_url('start-trial')) . '">' . esc_html(buildiary_t('trial')) . '</a>'
+		. '<a class="mb-brand" href="' . esc_url(buildiary_url('')) . '" aria-label="Buildiary">' . buildiary_logo_svg(36) . buildiary_name_svg() . '</a>'
+		. '<nav class="mb-nav" id="mb-nav" aria-label="' . esc_attr(buildiary_t('menu')) . '">' . $nav . $extra . '</nav>'
+		. '<div class="mb-head-end">' . $region . $signin . '<a class="mb-btn mb-btn-sm mb-head-cta" href="' . esc_url(buildiary_url('start-trial')) . '">' . esc_html(buildiary_t('trial')) . '</a>'
 		. '<button class="mb-menu" type="button" aria-controls="mb-nav" aria-expanded="false"><span class="screen-reader-text">' . esc_html(buildiary_t('menu')) . '</span><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>'
 		. '</div></div></header>';
 });
@@ -170,32 +331,81 @@ add_shortcode('buildiary_maker', function () {
 });
 
 add_shortcode('buildiary_footer', function () {
-	$link = function ($slug, $key) {
-		return '<a href="' . esc_url(buildiary_url($slug)) . '">' . esc_html(buildiary_t($key)) . '</a>';
+	$link = function ($href, $text) {
+		return '<a href="' . esc_url($href) . '">' . esc_html($text) . '</a>';
 	};
-	$wa = BUILDIARY_WHATSAPP ? '<a href="https://wa.me/' . esc_attr(preg_replace('/\D/', '', BUILDIARY_WHATSAPP)) . '" rel="noopener">WhatsApp +' . esc_html(preg_replace('/\D/', '', BUILDIARY_WHATSAPP)) . '</a>' : '';
-	return '<footer class="mb-foot"><div class="mb-wrap mb-foot-in">'
-		. '<div class="mb-foot-brand"><a class="mb-brand" href="' . esc_url(buildiary_url('')) . '">' . buildiary_logo_svg(32) . buildiary_name_svg() . '</a><p>' . esc_html(buildiary_t('tagline')) . '</p>' . buildiary_lang_links() . '</div>'
-		. '<div><h2>' . esc_html(buildiary_t('product')) . '</h2>' . $link('features', 'features') . $link('pricing', 'pricing') . $link('home-owners', 'owners') . $link('builders', 'builders') . $link('start-trial', 'trial') . '</div>'
-		. buildiary_footer_guides()
-		. '<div><h2>' . esc_html(buildiary_t('company')) . '</h2>' . $link('about', 'about') . $link('contact', 'contact') . $link('privacy', 'privacy') . $link('terms', 'terms') . '</div>'
-		. '<div><h2>' . esc_html(buildiary_t('reach')) . '</h2><a href="mailto:' . esc_attr(BUILDIARY_SUPPORT_EMAIL) . '">' . esc_html(BUILDIARY_SUPPORT_EMAIL) . '</a>' . $wa . '<a href="https://www.smhglobal.com.pk" rel="noopener">smhglobal.com.pk</a></div>'
-		. '</div><div class="mb-wrap mb-foot-bottom"><span>© ' . esc_html(date('Y')) . ' SMH Global Services</span>' . buildiary_maker('light') . '</div></footer>'
-		. '<script>(function(){var b=document.querySelector(".mb-menu"),n=document.getElementById("mb-nav");if(!b||!n)return;b.addEventListener("click",function(){var o=n.classList.toggle("open");b.setAttribute("aria-expanded",o?"true":"false");});})();</script>';
+	$feat = buildiary_url('features');
+	$product = '';
+	foreach (['stores', 'money', 'build', 'people', 'water', 'ask'] as $k) {
+		$product .= $link($feat . '#' . $k, buildiary_t('f_' . $k));
+	}
+	$guides = '';
+	foreach (array_slice(buildiary_guides(), 0, 6, true) as $href => $title) {
+		$guides .= $link($href, $title);
+	}
+	$wa = BUILDIARY_WHATSAPP ? '<a href="https://wa.me/' . esc_attr(preg_replace('/\D/', '', BUILDIARY_WHATSAPP)) . '" rel="noopener">WhatsApp <bdi>+' . esc_html(preg_replace('/\D/', '', BUILDIARY_WHATSAPP)) . '</bdi></a>' : '';
+	$flags = '';
+	foreach (['pkr', 'aed', 'sar'] as $c) {
+		$flags .= buildiary_flag($c);
+	}
+	return '<footer class="mb-foot">'
+		. '<div class="mb-wrap mb-foot-top"><div class="mb-foot-brand"><a class="mb-brand" href="' . esc_url(buildiary_url('')) . '" aria-label="Buildiary">' . buildiary_logo_svg(36) . buildiary_name_svg() . '</a><p>' . esc_html(buildiary_t('tagline')) . '</p></div>'
+		. '<div class="mb-foot-cta"><a class="mb-btn" href="' . esc_url(buildiary_url('start-trial')) . '">' . esc_html(buildiary_t('trial')) . '</a><a class="mb-btn mb-btn-line" href="' . esc_url(buildiary_url('pricing')) . '">' . esc_html(buildiary_t('pricing')) . '</a></div></div>'
+		. '<div class="mb-wrap mb-foot-in">'
+		. '<div><h2>' . esc_html(buildiary_t('product')) . '</h2>' . $product . $link(buildiary_url('pricing'), buildiary_t('pricing')) . '</div>'
+		. '<div><h2>' . esc_html(buildiary_t('solutions')) . '</h2>' . $link(buildiary_url('home-owners'), buildiary_t('s_owners')) . $link(buildiary_url('home-owners'), buildiary_t('s_abroad')) . $link(buildiary_url('builders'), buildiary_t('s_builders')) . $link($feat . '#people', buildiary_t('s_team')) . '</div>'
+		. ($guides ? '<div><h2>' . esc_html(buildiary_t('guides')) . '</h2>' . $guides . $link(buildiary_url('guides'), buildiary_t('all_guides')) . '</div>' : '')
+		. '<div><h2>' . esc_html(buildiary_t('company')) . '</h2>' . $link(buildiary_url('about'), buildiary_t('about')) . $link(buildiary_url('contact'), buildiary_t('contact')) . $link(buildiary_url('privacy'), buildiary_t('privacy')) . $link(buildiary_url('terms'), buildiary_t('terms')) . '</div>'
+		. '<div><h2>' . esc_html(buildiary_t('reach')) . '</h2><a href="mailto:' . esc_attr(BUILDIARY_SUPPORT_EMAIL) . '">' . esc_html(BUILDIARY_SUPPORT_EMAIL) . '</a>' . $wa . '<a href="https://www.smhglobal.com.pk" rel="noopener">smhglobal.com.pk</a>'
+		. '<p class="mb-foot-pay"><span class="mb-foot-flags">' . $flags . '</span>' . esc_html(buildiary_t('pay_note')) . '</p></div>'
+		. '</div><div class="mb-wrap mb-foot-bottom"><span>© ' . esc_html(date('Y')) . ' SMH Global Services</span>' . buildiary_lang_links() . buildiary_maker('light') . '</div></footer>';
 });
 
-// the guides in this language, for the footer (their short names are the page titles)
-function buildiary_footer_guides() {
-	$lang = buildiary_lang();
-	$parent = get_page_by_path(($lang === 'en' ? '' : $lang . '/') . 'guides', OBJECT, 'page');
-	if (!$parent) {
-		return '';
+// the page script goes in the page's foot, outside the content filters (which would change its "&&")
+add_action('wp_footer', function () {
+	if (!buildiary_is_admin_request()) {
+		echo '<script>' . buildiary_page_script() . "</script>\n";
 	}
-	$out = '<div><h2>' . esc_html(buildiary_t('guides')) . '</h2>';
-	foreach (get_pages(['parent' => $parent->ID, 'sort_column' => 'menu_order,post_date,ID']) as $g) {
-		$out .= '<a href="' . esc_url(get_permalink($g)) . '">' . esc_html(get_the_title($g)) . '</a>';
-	}
-	return $out . '</div>';
+}, 20);
+
+/** Menus, sign-in, tabs, and the visitor's currency (screenshots, amounts, prices and the trial link follow it). */
+function buildiary_page_script() {
+	return <<<'JS'
+(function(){
+var D=document,R=D.documentElement,CURS=["pkr","sar","aed","qar","usd"],TZ={"Asia/Karachi":"pkr","Asia/Riyadh":"sar","Asia/Dubai":"aed","Asia/Qatar":"qar"},CC={pkr:"PK",sar:"SA",aed:"AE",qar:"QA"};
+function all(q,r){return Array.prototype.slice.call((r||D).querySelectorAll(q));}
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
+// menus and pop-ups: one open at a time; Escape or a click elsewhere closes it
+var head=D.querySelector(".mb-head"),nav=D.getElementById("mb-nav"),menu=D.querySelector(".mb-menu");
+function closeAll(except){all(".mb-dd.open,.mb-pop-wrap.open").forEach(function(x){if(x!==except){x.classList.remove("open");var b=x.querySelector("button[aria-expanded]");if(b)b.setAttribute("aria-expanded","false");}});}
+function toggle(w){var o=!w.classList.contains("open");closeAll(w);w.classList.toggle("open",o);w.querySelector("button[aria-expanded]").setAttribute("aria-expanded",o?"true":"false");if(o&&w.classList.contains("mb-signin")){var i=w.querySelector("input");if(i)setTimeout(function(){i.focus();},30);}}
+all(".mb-dd-btn,.mb-region-btn,.mb-signin-btn").forEach(function(b){b.addEventListener("click",function(){toggle(b.parentNode);});});
+D.addEventListener("click",function(e){if(!e.target.closest(".mb-dd,.mb-pop-wrap"))closeAll();});
+D.addEventListener("keydown",function(e){if(e.key==="Escape"){var o=D.querySelector(".mb-dd.open,.mb-pop-wrap.open");if(o){closeAll();var b=o.querySelector("button[aria-expanded]");if(b)b.focus();}}});
+if(menu&&nav)menu.addEventListener("click",function(){var o=nav.classList.toggle("open");menu.setAttribute("aria-expanded",o?"true":"false");D.body.classList.toggle("mb-menu-open",o);});
+if(head){var sc=function(){head.classList.toggle("mb-scrolled",window.scrollY>8);};window.addEventListener("scroll",sc,{passive:true});sc();}
+// sign in: <name>.buildiary.app/login
+all("form.mb-ws").forEach(function(f){var i=f.querySelector("input"),last=store("buildiary_ws");if(last)i.value=last;f.addEventListener("submit",function(e){e.preventDefault();var dom=f.dataset.domain,v=(i.value||"").trim().toLowerCase().replace(/^https?:\/\//,"").split("/")[0];
+if(v.slice(-dom.length-1)==="."+dom)v=v.slice(0,-dom.length-1);var ok=/^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/.test(v);f.querySelector(".mb-ws-err").hidden=ok;i.setAttribute("aria-invalid",ok?"false":"true");
+if(ok){store("buildiary_ws",v);location.href="https://"+v+"."+dom+"/login";}});});
+// tabs
+all(".mb-tabs").forEach(function(t){var tabs=all("[role=tab]",t);function pick(b,focus){tabs.forEach(function(x){var on=x===b;x.setAttribute("aria-selected",on?"true":"false");x.tabIndex=on?0:-1;D.getElementById(x.getAttribute("aria-controls")).hidden=!on;});if(focus)b.focus();}
+tabs.forEach(function(b,n){b.addEventListener("click",function(){pick(b);});b.addEventListener("keydown",function(e){var k=e.key,rtl=R.dir==="rtl",d=k==="ArrowRight"?(rtl?-1:1):k==="ArrowLeft"?(rtl?1:-1):0;if(k==="Home")pick(tabs[0],true);else if(k==="End")pick(tabs[tabs.length-1],true);else if(d){e.preventDefault();pick(tabs[(n+d+tabs.length)%tabs.length],true);}});});});
+// the visitor's currency
+function show(w){var c=w.dataset.cur,p=w.dataset.per||"month";if(!w.querySelector('.mb-price[data-cur="'+c+'"]'))c="usd";all(".mb-price",w).forEach(function(x){x.hidden=!(x.dataset.cur===c&&x.dataset.per===p);});all("button[data-per]",w).forEach(function(b){b.setAttribute("aria-pressed",b.dataset.per===p?"true":"false");});}
+function set(c,keep){if(CURS.indexOf(c)<0)return;R.setAttribute("data-cur",c);if(keep)store("buildiary_cur",c);
+all("img[data-shot]").forEach(function(i){var s=i.getAttribute("src"),n=s.replace(/-(pkr|sar|aed|qar|usd)-/,"-"+c+"-");if(n!==s)i.setAttribute("src",n);});
+all(".mb-amt").forEach(function(a){if(a.dataset[c])a.textContent=a.dataset[c];});
+all("[data-set-cur]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.setCur===c?"true":"false");});
+all("[data-cur-code]").forEach(function(e){e.textContent=c.toUpperCase();});
+all("img.mb-region-flag").forEach(function(i){i.src=i.src.replace(/(pkr|sar|aed|qar|usd)\.svg/,c+".svg");});
+all(".mb-pricing").forEach(function(w){w.dataset.cur=c;show(w);});
+all('a[href*="start-trial"]').forEach(function(a){try{var u=new URL(a.href,location.href);if(CC[c])u.searchParams.set("country",CC[c]);else u.searchParams.delete("country");a.href=u.toString();}catch(e){}});}
+function guess(){var q=(location.search.match(/[?&]cur=([a-z]{3})/i)||[])[1];if(q&&CURS.indexOf(q.toLowerCase())>=0)return q.toLowerCase();var s=store("buildiary_cur");if(s&&CURS.indexOf(s)>=0)return s;try{var z=Intl.DateTimeFormat().resolvedOptions().timeZone;if(TZ[z])return TZ[z];}catch(e){}return "usd";}
+D.addEventListener("click",function(e){var b=e.target.closest("[data-set-cur]");if(b)set(b.dataset.setCur,true);var p=e.target.closest(".mb-pricing button[data-per]");if(p){var w=p.closest(".mb-pricing");w.dataset.per=p.dataset.per;show(w);}});
+set(guess(),false);
+})();
+JS;
 }
 
 // ---- prices, from the console (cached for an hour), with the last known prices as a fallback
@@ -221,24 +431,25 @@ function buildiary_plans() {
 		return $data;
 	}
 	return get_option('buildiary_plans_last') ?: ['plans' => [
-		['name' => 'Owner', 'mode' => 'Owner', 'max_projects' => 2, 'max_users' => 10, 'storage_gb' => 10, 'summary' => [], 'usd' => ['month' => 15, 'year' => 150], 'PKR' => ['month' => 4200, 'year' => 42000], 'SAR' => ['month' => 55, 'year' => 560]],
-		['name' => 'Builder', 'mode' => 'Builder', 'max_projects' => 10, 'max_users' => 40, 'storage_gb' => 50, 'summary' => [], 'usd' => ['month' => 49, 'year' => 490], 'PKR' => ['month' => 13700, 'year' => 137200], 'SAR' => ['month' => 185, 'year' => 1840]],
+		['name' => 'Owner', 'mode' => 'Owner', 'max_projects' => 2, 'max_users' => 10, 'storage_gb' => 10, 'summary' => [], 'usd' => ['month' => 15, 'year' => 150], 'PKR' => ['month' => 4200, 'year' => 42000], 'SAR' => ['month' => 55, 'year' => 560], 'AED' => ['month' => 55, 'year' => 550], 'QAR' => ['month' => 55, 'year' => 545]],
+		['name' => 'Builder', 'mode' => 'Builder', 'max_projects' => 10, 'max_users' => 40, 'storage_gb' => 50, 'summary' => [], 'usd' => ['month' => 49, 'year' => 490], 'PKR' => ['month' => 13700, 'year' => 137200], 'SAR' => ['month' => 185, 'year' => 1840], 'AED' => ['month' => 180, 'year' => 1800], 'QAR' => ['month' => 180, 'year' => 1785]],
 	], 'trial_days' => 7];
 }
 
 add_shortcode('buildiary_prices', function () {
 	$data = buildiary_plans();
 	$lang = buildiary_lang();
-	$cur = ['en' => 'USD', 'ur' => 'PKR', 'ar' => 'SAR'][$lang];
+	$cur = buildiary_default_cur();
+	$keys = ['usd' => 'usd', 'pkr' => 'PKR', 'sar' => 'SAR', 'aed' => 'AED', 'qar' => 'QAR'];
 	$fmt = function ($v, $c) {
 		$n = number_format((float) $v, ((float) $v == (int) $v) ? 0 : 2);
-		return $c === 'USD' ? '$' . $n : $c . ' ' . $n;
+		return $c === 'usd' ? '$' . $n : strtoupper($c) . ' ' . $n;
 	};
 	$cards = '';
 	foreach ($data['plans'] as $p) {
 		$key = strtolower($p['mode']) === 'builder' ? 'builder' : 'owner';
 		$prices = '';
-		foreach (['USD' => 'usd', 'PKR' => 'PKR', 'SAR' => 'SAR'] as $c => $k) {
+		foreach ($keys as $c => $k) {
 			if (empty($p[$k])) {
 				continue;
 			}
@@ -251,17 +462,16 @@ add_shortcode('buildiary_prices', function () {
 			. '<li>' . esc_html(sprintf(buildiary_t('users'), (int) $p['max_users'])) . '</li><li>' . esc_html(sprintf(buildiary_t('storage'), (int) $p['storage_gb'])) . '</li>';
 		$cards .= '<article class="mb-plan mb-plan-' . $key . '">' . ($key === 'builder' ? '<span class="mb-plan-tag">' . esc_html(buildiary_t('popular')) . '</span>' : '')
 			. '<h3>' . esc_html(buildiary_t($key)) . '</h3>' . ($summary ? '<p>' . esc_html($summary) . '</p>' : '') . '<div class="mb-prices">' . $prices . '</div>'
-			. '<ul>' . $feats . '</ul><a class="mb-btn" href="' . esc_url(buildiary_url('start-trial')) . '">' . esc_html(buildiary_t('start')) . '</a></article>';
+			. '<ul class="mb-checks">' . $feats . '</ul><a class="mb-btn" href="' . esc_url(buildiary_url('start-trial')) . '">' . esc_html(buildiary_t('start')) . '</a></article>';
 	}
 	$curs = '';
-	foreach (['USD', 'PKR', 'SAR'] as $c) {
-		$curs .= '<button type="button" data-cur="' . $c . '" aria-pressed="' . ($c === $cur ? 'true' : 'false') . '">' . $c . '</button>';
+	foreach (BUILDIARY_CURS as $c) {
+		$curs .= '<button type="button" data-set-cur="' . $c . '" aria-pressed="' . ($c === $cur ? 'true' : 'false') . '" title="' . esc_attr(buildiary_t('cur_' . $c)) . '">' . buildiary_flag($c) . strtoupper($c) . '</button>';
 	}
 	return '<div class="mb-pricing" data-cur="' . $cur . '" data-per="month">'
 		. '<div class="mb-toggles"><div class="mb-seg" role="group"><button type="button" data-per="month" aria-pressed="true">' . esc_html(buildiary_t('month')) . '</button><button type="button" data-per="year" aria-pressed="false">' . esc_html(buildiary_t('year')) . ' <em>' . esc_html(buildiary_t('save')) . '</em></button></div>'
-		. '<div class="mb-seg" role="group" aria-label="' . esc_attr(buildiary_t('currency')) . '">' . $curs . '</div></div>'
-		. '<div class="mb-plans">' . $cards . '</div><p class="mb-note">' . esc_html(buildiary_t('trial_note')) . '</p></div>'
-		. '<script>(function(){document.querySelectorAll(".mb-pricing").forEach(function(w){function show(){w.querySelectorAll(".mb-price").forEach(function(p){p.hidden=!(p.dataset.cur===w.dataset.cur&&p.dataset.per===w.dataset.per);});w.querySelectorAll("button[data-cur]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.cur===w.dataset.cur);});w.querySelectorAll("button[data-per]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.per===w.dataset.per);});}w.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;if(b.dataset.cur)w.dataset.cur=b.dataset.cur;if(b.dataset.per)w.dataset.per=b.dataset.per;show();});show();});})();</script>';
+		. '<div class="mb-seg mb-seg-cur" role="group" aria-label="' . esc_attr(buildiary_t('currency')) . '">' . $curs . '</div></div>'
+		. '<div class="mb-plans">' . $cards . '</div><p class="mb-note">' . esc_html(buildiary_t('trial_note')) . ' ' . esc_html(buildiary_t('pay_note')) . '</p></div>';
 });
 
 // ---- icons (the description, the other languages and the rest for search engines are in buildiary-seo.php)

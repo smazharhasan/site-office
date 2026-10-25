@@ -30,6 +30,24 @@ cp -r "$SRC/mu-plugins/." mu-plugins/
 cp -r "$SRC/content/." content/
 cat "$SRC/import.php" > import.php
 
+# the website's photos (Unsplash License): downloaded once into a cache, two widths each, then
+# copied into the theme with the rest of its files
+mkdir -p photos theme/assets/photos
+python3 - "$SRC/photos.json" > /tmp/buildiary-photos.txt <<'PY'
+import json, sys
+for name, pid in json.load(open(sys.argv[1]))["photos"].items():
+    print(name, pid)
+PY
+while read -r name pid; do
+  for w in 800 1600; do
+    f="photos/$name-$w.webp"
+    if [ ! -s "$f" ]; then
+      curl -fsSL --max-time 60 -o "$f.tmp" "https://images.unsplash.com/photo-$pid?w=$w&q=72&fm=webp&fit=crop" && mv -f "$f.tmp" "$f" || rm -f "$f.tmp"
+    fi
+  done
+done < /tmp/buildiary-photos.txt
+cp -f photos/*.webp theme/assets/photos/ 2>/dev/null || echo "No photos yet (no internet?)"
+
 cat > compose.yml <<'EOF'
 # The Buildiary website. Passwords are in .env (root only).
 name: website

@@ -19,6 +19,9 @@ if (!$pages) {
 	WP_CLI::error("No pages in $dir/pages.json");
 }
 
+// the pages are our own markup (tabs, phone pictures, photos): saved as written, not filtered
+kses_remove_filters();
+
 // (eval-file runs this file inside a function, so the list lives in $GLOBALS)
 $GLOBALS['buildiary_changed'] = [];
 

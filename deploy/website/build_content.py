@@ -6,6 +6,7 @@ The pages are WordPress blocks, so they stay editable in the WordPress editor.""
 
 import json
 import os
+import re
 from html import escape
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "content")
@@ -18,7 +19,7 @@ def attrs(d):
 	return (" " + json.dumps(d, ensure_ascii=False, separators=(",", ":"))) if d else ""
 
 
-def group(inner, cls="", tag="div", full=False, wide=True, size="1160px"):
+def group(inner, cls="", tag="div", full=False, wide=True, size="1200px"):
 	a = {}
 	if tag != "div":
 		a["tagName"] = tag
@@ -99,43 +100,90 @@ def url(lang, slug=""):
 
 # ---------------------------------------------------------------- words
 T = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "words.json"), encoding="utf-8"))
+H = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "words_home.json"), encoding="utf-8"))
+PH = IMG + "/photos"
+# the screenshots' currency before the page's script picks the visitor's own (by country)
+DEF_CUR = {"en": "usd", "ur": "pkr", "ar": "sar"}
+# an example payment in each currency (the floating card in the hero)
+AMOUNT = {"pkr": "Rs 1,250,000", "sar": "SAR 16,700", "aed": "AED 17,000", "qar": "QAR 16,300", "usd": "$4,450"}
+
+
+def photo(name, alt, cls="", sizes="(max-width: 760px) 100vw, 50vw", eager=False):
+	"""A photo at two widths (assets/photos, downloaded by setup.sh)."""
+	lazy = "" if eager else ' loading="lazy"'
+	return (f'<img class="{cls}" src="{PH}/{name}-1600.webp" srcset="{PH}/{name}-800.webp 800w, {PH}/{name}-1600.webp 1600w" '
+		f'sizes="{sizes}" alt="{escape(alt)}"{lazy} decoding="async">')
+
+
+def shot(L, name, alt, cls="mb-phone-img", eager=False):
+	"""A phone screenshot; the page's script switches it to the visitor's currency."""
+	lazy = "" if eager else ' loading="lazy"'
+	return (f'<img class="{cls}" data-shot="{name}" src="{IMG}/shots/{L}-{DEF_CUR[L]}-{name}.webp" width="390" height="844" '
+		f'alt="{escape(alt)}"{lazy} decoding="async">')
+
+
+def phone(L, name, alt, eager=False):
+	return f'<div class="mb-phone">{shot(L, name, alt, eager=eager)}</div>'
 
 
 def page_home(L, w):
-	f = w["features"]
-	hero = group(
-		columns([
-			p(w["hero_eyebrow"], "mb-eyebrow") + h(1, w["hero_title"]) + p(w["hero_lede"], "mb-lede")
-			+ buttons([(w["cta_trial"], url(L, "start-trial"), False), (w["cta_prices"], url(L, "pricing"), True)])
-			+ p(w["hero_note"], "mb-note"),
-			image(f"{IMG}/{L}-dash.webp", w["shot_dash"], "mb-hero-shot"),
-		]),
-		"mb-hero", "section", True)
-	modes = group(
-		p(w["modes_eyebrow"], "mb-eyebrow mb-center") + h(2, w["modes_title"], "mb-center")
-		+ group(box(h(3, w["owner_t"]) + p(w["owner_d"]) + ul(w["owner_points"]), "mb-card mb-mode")
-			+ box(h(3, w["builder_t"]) + p(w["builder_d"]) + ul(w["builder_points"]), "mb-card mb-mode mb-mode-b"), "mb-cards", wide=False),
-		"mb-section", "section", True)
-	feats = group(
-		p(w["feat_eyebrow"], "mb-eyebrow mb-center") + h(2, w["feat_title"], "mb-center") + p(w["feat_lede"], "mb-lede mb-center")
-		+ group("".join(box(h(3, x["t"], f"mb-ic mb-ic-{x['ic']}") + p(x["d"]), "mb-card") for x in f), "mb-cards", wide=False)
-		+ buttons([(w["more_features"], url(L, "features"), True)], "mb-center-buttons"),
-		"mb-section mb-alt", "section", True)
+	x = H[L]
+	f = {k["ic"]: k for k in w["features"]}
+	amt = " ".join(f'data-{c}="{escape(v)}"' for c, v in AMOUNT.items())
+	fl = x["float"]
+	hero = html(f"""<section class="mb-h2"><div class="mb-wrap mb-h2-in">
+<div class="mb-h2-copy">
+<p class="mb-pill"><span></span>{x["hero_eyebrow"]}</p>
+<h1>{x["hero_title"]}</h1>
+<p class="mb-lede">{x["hero_lede"]}</p>
+<div class="mb-actions"><a class="mb-btn mb-btn-lg" href="{url(L, "start-trial")}">{w["cta_trial"]}</a><a class="mb-btn mb-btn-line" href="{url(L, "pricing")}">{w["cta_prices"]}</a></div>
+<ul class="mb-ticks">{"".join(f"<li>{t}</li>" for t in x["hero_points"])}</ul>
+</div>
+<div class="mb-h2-visual" aria-hidden="false">
+<figure class="mb-h2-photo">{photo("hero-site", w["shot_dash"], sizes="(max-width: 900px) 100vw, 560px", eager=True)}</figure>
+{phone(L, "dash", w["shot_dash"], eager=True)}
+<div class="mb-float mb-float-1"><i class="mb-fi mb-fi-stores"></i><div><b>{fl[0]["t"]}</b><span>{fl[0]["d"]}</span></div></div>
+<div class="mb-float mb-float-2"><i class="mb-fi mb-fi-money"></i><div><b>{fl[1]["t"]}: <bdi class="mb-amt" {amt}>{AMOUNT[DEF_CUR[L]]}</bdi></b><span>{fl[1]["d"]}</span></div></div>
+<div class="mb-float mb-float-3"><i class="mb-fi mb-fi-people"></i><div><b>{fl[2]["t"]}</b><span>{fl[2]["d"]}</span></div></div>
+</div>
+</div></section>""")
+	facts = html(f"""<section class="mb-facts"><div class="mb-wrap"><ul>{"".join(f'<li><b>{k["k"]}</b><span>{k["t"]}</span></li>' for k in x["facts"])}</ul><p class="mb-origin">{x["origin"]}</p></div></section>""")
+	who = html(f"""<section class="mb-section mb-who-sec"><div class="mb-wrap">
+<p class="mb-eyebrow mb-center">{x["who_eyebrow"]}</p><h2 class="mb-center">{x["who_title"]}</h2>
+<div class="mb-who">{"".join(f'<a class="mb-who-card" href="{url(L, c["href"])}"><figure>{photo(c["img"], c["t"], sizes="(max-width: 760px) 100vw, 300px")}</figure><div class="mb-who-body"><h3>{c["t"]}</h3><p>{c["d"]}</p><span class="mb-link">{c["a"]}</span></div></a>' for c in x["who"])}</div>
+</div></section>""")
+	tabs_def = [("stores", "store", "bricks"), ("money", "budget", "plans"), ("build", "build", "frame"), ("people", "dash", "rebar-team")]
+	tablist = "".join(f'<button type="button" role="tab" id="tab-{k}" aria-controls="panel-{k}" aria-selected="{"true" if n == 0 else "false"}" tabindex="{0 if n == 0 else -1}"><i class="mb-fi mb-fi-{k}"></i>{x["tab_names"][k]}</button>' for n, (k, _, _) in enumerate(tabs_def))
+	panels = ""
+	for n, (k, sh, ph) in enumerate(tabs_def):
+		ft = f[k]
+		panels += (f'<div class="mb-panel" role="tabpanel" id="panel-{k}" aria-labelledby="tab-{k}"{"" if n == 0 else " hidden"}>'
+			f'<div class="mb-panel-copy"><h3>{ft["t"]}</h3><p class="mb-lede">{ft["d"]}</p><ul class="mb-checks">{"".join(f"<li>{p_}</li>" for p_ in ft["points"])}</ul>'
+			f'<a class="mb-link" href="{url(L, "features")}#{k}">{w["more_features"]}</a></div>'
+			f'<div class="mb-panel-visual"><figure class="mb-panel-photo">{photo(ph, ft["t"], sizes="(max-width: 900px) 100vw, 560px")}</figure>{phone(L, sh, ft["t"])}</div></div>')
+	tabs = html(f"""<section class="mb-section mb-alt mb-tabs-sec"><div class="mb-wrap">
+<p class="mb-eyebrow mb-center">{x["tabs_eyebrow"]}</p><h2 class="mb-center">{x["tabs_title"]}</h2>
+<div class="mb-tabs"><div class="mb-tablist" role="tablist">{tablist}</div>{panels}</div>
+</div></section>""")
+	leaks = html(f"""<section class="mb-leaks"><figure class="mb-leaks-bg">{photo("rebar", "", sizes="100vw")}</figure><div class="mb-wrap">
+<p class="mb-eyebrow">{x["leaks_eyebrow"]}</p><h2>{x["leaks_title"]}</h2><p class="mb-lede">{x["leaks_lede"]}</p>
+<div class="mb-leak-grid">{"".join(f'<div class="mb-leak"><p class="mb-leak-p">{k["p"]}</p><p>{k["s"]}</p></div>' for k in x["leaks"])}</div>
+</div></section>""")
+	tools = html(f"""<section class="mb-section"><div class="mb-wrap">
+<p class="mb-eyebrow mb-center">{x["tools_eyebrow"]}</p><h2 class="mb-center">{x["tools_title"]}</h2>
+<div class="mb-tools">{"".join(f'<div class="mb-tool"><i class="mb-fi mb-fi-{k["ic"]}"></i><h3>{k["t"]}</h3><p>{k["d"]}</p></div>' for k in x["tools"])}</div>
+<div class="mb-center-actions"><a class="mb-btn mb-btn-line-dark" href="{url(L, "features")}">{w["more_features"]}</a></div>
+</div></section>""")
 	steps = group(
 		p(w["steps_eyebrow"], "mb-eyebrow mb-center") + h(2, w["steps_title"], "mb-center")
-		+ group("".join(box(h(3, s["t"]) + p(s["d"]), "mb-step") for s in w["steps"]), "mb-steps", wide=False),
-		"mb-section", "section", True)
-	shots = group(
-		p(w["shots_eyebrow"], "mb-eyebrow mb-center") + h(2, w["shots_title"], "mb-center")
-		+ group(image(f"{IMG}/{L}-build.webp", w["shot_build"], caption=w["shot_build"]) + image(f"{IMG}/{L}-store.webp", w["shot_store"], caption=w["shot_store"])
-			+ image(f"{IMG}/{L}-budget.webp", w["shot_budget"], caption=w["shot_budget"]), "mb-phones", wide=False),
+		+ group("".join(box(h(3, s_["t"]) + p(s_["d"]), "mb-step") for s_ in w["steps"]), "mb-steps", wide=False),
 		"mb-section mb-alt", "section", True)
-	local = group(
-		columns([
-			p(w["local_eyebrow"], "mb-eyebrow") + h(2, w["local_title"]) + p(w["local_lede"], "mb-lede"),
-			ul(w["local_points"], "mb-checks"),
-		]),
-		"mb-section", "section", True)
+	chips = "".join(f'<button type="button" data-set-cur="{c}" aria-pressed="{"true" if c == DEF_CUR[L] else "false"}"><img src="{IMG}/flags/{c}.svg" alt="" width="20" height="15">{c.upper()}</button>' for c in ("pkr", "sar", "aed", "qar", "usd"))
+	gallery = html(f"""<section class="mb-section mb-cur-sec"><div class="mb-wrap">
+<p class="mb-eyebrow mb-center">{x["cur_eyebrow"]}</p><h2 class="mb-center">{x["cur_title"]}</h2><p class="mb-lede mb-center">{x["cur_lede"]}</p>
+<div class="mb-curchips" role="group" aria-label="{x["cur_label"]}">{chips}</div>
+<div class="mb-phones2">{"".join(f'<figure>{phone(L, n, cap)}<figcaption>{cap}</figcaption></figure>' for n, cap in (("build", w["shot_build"]), ("dash", w["shot_dash"]), ("budget", w["shot_budget"])))}</div>
+</div></section>""")
 	prices = group(
 		p(w["price_eyebrow"], "mb-eyebrow mb-center") + h(2, w["price_title"], "mb-center") + html("[buildiary_prices]"),
 		"mb-section mb-alt", "section", True)
@@ -145,9 +193,13 @@ def page_home(L, w):
 		+ buttons([(w["guides_all"], url(L, "guides"), True)], "mb-center-buttons"),
 		"mb-section", "section", True)
 	faq = group(
-		h(2, w["faq_title"], "mb-center") + group("".join(details(q, a) for q, a in w["faq"]), "mb-faq", wide=False),
+		h(2, w["faq_title"], "mb-center") + group("".join(details(q, a_) for q, a_ in w["faq"]), "mb-faq", wide=False),
 		"mb-section mb-alt", "section", True)
-	return hero + modes + feats + steps + shots + local + prices + guides + faq + cta(L, w)
+	band = html(f"""<section class="mb-band"><figure class="mb-band-bg">{photo("villa-dusk", "", sizes="100vw")}</figure><div class="mb-wrap">
+<h2>{x["band_title"]}</h2><p>{x["band_lede"]}</p>
+<div class="mb-actions"><a class="mb-btn mb-btn-lg" href="{url(L, "start-trial")}">{w["cta_trial"]}</a><a class="mb-btn mb-btn-line" href="{url(L, "pricing")}">{w["cta_prices"]}</a></div>
+</div></section>""")
+	return hero + facts + who + tabs + leaks + tools + steps + gallery + prices + guides + faq + band
 
 
 def cta(L, w):
@@ -158,15 +210,18 @@ def pagehead(eyebrow, title, lede):
 	return group(p(eyebrow, "mb-eyebrow") + h(1, title) + p(lede, "mb-lede"), "mb-pagehead", "section", True)
 
 
+FEATURE_VISUAL = {"stores": ("store", "bricks"), "money": ("budget", "plans"), "build": ("build", "frame"), "people": ("dash", "rebar-team"),
+	"water": ("store", "concrete"), "ask": ("dash", "room")}
+
+
 def page_features(L, w):
 	out = pagehead(w["feat_eyebrow"], w["features_title"], w["features_lede"])
 	for i, x in enumerate(w["features"]):
-		out += group(
-			columns([
-				h(2, x["t"], f"mb-ic mb-ic-{x['ic']}") + p(x["d"], "mb-lede"),
-				ul(x["points"], "mb-checks"),
-			]),
-			"mb-section" + (" mb-alt" if i % 2 else ""), "section", True)
+		sh, ph = FEATURE_VISUAL.get(x["ic"], ("dash", "frame"))
+		out += html(f"""<section class="mb-section mb-feat{" mb-alt" if i % 2 else ""}" id="{x["ic"]}"><div class="mb-wrap mb-feat-in{" mb-flip" if i % 2 else ""}">
+<div class="mb-feat-copy"><h2 class="mb-ic mb-ic-{x["ic"]}">{x["t"]}</h2><p class="mb-lede">{x["d"]}</p><ul class="mb-checks">{"".join(f"<li>{p_}</li>" for p_ in x["points"])}</ul></div>
+<div class="mb-panel-visual"><figure class="mb-panel-photo">{photo(ph, x["t"], sizes="(max-width: 900px) 100vw, 560px")}</figure>{phone(L, sh, x["t"])}</div>
+</div></section>""")
 	out += group(columns([h(2, w["extra_title"]) + p(w["extra_lede"], "mb-lede"), ul(w["extra_points"], "mb-checks")]), "mb-section mb-alt" if len(w["features"]) % 2 else "mb-section", "section", True)
 	return out + cta(L, w)
 
@@ -304,18 +359,23 @@ PAGES = [
 ]
 
 
+def full_width(body):
+	"""Sections written as HTML (not groups) span the page, like the groups marked full width."""
+	return re.sub(r'<section class="(?!wp-block-group)', '<section class="alignfull ', body)
+
+
 def main():
 	index = []
 	for L in LANGS:
 		w = dict(T["en"], **T[L])
 		os.makedirs(os.path.join(OUT, L, "guides"), exist_ok=True)
 		for slug, fn, title_key, ex_key, template in PAGES:
-			body = fn(L, w)
+			body = full_width(fn(L, w))
 			with open(os.path.join(OUT, L, f"{slug}.html"), "w", encoding="utf-8") as f:
 				f.write(body)
 			index.append({"lang": L, "slug": slug, "title": w[title_key], "seo_title": w.get(f"{slug}_seo", ""), "excerpt": w[ex_key], "template": template, "file": f"{L}/{slug}.html"})
 		for g in G[L]["pages"]:
-			body = page_extra(L, w, g)
+			body = full_width(page_extra(L, w, g))
 			with open(os.path.join(OUT, L, f"{g['slug']}.html"), "w", encoding="utf-8") as f:
 				f.write(body)
 			nav = G[L]["nav"]

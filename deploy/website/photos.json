@@ -1,0 +1,18 @@
+{
+ "_about": "Photos for the website, from Unsplash (free to use under the Unsplash License, https://unsplash.com/license). The server downloads each one at two widths when the website is set up or updated (setup.sh) and serves them from the theme's assets/photos folder.",
+ "photos": {
+  "hero-site": "1621511075938-f03482369feb",
+  "frame": "1563166423-482a8c14b2d6",
+  "rebar-team": "1531834685032-c34bf0d84c77",
+  "engineers": "1626885930974-4b69aa21bbf9",
+  "plans": "1772442198624-4fc4d7281e89",
+  "room": "1772442198620-3674b427e59e",
+  "bricks": "1627882206813-8c1ffd86efec",
+  "rebar": "1768677903496-becc4be07258",
+  "couple": "1758523671413-cd178a883d6a",
+  "villa": "1628012209120-d9db7abf7eab",
+  "villa-dusk": "1657346088167-b982455bf29a",
+  "crew-sunset": "1579847188804-ecba0e2ea330",
+  "concrete": "1574757987642-5755f0839101"
+ }
+}
