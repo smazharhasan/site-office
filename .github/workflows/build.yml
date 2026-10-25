@@ -52,7 +52,7 @@ jobs:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
       - uses: actions/download-artifact@v4
-        with: { path: out, merge-multiple: true }
+        with: { path: out, merge-multiple: true, pattern: "{classic,erp,mabni}" }
       - name: Read the versions
         run: |
           echo "VER=$(cat VERSION)" >> $GITHUB_ENV
@@ -104,6 +104,7 @@ jobs:
     permissions: { contents: read, id-token: write }
     env:
       IMAGE: 640538430239.dkr.ecr.ap-south-1.amazonaws.com/mabni-office
+      DOCKER_BUILD_RECORD_UPLOAD: "false"
       AWS_ROLE: arn:aws:iam::640538430239:role/mabni-github-office
     defaults: { run: { working-directory: app } }
     steps:
