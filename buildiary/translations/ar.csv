@@ -12,7 +12,7 @@ Above {0} ppm is not fit for concrete or curing.,الماء فوق {0} جزء ف
 Absent,غائب
 "Access (ladders, scaffolding)",الوصول (السلالم والسقالات)
 Access saved,تم حفظ الصلاحيات
-Access to Buildiary,الدخول إلى بيلدياري
+Access to Buildiary,الدخول إلى بلدائري
 Account,الحساب
 Account statement,كشف الحساب
 Accountant,المحاسب
@@ -114,7 +114,7 @@ Binding & fixing,الربط والتثبيت
 Blocked,محظور
 Blocks,البلوك
 Blockwork,أعمال البلوك
-"Blueprint blue with amber, the Buildiary look",أزرق المخططات مع الكهرماني، مظهر بيلدياري
+"Blueprint blue with amber, the Buildiary look",أزرق المخططات مع الكهرماني، مظهر بلدائري
 Booked in the accounts,مقيَّد في الحسابات
 Box,صندوق
 Brackish (rejected),مالح (مرفوض)
@@ -278,7 +278,7 @@ Document type,نوع المستند
 Documents,المستندات
 Done,تم
 Doors & woodwork,الأبواب والنجارة
-Double-click 'Connect a phone' in the Buildiary folder on this laptop. It shows the address and QR code for the phone.,انقر مرتين على «Connect a phone» في مجلد بيلدياري على هذا الحاسوب. يظهر العنوان ورمز QR للجوال.
+Double-click 'Connect a phone' in the Buildiary folder on this laptop. It shows the address and QR code for the phone.,انقر مرتين على «Connect a phone» في مجلد بلدائري على هذا الحاسوب. يظهر العنوان ورمز QR للجوال.
 Draft,مسودة
 Draft a weekly progress report for the owner,اكتب تقريراً أسبوعياً عن التقدّم للمالك
 Draft saved,تم حفظ المسودة
@@ -378,7 +378,7 @@ Gallon,جالون
 Getting the location…,جارٍ تحديد الموقع…
 Give cash,تسليم نقد
 Give cash by site card,تسليم نقد ببطاقة الموقع
-Give this person access to Buildiary first (Signs in as).,امنح هذا الشخص دخولاً إلى بيلدياري أولاً (يدخل بصفة).
+Give this person access to Buildiary first (Signs in as).,امنح هذا الشخص دخولاً إلى بلدائري أولاً (يدخل بصفة).
 Given by,سلّمه
 Given {0} · spent {1} · returned {2},المُسلَّم {0} · المصروف {1} · المُعاد {2}
 Goods received,البضائع المستلمة
@@ -454,7 +454,7 @@ Link,وصلة
 Litre,لتر
 Location / area,الموقع / المنطقة
 Location needed,الموقع الجغرافي مطلوب
-"Location not available: allow location for Buildiary, then try again.",الموقع غير متاح: اسمح لتطبيق بيلدياري بالوصول إلى الموقع ثم حاول مجدداً.
+"Location not available: allow location for Buildiary, then try again.",الموقع غير متاح: اسمح لتطبيق بلدائري بالوصول إلى الموقع ثم حاول مجدداً.
 Location not taken yet,لم يُحدَّد الموقع بعد
 Lock,قفل
 Lock as final,قفل كنهائي
@@ -472,8 +472,8 @@ Locked purchase orders waiting for delivery appear here.,تظهر هنا أوا�
 Looking through the project's records…,جارٍ البحث في سجلات المشروع…
 Looks about {0}% done,يبدو منجزاً بنحو {0}%
 Lot,دفعة
-Buildiary,بيلدياري
-Buildiary blue,أزرق بيلدياري
+Buildiary,بلدائري
+Buildiary blue,أزرق بلدائري
 Machinery,المعدات
 Make a revision,إجراء مراجعة
 Making the PDF…,جارٍ إنشاء ملف PDF…
@@ -529,7 +529,7 @@ no budget,بلا ميزانية
 No budget,لا ميزانية
 No budget yet,لا ميزانية بعد
 No cash given yet,لم يُسلَّم نقد بعد
-No connection to Buildiary. Check the internet (or Wi-Fi) and try again.,لا اتصال ببيلدياري. تحقق من الإنترنت (أو الواي فاي) وحاول مجدداً.
+No connection to Buildiary. Check the internet (or Wi-Fi) and try again.,لا اتصال ببلدائري. تحقق من الإنترنت (أو الواي فاي) وحاول مجدداً.
 No entries yet,لا قيود بعد
 No inspections yet,لا فحوصات بعد
 No match,غير مطابق
@@ -594,8 +594,8 @@ On order,تحت الطلب
 On site now,في الموقع الآن
 On site today,في الموقع اليوم
 On the paper: {0},على الورقة: {0}
-"On the phone, install and open the Buildiary app, tap 'Scan the QR on the laptop' and point it at this code, or type the address above.",على الجوال، ثبّت تطبيق بيلدياري وافتحه، واضغط «امسح QR على الحاسوب» ووجّهه إلى هذا الرمز، أو اكتب العنوان أعلاه.
-"On the phone, open the Buildiary app, tap 'Scan the QR on the laptop' and point it here. The phone and this laptop must be on the same Wi-Fi.",على الجوال، افتح تطبيق بيلدياري واضغط «امسح QR على الحاسوب» ووجّهه هنا. يجب أن يكون الجوال والحاسوب على شبكة الواي فاي نفسها.
+"On the phone, install and open the Buildiary app, tap 'Scan the QR on the laptop' and point it at this code, or type the address above.",على الجوال، ثبّت تطبيق بلدائري وافتحه، واضغط «امسح QR على الحاسوب» ووجّهه إلى هذا الرمز، أو اكتب العنوان أعلاه.
+"On the phone, open the Buildiary app, tap 'Scan the QR on the laptop' and point it here. The phone and this laptop must be on the same Wi-Fi.",على الجوال، افتح تطبيق بلدائري واضغط «امسح QR على الحاسوب» ووجّهه هنا. يجب أن يكون الجوال والحاسوب على شبكة الواي فاي نفسها.
 Only a draft quotation can be changed. Revise it to make a new version.,لا يُعدّل إلا عرض السعر المسودة. راجعه لإنشاء نسخة جديدة.
 Only a submitted (locked) document can be sent.,لا يُرسل إلا المستند المعتمد (المقفل).
 Only a submitted (locked) {0} can be sent.,لا يُرسل إلا {0} معتمد (مقفل).
@@ -906,7 +906,7 @@ Shuttering,الشدّة
 Shuttering & formwork,الشدّات والقوالب
 Sign in,تسجيل الدخول
 Sign in first.,سجّل الدخول أولاً.
-Sign in to Buildiary,الدخول إلى بيلدياري
+Sign in to Buildiary,الدخول إلى بلدائري
 Sign in to your project,سجّل الدخول إلى مشروعك
 Sign in with site card,الدخول ببطاقة الموقع
 Sign out,تسجيل الخروج
@@ -1042,7 +1042,7 @@ The AI is comparing the photos…,يقارن الذكاء الاصطناعي ا�
 The AI is looking at the photo…,يطّلع الذكاء الاصطناعي على الصورة…
 The AI service refused the request ({0}). Check the API key and model in Settings.,رفضت خدمة الذكاء الاصطناعي الطلب ({0}). تحقق من مفتاح API والنموذج في الإعدادات.
 The app will ask for the site address again.,سيطلب التطبيق عنوان الموقع مجدداً.
-"The camera can't be opened here. Allow the camera for this site, or use the Buildiary app.",تعذّر فتح الكاميرا هنا. اسمح بالكاميرا لهذا الموقع أو استخدم تطبيق بيلدياري.
+"The camera can't be opened here. Allow the camera for this site, or use the Buildiary app.",تعذّر فتح الكاميرا هنا. اسمح بالكاميرا لهذا الموقع أو استخدم تطبيق بلدائري.
 The current PIN is not correct.,الرمز السري الحالي غير صحيح.
 The diary date can't be in the future.,لا يمكن أن يكون تاريخ اليومية في المستقبل.
 The face check did not pass. Scan the card and take the photo again.,لم ينجح التحقق من الوجه. امسح البطاقة والتقط الصورة مجدداً.
@@ -1075,7 +1075,7 @@ Theme,المظهر
 There is no budget for {0} yet.,لا توجد ميزانية لـ {0} بعد.
 There is no budget for {0} yet. Ask the owner to add it before spending.,لا توجد ميزانية لـ {0} بعد. اطلب من المالك إضافتها قبل الصرف.
 There is no budget for {0} yet. Every expense is budgeted first: the owner adds it in the ERP (Accounting > Budget) or on the phone.,لا توجد ميزانية لـ {0} بعد. كل مصروف تُرصد له ميزانية أولاً: يضيفها المالك في النظام (المحاسبة > الميزانية) أو من الجوال.
-"This browser can't read QR codes. Use the Buildiary app on the phone, or Chrome.",هذا المتصفح لا يقرأ رموز QR. استخدم تطبيق بيلدياري على الجوال أو متصفح كروم.
+"This browser can't read QR codes. Use the Buildiary app on the phone, or Chrome.",هذا المتصفح لا يقرأ رموز QR. استخدم تطبيق بلدائري على الجوال أو متصفح كروم.
 This budget line was not found.,لم يُعثر على بند الميزانية هذا.
 This can't be shared.,لا يمكن مشاركة هذا.
 This card and PIN were not accepted.,لم تُقبل هذه البطاقة والرمز السري.
@@ -1090,7 +1090,7 @@ This entry belongs to another cash holder.,هذا القيد يخص حامل ع�
 This entry has already been checked.,تمت مراجعة هذا القيد مسبقاً.
 This face check was already used. Scan the card again.,استُخدم هذا التحقق من الوجه مسبقاً. امسح البطاقة مجدداً.
 "This face check was for {0}, not {1}.",كان التحقق من الوجه لـ {0} وليس لـ {1}.
-This is not a Buildiary site card.,هذه ليست بطاقة موقع من بيلدياري.
+This is not a Buildiary site card.,هذه ليست بطاقة موقع من بلدائري.
 This line is over its budget. The owner will see it.,هذا البند تجاوز ميزانيته. سيرى المالك ذلك.
 This month,هذا الشهر
 This name is reserved. Try another.,هذا الاسم محجوز. جرّب اسماً آخر.
@@ -1098,7 +1098,7 @@ This name is taken. Try another.,هذا الاسم مستخدم. جرّب اسم
 This quotation is locked as final. It can't be cancelled or revised.,عرض السعر هذا مقفل كنهائي. لا يمكن إلغاؤه أو مراجعته.
 This sign-up has expired. Please start again.,انتهت صلاحية هذا التسجيل. يرجى البدء من جديد.
 This week,هذا الأسبوع
-This workspace isn't connected to Buildiary.,مساحة العمل هذه غير مرتبطة ببيلدياري.
+This workspace isn't connected to Buildiary.,مساحة العمل هذه غير مرتبطة ببلدائري.
 This workspace's plan has ended. The owner can renew it in Plan & billing.,انتهت باقة مساحة العمل هذه. يستطيع المالك تجديدها من «الباقة والدفع».
 thousand,ألف
 Tile and marble,البلاط والرخام
@@ -1332,5 +1332,5 @@ Add the usual stages of building,أضف المراحل المعتادة للبن
 {0} stages added,تمت إضافة {0} مرحلة
 This project already has stages.,لهذا المشروع مراحل بالفعل.
 A product of,منتج من
-This is not a Buildiary project data file.,هذا ليس ملف بيانات مشروع بيلدياري.
+This is not a Buildiary project data file.,هذا ليس ملف بيانات مشروع بلدائري.
 The project data has been brought in.,تم إدخال بيانات المشروع.

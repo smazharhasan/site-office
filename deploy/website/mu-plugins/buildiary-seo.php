@@ -129,7 +129,7 @@ function buildiary_seo_graph($post, $slug, $lang, $title, $desc, $url) {
 		'@id' => $home . '#website',
 		'url' => $home,
 		'name' => 'Buildiary',
-		'alternateName' => ['بلڈیاری', 'بيلدياري'],
+		'alternateName' => ['بلڈائری', 'بلدائري'],
 		'inLanguage' => ['en', 'ur', 'ar'],
 		'publisher' => ['@id' => $home . '#org'],
 	];
@@ -221,7 +221,7 @@ function buildiary_seo_app($lang) {
 		'@type' => 'SoftwareApplication',
 		'@id' => $home . '#app',
 		'name' => 'Buildiary',
-		'alternateName' => ['بلڈیاری', 'بيلدياري'],
+		'alternateName' => ['بلڈائری', 'بلدائري'],
 		'description' => $text[$lang],
 		'url' => $home,
 		'applicationCategory' => 'BusinessApplication',
