@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, BackHandler, Linking, Platform, Text, View } from "react-native";
+import { ActivityIndicator, BackHandler, Image, Linking, Platform, Text, View, useColorScheme } from "react-native";
 import { WebView, type WebViewMessageEvent } from "react-native-webview";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -28,6 +28,7 @@ const T: Record<string, Record<L3, string>> = {
   needweb: { en: "Buildiary needs the internet to open {0}. Check your connection and try again.", ur: "{0} کھولنے کے لیے بلڈیاری کو انٹرنیٹ چاہیے۔ کنکشن چیک کر کے دوبارہ کوشش کریں۔", ar: "يحتاج بيلدياري إلى الإنترنت لفتح {0}. تحقق من الاتصال وحاول مجدداً." },
   retry: { en: "Try again", ur: "دوبارہ کوشش کریں", ar: "حاول مجدداً" },
   change: { en: "Change workspace", ur: "ورک اسپیس بدلیں", ar: "تغيير مساحة العمل" },
+  maker: { en: "A product of", ur: "تیار کردہ", ar: "منتج من" },
 };
 const t3 = (k: string, l: L3, ...a: string[]) => a.reduce((x, v, i) => x.split(`{${i}}`).join(v), T[k][l] || T[k].en);
 
@@ -49,7 +50,7 @@ type Msg = { id: number; type: string; title?: string; facing?: "back" | "front"
 /** Mimaar on ERPNext: the field screens of the site (/field) with the phone's live camera, GPS and card scanner.
  *  The first time, the address of the site is typed (villa31.frappe.cloud), or the laptop's QR code is scanned. */
 export default function Erp() {
-  const c = useColors(); const web = useRef<WebView>(null);
+  const c = useColors(); const dark = useColorScheme() === "dark"; const web = useRef<WebView>(null);
   const [site, setSite] = useState<string | null | undefined>(undefined);
   const [input, setInput] = useState(""); const [busy, setBusy] = useState(false); const [msg, setMsg] = useState("");
   const [failed, setFailed] = useState(false); const [canBack, setCanBack] = useState(false);
@@ -123,6 +124,10 @@ export default function Erp() {
         <Button title={t3("open", lang)} onPress={() => open(input)} busy={busy} />
       </View>
       <Text style={{ color: c.muted, marginTop: 16, textAlign: rtl ? "right" : "left" }} onPress={() => Linking.openURL(`https://${BASE}/start-trial/`).catch(() => {})}>{t3("trial", lang)}</Text>
+      <View style={{ alignItems: "center", marginTop: 32, gap: 6 }} accessible accessibilityLabel={`${t3("maker", lang)} SMH Global Services`}>
+        <Text style={{ color: c.muted, fontSize: 12 }}>{t3("maker", lang)}</Text>
+        <Image source={dark ? require("../assets/smh-global-light.png") : require("../assets/smh-global.png")} style={{ width: 112, height: 48 }} resizeMode="contain" />
+      </View>
     </Screen>
   );
   if (!site) return (
