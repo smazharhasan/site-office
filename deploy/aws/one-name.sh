@@ -5,6 +5,7 @@
 #   bash one-name.sh            the switch (the apps are offline for about 10 minutes)
 #   bash one-name.sh --undo     back to the old set-up (only before --finish; the old data was copied, not moved)
 #   bash one-name.sh --finish   once everything is checked: removes the old folders, data copies and images
+#   bash one-name.sh --resume   continues a switch that stopped after the data was copied (from the rename step)
 #
 # What changes: /opt/mimaar becomes /opt/buildiary (Docker project "buildiary", its data volumes copied),
 # the app and its records take the name Buildiary (patches/rename_pre.py, then migrate), SMH Global's own
@@ -67,6 +68,8 @@ NEWIMG="$REG/buildiary:16"; NEWBUCKET="buildiary-backups-$ACCOUNT-$REGION"
 OFFICE=$(awk 'NR==1{print $1}' /opt/edge/sites/office.caddy 2>/dev/null)
 echo "Villa 31: $OLDSITE -> $NEWSITE; console $CONSOLE; image $NEWIMG; backups $NEWBUCKET"
 
+block() { awk -v f="$1" 'BEGIN{h="cat > " f " <<\047EOF\047"} $0==h{p=1;next} p&&$0=="EOF"{exit} p' "$KEEP/bootstrap.sh"; }
+if [ "$MODE" != "--resume" ]; then
 say "Checks (nothing is changed yet)"
 aws s3api head-bucket --bucket "$NEWBUCKET" --region "$REGION" || die "bucket $NEWBUCKET not reachable: run one-name-aws.sh in CloudShell first"
 "$OLD/ecr-login.sh" || die "could not sign in to the image store"
@@ -79,7 +82,6 @@ IP=$(curl -s -H "X-aws-ec2-metadata-token: $(curl -s -X PUT http://169.254.169.2
 NEED=$(du -sm /var/lib/docker/volumes/mimaar_db-data/_data | cut -f1); FREE=$(df --output=avail -BM / | tail -1 | tr -dc 0-9)
 [ "$FREE" -gt $((NEED * 2 + 3000)) ] || die "not enough free disk for the data copy (${FREE} MB free, data ${NEED} MB)"
 # the new install script holds the helper scripts: each quoted block "cat > NAME <<'EOF'" ... "EOF"
-block() { awk -v f="$1" 'BEGIN{h="cat > " f " <<\047EOF\047"} $0==h{p=1;next} p&&$0=="EOF"{exit} p' "$KEEP/bootstrap.sh"; }
 for f in compose.yml sites.sh backup.sh update.sh buildiary-console.sh autoupdate.sh /opt/edge/sites/zz-buildiary.caddy /opt/website/update.sh; do
   [ -n "$(block "$f")" ] || die "$f not found in the new bootstrap.sh"
 done
@@ -124,7 +126,10 @@ cp "$OLD/ecr-login.sh" "$NEW/ecr-login.sh"
 for f in compose.yml sites.sh backup.sh update.sh buildiary-console.sh autoupdate.sh; do block "$f" > "$NEW/$f"; done
 block /opt/edge/sites/zz-buildiary.caddy > "$KEEP/zz-buildiary.caddy"
 chmod 700 "$NEW"/*.sh
-cd "$NEW"
+fi
+# from here on the new settings count (the old ones were loaded above for the backup and the paths)
+cd "$NEW" || die "$NEW missing"
+set -a; . "$NEW/.env"; set +a
 
 say "Renaming the app in every site's records, then updating each site (migrate)"
 docker compose up -d --wait db redis-cache redis-queue || die "database did not start"
