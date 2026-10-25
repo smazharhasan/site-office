@@ -4,7 +4,7 @@
   "slug": "home",
   "title": "Buildiary: construction site management for owners and builders",
   "seo_title": "Buildiary: Construction Management App for Owners & Builders",
-  "excerpt": "Buildiary puts your construction site on your phone: deliveries, store, payments, progress photos and people, checked with AI. English, Urdu and Arabic. 7 days free.",
+  "excerpt": "Buildiary puts your construction site on your phone: deliveries, store, payments, progress photos and people, checked with AI. English, Urdu and Arabic. {trial} days free.",
   "template": "",
   "file": "en/home.html"
  },
@@ -21,8 +21,8 @@
   "lang": "en",
   "slug": "pricing",
   "title": "Simple prices, in your currency",
-  "seo_title": "Buildiary Pricing: Owner & Builder Plans, 7 Days Free",
-  "excerpt": "Buildiary plans for home owners and builders, monthly or yearly, in USD, PKR, SAR, AED or QAR. 7 days free.",
+  "seo_title": "Buildiary Pricing: Owner & Builder Plans, {trial} Days Free",
+  "excerpt": "Buildiary plans for home owners and builders, monthly or yearly, in USD, PKR, SAR, AED or QAR. {trial} days free.",
   "template": "",
   "file": "en/pricing.html"
  },
@@ -139,7 +139,7 @@
   "slug": "home",
   "title": "بلڈائری: گھر بنانے والوں اور بلڈرز کے لیے سائٹ مینجمنٹ",
   "seo_title": "بلڈائری: گھر کی تعمیر اور سائٹ مینجمنٹ کی ایپ | Buildiary",
-  "excerpt": "بلڈائری آپ کی تعمیراتی سائٹ کو آپ کے فون پر لے آتا ہے: سامان کی وصولی، اسٹور، ادائیگیاں، کام کی تصاویر اور لوگ، اے آئی کی جانچ کے ساتھ۔ انگریزی، اردو اور عربی میں۔ 7 دن مفت۔",
+  "excerpt": "بلڈائری آپ کی تعمیراتی سائٹ کو آپ کے فون پر لے آتا ہے: سامان کی وصولی، اسٹور، ادائیگیاں، کام کی تصاویر اور لوگ، اے آئی کی جانچ کے ساتھ۔ انگریزی، اردو اور عربی میں۔ {trial} دن مفت۔",
   "template": "",
   "file": "ur/home.html"
  },
@@ -156,8 +156,8 @@
   "lang": "ur",
   "slug": "pricing",
   "title": "سادہ قیمتیں، آپ کی کرنسی میں",
-  "seo_title": "قیمتیں: مالک اور بلڈر پلان، 7 دن مفت | بلڈائری",
-  "excerpt": "گھر بنانے والوں اور بلڈرز کے لیے بلڈائری کے پلان، ماہانہ یا سالانہ، روپے، ریال، درہم یا ڈالر میں۔ 7 دن مفت۔",
+  "seo_title": "قیمتیں: مالک اور بلڈر پلان، {trial} دن مفت | بلڈائری",
+  "excerpt": "گھر بنانے والوں اور بلڈرز کے لیے بلڈائری کے پلان، ماہانہ یا سالانہ، روپے، ریال، درہم یا ڈالر میں۔ {trial} دن مفت۔",
   "template": "",
   "file": "ur/pricing.html"
  },
@@ -274,7 +274,7 @@
   "slug": "home",
   "title": "بلدائري: إدارة مواقع البناء للمالك والمقاول",
   "seo_title": "بلدائري: تطبيق إدارة مواقع البناء للمالك والمقاول | Buildiary",
-  "excerpt": "بلدائري يضع موقع البناء على جوالك: التوريدات والمخزن والدفعات وصور التقدّم والعمّال، مع تدقيق بالذكاء الاصطناعي. بالعربية والإنجليزية والأردية. 7 أيام مجاناً.",
+  "excerpt": "بلدائري يضع موقع البناء على جوالك: التوريدات والمخزن والدفعات وصور التقدّم والعمّال، مع تدقيق بالذكاء الاصطناعي. بالعربية والإنجليزية والأردية. {trial_days} مجاناً.",
   "template": "",
   "file": "ar/home.html"
  },
@@ -291,8 +291,8 @@
   "lang": "ar",
   "slug": "pricing",
   "title": "أسعار بسيطة، بعملتك",
-  "seo_title": "الأسعار: باقة المالك وباقة المقاول، 7 أيام مجاناً | بلدائري",
-  "excerpt": "باقات بلدائري للمالك والمقاول، شهرياً أو سنوياً، بالريال أو الدرهم أو الدولار أو الروبية. 7 أيام مجاناً.",
+  "seo_title": "الأسعار: باقة المالك وباقة المقاول، {trial_days} مجاناً | بلدائري",
+  "excerpt": "باقات بلدائري للمالك والمقاول، شهرياً أو سنوياً، بالريال أو الدرهم أو الدولار أو الروبية. {trial_days} مجاناً.",
   "template": "",
   "file": "ar/pricing.html"
  },

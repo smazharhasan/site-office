@@ -28,11 +28,16 @@ function buildiary_seo_page() {
 
 function buildiary_seo_title($post) {
 	$t = get_post_meta($post->ID, '_buildiary_seo_title', true);
-	return $t ?: wp_strip_all_tags(get_the_title($post)) . ' · Buildiary';
+	return buildiary_seo_fill($t ?: wp_strip_all_tags(get_the_title($post)) . ' · Buildiary');
 }
 
 function buildiary_seo_description($post) {
-	return wp_strip_all_tags($post->post_excerpt ?: wp_trim_words(strip_shortcodes($post->post_content), 30, '…'));
+	return buildiary_seo_fill(wp_strip_all_tags($post->post_excerpt ?: wp_trim_words(strip_shortcodes($post->post_content), 30, '…')));
+}
+
+/** The trial's length from the console (buildiary-site.php), in titles and descriptions. */
+function buildiary_seo_fill($s) {
+	return function_exists('buildiary_trial_fill') ? buildiary_trial_fill($s) : $s;
 }
 
 function buildiary_seo_asset($file) {
@@ -181,9 +186,9 @@ function buildiary_seo_graph($post, $slug, $lang, $title, $desc, $url) {
 function buildiary_seo_app($lang) {
 	$home = home_url('/');
 	$text = [
-		'en' => 'Construction site management app for home owners and builders: deliveries, the site store, payments, budget, build progress, inspections and the site team, on the phone. English, Urdu and Arabic. 7-day free trial.',
-		'ur' => 'گھر بنوانے والوں اور بلڈرز کے لیے کنسٹرکشن سائٹ مینجمنٹ ایپ: مال کی آمد، سائٹ اسٹور، ادائیگیاں، بجٹ، کام کی پیش رفت، معائنے اور سائٹ کی ٹیم، فون پر۔ اردو، انگریزی اور عربی۔ 7 دن مفت۔',
-		'ar' => 'تطبيق لإدارة مواقع البناء للمالك والمقاول: التوريدات ومخزن الموقع والدفعات والميزانية وتقدّم العمل والفحوصات وفريق الموقع، على الجوال. بالعربية والإنجليزية والأردية. تجربة مجانية 7 أيام.',
+		'en' => 'Construction site management app for home owners and builders: deliveries, the site store, payments, budget, build progress, inspections and the site team, on the phone. English, Urdu and Arabic. {trial}-day free trial.',
+		'ur' => 'گھر بنوانے والوں اور بلڈرز کے لیے کنسٹرکشن سائٹ مینجمنٹ ایپ: مال کی آمد، سائٹ اسٹور، ادائیگیاں، بجٹ، کام کی پیش رفت، معائنے اور سائٹ کی ٹیم، فون پر۔ اردو، انگریزی اور عربی۔ {trial} دن مفت۔',
+		'ar' => 'تطبيق لإدارة مواقع البناء للمالك والمقاول: التوريدات ومخزن الموقع والدفعات والميزانية وتقدّم العمل والفحوصات وفريق الموقع، على الجوال. بالعربية والإنجليزية والأردية. تجربة مجانية لمدة {trial_days}.',
 	];
 	$features = [
 		'Stores and deliveries received against purchase orders, with photos',
@@ -200,7 +205,7 @@ function buildiary_seo_app($lang) {
 	$pricing = function_exists('buildiary_url') ? buildiary_url('pricing', $lang) : home_url('/pricing/');
 	$data = function_exists('buildiary_plans') ? buildiary_plans() : ['plans' => []];
 	foreach ($data['plans'] ?? [] as $plan) {
-		foreach (['usd' => 'USD', 'PKR' => 'PKR', 'SAR' => 'SAR'] as $k => $cur) {
+		foreach (['usd' => 'USD', 'PKR' => 'PKR', 'SAR' => 'SAR', 'AED' => 'AED', 'QAR' => 'QAR'] as $k => $cur) {
 			foreach (['month' => 'P1M', 'year' => 'P1Y'] as $per => $dur) {
 				if (!isset($plan[$k][$per])) {
 					continue;
@@ -222,7 +227,7 @@ function buildiary_seo_app($lang) {
 		'@id' => $home . '#app',
 		'name' => 'Buildiary',
 		'alternateName' => ['بلڈائری', 'بلدائري'],
-		'description' => $text[$lang],
+		'description' => buildiary_seo_fill($text[$lang]),
 		'url' => $home,
 		'applicationCategory' => 'BusinessApplication',
 		'applicationSubCategory' => 'Construction management software',
@@ -268,7 +273,7 @@ function buildiary_seo_faq($content) {
 	}
 	$out = [];
 	foreach ($m as $qa) {
-		$out[] = ['@type' => 'Question', 'name' => wp_strip_all_tags($qa[1]), 'acceptedAnswer' => ['@type' => 'Answer', 'text' => wp_strip_all_tags($qa[2])]];
+		$out[] = ['@type' => 'Question', 'name' => buildiary_seo_fill(wp_strip_all_tags($qa[1])), 'acceptedAnswer' => ['@type' => 'Answer', 'text' => buildiary_seo_fill(wp_strip_all_tags($qa[2]))]];
 	}
 	return $out;
 }
@@ -357,7 +362,7 @@ function buildiary_llms_txt() {
 		}
 		return '- [' . wp_strip_all_tags(get_the_title($p)) . '](' . get_permalink($p) . '): ' . wp_strip_all_tags($p->post_excerpt) . "\n";
 	};
-	$out = "# Buildiary\n\n> Buildiary is a construction site management app for people building their own home and for builders and contractors running client sites, mainly in Pakistan, Saudi Arabia and the Gulf. It records deliveries, the site store, payments, the budget, build progress, inspections and the site team on the phone, in English, Urdu and Arabic. It is made by SMH Global Services (Private) Limited (https://www.smhglobal.com.pk). Every new workspace is free for 7 days; plans are paid monthly or yearly in USD, PKR or SAR.\n\n";
+	$out = "# Buildiary\n\n> Buildiary is a construction site management app for people building their own home and for builders and contractors running client sites, mainly in Pakistan, Saudi Arabia and the Gulf. It records deliveries, the site store, payments, the budget, build progress, inspections and the site team on the phone, in English, Urdu and Arabic. It is made by SMH Global Services (Private) Limited (https://www.smhglobal.com.pk). Every new workspace is free for {trial} days; plans are paid monthly or yearly in USD, PKR, SAR, AED or QAR.\n\n";
 	$out .= "## Key facts\n\n- Two modes: Owner (someone building their own house) and Builder (a contractor running several client sites, each with its own store).\n- Works in any phone or computer browser; an Android app is available for site staff.\n- Languages: English, Urdu and Arabic, chosen per person; Urdu and Arabic read right to left.\n- Built on ERPNext (open-source accounting and stock), with double-entry accounts behind every payment.\n- Each customer workspace is a separate database with daily backups.\n";
 	$data = function_exists('buildiary_plans') ? buildiary_plans() : ['plans' => []];
 	foreach ($data['plans'] ?? [] as $p) {
@@ -376,7 +381,7 @@ function buildiary_llms_txt() {
 	}
 	$out .= "\n## Company\n\n" . $page('about') . $page('contact') . $page('privacy') . $page('terms');
 	$out .= "\n## Other languages\n\n- [Urdu website](" . home_url('/ur/') . "): the same pages in Urdu.\n- [Arabic website](" . home_url('/ar/') . "): the same pages in Arabic.\n";
-	return $out;
+	return buildiary_seo_fill($out);
 }
 
 // ---- IndexNow: tells Bing and the other IndexNow search engines straight away when a page changes

@@ -1,11 +1,11 @@
 {
  "en": {
   "home_title": "Buildiary: construction site management for owners and builders",
-  "home_excerpt": "Buildiary puts your construction site on your phone: deliveries, store, payments, progress photos and people, checked with AI. English, Urdu and Arabic. 7 days free.",
+  "home_excerpt": "Buildiary puts your construction site on your phone: deliveries, store, payments, progress photos and people, checked with AI. English, Urdu and Arabic. {trial} days free.",
   "hero_eyebrow": "For home owners and builders",
   "hero_title": "Build your home without losing track of a single bag of cement.",
   "hero_lede": "Buildiary puts your site on your phone: what arrived, what was used, what was paid and how far the work has come. Every entry carries a photo, a name and a time.",
-  "cta_trial": "Start your free 7-day trial",
+  "cta_trial": "Start your free {trial}-day trial",
   "cta_prices": "See prices",
   "hero_note": "No card needed. English, Urdu and Arabic.",
   "shot_dash": "The Buildiary dashboard on a phone",
@@ -140,7 +140,7 @@
     "No. Buildiary runs in the phone's browser: open your workspace address and add it to the home screen. An Android app is available for site staff."
    ],
    [
-    "What happens after the 7-day trial?",
+    "What happens after the {trial}-day trial?",
     "Choose a plan and pay by bank transfer. We activate it as soon as we confirm the payment. If you don't pay, the workspace pauses after a few days and your data is kept."
    ],
    [
@@ -161,7 +161,7 @@
    ]
   ],
   "cta_title": "Start your free trial today",
-  "cta_lede": "7 days free. No card. Your workspace is ready in about a minute.",
+  "cta_lede": "{trial} days free. No card. Your workspace is ready in about a minute.",
   "features_title": "Every part of the site, in one app",
   "features_excerpt": "Stores, payments, budget, build progress, people, water tankers, petty cash and AI checks: what Buildiary does for owners and builders.",
   "features_lede": "Buildiary brings the store, the money, the schedule and the people of a construction site into one app, on the phone of everyone who works there.",
@@ -174,8 +174,8 @@
    "Your data can be exported whenever you ask"
   ],
   "pricing_title": "Simple prices, in your currency",
-  "pricing_excerpt": "Buildiary plans for home owners and builders, monthly or yearly, in USD, PKR, SAR, AED or QAR. 7 days free.",
-  "pricing_lede": "Start free for 7 days. Then pay monthly, or yearly and get two months free.",
+  "pricing_excerpt": "Buildiary plans for home owners and builders, monthly or yearly, in USD, PKR, SAR, AED or QAR. {trial} days free.",
+  "pricing_lede": "Start free for {trial} days. Then pay monthly, or yearly and get two months free.",
   "included_title": "Every plan includes",
   "included": [
    "Stores, deliveries and releases",
@@ -243,7 +243,7 @@
   "c_email_t": "Email",
   "c_email_d": "For sales, support and payments.",
   "c_trial_t": "Try it yourself",
-  "c_trial_d": "The quickest way to see Buildiary is your own workspace, free for 7 days.",
+  "c_trial_d": "The quickest way to see Buildiary is your own workspace, free for {trial} days.",
   "c_company_t": "SMH Global Services",
   "c_company_d": "Buildiary is developed and run by SMH Global Services.",
   "privacy_title": "Privacy policy",
@@ -278,7 +278,7 @@
    "## The service",
    "Buildiary is a web application for managing construction sites. We provide a separate workspace for each customer, reached at its own address, and the apps that open it.",
    "## Free trial",
-   "A new workspace is free for 7 days. At the end of the trial you can choose a plan and pay. If you don't, the workspace pauses after a few days and its data is kept as described below.",
+   "A new workspace is free for {trial} days. At the end of the trial you can choose a plan and pay. If you don't, the workspace pauses after a few days and its data is kept as described below.",
    "## Plans and payment",
    "- Plans are paid in advance, monthly or yearly, at the price shown when you pay.\n- You pay by bank transfer and send the receipt from Plan & billing. The plan starts or extends once we confirm the payment.\n- We may change prices with 30 days' notice; a change applies from your next payment.\n- Payments are not refundable, except where the law requires it.",
    "## Late payment and pausing",
@@ -302,7 +302,7 @@
   ],
   "home_seo": "Buildiary: Construction Management App for Owners & Builders",
   "features_seo": "Features: Stores, Payments, Progress & Site Diary | Buildiary",
-  "pricing_seo": "Buildiary Pricing: Owner & Builder Plans, 7 Days Free",
+  "pricing_seo": "Buildiary Pricing: Owner & Builder Plans, {trial} Days Free",
   "about_seo": "About Buildiary, a product of SMH Global Services",
   "contact_seo": "Contact Buildiary: Sales, Demo and Support",
   "privacy_seo": "Privacy Policy | Buildiary",
@@ -315,11 +315,11 @@
  },
  "ur": {
   "home_title": "بلڈائری: گھر بنانے والوں اور بلڈرز کے لیے سائٹ مینجمنٹ",
-  "home_excerpt": "بلڈائری آپ کی تعمیراتی سائٹ کو آپ کے فون پر لے آتا ہے: سامان کی وصولی، اسٹور، ادائیگیاں، کام کی تصاویر اور لوگ، اے آئی کی جانچ کے ساتھ۔ انگریزی، اردو اور عربی میں۔ 7 دن مفت۔",
+  "home_excerpt": "بلڈائری آپ کی تعمیراتی سائٹ کو آپ کے فون پر لے آتا ہے: سامان کی وصولی، اسٹور، ادائیگیاں، کام کی تصاویر اور لوگ، اے آئی کی جانچ کے ساتھ۔ انگریزی، اردو اور عربی میں۔ {trial} دن مفت۔",
   "hero_eyebrow": "گھر بنانے والوں اور بلڈرز کے لیے",
   "hero_title": "اپنا گھر بنائیں، سیمنٹ کی ایک بوری کا حساب بھی نہ کھوئیں۔",
   "hero_lede": "بلڈائری آپ کی سائٹ کو آپ کے فون پر لے آتا ہے: کیا آیا، کیا استعمال ہوا، کیا ادا ہوا اور کام کہاں تک پہنچا۔ ہر اندراج کے ساتھ تصویر، نام اور وقت ہوتا ہے۔",
-  "cta_trial": "7 دن کی مفت آزمائش شروع کریں",
+  "cta_trial": "{trial} دن کی مفت آزمائش شروع کریں",
   "cta_prices": "قیمتیں دیکھیں",
   "hero_note": "کارڈ کی ضرورت نہیں۔ انگریزی، اردو اور عربی میں۔",
   "shot_dash": "فون پر بلڈائری کا ڈیش بورڈ",
@@ -454,7 +454,7 @@
     "نہیں۔ بلڈائری فون کے براؤزر میں چلتا ہے: اپنے ورک اسپیس کا پتہ کھولیں اور اسے ہوم اسکرین پر شامل کر لیں۔ سائٹ کے عملے کے لیے اینڈرائیڈ ایپ بھی موجود ہے۔"
    ],
    [
-    "7 دن کی آزمائش کے بعد کیا ہوگا؟",
+    "{trial} دن کی آزمائش کے بعد کیا ہوگا؟",
     "پلان منتخب کریں اور بینک ٹرانسفر سے ادائیگی کریں۔ ادائیگی کی تصدیق ہوتے ہی ہم پلان فعال کر دیتے ہیں۔ اگر ادائیگی نہ ہو تو چند دن بعد ورک اسپیس رک جاتا ہے اور آپ کا ڈیٹا محفوظ رہتا ہے۔"
    ],
    [
@@ -475,7 +475,7 @@
    ]
   ],
   "cta_title": "آج ہی مفت آزمائش شروع کریں",
-  "cta_lede": "7 دن مفت۔ کارڈ کی ضرورت نہیں۔ آپ کا ورک اسپیس تقریباً ایک منٹ میں تیار۔",
+  "cta_lede": "{trial} دن مفت۔ کارڈ کی ضرورت نہیں۔ آپ کا ورک اسپیس تقریباً ایک منٹ میں تیار۔",
   "features_title": "سائٹ کا ہر حصہ، ایک ایپ میں",
   "features_excerpt": "اسٹور، ادائیگیاں، بجٹ، تعمیر کی پیش رفت، لوگ، پانی کے ٹینکر، پیٹی کیش اور اے آئی کی جانچ: بلڈائری مالکان اور بلڈرز کے لیے کیا کرتا ہے۔",
   "features_lede": "بلڈائری تعمیراتی سائٹ کا اسٹور، پیسہ، شیڈول اور لوگ ایک ایپ میں لے آتا ہے، وہاں کام کرنے والے ہر شخص کے فون پر۔",
@@ -488,8 +488,8 @@
    "آپ کا ڈیٹا جب چاہیں ایکسپورٹ ہو سکتا ہے"
   ],
   "pricing_title": "سادہ قیمتیں، آپ کی کرنسی میں",
-  "pricing_excerpt": "گھر بنانے والوں اور بلڈرز کے لیے بلڈائری کے پلان، ماہانہ یا سالانہ، روپے، ریال، درہم یا ڈالر میں۔ 7 دن مفت۔",
-  "pricing_lede": "7 دن مفت شروع کریں۔ پھر ماہانہ ادائیگی کریں، یا سالانہ کریں اور دو مہینے مفت پائیں۔",
+  "pricing_excerpt": "گھر بنانے والوں اور بلڈرز کے لیے بلڈائری کے پلان، ماہانہ یا سالانہ، روپے، ریال، درہم یا ڈالر میں۔ {trial} دن مفت۔",
+  "pricing_lede": "{trial} دن مفت شروع کریں۔ پھر ماہانہ ادائیگی کریں، یا سالانہ کریں اور دو مہینے مفت پائیں۔",
   "included_title": "ہر پلان میں شامل",
   "included": [
    "اسٹور، سامان کی وصولی اور اجرا",
@@ -557,7 +557,7 @@
   "c_email_t": "ای میل",
   "c_email_d": "خریداری، مدد اور ادائیگیوں کے لیے۔",
   "c_trial_t": "خود آزما کر دیکھیں",
-  "c_trial_d": "بلڈائری دیکھنے کا سب سے تیز طریقہ آپ کا اپنا ورک اسپیس ہے، 7 دن مفت۔",
+  "c_trial_d": "بلڈائری دیکھنے کا سب سے تیز طریقہ آپ کا اپنا ورک اسپیس ہے، {trial} دن مفت۔",
   "c_company_t": "ایس ایم ایچ گلوبل سروسز",
   "c_company_d": "بلڈائری ایس ایم ایچ گلوبل سروسز نے بنایا ہے اور وہی اسے چلاتی ہے۔",
   "privacy_title": "رازداری کی پالیسی",
@@ -574,13 +574,13 @@
   "terms": [
    "یہ خلاصہ بلڈائری کی اہم شرائط بتاتا ہے۔ مکمل اور سرکاری متن انگریزی شرائط ہیں: <a href=\"/terms/\">Terms of service</a>۔",
    "## مختصر",
-   "- نیا ورک اسپیس 7 دن مفت ہے۔ اس کے بعد پلان چن کر ادائیگی کریں۔\n- پلان کی ادائیگی پیشگی، ماہانہ یا سالانہ، بینک ٹرانسفر سے ہوتی ہے؛ تصدیق کے بعد پلان شروع ہوتا ہے۔\n- مدت ختم ہونے پر چند دن کی مہلت کے بعد ورک اسپیس رک جاتا ہے، ڈیٹا حذف نہیں ہوتا۔\n- آپ کا ڈیٹا آپ کی ملکیت ہے؛ جن لوگوں کی معلومات آپ درج کرتے ہیں ان کی اجازت آپ کی ذمہ داری ہے۔\n- اے آئی کے نتائج غلط بھی ہو سکتے ہیں؛ ان پر بھروسہ کرنے سے پہلے جانچ لیں۔\n- منسوخی کے لیے ای میل کریں؛ 30 دن بعد ورک اسپیس حذف کر دیا جاتا ہے۔",
+   "- نیا ورک اسپیس {trial} دن مفت ہے۔ اس کے بعد پلان چن کر ادائیگی کریں۔\n- پلان کی ادائیگی پیشگی، ماہانہ یا سالانہ، بینک ٹرانسفر سے ہوتی ہے؛ تصدیق کے بعد پلان شروع ہوتا ہے۔\n- مدت ختم ہونے پر چند دن کی مہلت کے بعد ورک اسپیس رک جاتا ہے، ڈیٹا حذف نہیں ہوتا۔\n- آپ کا ڈیٹا آپ کی ملکیت ہے؛ جن لوگوں کی معلومات آپ درج کرتے ہیں ان کی اجازت آپ کی ذمہ داری ہے۔\n- اے آئی کے نتائج غلط بھی ہو سکتے ہیں؛ ان پر بھروسہ کرنے سے پہلے جانچ لیں۔\n- منسوخی کے لیے ای میل کریں؛ 30 دن بعد ورک اسپیس حذف کر دیا جاتا ہے۔",
    "## رابطہ",
    "ای میل: info@smhglobal.com.pk"
   ],
   "home_seo": "بلڈائری: گھر کی تعمیر اور سائٹ مینجمنٹ کی ایپ | Buildiary",
   "features_seo": "خصوصیات: اسٹور، ادائیگیاں، پیش رفت اور سائٹ ڈائری | بلڈائری",
-  "pricing_seo": "قیمتیں: مالک اور بلڈر پلان، 7 دن مفت | بلڈائری",
+  "pricing_seo": "قیمتیں: مالک اور بلڈر پلان، {trial} دن مفت | بلڈائری",
   "about_seo": "بلڈائری کے بارے میں، ایس ایم ایچ گلوبل سروسز کی پیشکش",
   "contact_seo": "بلڈائری سے رابطہ: سیلز، ڈیمو اور مدد",
   "privacy_seo": "رازداری کی پالیسی | بلڈائری",
@@ -593,11 +593,11 @@
  },
  "ar": {
   "home_title": "بلدائري: إدارة مواقع البناء للمالك والمقاول",
-  "home_excerpt": "بلدائري يضع موقع البناء على جوالك: التوريدات والمخزن والدفعات وصور التقدّم والعمّال، مع تدقيق بالذكاء الاصطناعي. بالعربية والإنجليزية والأردية. 7 أيام مجاناً.",
+  "home_excerpt": "بلدائري يضع موقع البناء على جوالك: التوريدات والمخزن والدفعات وصور التقدّم والعمّال، مع تدقيق بالذكاء الاصطناعي. بالعربية والإنجليزية والأردية. {trial_days} مجاناً.",
   "hero_eyebrow": "لمن يبني بيته وللمقاولين",
   "hero_title": "ابنِ بيتك دون أن يضيع منك حساب كيس إسمنت واحد.",
   "hero_lede": "بلدائري يضع موقعك على جوالك: ما الذي وصل، وما الذي استُخدم، وما الذي دُفع، وإلى أين وصل العمل. كل قيد معه صورة واسم ووقت.",
-  "cta_trial": "ابدأ تجربتك المجانية لمدة 7 أيام",
+  "cta_trial": "ابدأ تجربتك المجانية لمدة {trial_days}",
   "cta_prices": "اطّلع على الأسعار",
   "hero_note": "بدون بطاقة. بالعربية والإنجليزية والأردية.",
   "shot_dash": "لوحة متابعة بلدائري على الجوال",
@@ -732,7 +732,7 @@
     "لا. يعمل بلدائري من متصفح الجوال: افتح عنوان مساحة عملك وأضفه إلى الشاشة الرئيسية. ويتوفر تطبيق أندرويد لفريق الموقع."
    ],
    [
-    "ماذا يحدث بعد التجربة المجانية لمدة 7 أيام؟",
+    "ماذا يحدث بعد التجربة المجانية لمدة {trial_days}؟",
     "اختر باقة وادفع بالتحويل البنكي، ونفعّلها فور تأكيد الدفع. وإن لم تدفع تتوقف مساحة العمل بعد أيام قليلة وتبقى بياناتك محفوظة."
    ],
    [
@@ -753,7 +753,7 @@
    ]
   ],
   "cta_title": "ابدأ تجربتك المجانية اليوم",
-  "cta_lede": "7 أيام مجاناً. بدون بطاقة. مساحة عملك جاهزة خلال دقيقة تقريباً.",
+  "cta_lede": "{trial_days} مجاناً. بدون بطاقة. مساحة عملك جاهزة خلال دقيقة تقريباً.",
   "features_title": "كل جزء من الموقع، في تطبيق واحد",
   "features_excerpt": "المخزن والدفعات والميزانية وتقدّم البناء والعمّال ووايتات الماء والعهدة النقدية وتدقيق الذكاء الاصطناعي: ما يقدّمه بلدائري للمالك والمقاول.",
   "features_lede": "بلدائري يجمع مخزن موقع البناء وأمواله وجدوله وعمّاله في تطبيق واحد، على جوال كل من يعمل فيه.",
@@ -766,8 +766,8 @@
    "يمكن تصدير بياناتك متى طلبت"
   ],
   "pricing_title": "أسعار بسيطة، بعملتك",
-  "pricing_excerpt": "باقات بلدائري للمالك والمقاول، شهرياً أو سنوياً، بالريال أو الدرهم أو الدولار أو الروبية. 7 أيام مجاناً.",
-  "pricing_lede": "ابدأ مجاناً لمدة 7 أيام. ثم ادفع شهرياً، أو سنوياً واحصل على شهرين مجاناً.",
+  "pricing_excerpt": "باقات بلدائري للمالك والمقاول، شهرياً أو سنوياً، بالريال أو الدرهم أو الدولار أو الروبية. {trial_days} مجاناً.",
+  "pricing_lede": "ابدأ مجاناً لمدة {trial_days}. ثم ادفع شهرياً، أو سنوياً واحصل على شهرين مجاناً.",
   "included_title": "كل باقة تشمل",
   "included": [
    "المخزن والتوريدات والصرف",
@@ -835,7 +835,7 @@
   "c_email_t": "البريد الإلكتروني",
   "c_email_d": "للمبيعات والدعم والدفعات.",
   "c_trial_t": "جرّبه بنفسك",
-  "c_trial_d": "أسرع طريقة لرؤية بلدائري هي مساحة عملك الخاصة، مجاناً لمدة 7 أيام.",
+  "c_trial_d": "أسرع طريقة لرؤية بلدائري هي مساحة عملك الخاصة، مجاناً لمدة {trial_days}.",
   "c_company_t": "SMH Global Services",
   "c_company_d": "تطوّر SMH Global Services منصة بلدائري وتشغّلها.",
   "privacy_title": "سياسة الخصوصية",
@@ -852,13 +852,13 @@
   "terms": [
    "يوضح هذا الملخص أهم شروط بلدائري. النص الكامل والرسمي هو الشروط باللغة الإنجليزية: <a href=\"/terms/\">Terms of service</a>.",
    "## باختصار",
-   "- مساحة العمل الجديدة مجانية لمدة 7 أيام، ثم تختار باقة وتدفع.\n- تُدفع الباقات مقدّماً، شهرياً أو سنوياً، بالتحويل البنكي، وتبدأ بعد تأكيد الدفع.\n- عند انتهاء المدة وبعد أيام سماح قليلة تتوقف مساحة العمل دون حذف البيانات.\n- بياناتك ملكك، وأنت مسؤول عن الحصول على إذن من تُسجّل بياناتهم.\n- قد تخطئ نتائج الذكاء الاصطناعي، فراجعها قبل الاعتماد عليها.\n- للإلغاء راسلنا بالبريد، وتُحذف مساحة العمل بعد 30 يوماً.",
+   "- مساحة العمل الجديدة مجانية لمدة {trial_days}، ثم تختار باقة وتدفع.\n- تُدفع الباقات مقدّماً، شهرياً أو سنوياً، بالتحويل البنكي، وتبدأ بعد تأكيد الدفع.\n- عند انتهاء المدة وبعد أيام سماح قليلة تتوقف مساحة العمل دون حذف البيانات.\n- بياناتك ملكك، وأنت مسؤول عن الحصول على إذن من تُسجّل بياناتهم.\n- قد تخطئ نتائج الذكاء الاصطناعي، فراجعها قبل الاعتماد عليها.\n- للإلغاء راسلنا بالبريد، وتُحذف مساحة العمل بعد 30 يوماً.",
    "## التواصل",
    "البريد الإلكتروني: info@smhglobal.com.pk"
   ],
   "home_seo": "بلدائري: تطبيق إدارة مواقع البناء للمالك والمقاول | Buildiary",
   "features_seo": "المزايا: المخزن والدفعات وتقدّم العمل ويومية الموقع | بلدائري",
-  "pricing_seo": "الأسعار: باقة المالك وباقة المقاول، 7 أيام مجاناً | بلدائري",
+  "pricing_seo": "الأسعار: باقة المالك وباقة المقاول، {trial_days} مجاناً | بلدائري",
   "about_seo": "عن بلدائري، منتج من SMH Global Services",
   "contact_seo": "تواصل مع بلدائري: المبيعات والعرض التجريبي والدعم",
   "privacy_seo": "سياسة الخصوصية | بلدائري",

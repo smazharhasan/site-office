@@ -100,8 +100,8 @@ function buildiary_t($key) {
 			'by' => 'A product of SMH Global Services', 'by_short' => 'A product of', 'maker_line' => 'A product of SMH Global Services (Private) Limited', 'signin' => 'Sign in to your workspace', 'langs' => 'Language',
 			'month' => 'Monthly', 'year' => 'Yearly', 'per_month' => 'a month', 'per_year' => 'a year', 'save' => '2 months free',
 			'projects' => '%d projects', 'project1' => '1 project', 'users' => '%d people sign in', 'storage' => '%d GB for photos and files',
-			'start' => 'Start 7-day free trial', 'owner' => 'Owner', 'builder' => 'Builder', 'popular' => 'For builders',
-			'trial_note' => '7 days free, no card needed.', 'currency' => 'Currency',
+			'start' => 'Start {trial}-day free trial', 'owner' => 'Owner', 'builder' => 'Builder', 'popular' => 'For builders',
+			'trial_note' => '{trial} days free, no card needed.', 'currency' => 'Currency',
 			'solutions' => 'Solutions', 'company_menu' => 'Company', 'all_features' => 'See all features', 'all_guides' => 'All guides', 'mega_note' => 'One app for the owner, the builder and the site team.',
 			'f_stores' => 'Stores and deliveries', 'fd_stores' => 'Receive against orders, release with a photo',
 			'f_money' => 'Payments and budget', 'fd_money' => 'Bills, payments with proof, budget by phase',
@@ -126,8 +126,8 @@ function buildiary_t($key) {
 			'by' => 'ایس ایم ایچ گلوبل سروسز کی پیشکش', 'by_short' => 'تیار کردہ', 'maker_line' => 'ایس ایم ایچ گلوبل سروسز (پرائیویٹ) لمیٹڈ کی پیشکش', 'signin' => 'اپنے ورک اسپیس میں لاگ اِن کریں', 'langs' => 'زبان',
 			'month' => 'ماہانہ', 'year' => 'سالانہ', 'per_month' => 'ماہانہ', 'per_year' => 'سالانہ', 'save' => '2 مہینے مفت',
 			'projects' => '%d پروجیکٹ', 'project1' => '1 پروجیکٹ', 'users' => '%d لوگ لاگ اِن کر سکیں', 'storage' => '%d جی بی تصاویر اور فائلوں کے لیے',
-			'start' => '7 دن کی مفت آزمائش شروع کریں', 'owner' => 'مالک', 'builder' => 'بلڈر', 'popular' => 'بلڈرز کے لیے',
-			'trial_note' => '7 دن مفت، کارڈ کی ضرورت نہیں۔', 'currency' => 'کرنسی',
+			'start' => '{trial} دن کی مفت آزمائش شروع کریں', 'owner' => 'مالک', 'builder' => 'بلڈر', 'popular' => 'بلڈرز کے لیے',
+			'trial_note' => '{trial} دن مفت، کارڈ کی ضرورت نہیں۔', 'currency' => 'کرنسی',
 			'solutions' => 'کن کے لیے', 'company_menu' => 'کمپنی', 'all_features' => 'تمام خصوصیات دیکھیں', 'all_guides' => 'تمام رہنمائی', 'mega_note' => 'مالک، بلڈر اور سائٹ ٹیم کے لیے ایک ہی ایپ۔',
 			'f_stores' => 'اسٹور اور سامان کی وصولی', 'fd_stores' => 'آرڈر کے مطابق وصولی، تصویر کے ساتھ اجرا',
 			'f_money' => 'ادائیگیاں اور بجٹ', 'fd_money' => 'بل، ثبوت کے ساتھ ادائیگیاں، مرحلہ وار بجٹ',
@@ -152,8 +152,8 @@ function buildiary_t($key) {
 			'by' => 'منتج من SMH Global Services', 'by_short' => 'منتج من', 'maker_line' => 'منتج من SMH Global Services (Private) Limited', 'signin' => 'الدخول إلى مساحة عملك', 'langs' => 'اللغة',
 			'month' => 'شهري', 'year' => 'سنوي', 'per_month' => 'شهرياً', 'per_year' => 'سنوياً', 'save' => 'شهران مجاناً',
 			'projects' => '%d مشاريع', 'project1' => 'مشروع واحد', 'users' => '%d مستخدمين', 'storage' => '%d جيجابايت للصور والملفات',
-			'start' => 'ابدأ تجربة مجانية لمدة 7 أيام', 'owner' => 'المالك', 'builder' => 'المقاول', 'popular' => 'للمقاولين',
-			'trial_note' => '7 أيام مجاناً، بدون بطاقة.', 'currency' => 'العملة',
+			'start' => 'ابدأ تجربة مجانية لمدة {trial_days}', 'owner' => 'المالك', 'builder' => 'المقاول', 'popular' => 'للمقاولين',
+			'trial_note' => '{trial_days} مجاناً، بدون بطاقة.', 'currency' => 'العملة',
 			'solutions' => 'الحلول', 'company_menu' => 'الشركة', 'all_features' => 'شاهد كل المزايا', 'all_guides' => 'كل الأدلة', 'mega_note' => 'تطبيق واحد للمالك والمقاول وفريق الموقع.',
 			'f_stores' => 'المخزن والتوريدات', 'fd_stores' => 'استلام مقابل الطلب، وصرف مع صورة',
 			'f_money' => 'الدفعات والميزانية', 'fd_money' => 'الفواتير والدفعات بالإثبات والميزانية حسب المرحلة',
@@ -172,8 +172,36 @@ function buildiary_t($key) {
 			'ws_bad' => 'استخدم الحروف الإنجليزية والأرقام والشرطة فقط.', 'ws_new' => 'جديد على بلدائري؟', 'pay_note' => 'ادفع بالتحويل البنكي في باكستان أو الإمارات أو السعودية.', 'close' => 'إغلاق',
 		],
 	];
-	return $T[buildiary_lang()][$key] ?? $T['en'][$key] ?? $key;
+	return buildiary_trial_fill($T[buildiary_lang()][$key] ?? $T['en'][$key] ?? $key);
 }
+
+/** The free trial's length, as set in the console (Buildiary Cloud Settings). */
+function buildiary_trial_days() {
+	$d = function_exists('buildiary_plans') ? buildiary_plans() : [];
+	return max(1, (int) ($d['trial_days'] ?? 7));
+}
+
+/** Puts the trial's length into a text: {trial} is the number, {trial_days} the number with "days" (Arabic grammar needs it). */
+function buildiary_trial_fill($s) {
+	if (!is_string($s) || strpos($s, '{trial') === false) {
+		return $s;
+	}
+	$n = buildiary_trial_days();
+	$lang = buildiary_lang();
+	if ($lang === 'ar') {
+		$days = $n === 1 ? 'يوم واحد' : ($n === 2 ? 'يومان' : ($n <= 10 ? $n . ' أيام' : $n . ' يوماً'));
+	} elseif ($lang === 'ur') {
+		$days = $n . ' دن';
+	} else {
+		$days = $n . ($n === 1 ? ' day' : ' days');
+	}
+	return str_replace(['{trial_days}', '{trial}'], [$days, (string) $n], $s);
+}
+// pages, titles and excerpts carry the placeholders; they are filled when shown
+add_filter('the_content', 'buildiary_trial_fill', 20);
+add_filter('the_title', 'buildiary_trial_fill', 20);
+add_filter('get_the_excerpt', 'buildiary_trial_fill', 20);
+add_filter('render_block', 'buildiary_trial_fill', 20);
 
 function buildiary_logo_svg($size = 36) {
 	return '<svg width="' . (int) $size . '" height="' . (int) $size . '" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><rect width="120" height="120" rx="26" fill="#1E3A5F"/><path d="M96 .08A26 26 0 0 1 106 2.93V117.07A26 26 0 0 1 96 119.92Z" fill="#F2B01E"/><path d="M41.687999999999995 48.313Q45.574 48.313 48.735 50.343Q51.895999999999994 52.373000000000005 53.723 56.143Q55.55 59.913000000000004 55.55 64.959Q55.55 70.00500000000001 53.723 73.804Q51.895999999999994 77.60300000000001 48.735 79.63300000000001Q45.574 81.66300000000001 41.687999999999995 81.66300000000001Q38.382 81.66300000000001 35.946 80.358Q33.51 79.05300000000001 32.175999999999995 76.733V81.257H20.807999999999996V38.337H32.175999999999995V53.243Q33.51 50.923 35.946 49.618Q38.382 48.313 41.687999999999995 48.313ZM38.092 58.23100000000001Q35.598 58.23100000000001 33.887 60.02900000000001Q32.175999999999995 61.827000000000005 32.175999999999995 64.959Q32.175999999999995 68.149 33.887 69.947Q35.598 71.745 38.092 71.745Q40.586 71.745 42.297 69.918Q44.007999999999996 68.09100000000001 44.007999999999996 64.959Q44.007999999999996 61.769000000000005 42.297 60.00000000000001Q40.586 58.23100000000001 38.092 58.23100000000001Z M70.312 48.313Q73.444 48.313 75.90899999999999 49.618Q78.374 50.923 79.766 53.185V38.337H91.19200000000001V81.257H79.766V76.733Q78.432 78.995 75.99600000000001 80.32900000000001Q73.56 81.66300000000001 70.254 81.66300000000001Q66.368 81.66300000000001 63.206999999999994 79.63300000000001Q60.046 77.60300000000001 58.219 73.804Q56.392 70.00500000000001 56.392 64.959Q56.392 59.913000000000004 58.219 56.143Q60.046 52.373000000000005 63.236000000000004 50.343Q66.426 48.313 70.312 48.313ZM73.908 58.23100000000001Q71.356 58.23100000000001 69.674 60.00000000000001Q67.992 61.769000000000005 67.992 64.959Q67.992 68.09100000000001 69.674 69.918Q71.356 71.745 73.908 71.745Q76.402 71.745 78.113 69.947Q79.824 68.149 79.824 64.959Q79.824 61.827000000000005 78.113 60.02900000000001Q76.402 58.23100000000001 73.908 58.23100000000001Z" fill="#FFFFFF"/></svg>';

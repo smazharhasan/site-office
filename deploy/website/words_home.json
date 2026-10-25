@@ -3,54 +3,168 @@
   "hero_eyebrow": "Construction management for Pakistan and the Gulf",
   "hero_title": "Your construction site, on your phone.",
   "hero_lede": "Deliveries, stores, payments, progress and people, each recorded on site with a photo, a name and a time. The owner and the builder see the same facts, every day.",
-  "hero_points": ["7 days free, no card", "English, Urdu and Arabic", "PKR, SAR, AED, QAR or USD"],
+  "hero_points": [
+   "{trial} days free, no card",
+   "English, Urdu and Arabic",
+   "PKR, SAR, AED, QAR or USD"
+  ],
   "float": [
-   {"t": "Cement received", "d": "300 bags · delivery note photo"},
-   {"t": "Payment approved", "d": "Steel supplier · receipt attached"},
-   {"t": "14 on site today", "d": "Site cards scanned at the gate"}
+   {
+    "t": "Cement received",
+    "d": "300 bags · delivery note photo"
+   },
+   {
+    "t": "Payment approved",
+    "d": "Steel supplier · receipt attached"
+   },
+   {
+    "t": "14 on site today",
+    "d": "Site cards scanned at the gate"
+   }
   ],
   "facts": [
-   {"k": "1 min", "t": "to set up your workspace"},
-   {"k": "3", "t": "languages for the whole team"},
-   {"k": "5", "t": "currencies: PKR, SAR, AED, QAR, USD"},
-   {"k": "7 days", "t": "free trial, no card needed"}
+   {
+    "k": "1 min",
+    "t": "to set up your workspace"
+   },
+   {
+    "k": "3",
+    "t": "languages for the whole team"
+   },
+   {
+    "k": "5",
+    "t": "currencies: PKR, SAR, AED, QAR, USD"
+   },
+   {
+    "k": "{trial} days",
+    "t": "free trial, no card needed"
+   }
   ],
   "origin": "Born on a real building site, not in an office.",
   "who_eyebrow": "Who it is for",
   "who_title": "Made for everyone on the build",
   "who": [
-   {"t": "Home owners", "d": "Building your own house? See every delivery, payment and stage without standing on site all day.", "a": "For home owners", "href": "home-owners", "img": "couple"},
-   {"t": "Builders and contractors", "d": "Run several client sites with one team, and show every client progress they can trust.", "a": "For builders", "href": "builders", "img": "engineers"},
-   {"t": "Building from abroad", "d": "Working in the Gulf while your house goes up back home? Follow the site, approve payments and see photos from anywhere.", "a": "For home owners", "href": "home-owners", "img": "villa"},
-   {"t": "Site teams", "d": "Supervisors and store keepers record deliveries, releases and attendance in seconds, with big buttons and site cards.", "a": "See the features", "href": "features", "img": "room"}
+   {
+    "t": "Home owners",
+    "d": "Building your own house? See every delivery, payment and stage without standing on site all day.",
+    "a": "For home owners",
+    "href": "home-owners",
+    "img": "couple"
+   },
+   {
+    "t": "Builders and contractors",
+    "d": "Run several client sites with one team, and show every client progress they can trust.",
+    "a": "For builders",
+    "href": "builders",
+    "img": "engineers"
+   },
+   {
+    "t": "Building from abroad",
+    "d": "Working in the Gulf while your house goes up back home? Follow the site, approve payments and see photos from anywhere.",
+    "a": "For home owners",
+    "href": "home-owners",
+    "img": "villa"
+   },
+   {
+    "t": "Site teams",
+    "d": "Supervisors and store keepers record deliveries, releases and attendance in seconds, with big buttons and site cards.",
+    "a": "See the features",
+    "href": "features",
+    "img": "room"
+   }
   ],
   "tabs_eyebrow": "What Buildiary does",
   "tabs_title": "Everything that happens on site, in one place",
-  "tab_names": {"stores": "Stores", "money": "Money", "build": "Progress", "people": "People"},
+  "tab_names": {
+   "stores": "Stores",
+   "money": "Money",
+   "build": "Progress",
+   "people": "People"
+  },
   "leaks_eyebrow": "Why owners and builders switch",
   "leaks_title": "Stop the usual leaks on a building site",
   "leaks_lede": "Material walks off, bills grow and work slips when the only record is a notebook and a few WhatsApp photos. Buildiary puts a photo, a name and a time on every step.",
   "leaks": [
-   {"p": "Ghost workers and proxy attendance", "s": "Site cards with a PIN, a face check against the registered photo, and the phone's location for attendance."},
-   {"p": "Material that disappears", "s": "Every bag is received against an order and released to a named person, with photos at each step."},
-   {"p": "Bills that don't add up", "s": "Quotations are locked before an order is raised, and you pay only what is due, with a receipt for every payment."},
-   {"p": "Work that slips", "s": "Each stage shows planned against built, with a daily site diary and behind-plan stages flagged on the dashboard."}
+   {
+    "p": "Ghost workers and proxy attendance",
+    "s": "Site cards with a PIN, a face check against the registered photo, and the phone's location for attendance."
+   },
+   {
+    "p": "Material that disappears",
+    "s": "Every bag is received against an order and released to a named person, with photos at each step."
+   },
+   {
+    "p": "Bills that don't add up",
+    "s": "Quotations are locked before an order is raised, and you pay only what is due, with a receipt for every payment."
+   },
+   {
+    "p": "Work that slips",
+    "s": "Each stage shows planned against built, with a daily site diary and behind-plan stages flagged on the dashboard."
+   }
   ],
   "tools_eyebrow": "All the tools",
   "tools_title": "One app for the whole build",
   "tools": [
-   {"ic": "doc", "t": "Quotations and orders", "d": "Quotations locked as final before an order is raised."},
-   {"ic": "stores", "t": "Store and stock", "d": "Stock, low-stock alerts and every movement of an item."},
-   {"ic": "money", "t": "Supplier payments", "d": "Pay only what is due, with a receipt for every payment."},
-   {"ic": "chart", "t": "Budget and cash flow", "d": "Budget by phase and a cash-flow forecast for the project."},
-   {"ic": "wallet", "t": "Petty cash", "d": "Given, spent and returned by person, with bills."},
-   {"ic": "build", "t": "Build progress", "d": "Stages with planned dates and percentage built."},
-   {"ic": "book", "t": "Daily site diary", "d": "What happened on site today, with photos."},
-   {"ic": "check", "t": "Inspections and snags", "d": "Checks, defects and who fixes them."},
-   {"ic": "people", "t": "Site cards and attendance", "d": "QR site cards, a PIN and a face check."},
-   {"ic": "water", "t": "Water tankers", "d": "Every tanker with its size and TDS reading."},
-   {"ic": "ask", "t": "Ask the project", "d": "Plain questions, answers from your live records."},
-   {"ic": "share", "t": "Supplier statements", "d": "Account statements to send on WhatsApp."}
+   {
+    "ic": "doc",
+    "t": "Quotations and orders",
+    "d": "Quotations locked as final before an order is raised."
+   },
+   {
+    "ic": "stores",
+    "t": "Store and stock",
+    "d": "Stock, low-stock alerts and every movement of an item."
+   },
+   {
+    "ic": "money",
+    "t": "Supplier payments",
+    "d": "Pay only what is due, with a receipt for every payment."
+   },
+   {
+    "ic": "chart",
+    "t": "Budget and cash flow",
+    "d": "Budget by phase and a cash-flow forecast for the project."
+   },
+   {
+    "ic": "wallet",
+    "t": "Petty cash",
+    "d": "Given, spent and returned by person, with bills."
+   },
+   {
+    "ic": "build",
+    "t": "Build progress",
+    "d": "Stages with planned dates and percentage built."
+   },
+   {
+    "ic": "book",
+    "t": "Daily site diary",
+    "d": "What happened on site today, with photos."
+   },
+   {
+    "ic": "check",
+    "t": "Inspections and snags",
+    "d": "Checks, defects and who fixes them."
+   },
+   {
+    "ic": "people",
+    "t": "Site cards and attendance",
+    "d": "QR site cards, a PIN and a face check."
+   },
+   {
+    "ic": "water",
+    "t": "Water tankers",
+    "d": "Every tanker with its size and TDS reading."
+   },
+   {
+    "ic": "ask",
+    "t": "Ask the project",
+    "d": "Plain questions, answers from your live records."
+   },
+   {
+    "ic": "share",
+    "t": "Supplier statements",
+    "d": "Account statements to send on WhatsApp."
+   }
   ],
   "cur_eyebrow": "Your money, your language",
   "cur_title": "See it in your currency",
@@ -58,60 +172,174 @@
   "cur_label": "Show amounts in",
   "steps_link": "Start your free trial",
   "band_title": "Build with the facts in your pocket",
-  "band_lede": "7 days free. No card. Your workspace is ready in about a minute."
+  "band_lede": "{trial} days free. No card. Your workspace is ready in about a minute."
  },
  "ur": {
   "hero_eyebrow": "پاکستان اور خلیجی ممالک کے لیے کنسٹرکشن مینجمنٹ",
   "hero_title": "آپ کی تعمیراتی سائٹ، آپ کے فون پر۔",
   "hero_lede": "سامان کی آمد، اسٹور، ادائیگیاں، کام کی پیش رفت اور لوگ، ہر چیز سائٹ پر ہی تصویر، نام اور وقت کے ساتھ درج ہوتی ہے۔ مالک اور بلڈر روز ایک ہی حقائق دیکھتے ہیں۔",
-  "hero_points": ["7 دن مفت، کارڈ کی ضرورت نہیں", "انگریزی، اردو اور عربی", "PKR، SAR، AED، QAR یا USD"],
+  "hero_points": [
+   "{trial} دن مفت، کارڈ کی ضرورت نہیں",
+   "انگریزی، اردو اور عربی",
+   "PKR، SAR، AED، QAR یا USD"
+  ],
   "float": [
-   {"t": "سیمنٹ وصول ہو گیا", "d": "300 بوریاں · ڈیلیوری نوٹ کی تصویر"},
-   {"t": "ادائیگی منظور", "d": "سریے والا · رسید منسلک"},
-   {"t": "آج سائٹ پر 14 لوگ", "d": "گیٹ پر سائٹ کارڈ اسکین ہوئے"}
+   {
+    "t": "سیمنٹ وصول ہو گیا",
+    "d": "300 بوریاں · ڈیلیوری نوٹ کی تصویر"
+   },
+   {
+    "t": "ادائیگی منظور",
+    "d": "سریے والا · رسید منسلک"
+   },
+   {
+    "t": "آج سائٹ پر 14 لوگ",
+    "d": "گیٹ پر سائٹ کارڈ اسکین ہوئے"
+   }
   ],
   "facts": [
-   {"k": "1 منٹ", "t": "میں آپ کا ورک اسپیس تیار"},
-   {"k": "3", "t": "زبانیں، پوری ٹیم کے لیے"},
-   {"k": "5", "t": "کرنسیاں: PKR، SAR، AED، QAR، USD"},
-   {"k": "7 دن", "t": "مفت آزمائش، کارڈ کے بغیر"}
+   {
+    "k": "1 منٹ",
+    "t": "میں آپ کا ورک اسپیس تیار"
+   },
+   {
+    "k": "3",
+    "t": "زبانیں، پوری ٹیم کے لیے"
+   },
+   {
+    "k": "5",
+    "t": "کرنسیاں: PKR، SAR، AED، QAR، USD"
+   },
+   {
+    "k": "{trial} دن",
+    "t": "مفت آزمائش، کارڈ کے بغیر"
+   }
   ],
   "origin": "دفتر میں نہیں، ایک حقیقی تعمیراتی سائٹ پر بنا۔",
   "who_eyebrow": "یہ کس کے لیے ہے",
   "who_title": "تعمیر سے جڑے ہر شخص کے لیے",
   "who": [
-   {"t": "گھر بنوانے والے", "d": "اپنا گھر بنوا رہے ہیں؟ سارا دن سائٹ پر کھڑے ہوئے بغیر ہر ڈیلیوری، ادائیگی اور مرحلہ دیکھیں۔", "a": "گھر بنوانے والوں کے لیے", "href": "home-owners", "img": "couple"},
-   {"t": "بلڈرز اور ٹھیکیدار", "d": "ایک ٹیم کے ساتھ کئی کلائنٹ سائٹس چلائیں، اور ہر کلائنٹ کو قابلِ اعتماد پیش رفت دکھائیں۔", "a": "بلڈرز کے لیے", "href": "builders", "img": "engineers"},
-   {"t": "بیرونِ ملک سے گھر بنوانے والے", "d": "خلیج میں کام کر رہے ہیں اور گھر پاکستان میں بن رہا ہے؟ کہیں سے بھی سائٹ دیکھیں، ادائیگیاں منظور کریں اور تصاویر دیکھیں۔", "a": "گھر بنوانے والوں کے لیے", "href": "home-owners", "img": "villa"},
-   {"t": "سائٹ کی ٹیم", "d": "سپروائزر اور اسٹور کیپر بڑے بٹنوں اور سائٹ کارڈ سے سامان کی آمد، اجرا اور حاضری سیکنڈوں میں درج کرتے ہیں۔", "a": "خصوصیات دیکھیں", "href": "features", "img": "room"}
+   {
+    "t": "گھر بنوانے والے",
+    "d": "اپنا گھر بنوا رہے ہیں؟ سارا دن سائٹ پر کھڑے ہوئے بغیر ہر ڈیلیوری، ادائیگی اور مرحلہ دیکھیں۔",
+    "a": "گھر بنوانے والوں کے لیے",
+    "href": "home-owners",
+    "img": "couple"
+   },
+   {
+    "t": "بلڈرز اور ٹھیکیدار",
+    "d": "ایک ٹیم کے ساتھ کئی کلائنٹ سائٹس چلائیں، اور ہر کلائنٹ کو قابلِ اعتماد پیش رفت دکھائیں۔",
+    "a": "بلڈرز کے لیے",
+    "href": "builders",
+    "img": "engineers"
+   },
+   {
+    "t": "بیرونِ ملک سے گھر بنوانے والے",
+    "d": "خلیج میں کام کر رہے ہیں اور گھر پاکستان میں بن رہا ہے؟ کہیں سے بھی سائٹ دیکھیں، ادائیگیاں منظور کریں اور تصاویر دیکھیں۔",
+    "a": "گھر بنوانے والوں کے لیے",
+    "href": "home-owners",
+    "img": "villa"
+   },
+   {
+    "t": "سائٹ کی ٹیم",
+    "d": "سپروائزر اور اسٹور کیپر بڑے بٹنوں اور سائٹ کارڈ سے سامان کی آمد، اجرا اور حاضری سیکنڈوں میں درج کرتے ہیں۔",
+    "a": "خصوصیات دیکھیں",
+    "href": "features",
+    "img": "room"
+   }
   ],
   "tabs_eyebrow": "بلڈائری کیا کرتا ہے",
   "tabs_title": "سائٹ پر ہونے والا ہر کام، ایک جگہ",
-  "tab_names": {"stores": "اسٹور", "money": "حساب", "build": "پیش رفت", "people": "لوگ"},
+  "tab_names": {
+   "stores": "اسٹور",
+   "money": "حساب",
+   "build": "پیش رفت",
+   "people": "لوگ"
+  },
   "leaks_eyebrow": "مالک اور بلڈر کیوں بدلتے ہیں",
   "leaks_title": "تعمیراتی سائٹ کے عام نقصانات روکیں",
   "leaks_lede": "جب ریکارڈ صرف ایک کاپی اور چند واٹس ایپ تصاویر ہوں تو سامان غائب ہوتا ہے، بل بڑھتے ہیں اور کام پیچھے رہ جاتا ہے۔ بلڈائری ہر قدم پر تصویر، نام اور وقت لگاتا ہے۔",
   "leaks": [
-   {"p": "فرضی مزدور اور جعلی حاضری", "s": "پن کے ساتھ سائٹ کارڈ، رجسٹرڈ تصویر سے چہرے کی جانچ، اور حاضری کے ساتھ فون کی لوکیشن۔"},
-   {"p": "غائب ہوتا سامان", "s": "ہر بوری آرڈر کے مطابق وصول ہوتی ہے اور نام کے ساتھ کسی شخص کو جاری ہوتی ہے، ہر قدم پر تصویر کے ساتھ۔"},
-   {"p": "بل جو حساب سے میل نہ کھائیں", "s": "آرڈر سے پہلے کوٹیشن حتمی ہو جاتی ہے، اور آپ صرف واجب رقم ادا کرتے ہیں، ہر ادائیگی کی رسید کے ساتھ۔"},
-   {"p": "پیچھے رہتا کام", "s": "ہر مرحلے میں منصوبہ اور اصل کام ساتھ ساتھ، روزانہ سائٹ ڈائری، اور پیچھے رہ جانے والے مرحلے ڈیش بورڈ پر نمایاں۔"}
+   {
+    "p": "فرضی مزدور اور جعلی حاضری",
+    "s": "پن کے ساتھ سائٹ کارڈ، رجسٹرڈ تصویر سے چہرے کی جانچ، اور حاضری کے ساتھ فون کی لوکیشن۔"
+   },
+   {
+    "p": "غائب ہوتا سامان",
+    "s": "ہر بوری آرڈر کے مطابق وصول ہوتی ہے اور نام کے ساتھ کسی شخص کو جاری ہوتی ہے، ہر قدم پر تصویر کے ساتھ۔"
+   },
+   {
+    "p": "بل جو حساب سے میل نہ کھائیں",
+    "s": "آرڈر سے پہلے کوٹیشن حتمی ہو جاتی ہے، اور آپ صرف واجب رقم ادا کرتے ہیں، ہر ادائیگی کی رسید کے ساتھ۔"
+   },
+   {
+    "p": "پیچھے رہتا کام",
+    "s": "ہر مرحلے میں منصوبہ اور اصل کام ساتھ ساتھ، روزانہ سائٹ ڈائری، اور پیچھے رہ جانے والے مرحلے ڈیش بورڈ پر نمایاں۔"
+   }
   ],
   "tools_eyebrow": "تمام ٹولز",
   "tools_title": "پوری تعمیر کے لیے ایک ایپ",
   "tools": [
-   {"ic": "doc", "t": "کوٹیشن اور آرڈر", "d": "آرڈر سے پہلے کوٹیشن حتمی۔"},
-   {"ic": "stores", "t": "اسٹور اور اسٹاک", "d": "اسٹاک، کمی کی اطلاع اور ہر آئٹم کی ہر نقل و حرکت۔"},
-   {"ic": "money", "t": "سپلائر کی ادائیگیاں", "d": "صرف واجب رقم، ہر ادائیگی کی رسید کے ساتھ۔"},
-   {"ic": "chart", "t": "بجٹ اور کیش فلو", "d": "مرحلہ وار بجٹ اور پورے منصوبے کا کیش فلو۔"},
-   {"ic": "wallet", "t": "پیٹی کیش", "d": "ہر شخص کو دی گئی، خرچ ہوئی اور واپس آئی رقم، بلوں کے ساتھ۔"},
-   {"ic": "build", "t": "کام کی پیش رفت", "d": "منصوبہ بند تاریخوں اور مکمل فیصد کے ساتھ مرحلے۔"},
-   {"ic": "book", "t": "روزانہ سائٹ ڈائری", "d": "آج سائٹ پر کیا ہوا، تصاویر کے ساتھ۔"},
-   {"ic": "check", "t": "معائنے اور خامیاں", "d": "جانچ، نقائص اور انہیں کون ٹھیک کرے گا۔"},
-   {"ic": "people", "t": "سائٹ کارڈ اور حاضری", "d": "QR سائٹ کارڈ، پن اور چہرے کی جانچ۔"},
-   {"ic": "water", "t": "پانی کے ٹینکر", "d": "ہر ٹینکر، اس کی گنجائش اور TDS کے ساتھ۔"},
-   {"ic": "ask", "t": "منصوبے سے پوچھیں", "d": "سیدھے سوال، آپ کے تازہ ریکارڈ سے جواب۔"},
-   {"ic": "share", "t": "سپلائر کے کھاتے", "d": "واٹس ایپ پر بھیجنے کے لیے کھاتے کی تفصیل۔"}
+   {
+    "ic": "doc",
+    "t": "کوٹیشن اور آرڈر",
+    "d": "آرڈر سے پہلے کوٹیشن حتمی۔"
+   },
+   {
+    "ic": "stores",
+    "t": "اسٹور اور اسٹاک",
+    "d": "اسٹاک، کمی کی اطلاع اور ہر آئٹم کی ہر نقل و حرکت۔"
+   },
+   {
+    "ic": "money",
+    "t": "سپلائر کی ادائیگیاں",
+    "d": "صرف واجب رقم، ہر ادائیگی کی رسید کے ساتھ۔"
+   },
+   {
+    "ic": "chart",
+    "t": "بجٹ اور کیش فلو",
+    "d": "مرحلہ وار بجٹ اور پورے منصوبے کا کیش فلو۔"
+   },
+   {
+    "ic": "wallet",
+    "t": "پیٹی کیش",
+    "d": "ہر شخص کو دی گئی، خرچ ہوئی اور واپس آئی رقم، بلوں کے ساتھ۔"
+   },
+   {
+    "ic": "build",
+    "t": "کام کی پیش رفت",
+    "d": "منصوبہ بند تاریخوں اور مکمل فیصد کے ساتھ مرحلے۔"
+   },
+   {
+    "ic": "book",
+    "t": "روزانہ سائٹ ڈائری",
+    "d": "آج سائٹ پر کیا ہوا، تصاویر کے ساتھ۔"
+   },
+   {
+    "ic": "check",
+    "t": "معائنے اور خامیاں",
+    "d": "جانچ، نقائص اور انہیں کون ٹھیک کرے گا۔"
+   },
+   {
+    "ic": "people",
+    "t": "سائٹ کارڈ اور حاضری",
+    "d": "QR سائٹ کارڈ، پن اور چہرے کی جانچ۔"
+   },
+   {
+    "ic": "water",
+    "t": "پانی کے ٹینکر",
+    "d": "ہر ٹینکر، اس کی گنجائش اور TDS کے ساتھ۔"
+   },
+   {
+    "ic": "ask",
+    "t": "منصوبے سے پوچھیں",
+    "d": "سیدھے سوال، آپ کے تازہ ریکارڈ سے جواب۔"
+   },
+   {
+    "ic": "share",
+    "t": "سپلائر کے کھاتے",
+    "d": "واٹس ایپ پر بھیجنے کے لیے کھاتے کی تفصیل۔"
+   }
   ],
   "cur_eyebrow": "آپ کی کرنسی، آپ کی زبان",
   "cur_title": "اپنی کرنسی میں دیکھیں",
@@ -119,60 +347,174 @@
   "cur_label": "رقم اس کرنسی میں",
   "steps_link": "مفت آزمائش شروع کریں",
   "band_title": "حقائق آپ کی جیب میں، تعمیر آپ کی نظر میں",
-  "band_lede": "7 دن مفت۔ کارڈ کی ضرورت نہیں۔ آپ کا ورک اسپیس تقریباً ایک منٹ میں تیار۔"
+  "band_lede": "{trial} دن مفت۔ کارڈ کی ضرورت نہیں۔ آپ کا ورک اسپیس تقریباً ایک منٹ میں تیار۔"
  },
  "ar": {
   "hero_eyebrow": "إدارة البناء لباكستان ودول الخليج",
   "hero_title": "موقع البناء الخاص بك، على جوالك.",
   "hero_lede": "التوريدات والمخزن والدفعات وتقدّم العمل والعمّال، كلّها تُسجَّل في الموقع بصورة واسم ووقت. المالك والمقاول يريان الحقائق نفسها كل يوم.",
-  "hero_points": ["7 أيام مجاناً بدون بطاقة", "العربية والإنجليزية والأردية", "PKR أو SAR أو AED أو QAR أو USD"],
+  "hero_points": [
+   "{trial_days} مجاناً بدون بطاقة",
+   "العربية والإنجليزية والأردية",
+   "PKR أو SAR أو AED أو QAR أو USD"
+  ],
   "float": [
-   {"t": "استلام الإسمنت", "d": "300 كيس · صورة سند التسليم"},
-   {"t": "اعتماد دفعة", "d": "مورّد الحديد · الإيصال مرفق"},
-   {"t": "14 في الموقع اليوم", "d": "مسح بطاقات الموقع عند البوابة"}
+   {
+    "t": "استلام الإسمنت",
+    "d": "300 كيس · صورة سند التسليم"
+   },
+   {
+    "t": "اعتماد دفعة",
+    "d": "مورّد الحديد · الإيصال مرفق"
+   },
+   {
+    "t": "14 في الموقع اليوم",
+    "d": "مسح بطاقات الموقع عند البوابة"
+   }
   ],
   "facts": [
-   {"k": "دقيقة", "t": "لتجهيز مساحة عملك"},
-   {"k": "3", "t": "لغات لفريق العمل كله"},
-   {"k": "5", "t": "عملات: PKR وSAR وAED وQAR وUSD"},
-   {"k": "7 أيام", "t": "تجربة مجانية بدون بطاقة"}
+   {
+    "k": "دقيقة",
+    "t": "لتجهيز مساحة عملك"
+   },
+   {
+    "k": "3",
+    "t": "لغات لفريق العمل كله"
+   },
+   {
+    "k": "5",
+    "t": "عملات: PKR وSAR وAED وQAR وUSD"
+   },
+   {
+    "k": "{trial_days}",
+    "t": "تجربة مجانية بدون بطاقة"
+   }
   ],
   "origin": "وُلد في موقع بناء حقيقي، لا في مكتب.",
   "who_eyebrow": "لمن صُمّم",
   "who_title": "لكل من يشارك في البناء",
   "who": [
-   {"t": "من يبني بيته", "d": "تبني بيتك؟ تابع كل توريد ودفعة ومرحلة دون أن تقف في الموقع طوال اليوم.", "a": "لمن يبني بيته", "href": "home-owners", "img": "couple"},
-   {"t": "المقاولون", "d": "أدِر عدة مواقع لعملائك بفريق واحد، واعرض على كل عميل تقدّماً يثق به.", "a": "للمقاولين", "href": "builders", "img": "engineers"},
-   {"t": "البناء من الخارج", "d": "تعمل في الخليج وبيتك يُبنى في بلدك؟ تابع الموقع واعتمد الدفعات وشاهد الصور من أي مكان.", "a": "لمن يبني بيته", "href": "home-owners", "img": "villa"},
-   {"t": "فريق الموقع", "d": "المشرف وأمين المخزن يسجّلان التوريدات والصرف والحضور في ثوانٍ، بأزرار كبيرة وبطاقات الموقع.", "a": "شاهد المزايا", "href": "features", "img": "room"}
+   {
+    "t": "من يبني بيته",
+    "d": "تبني بيتك؟ تابع كل توريد ودفعة ومرحلة دون أن تقف في الموقع طوال اليوم.",
+    "a": "لمن يبني بيته",
+    "href": "home-owners",
+    "img": "couple"
+   },
+   {
+    "t": "المقاولون",
+    "d": "أدِر عدة مواقع لعملائك بفريق واحد، واعرض على كل عميل تقدّماً يثق به.",
+    "a": "للمقاولين",
+    "href": "builders",
+    "img": "engineers"
+   },
+   {
+    "t": "البناء من الخارج",
+    "d": "تعمل في الخليج وبيتك يُبنى في بلدك؟ تابع الموقع واعتمد الدفعات وشاهد الصور من أي مكان.",
+    "a": "لمن يبني بيته",
+    "href": "home-owners",
+    "img": "villa"
+   },
+   {
+    "t": "فريق الموقع",
+    "d": "المشرف وأمين المخزن يسجّلان التوريدات والصرف والحضور في ثوانٍ، بأزرار كبيرة وبطاقات الموقع.",
+    "a": "شاهد المزايا",
+    "href": "features",
+    "img": "room"
+   }
   ],
   "tabs_eyebrow": "ماذا يفعل بلدائري",
   "tabs_title": "كل ما يحدث في الموقع، في مكان واحد",
-  "tab_names": {"stores": "المخزن", "money": "المال", "build": "التقدّم", "people": "العمّال"},
+  "tab_names": {
+   "stores": "المخزن",
+   "money": "المال",
+   "build": "التقدّم",
+   "people": "العمّال"
+  },
   "leaks_eyebrow": "لماذا ينتقل الملاك والمقاولون",
   "leaks_title": "أوقف الخسائر المعتادة في موقع البناء",
   "leaks_lede": "تختفي المواد وتكبر الفواتير ويتأخر العمل حين يكون السجل دفتراً وبضع صور على واتساب. بلدائري يضع صورة واسماً ووقتاً على كل خطوة.",
   "leaks": [
-   {"p": "عمّال وهميون وحضور بالنيابة", "s": "بطاقات موقع برقم سري، ومطابقة الوجه مع الصورة المسجّلة، وموقع الجوال عند تسجيل الحضور."},
-   {"p": "مواد تختفي", "s": "كل كيس يُستلم مقابل أمر شراء ويُصرف لشخص باسمه، مع صور في كل خطوة."},
-   {"p": "فواتير لا تتطابق", "s": "يُعتمد عرض السعر نهائياً قبل أمر الشراء، وتدفع المستحق فقط، مع إيصال لكل دفعة."},
-   {"p": "عمل يتأخر", "s": "كل مرحلة تُظهر المخطّط مقابل المنفّذ، مع يومية الموقع، والمراحل المتأخرة تظهر على لوحة المتابعة."}
+   {
+    "p": "عمّال وهميون وحضور بالنيابة",
+    "s": "بطاقات موقع برقم سري، ومطابقة الوجه مع الصورة المسجّلة، وموقع الجوال عند تسجيل الحضور."
+   },
+   {
+    "p": "مواد تختفي",
+    "s": "كل كيس يُستلم مقابل أمر شراء ويُصرف لشخص باسمه، مع صور في كل خطوة."
+   },
+   {
+    "p": "فواتير لا تتطابق",
+    "s": "يُعتمد عرض السعر نهائياً قبل أمر الشراء، وتدفع المستحق فقط، مع إيصال لكل دفعة."
+   },
+   {
+    "p": "عمل يتأخر",
+    "s": "كل مرحلة تُظهر المخطّط مقابل المنفّذ، مع يومية الموقع، والمراحل المتأخرة تظهر على لوحة المتابعة."
+   }
   ],
   "tools_eyebrow": "كل الأدوات",
   "tools_title": "تطبيق واحد للمشروع كله",
   "tools": [
-   {"ic": "doc", "t": "عروض الأسعار والطلبات", "d": "اعتماد عرض السعر نهائياً قبل أمر الشراء."},
-   {"ic": "stores", "t": "المخزن والمخزون", "d": "المخزون وتنبيهات النقص وكل حركة للصنف."},
-   {"ic": "money", "t": "دفعات الموردين", "d": "ادفع المستحق فقط، مع إيصال لكل دفعة."},
-   {"ic": "chart", "t": "الميزانية والتدفق النقدي", "d": "ميزانية حسب المرحلة وتوقّع للتدفق النقدي."},
-   {"ic": "wallet", "t": "العهدة النقدية", "d": "ما سُلّم وصُرف وأُعيد لكل شخص، مع الفواتير."},
-   {"ic": "build", "t": "تقدّم البناء", "d": "مراحل بتواريخ مخطّطة ونسبة إنجاز."},
-   {"ic": "book", "t": "يومية الموقع", "d": "ما حدث في الموقع اليوم، بالصور."},
-   {"ic": "check", "t": "الفحوصات والملاحظات", "d": "الفحوص والعيوب ومن يصلحها."},
-   {"ic": "people", "t": "بطاقات الموقع والحضور", "d": "بطاقات QR ورقم سري ومطابقة الوجه."},
-   {"ic": "water", "t": "صهاريج المياه", "d": "كل صهريج بسعته وقراءة TDS."},
-   {"ic": "ask", "t": "اسأل المشروع", "d": "أسئلة بسيطة وإجابات من سجلاتك الحية."},
-   {"ic": "share", "t": "كشوف الموردين", "d": "كشوف حساب تُرسل على واتساب."}
+   {
+    "ic": "doc",
+    "t": "عروض الأسعار والطلبات",
+    "d": "اعتماد عرض السعر نهائياً قبل أمر الشراء."
+   },
+   {
+    "ic": "stores",
+    "t": "المخزن والمخزون",
+    "d": "المخزون وتنبيهات النقص وكل حركة للصنف."
+   },
+   {
+    "ic": "money",
+    "t": "دفعات الموردين",
+    "d": "ادفع المستحق فقط، مع إيصال لكل دفعة."
+   },
+   {
+    "ic": "chart",
+    "t": "الميزانية والتدفق النقدي",
+    "d": "ميزانية حسب المرحلة وتوقّع للتدفق النقدي."
+   },
+   {
+    "ic": "wallet",
+    "t": "العهدة النقدية",
+    "d": "ما سُلّم وصُرف وأُعيد لكل شخص، مع الفواتير."
+   },
+   {
+    "ic": "build",
+    "t": "تقدّم البناء",
+    "d": "مراحل بتواريخ مخطّطة ونسبة إنجاز."
+   },
+   {
+    "ic": "book",
+    "t": "يومية الموقع",
+    "d": "ما حدث في الموقع اليوم، بالصور."
+   },
+   {
+    "ic": "check",
+    "t": "الفحوصات والملاحظات",
+    "d": "الفحوص والعيوب ومن يصلحها."
+   },
+   {
+    "ic": "people",
+    "t": "بطاقات الموقع والحضور",
+    "d": "بطاقات QR ورقم سري ومطابقة الوجه."
+   },
+   {
+    "ic": "water",
+    "t": "صهاريج المياه",
+    "d": "كل صهريج بسعته وقراءة TDS."
+   },
+   {
+    "ic": "ask",
+    "t": "اسأل المشروع",
+    "d": "أسئلة بسيطة وإجابات من سجلاتك الحية."
+   },
+   {
+    "ic": "share",
+    "t": "كشوف الموردين",
+    "d": "كشوف حساب تُرسل على واتساب."
+   }
   ],
   "cur_eyebrow": "عملتك ولغتك",
   "cur_title": "شاهده بعملتك",
@@ -180,6 +522,6 @@
   "cur_label": "عرض المبالغ بـ",
   "steps_link": "ابدأ تجربتك المجانية",
   "band_title": "ابنِ والحقائق في جيبك",
-  "band_lede": "7 أيام مجاناً. بدون بطاقة. مساحة عملك جاهزة في نحو دقيقة."
+  "band_lede": "{trial_days} مجاناً. بدون بطاقة. مساحة عملك جاهزة في نحو دقيقة."
  }
 }
