@@ -10,16 +10,16 @@ sitemap = 0
 
 
 def get_context(context):
-	from mimaar.saas.tenant import mabni, state
+	from buildiary.saas.tenant import buildiary, state
 
-	if not mabni():
+	if not buildiary():
 		raise frappe.DoesNotExistError
 	if frappe.session.user == "Guest":
 		frappe.local.flags.redirect_location = "/login?redirect-to=/billing"
 		raise frappe.Redirect
 	u = frappe.db.get_value("User", frappe.session.user, ["full_name", "language"], as_dict=True) or {}
 	lang = u.get("language") if u.get("language") in ("en", "ur", "ar") else "en"
-	co = frappe.db.get_single_value("Global Defaults", "default_company") or mabni().get("company") or ""
+	co = frappe.db.get_single_value("Global Defaults", "default_company") or buildiary().get("company") or ""
 	context.no_cache = 1
 	context.lang = lang
 	context.dir = "ltr" if lang == "en" else "rtl"

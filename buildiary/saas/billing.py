@@ -5,18 +5,18 @@ and reads each workspace's usage."""
 import frappe
 from frappe.utils import add_days, add_months, date_diff, escape_html, get_datetime, getdate, now_datetime, nowdate
 
-from mimaar.saas.common import call_site, is_control, notify_admins, push, settings, tenant_state
+from buildiary.saas.common import call_site, is_control, notify_admins, push, settings, tenant_state
 
 
 def _send(t, subject, body):
 	if not t.email:
 		return
 	s = settings()
-	logo = f"https://{s.control_host}/assets/mimaar/images/smh-global.png" if s.control_host else ""
+	logo = f"https://{s.control_host}/assets/buildiary/images/smh-global.png" if s.control_host else ""
 	foot = (f"<p style='color:#667'>" + (f"<img src='{logo}' alt='SMH Global Services' width='96' height='41' style='display:block;margin:18px 0 8px'>" if logo else "")
 		+ f"Buildiary · a product of SMH Global Services<br>{escape_html(s.support_email or '')} {escape_html(s.support_whatsapp or '')}</p>")
 	try:
-		frappe.sendmail(recipients=[t.email], subject=subject, message=body + foot, delayed=True, reference_doctype="Mabni Tenant", reference_name=t.name)
+		frappe.sendmail(recipients=[t.email], subject=subject, message=body + foot, delayed=True, reference_doctype="Buildiary Tenant", reference_name=t.name)
 	except Exception:
 		frappe.log_error(f"Buildiary: could not queue the email '{subject}'")
 
@@ -32,8 +32,8 @@ def welcome(t):
 
 # ---------------------------------------------------------------- a checked payment
 def apply_payment(p):
-	"""Mabni Payment set to Verified: the customer's paid time is extended from where it ends."""
-	t = frappe.get_doc("Mabni Tenant", p.tenant)
+	"""Buildiary Payment set to Verified: the customer's paid time is extended from where it ends."""
+	t = frappe.get_doc("Buildiary Tenant", p.tenant)
 	today = getdate(nowdate())
 	if t.paid_until and getdate(t.paid_until) >= today:
 		base = getdate(t.paid_until)
@@ -45,7 +45,7 @@ def apply_payment(p):
 	months = int(p.periods or 1) * (12 if p.billing_period == "Yearly" else 1)
 	end = add_days(add_months(start, months), -1)
 	p.db_set({"period_from": start, "period_to": end, "checked_by": frappe.session.user, "checked_on": now_datetime()})
-	plan = frappe.get_doc("Mabni Plan", p.plan)
+	plan = frappe.get_doc("Buildiary Plan", p.plan)
 	t.plan = plan.name
 	t.mode = plan.mode
 	t.billing_period = p.billing_period
@@ -59,7 +59,7 @@ def apply_payment(p):
 
 
 def reject_payment(p):
-	t = frappe.get_doc("Mabni Tenant", p.tenant)
+	t = frappe.get_doc("Buildiary Tenant", p.tenant)
 	p.db_set({"checked_by": frappe.session.user, "checked_on": now_datetime()})
 	_send(t, "We couldn't confirm your payment", f"""<p>Dear {escape_html(t.contact_name)},</p>
 <p>We couldn't confirm the payment you reported ({escape_html(p.currency)} {frappe.format(p.amount, 'Float')}, reference {escape_html(p.reference or '-')}).</p>
@@ -70,9 +70,9 @@ def reject_payment(p):
 def daily():
 	if not is_control():
 		return
-	for name in frappe.get_all("Mabni Tenant", filters={"status": ["in", ["Trial", "Active", "Payment due", "Suspended"]]}, pluck="name"):
+	for name in frappe.get_all("Buildiary Tenant", filters={"status": ["in", ["Trial", "Active", "Payment due", "Suspended"]]}, pluck="name"):
 		try:
-			check_tenant(frappe.get_doc("Mabni Tenant", name))
+			check_tenant(frappe.get_doc("Buildiary Tenant", name))
 			frappe.db.commit()
 		except Exception:
 			frappe.db.rollback()
@@ -83,9 +83,9 @@ def push_all():
 	"""Write every workspace's plan, dates and the AI settings into its site."""
 	if not is_control():
 		return
-	for name in frappe.get_all("Mabni Tenant", filters={"status": ["in", ["Trial", "Active", "Payment due", "Suspended"]]}, pluck="name"):
+	for name in frappe.get_all("Buildiary Tenant", filters={"status": ["in", ["Trial", "Active", "Payment due", "Suspended"]]}, pluck="name"):
 		try:
-			push(frappe.get_doc("Mabni Tenant", name))
+			push(frappe.get_doc("Buildiary Tenant", name))
 		except Exception:
 			frappe.log_error(f"Buildiary: could not update {name}")
 
@@ -130,7 +130,7 @@ def refresh_usage(t):
 	if not key:
 		return
 	try:
-		u = call_site(t.site_host, "mimaar.saas.tenant.usage", {"key": key}, timeout=60) or {}
+		u = call_site(t.site_host, "buildiary.saas.tenant.usage", {"key": key}, timeout=60) or {}
 	except Exception:
 		return
 	t.db_set({"users": u.get("users") or 0, "projects": u.get("projects") or 0, "storage_mb": u.get("storage_mb") or 0,

@@ -1,7 +1,7 @@
 """A sample project (fictional names and figures) for the website's screenshots and for
 anyone who wants to see Buildiary with data in it:
 
-    bench --site <workspace> execute mimaar.saas.demo.make
+    bench --site <workspace> execute buildiary.saas.demo.make
 
 Amounts follow the company's currency (rupees, or riyals at about 1/75). Safe to run once
 on a fresh workspace; it does nothing if the sample project is already there."""
@@ -11,7 +11,7 @@ import random
 import frappe
 from frappe.utils import add_days, flt, getdate, nowdate, nowtime
 
-from mimaar.migration import old_app
+from buildiary.migration import old_app
 
 PROJECT = "Al Noor Residence"
 RULES = ("po_needs_final_quotation", "require_dn_scan", "require_receiver_photo", "require_bill_scan", "require_payment_proof", "pay_only_due",
@@ -90,18 +90,18 @@ def make():
 		print("The sample project is already here.")
 		return
 	random.seed(31)
-	s = frappe.get_single("Mimaar Settings")
+	s = frappe.get_single("Buildiary Settings")
 	keep = {f: s.get(f) for f in RULES}
 	keep["face_check"] = s.face_check
 	for f in RULES:
-		frappe.db.set_single_value("Mimaar Settings", f, 0)
-	frappe.db.set_single_value("Mimaar Settings", "face_check", "Off")
-	frappe.clear_document_cache("Mimaar Settings", "Mimaar Settings")
+		frappe.db.set_single_value("Buildiary Settings", f, 0)
+	frappe.db.set_single_value("Buildiary Settings", "face_check", "Off")
+	frappe.clear_document_cache("Buildiary Settings", "Buildiary Settings")
 	try:
 		_fiscal_years(co)
 		d = data(k)
 		old_app.run(company=co, data=d)
-		from mimaar.setup import apply_settings
+		from buildiary.setup import apply_settings
 
 		apply_settings()
 		_progress()
@@ -113,8 +113,8 @@ def make():
 		print("SAMPLE PROJECT READY")
 	finally:
 		for f, v in keep.items():
-			frappe.db.set_single_value("Mimaar Settings", f, v)
-		frappe.clear_document_cache("Mimaar Settings", "Mimaar Settings")
+			frappe.db.set_single_value("Buildiary Settings", f, v)
+		frappe.clear_document_cache("Buildiary Settings", "Buildiary Settings")
 		frappe.db.commit()
 
 
@@ -144,16 +144,16 @@ def _progress():
 		pct = done.get(code)
 		if pct is None:
 			continue
-		vals = {"progress": pct, "mimaar_reported": pct if code != "G3" else 70, "status": "Completed" if pct == 100 else "Working"}
+		vals = {"progress": pct, "buildiary_reported": pct if code != "G3" else 70, "status": "Completed" if pct == 100 else "Working"}
 		if pct == 100 or code == "G3":
-			vals.update(mimaar_verified=pct, mimaar_verified_by="Administrator", mimaar_verified_on=nowdate())
+			vals.update(buildiary_verified=pct, buildiary_verified_by="Administrator", buildiary_verified_on=nowdate())
 		if pct == 100:
 			vals["completed_on"] = nowdate()
 		frappe.db.set_value("Task", t.name, vals, update_modified=False)
 
 
 def _wh():
-	return frappe.db.get_single_value("Mimaar Settings", "site_warehouse")
+	return frappe.db.get_single_value("Buildiary Settings", "site_warehouse")
 
 
 def _buying(co, k):
@@ -162,7 +162,7 @@ def _buying(co, k):
 	from erpnext.buying.doctype.supplier_quotation.supplier_quotation import make_purchase_order
 	from erpnext.stock.doctype.purchase_receipt.purchase_receipt import make_purchase_invoice
 
-	from mimaar.procurement import mark_final
+	from buildiary.procurement import mark_final
 
 	wh, project = _wh(), _project()
 	sup = {n: frappe.db.get_value("Supplier", {"supplier_name": n}) for n in frappe.get_all("Supplier", pluck="supplier_name")}
@@ -180,7 +180,7 @@ def _buying(co, k):
 			continue
 		rate = {i: frappe.db.get_value("Item", i, "valuation_rate") for i, _ in lines}
 		sq = frappe.get_doc({"doctype": "Supplier Quotation", "supplier": s, "company": co, "transaction_date": _d(days - 5), "quotation_number": f"Q-{random.randint(100, 999)}", "project": project,
-			"mimaar_payment_terms": "Balance on delivery", "mimaar_advance_percent": 0, "mimaar_delivery_time": "7 days",
+			"buildiary_payment_terms": "Balance on delivery", "buildiary_advance_percent": 0, "buildiary_delivery_time": "7 days",
 			"items": [{"item_code": i, "qty": q, "rate": rate[i], "warehouse": wh, "project": project} for i, q in lines]})
 		sq.insert(ignore_permissions=True)
 		sq.submit()
@@ -192,7 +192,7 @@ def _buying(co, k):
 		for it in po.items:
 			it.schedule_date = po.schedule_date
 			it.project = project
-		po.mimaar_site_address = "Plot 12, Street 4, Sample Town"
+		po.buildiary_site_address = "Plot 12, Street 4, Sample Town"
 		po.insert(ignore_permissions=True)
 		po.submit()
 		if received <= 0:
@@ -201,8 +201,8 @@ def _buying(co, k):
 		pr.posting_date = _d(days + 4)
 		pr.set_posting_time = 1
 		pr.supplier_delivery_note = f"DN-{random.randint(1000, 9999)}"
-		pr.mimaar_received_by = "Store keeper"
-		pr.mimaar_vehicle = f"LES-{random.randint(1000, 9999)}"
+		pr.buildiary_received_by = "Store keeper"
+		pr.buildiary_vehicle = f"LES-{random.randint(1000, 9999)}"
 		for it in pr.items:
 			it.qty = it.received_qty = round(it.qty * received)
 			it.project = project
@@ -236,7 +236,7 @@ def _buying(co, k):
 		if have < qty:
 			continue
 		se = frappe.get_doc({"doctype": "Stock Entry", "stock_entry_type": "Material Issue", "company": co, "posting_date": _d(-13 + n), "set_posting_time": 1, "project": project,
-			"mimaar_issued_to": people[n % len(people)], "mimaar_work_area": area,
+			"buildiary_issued_to": people[n % len(people)], "buildiary_work_area": area,
 			"items": [{"item_code": item, "qty": qty, "s_warehouse": wh, "project": project}]})
 		se.insert(ignore_permissions=True)
 		se.submit()
@@ -285,7 +285,7 @@ def _water_and_cash(co, k):
 		frappe.get_doc({"doctype": "Water Tank Reading", "date": nowdate(), "time": nowtime(), "tank": t.name, "level_pct": lvl, "project": _project()}).insert(ignore_permissions=True)
 	if not sup:
 		return
-	from mimaar import petty
+	from buildiary import petty
 
 	given = frappe.get_doc({"doctype": "Petty Cash Entry", "entry_type": "Cash given", "date": _d(-10), "holder": sup, "amount": _r(50000, k), "method": "Cash in hand", "project": _project()})
 	given.insert(ignore_permissions=True)
@@ -363,7 +363,7 @@ def localize_ar():
 			frappe.db.sql("update `tabSite Attendance Row` set worker_name=%s where worker=%s", (new, w))
 			frappe.db.sql("update `tabPetty Cash Entry` set holder_name=%s where holder=%s", (new, w))
 	for old, new in (("Ustad Rafiq (mason)", "الأسطى رفيق (بنّاء)"), ("Shahid (steel fixer)", "شاهد (حدّاد)"), ("Imran (shuttering)", "عمران (نجّار شدّة)")):
-		frappe.db.sql("update `tabStock Entry` set mimaar_issued_to=%s where mimaar_issued_to=%s", (new, old))
+		frappe.db.sql("update `tabStock Entry` set buildiary_issued_to=%s where buildiary_issued_to=%s", (new, old))
 	frappe.db.commit()
 	frappe.clear_cache()
 	print("ARABIC NAMES SET")

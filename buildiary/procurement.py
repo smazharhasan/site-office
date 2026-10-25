@@ -23,7 +23,7 @@ from frappe.utils import cint, flt, getdate, now_datetime
 
 
 def settings():
-	return frappe.get_cached_doc("Mimaar Settings")
+	return frappe.get_cached_doc("Buildiary Settings")
 
 
 def on(flag):
@@ -31,39 +31,39 @@ def on(flag):
 
 
 def skip(doc):
-	return bool(doc.flags.get("mimaar_migration") or frappe.flags.get("mimaar_migration") or frappe.flags.in_install)
+	return bool(doc.flags.get("buildiary_migration") or frappe.flags.get("buildiary_migration") or frappe.flags.in_install)
 
 
 # ---------------------------------------------------------------- Supplier Quotation
 def revision_of(doctype, name):
-	return cint(frappe.db.get_value(doctype, name, "mimaar_revision")) if name else 0
+	return cint(frappe.db.get_value(doctype, name, "buildiary_revision")) if name else 0
 
 
 def sq_validate(doc, method=None):
 	if skip(doc):
 		return
 	if doc.amended_from:
-		prev = frappe.db.get_value("Supplier Quotation", doc.amended_from, ["mimaar_final", "supplier"], as_dict=True)
-		if prev and cint(prev.mimaar_final):
+		prev = frappe.db.get_value("Supplier Quotation", doc.amended_from, ["buildiary_final", "supplier"], as_dict=True)
+		if prev and cint(prev.buildiary_final):
 			frappe.throw(_("Quotation {0} is locked as final. No more revisions can be made.").format(doc.amended_from))
-		doc.mimaar_revision = revision_of("Supplier Quotation", doc.amended_from) + 1
-		if not (doc.mimaar_revision_note or "").strip():
+		doc.buildiary_revision = revision_of("Supplier Quotation", doc.amended_from) + 1
+		if not (doc.buildiary_revision_note or "").strip():
 			frappe.throw(_("Write what changed in this revision (price, discount or items)."), title=_("Revision note needed"))
 	if doc.docstatus == 0:
-		doc.mimaar_final = 0
+		doc.buildiary_final = 0
 	for row in doc.items:
 		if flt(row.qty) <= 0:
 			frappe.throw(_("Row {0}: quantity must be more than 0.").format(row.idx))
 		if flt(row.rate) <= 0:
 			frappe.throw(_("Row {0}: rate must be more than 0.").format(row.idx))
-	if flt(doc.mimaar_advance_percent) < 0 or flt(doc.mimaar_advance_percent) > 100:
+	if flt(doc.buildiary_advance_percent) < 0 or flt(doc.buildiary_advance_percent) > 100:
 		frappe.throw(_("Advance must be between 0 and 100 percent."))
 
 
 def sq_before_cancel(doc, method=None):
 	if skip(doc):
 		return
-	if cint(doc.mimaar_final):
+	if cint(doc.buildiary_final):
 		frappe.throw(_("This quotation is locked as final. It can't be cancelled or revised."))
 
 
@@ -73,9 +73,9 @@ def mark_final(name):
 	doc.check_permission("submit")
 	if doc.docstatus != 1:
 		frappe.throw(_("Submit (confirm) the quotation before locking it as final."))
-	if cint(doc.mimaar_final):
+	if cint(doc.buildiary_final):
 		return
-	doc.db_set({"mimaar_final": 1, "mimaar_final_on": now_datetime()})
+	doc.db_set({"buildiary_final": 1, "buildiary_final_on": now_datetime()})
 	doc.add_comment("Info", _("Locked as the final quotation. No more revisions."))
 	return True
 
@@ -84,9 +84,9 @@ def mark_final(name):
 def request_contract(name):
 	doc = frappe.get_doc("Supplier Quotation", name)
 	doc.check_permission("submit")
-	if not cint(doc.mimaar_final):
+	if not cint(doc.buildiary_final):
 		frappe.throw(_("Lock the quotation as final first."))
-	doc.db_set("mimaar_contract_requested", 1)
+	doc.db_set("buildiary_contract_requested", 1)
 	doc.add_comment("Info", _("Asked the supplier for their contract instead of a purchase order."))
 	return True
 
@@ -101,8 +101,8 @@ def po_validate(doc, method=None):
 				_("Row {0} ({1}): a purchase order is raised only from the supplier's final quotation. Open the locked quotation and use Create → Purchase Order.").format(row.idx, row.item_code),
 				title=_("Final quotation needed"),
 			)
-		sq = frappe.db.get_value("Supplier Quotation", row.supplier_quotation, ["supplier", "mimaar_final", "docstatus"], as_dict=True)
-		if not sq or sq.docstatus != 1 or not cint(sq.mimaar_final):
+		sq = frappe.db.get_value("Supplier Quotation", row.supplier_quotation, ["supplier", "buildiary_final", "docstatus"], as_dict=True)
+		if not sq or sq.docstatus != 1 or not cint(sq.buildiary_final):
 			frappe.throw(_("Row {0}: quotation {1} is not locked as final.").format(row.idx, row.supplier_quotation), title=_("Final quotation needed"))
 		if sq.supplier != doc.supplier:
 			frappe.throw(_("Row {0}: quotation {1} is from another supplier.").format(row.idx, row.supplier_quotation))
@@ -111,13 +111,13 @@ def po_validate(doc, method=None):
 			if quoted is not None and flt(row.rate) > flt(quoted) + 0.005:
 				frappe.throw(_("Row {0}: rate {1} is above the quoted rate {2}.").format(row.idx, frappe.format(row.rate, {"fieldtype": "Currency"}), frappe.format(quoted, {"fieldtype": "Currency"})))
 	first = doc.items[0].supplier_quotation if doc.items else None
-	if first and not doc.get("mimaar_payment_terms"):
-		q = frappe.db.get_value("Supplier Quotation", first, ["mimaar_payment_terms", "mimaar_advance_percent", "mimaar_delivery_time"], as_dict=True) or {}
-		doc.mimaar_payment_terms = q.get("mimaar_payment_terms")
-		if not doc.get("mimaar_advance_percent"):
-			doc.mimaar_advance_percent = q.get("mimaar_advance_percent")
-		doc.mimaar_delivery_time = doc.get("mimaar_delivery_time") or q.get("mimaar_delivery_time")
-	if flt(doc.get("mimaar_advance_percent")) < 0 or flt(doc.get("mimaar_advance_percent")) > 100:
+	if first and not doc.get("buildiary_payment_terms"):
+		q = frappe.db.get_value("Supplier Quotation", first, ["buildiary_payment_terms", "buildiary_advance_percent", "buildiary_delivery_time"], as_dict=True) or {}
+		doc.buildiary_payment_terms = q.get("buildiary_payment_terms")
+		if not doc.get("buildiary_advance_percent"):
+			doc.buildiary_advance_percent = q.get("buildiary_advance_percent")
+		doc.buildiary_delivery_time = doc.get("buildiary_delivery_time") or q.get("buildiary_delivery_time")
+	if flt(doc.get("buildiary_advance_percent")) < 0 or flt(doc.get("buildiary_advance_percent")) > 100:
 		frappe.throw(_("Advance must be between 0 and 100 percent."))
 
 
@@ -161,12 +161,12 @@ def pr_before_submit(doc, method=None):
 		return
 	if not (doc.supplier_delivery_note or "").strip():
 		frappe.throw(_("Enter the supplier's delivery note / challan number."), title=_("Delivery note needed"))
-	if on("require_dn_scan") and not doc.get("mimaar_dn_scan"):
+	if on("require_dn_scan") and not doc.get("buildiary_dn_scan"):
 		frappe.throw(_("Scan or photograph the supplier's delivery note or bill."), title=_("Delivery note needed"))
-	if on("require_receiver_photo") and not doc.get("mimaar_receiver_photo"):
+	if on("require_receiver_photo") and not doc.get("buildiary_receiver_photo"):
 		frappe.throw(_("Take the photo of the person receiving the goods."), title=_("Receiver's photo needed"))
-	if not (doc.get("mimaar_received_by") or "").strip():
-		doc.mimaar_received_by = frappe.utils.get_fullname(frappe.session.user)
+	if not (doc.get("buildiary_received_by") or "").strip():
+		doc.buildiary_received_by = frappe.utils.get_fullname(frappe.session.user)
 	for row in doc.items:
 		if not row.purchase_order:
 			frappe.throw(_("Row {0} ({1}): goods are received only against a purchase order.").format(row.idx, row.item_code))
@@ -177,7 +177,7 @@ def pi_before_submit(doc, method=None):
 		return
 	if not (doc.bill_no or "").strip():
 		frappe.throw(_("Enter the supplier's invoice / bill number."), title=_("Bill number needed"))
-	if on("require_bill_scan") and not doc.get("mimaar_bill_scan"):
+	if on("require_bill_scan") and not doc.get("buildiary_bill_scan"):
 		frappe.throw(_("Scan or photograph the supplier's bill."), title=_("Bill scan needed"))
 	for row in doc.items:
 		if not row.purchase_order:
@@ -187,7 +187,7 @@ def pi_before_submit(doc, method=None):
 # ---------------------------------------------------------------- paying suppliers
 def advance_limit(po):
 	"""How much may be paid in advance on a purchase order."""
-	pct = flt(po.get("mimaar_advance_percent"))
+	pct = flt(po.get("buildiary_advance_percent"))
 	if pct <= 0 and po.get("payment_schedule"):
 		# a payment schedule due on or before the order date counts as an advance
 		pct = sum(flt(r.invoice_portion) for r in po.payment_schedule if r.due_date and po.transaction_date and getdate(r.due_date) <= getdate(po.transaction_date))
@@ -223,7 +223,7 @@ def pe_validate(doc, method=None):
 		if already + flt(r.allocated_amount) > limit + 1:
 			frappe.throw(
 				_("Advance on {0} can't be more than {1} ({2}% of the order). Already paid: {3}.").format(
-					po.name, frappe.utils.fmt_money(limit), flt(po.get("mimaar_advance_percent")), frappe.utils.fmt_money(already)
+					po.name, frappe.utils.fmt_money(limit), flt(po.get("buildiary_advance_percent")), frappe.utils.fmt_money(already)
 				),
 				title=_("Advance limit"),
 			)
@@ -232,7 +232,7 @@ def pe_validate(doc, method=None):
 def pe_before_submit(doc, method=None):
 	if skip(doc) or doc.payment_type != "Pay" or doc.party_type != "Supplier":
 		return
-	if on("require_payment_proof") and not doc.get("mimaar_proof"):
+	if on("require_payment_proof") and not doc.get("buildiary_proof"):
 		frappe.throw(_("Attach the proof of payment (transfer screenshot, cheque photo or receipt)."), title=_("Proof needed"))
 
 
@@ -240,5 +240,5 @@ def pe_before_submit(doc, method=None):
 def se_before_submit(doc, method=None):
 	if skip(doc):
 		return
-	if doc.stock_entry_type == "Material Issue" and not doc.get("mimaar_water_ref") and not (doc.get("mimaar_issued_to") or "").strip():
+	if doc.stock_entry_type == "Material Issue" and not doc.get("buildiary_water_ref") and not (doc.get("buildiary_issued_to") or "").strip():
 		frappe.throw(_("Enter who the material is released to (mistri or group head)."), title=_("Released to"))

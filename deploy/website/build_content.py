@@ -9,7 +9,7 @@ import os
 from html import escape
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "content")
-IMG = "/wp-content/themes/mabni/assets"
+IMG = "/wp-content/themes/buildiary/assets"
 LANGS = ("en", "ur", "ar")
 
 
@@ -69,7 +69,7 @@ def ul(items, cls=""):
 
 
 def image(src, alt, cls="", caption=""):
-	# the image's width and height are added when the page is shown (mabni-seo.php), so the block
+	# the image's width and height are added when the page is shown (buildiary-seo.php), so the block
 	# stays exactly as the WordPress editor writes it
 	a = {"className": cls} if cls else {}
 	k = "wp-block-image" + (" " + cls if cls else "")
@@ -137,7 +137,7 @@ def page_home(L, w):
 		]),
 		"mb-section", "section", True)
 	prices = group(
-		p(w["price_eyebrow"], "mb-eyebrow mb-center") + h(2, w["price_title"], "mb-center") + html("[mabni_prices]"),
+		p(w["price_eyebrow"], "mb-eyebrow mb-center") + h(2, w["price_title"], "mb-center") + html("[buildiary_prices]"),
 		"mb-section mb-alt", "section", True)
 	guides = group(
 		p(w["guides_eyebrow"], "mb-eyebrow mb-center") + h(2, w["guides_title"], "mb-center")
@@ -173,7 +173,7 @@ def page_features(L, w):
 
 def page_pricing(L, w):
 	out = pagehead(w["price_eyebrow"], w["pricing_title"], w["pricing_lede"])
-	out += group(html("[mabni_prices]"), "mb-section", "section", True)
+	out += group(html("[buildiary_prices]"), "mb-section", "section", True)
 	out += group(columns([h(2, w["included_title"]), ul(w["included"], "mb-checks")]), "mb-section mb-alt", "section", True)
 	out += group(h(2, w["faq_title"], "mb-center") + group("".join(details(q, a) for q, a in w["price_faq"]), "mb-faq", wide=False), "mb-section", "section", True)
 	return out + cta(L, w)
@@ -183,7 +183,7 @@ def page_about(L, w):
 	out = pagehead(w["about_eyebrow"], w["about_title"], w["about_lede"])
 	out += group("".join(p(x) for x in w["about_body"]) + h(2, w["values_title"])
 		+ group("".join(box(h(3, v["t"], f"mb-ic mb-ic-{v['ic']}") + p(v["d"]), "mb-card") for v in w["values"]), "mb-cards", wide=False)
-		+ html("[mabni_maker]"),
+		+ html("[buildiary_maker]"),
 		"mb-section", "section", True)
 	return out + cta(L, w)
 

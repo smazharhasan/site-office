@@ -1,7 +1,7 @@
 """AI reading of supplier documents: quotations, proposals, message screenshots,
 delivery notes, bills and invoices. Printed or handwritten, English or Urdu.
 
-The key is stored encrypted in Mimaar Settings and never sent to the browser.
+The key is stored encrypted in Buildiary Settings and never sent to the browser.
 """
 
 import base64
@@ -33,19 +33,19 @@ URDU = "It may be printed or handwritten, in English or Urdu (Urdu digits too), 
 
 
 def cloud_ai():
-	"""On Mabni Cloud the console can give every workspace AI (its own key, with a daily limit)."""
-	m = frappe.conf.get("mabni_ai") or {}
+	"""On Buildiary Cloud the console can give every workspace AI (its own key, with a daily limit)."""
+	m = frappe.conf.get("buildiary_ai") or {}
 	return m if m.get("provider") in DEFAULT_MODEL and m.get("key") else None
 
 
 def available():
-	"""Is AI reading on for this site (its own key, or Mabni Cloud's)?"""
-	s = frappe.get_cached_doc("Mimaar Settings")
-	return bool((s.ai_provider and s.ai_provider != "Off") or cloud_ai() or frappe.conf.get("mimaar_fake_ai_file"))
+	"""Is AI reading on for this site (its own key, or Buildiary Cloud's)?"""
+	s = frappe.get_cached_doc("Buildiary Settings")
+	return bool((s.ai_provider and s.ai_provider != "Off") or cloud_ai() or frappe.conf.get("buildiary_fake_ai_file"))
 
 
 def _cfg():
-	s = frappe.get_single("Mimaar Settings")
+	s = frappe.get_single("Buildiary Settings")
 	if s.ai_provider not in (None, "", "Off"):
 		key = s.get_password("ai_api_key", raise_exception=False)
 		if not key:
@@ -56,7 +56,7 @@ def _cfg():
 		frappe.throw(_("AI reading is off. Choose Gemini or Claude and paste the API key in Settings."), title=_("AI not set up"))
 	limit = int(m.get("daily_limit") or 0)
 	if limit:
-		k = frappe.cache.make_key(f"mabni_ai_calls:{frappe.utils.nowdate()}")
+		k = frappe.cache.make_key(f"buildiary_ai_calls:{frappe.utils.nowdate()}")
 		n = frappe.cache.incrby(k, 1)
 		frappe.cache.expire(k, 172800)
 		if n > limit:
@@ -79,9 +79,9 @@ def _file(file_url):
 
 
 def ask(prompt, file_url):
-	fake = frappe.conf.get("mimaar_fake_ai_file")
+	fake = frappe.conf.get("buildiary_fake_ai_file")
 	if fake:  # tests only: a JSON reply from a file named in site_config.json
-		frappe.local.mimaar_last_prompt = prompt
+		frappe.local.buildiary_last_prompt = prompt
 		with open(fake) as fh:
 			return json.load(fh)
 	return _call(prompt, [_file(file_url)])
@@ -100,16 +100,16 @@ def _file_raw(file_url):
 
 def ask_many(prompt, file_urls, max_tokens=2048):
 	"""A check made by the server itself on a record's own photos (several images, one answer)."""
-	fake = frappe.conf.get("mimaar_fake_ai_file")
+	fake = frappe.conf.get("buildiary_fake_ai_file")
 	if fake:  # tests only
-		frappe.local.mimaar_last_prompt = prompt
+		frappe.local.buildiary_last_prompt = prompt
 		with open(fake) as fh:
 			return json.load(fh)
 	return _call(prompt, [_file_raw(u) for u in file_urls if u], max_tokens=max_tokens)
 
 
 def _call(prompt, files, max_tokens=8192):
-	"""Send the prompt and the images/PDFs to the AI chosen in Mimaar Settings; the reply must be JSON."""
+	"""Send the prompt and the images/PDFs to the AI chosen in Buildiary Settings; the reply must be JSON."""
 	provider, key, model = _cfg()
 	try:
 		if provider == "Gemini":
@@ -156,8 +156,8 @@ Reply with only JSON: {"face_visible": true|false, "same_person": true|false, "c
 
 
 def compare_faces(registered_url, live_url):
-	"""Is the person in the photo taken now the registered person? (Gemini or Claude, as set in Mimaar Settings.)"""
-	fake = frappe.conf.get("mimaar_fake_face_file")
+	"""Is the person in the photo taken now the registered person? (Gemini or Claude, as set in Buildiary Settings.)"""
+	fake = frappe.conf.get("buildiary_fake_face_file")
 	if fake:  # tests only
 		with open(fake) as fh:
 			return json.load(fh)

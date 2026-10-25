@@ -1,4 +1,4 @@
-"""/field: the Mimaar field app (phone screens in the earlier Mimaar design, on ERPNext)."""
+"""/field: the Buildiary field app (phone screens in the earlier Buildiary design, on ERPNext)."""
 
 import json
 import os
@@ -28,7 +28,7 @@ EXTRA = (
 def _tr(lang="ur"):
 	lang = lang if lang in ("ur", "ar") else "ur"
 	v = os.path.getmtime(JS)
-	key = f"mimaar_field_{lang}_{v}"
+	key = f"buildiary_field_{lang}_{v}"
 	cached = frappe.cache.get_value(key)
 	if cached:
 		return cached
@@ -41,7 +41,7 @@ def _tr(lang="ur"):
 	words = {w[1] for w in words} | set(re.findall(r"`([^`$\n]{2,200})`", src)) | set(EXTRA) | {f"status:{x}" for x in EXTRA}
 	for dt in ("Item Group", "UOM", "Water Tank", "Petty Cash Category"):
 		words.update(frappe.get_all(dt, pluck="name"))
-	for dt, f in (("Site Inspection", "inspection_type"), ("Site Worker", "trade"), ("Site Worker", "worker_type"), ("Supplier", "mimaar_work_area")):
+	for dt, f in (("Site Inspection", "inspection_type"), ("Site Worker", "trade"), ("Site Worker", "worker_type"), ("Supplier", "buildiary_work_area")):
 		df = frappe.get_meta(dt).get_field(f)
 		if df and df.options and df.fieldtype == "Select":
 			words.update(x for x in df.options.split("\n") if x)
@@ -58,14 +58,14 @@ def get_context(context):
 	context.no_cache = 1
 	b = None
 	if frappe.session.user != "Guest":
-		from mimaar.field import boot
+		from buildiary.field import boot
 
 		b = boot()
 	pref = frappe.request.cookies.get("preferred_language") if frappe.request else None
 	lang = (b or {}).get("lang") or (pref if pref in ("ur", "ar") else "en")
 	context.lang = lang
 	context.v = int(os.path.getmtime(JS))
-	context.boot_json = _json({"boot": b, "lang": lang, "card_sign_in": bool(frappe.db.get_single_value("Mimaar Settings", "card_sign_in"))})
+	context.boot_json = _json({"boot": b, "lang": lang, "card_sign_in": bool(frappe.db.get_single_value("Buildiary Settings", "card_sign_in"))})
 	context.tr_lang = lang if lang in ("ur", "ar") else "ur"
 	context.ur_json = _json(_tr(context.tr_lang))
 	return context

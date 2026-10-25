@@ -1,12 +1,12 @@
-"""Store items, water (tankers, tank levels) and petty cash. Run: bench --site <site> run-tests --app mimaar"""
+"""Store items, water (tankers, tank levels) and petty cash. Run: bench --site <site> run-tests --app buildiary"""
 
 import frappe
 from frappe.tests import IntegrationTestCase
 from frappe.utils import flt
 
-from mimaar import identity, petty, stores, water
-from mimaar.tests.test_identity import MATCH, person
-from mimaar.tests.test_procurement import a_file
+from buildiary import identity, petty, stores, water
+from buildiary.tests.test_identity import MATCH, person
+from buildiary.tests.test_procurement import a_file
 
 WATER_AI = "/opt/bench/fake_water.json"
 IDENTIFY_AI = "/opt/bench/fake_identify.json"
@@ -19,16 +19,16 @@ def gl(account):
 class TestStage2(IntegrationTestCase):
 	def setUp(self):
 		frappe.set_user("Administrator")
-		frappe.local.conf["mimaar_fake_face_file"] = MATCH
-		frappe.local.conf["mimaar_fake_ai_file"] = WATER_AI
-		frappe.db.set_single_value("Mimaar Settings", "face_check", "Required")
-		frappe.clear_document_cache("Mimaar Settings", "Mimaar Settings")
+		frappe.local.conf["buildiary_fake_face_file"] = MATCH
+		frappe.local.conf["buildiary_fake_ai_file"] = WATER_AI
+		frappe.db.set_single_value("Buildiary Settings", "face_check", "Required")
+		frappe.clear_document_cache("Buildiary Settings", "Buildiary Settings")
 
 	def tearDown(self):
 		frappe.set_user("Administrator")
-		frappe.local.conf.pop("mimaar_fake_face_file", None)
+		frappe.local.conf.pop("buildiary_fake_face_file", None)
 		# identity.verify() commits, so put the owner's controls back as they were
-		frappe.db.set_single_value("Mimaar Settings", {"card_for_receiving": 1, "petty_needs_budget": 1})
+		frappe.db.set_single_value("Buildiary Settings", {"card_for_receiving": 1, "petty_needs_budget": 1})
 		frappe.db.commit()
 
 	# ------------------------------------------------------------ store
@@ -47,7 +47,7 @@ class TestStage2(IntegrationTestCase):
 		self.assertFalse(frappe.get_all("Item Reorder", filters={"parent": code}))
 
 	def test_identify_from_photo(self):
-		frappe.local.conf["mimaar_fake_ai_file"] = IDENTIFY_AI
+		frappe.local.conf["buildiary_fake_ai_file"] = IDENTIFY_AI
 		cement = frappe.db.get_value("Item", {"item_name": "Cement, OPC"}, "name")
 		r = stores.identify(a_file("bag.png"))
 		self.assertEqual(r["what"], "A bag of OPC cement, 50 kg")
@@ -57,8 +57,8 @@ class TestStage2(IntegrationTestCase):
 
 	# ------------------------------------------------------------ water
 	def test_tanker_and_daily_levels(self):
-		frappe.db.set_single_value("Mimaar Settings", "card_for_receiving", 0)
-		frappe.clear_document_cache("Mimaar Settings", "Mimaar Settings")
+		frappe.db.set_single_value("Buildiary Settings", "card_for_receiving", 0)
+		frappe.clear_document_cache("Buildiary Settings", "Buildiary Settings")
 		before = water.in_books()
 		r = water.tanker_save({"vehicle_no": "tla-123", "gallons": 3000, "water_type": "Sweet (construction & curing)", "tds_ppm": 640, "cost": 6000,
 			"emptied_into": "Underground tank", "tanker_photo": a_file("tanker.png"), "bill_scan": a_file("slip.png")})
@@ -107,7 +107,7 @@ class TestStage2(IntegrationTestCase):
 		code = identity.card_code(sup.name)
 		cat = "Canteen & food"
 		acc = frappe.db.get_value("Petty Cash Category", cat, "expense_account")
-		cash = frappe.db.get_single_value("Mimaar Settings", "petty_cash_account")
+		cash = frappe.db.get_single_value("Buildiary Settings", "petty_cash_account")
 		# the owner gives cash by site card + face: approved and booked at once
 		chk = identity.verify(code, a_file("face-now.png"), "Petty cash")["check"]
 		g = petty.entry_save({"entry_type": "Cash given", "holder": sup.name, "amount": 10000, "method": "Cash in hand"}, chk)
@@ -156,8 +156,8 @@ class TestStage2(IntegrationTestCase):
 		p = petty.entry_save({"entry_type": "Expense", "holder": sup.name, "amount": 1000, "category": "Labour advance", "paid_to_person": lab.name}, lchk)
 		self.assertEqual(frappe.db.get_value("Petty Cash Entry", p["name"], "paid_to"), "Petty Test Labour")
 		# no budget yet for a line: refused
-		frappe.db.set_single_value("Mimaar Settings", "petty_needs_budget", 1)
-		frappe.clear_document_cache("Mimaar Settings", "Mimaar Settings")
+		frappe.db.set_single_value("Buildiary Settings", "petty_needs_budget", 1)
+		frappe.clear_document_cache("Buildiary Settings", "Buildiary Settings")
 		nob = next((c.name for c in frappe.get_all("Petty Cash Category", fields=["name", "expense_account"]) if not petty.budget_of(c.expense_account)["has_budget"]), None)
 		if nob:
 			with self.assertRaises(frappe.ValidationError):
@@ -168,8 +168,8 @@ class TestStage2(IntegrationTestCase):
 		self.assertAlmostEqual(petty._in_hand(sup.name), 9500 - 1000 - 2000)
 
 	def test_tanker_paid_from_petty_cash(self):
-		frappe.db.set_single_value("Mimaar Settings", "card_for_receiving", 0)
-		frappe.clear_document_cache("Mimaar Settings", "Mimaar Settings")
+		frappe.db.set_single_value("Buildiary Settings", "card_for_receiving", 0)
+		frappe.clear_document_cache("Buildiary Settings", "Buildiary Settings")
 		sup = person("Water Test Supervisor", worker_type="Supervisor")
 		sup.app_access = "Site supervisor"
 		sup.save()

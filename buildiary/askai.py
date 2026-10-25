@@ -9,7 +9,7 @@ import frappe
 from frappe import _
 from frappe.utils import add_days, cint, flt, getdate, nowdate
 
-from mimaar.field import _company, _project, _psql, _store, caps
+from buildiary.field import _company, _project, _psql, _store, caps
 
 
 def _rows(q, a=None):
@@ -22,13 +22,13 @@ def gather(money):
 	project = _project()
 	p = frappe.db.get_value("Project", project, ["project_name", "expected_start_date", "expected_end_date", "notes"], as_dict=True) if project else {}
 	out = {"today": today, "project": p}
-	from mimaar import build
+	from buildiary import build
 
 	out["schedule"] = [{k: s[k] for k in ("code", "title", "phase", "start", "end", "built", "reported", "verified", "planned", "state")} for s in build._stage_rows()]
 	pq = lambda a="": _psql(a)  # noqa: E731  (only the chosen project, when there are several)
 	out["recent_progress_reports"] = _rows(f"""select u.date, t.subject, u.kind, u.pct, u.note from `tabStage Update` u join `tabTask` t on t.name = u.task
 		where u.date >= %(d)s{pq('t')} order by u.date desc limit 30""", {"d": add_days(today, -13)})
-	from mimaar import stores
+	from buildiary import stores
 
 	wh = _store()
 	bins, received, released, returned, on_order, reorder = stores._figures(wh)
@@ -36,9 +36,9 @@ def gather(money):
 	out["store_now"] = sorted([{"item": names.get(c, (c, ""))[0], "in_store": q, "unit": names.get(c, ("", ""))[1], "low": bool(reorder.get(c) and q <= reorder[c])}
 		for c, q in bins.items() if q or c in received], key=lambda x: -x["in_store"])[:80]
 	out["on_order"] = [{"item": names.get(c, (c, ""))[0], "pending": q, "unit": names.get(c, ("", ""))[1]} for c, q in on_order.items() if q > 0][:60]
-	out["released_this_week"] = _rows(f"""select s.posting_date date, x.item_name item, x.transfer_qty qty, x.stock_uom unit, s.mimaar_issued_to released_to, s.mimaar_work_area area
+	out["released_this_week"] = _rows(f"""select s.posting_date date, x.item_name item, x.transfer_qty qty, x.stock_uom unit, s.buildiary_issued_to released_to, s.buildiary_work_area area
 		from `tabStock Entry` s join `tabStock Entry Detail` x on x.parent = s.name where s.docstatus = 1 and s.stock_entry_type = 'Material Issue'
-		and ifnull(s.mimaar_water_ref, '') = '' and s.posting_date >= %(d)s{pq('s')} order by s.posting_date desc limit 80""", {"d": week})
+		and ifnull(s.buildiary_water_ref, '') = '' and s.posting_date >= %(d)s{pq('s')} order by s.posting_date desc limit 80""", {"d": week})
 	out["received_this_week"] = _rows(f"""select p.posting_date date, x.item_name item, x.qty, x.uom unit, p.supplier_name supplier from `tabPurchase Receipt` p
 		join `tabPurchase Receipt Item` x on x.parent = p.name where p.docstatus = 1 and p.posting_date >= %(d)s{pq('p')} order by p.posting_date desc limit 60""", {"d": week})
 	out["water"] = {"tankers_this_week": _rows(f"""select date, vehicle_no, gallons, water_type, tds_ppm, ai_verdict from `tabWater Tanker` where docstatus = 1 and date >= %(d)s{pq()}
@@ -55,7 +55,7 @@ def gather(money):
 	po_cols = "p.name, p.supplier_name, p.transaction_date, p.schedule_date, p.status, p.per_received, p.per_billed" + (", p.base_grand_total total, p.advance_paid" if money else "")
 	out["purchase_orders"] = _rows(f"select {po_cols} from `tabPurchase Order` p where p.docstatus = 1 and p.status not in ('Closed', 'Completed'){pq('p')} order by p.schedule_date limit 40")
 	if money:
-		from mimaar import money as m, petty
+		from buildiary import money as m, petty
 
 		b = m.budget_overview()
 		out["budget"] = {"budget": b["budget"], "committed": b["committed"], "paid": b["paid"], "still_owed_on_contracts": b["still_owed"],
@@ -79,7 +79,7 @@ def ask(question):
 	q = (question or "").strip()
 	if len(q) < 3:
 		frappe.throw(_("Write your question."))
-	from mimaar import ai, petty
+	from buildiary import ai, petty
 
 	money = petty.approver() or c["money"]
 	data = gather(money)
@@ -95,7 +95,7 @@ def ask(question):
 		'Reply with only JSON: {"answer": "the answer, using **bold**, lines starting with - for bullets and lines starting with ## for headings", "followups": ["up to 3 short follow-up questions"]}\n\n'
 		f"QUESTION: {q}\n\nPROJECT RECORDS (JSON):\n{json.dumps(data, default=str, ensure_ascii=False)[:60000]}"
 	)
-	fake = frappe.conf.get("mimaar_fake_ai_file")
+	fake = frappe.conf.get("buildiary_fake_ai_file")
 	if fake:
 		r = ai.ask_many(prompt, [])
 	else:

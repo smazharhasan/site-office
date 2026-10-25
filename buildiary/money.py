@@ -7,14 +7,14 @@ import frappe
 from frappe import _
 from frappe.utils import add_months, cint, flt, get_first_day, getdate, nowdate
 
-from mimaar.field import _company, _only, _project, _psql, caps
+from buildiary.field import _company, _only, _project, _psql, caps
 
 PHASE_ORDER = ["Design & approvals", "Grey structure", "Finishing", "Contingency", "Site running costs", "Other"]
 TASK_PHASES = {"Design & approvals": ("Design", "Approvals"), "Grey structure": ("Grey structure",), "Finishing": ("Finishing", "Handover")}
 
 
 def _need_money():
-	from mimaar import petty
+	from buildiary import petty
 
 	if not (petty.approver() or caps()["money"]):
 		frappe.throw(_("Only the owner and the project accountant see the budget."), frappe.PermissionError)
@@ -37,7 +37,7 @@ def phase_of(cat, name):
 
 def _lines():
 	co = _company()
-	rows = frappe.db.sql(f"""select b.account, a.account_name name, coalesce(nullif(a.mimaar_budget_category, ''), 'Other') cat, sum(b.budget_amount) budget
+	rows = frappe.db.sql(f"""select b.account, a.account_name name, coalesce(nullif(a.buildiary_budget_category, ''), 'Other') cat, sum(b.budget_amount) budget
 		from `tabBudget` b join `tabAccount` a on a.name = b.account where b.docstatus = 1 and b.company = %s{_psql('b')} group by b.account order by a.account_name""", co, as_dict=True)
 	committed = dict(frappe.db.sql(f"""select i.expense_account, sum(i.base_net_amount) from `tabPurchase Order Item` i join `tabPurchase Order` p on p.name = i.parent
 		where p.docstatus = 1 and p.status != 'Closed' and p.company = %s{_psql('p')} group by i.expense_account""", co))
@@ -70,7 +70,7 @@ def _windows():
 	start, end = (p and p.expected_start_date) or nowdate(), (p and p.expected_end_date) or add_months(nowdate(), 18)
 	out = {"Contingency": (start, end), "Site running costs": (start, end), "Other": (start, end)}
 	for phase, task_phases in TASK_PHASES.items():
-		r = frappe.db.sql("""select min(exp_start_date), max(exp_end_date) from `tabTask` where project = %s and mimaar_phase in %s""", (project, task_phases))
+		r = frappe.db.sql("""select min(exp_start_date), max(exp_end_date) from `tabTask` where project = %s and buildiary_phase in %s""", (project, task_phases))
 		out[phase] = (r[0][0] or start, r[0][1] or end) if r else (start, end)
 	return out
 
@@ -136,7 +136,7 @@ def budget_overview():
 		"over": sum(1 for x in lines if x["over"]), "within": sum(1 for x in lines if not x["over"]), "phases": phases, "cash": cf,
 		"busiest": busiest is not None and {"month": cf["months"][busiest], "amount": cf["scheduled"][busiest] + cf["projected"][busiest]} or None,
 		"heavy": heavy and {"quarter": heavy[0], "amount": heavy[1]}, "total_projected": sum(cf["scheduled"]) + sum(cf["projected"]),
-		"categories": [x for x in frappe.get_meta("Account").get_field("mimaar_budget_category").options.split("\n") if x] if frappe.get_meta("Account").get_field("mimaar_budget_category") else [],
+		"categories": [x for x in frappe.get_meta("Account").get_field("buildiary_budget_category").options.split("\n") if x] if frappe.get_meta("Account").get_field("buildiary_budget_category") else [],
 		"owner": caps()["owner"]}
 
 
@@ -173,9 +173,9 @@ def budget_line_add(name, category, amount):
 		any_line = frappe.db.get_value("Budget", {"company": co, "docstatus": 1}, "account")
 		parent = (frappe.db.get_value("Account", any_line, "parent_account") if any_line else None) or frappe.db.get_value("Account", {"company": co, "account_name": "Direct Expenses", "is_group": 1}, "name")
 		acc = frappe.get_doc({"doctype": "Account", "account_name": name, "parent_account": parent, "company": co, "is_group": 0, "account_type": "Expense Account",
-			"mimaar_budget_category": category or "Other"}).insert(ignore_permissions=True).name
+			"buildiary_budget_category": category or "Other"}).insert(ignore_permissions=True).name
 	if category:
-		frappe.db.set_value("Account", acc, "mimaar_budget_category", category)
+		frappe.db.set_value("Account", acc, "buildiary_budget_category", category)
 	from erpnext.accounts.utils import get_fiscal_year
 
 	fy = get_fiscal_year(nowdate(), company=co)[0]
@@ -193,5 +193,5 @@ def budget_line_add(name, category, amount):
 def budget_line_category(account, category):
 	if not caps()["owner"]:
 		frappe.throw(_("Only the owner changes budget lines."), frappe.PermissionError)
-	frappe.db.set_value("Account", account, "mimaar_budget_category", category)
+	frappe.db.set_value("Account", account, "buildiary_budget_category", category)
 	return category

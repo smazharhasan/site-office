@@ -1,11 +1,11 @@
-"""Site cards, PIN, face checks and the entries that need them. Run: bench --site <site> run-tests --app mimaar"""
+"""Site cards, PIN, face checks and the entries that need them. Run: bench --site <site> run-tests --app buildiary"""
 
 import frappe
 from frappe.tests import IntegrationTestCase
 from frappe.utils import flt, nowdate
 
-from mimaar import field, identity
-from mimaar.tests.test_procurement import a_file, item, warehouse
+from buildiary import field, identity
+from buildiary.tests.test_procurement import a_file, item, warehouse
 
 MATCH = "/opt/bench/fake_face_match.json"
 NOMATCH = "/opt/bench/fake_face_nomatch.json"
@@ -19,12 +19,12 @@ def person(name="Card Test Mistri", **kw):
 
 class TestIdentity(IntegrationTestCase):
 	def setUp(self):
-		frappe.local.conf["mimaar_fake_face_file"] = MATCH
-		frappe.db.set_single_value("Mimaar Settings", "face_check", "Required")
-		frappe.clear_document_cache("Mimaar Settings", "Mimaar Settings")
+		frappe.local.conf["buildiary_fake_face_file"] = MATCH
+		frappe.db.set_single_value("Buildiary Settings", "face_check", "Required")
+		frappe.clear_document_cache("Buildiary Settings", "Buildiary Settings")
 
 	def tearDown(self):
-		frappe.local.conf.pop("mimaar_fake_face_file", None)
+		frappe.local.conf.pop("buildiary_fake_face_file", None)
 
 	def test_card_code_and_lookup(self):
 		p = person()
@@ -43,7 +43,7 @@ class TestIdentity(IntegrationTestCase):
 		r = identity.verify(code, a_file("live.png"), "Store issue")
 		self.assertTrue(r["ok"])
 		self.assertEqual(r["result"], "Match")
-		frappe.local.conf["mimaar_fake_face_file"] = NOMATCH
+		frappe.local.conf["buildiary_fake_face_file"] = NOMATCH
 		r2 = identity.verify(code, a_file("live2.png"), "Store issue")
 		self.assertFalse(r2["ok"])
 		self.assertEqual(r2["result"], "No match")
@@ -57,8 +57,8 @@ class TestIdentity(IntegrationTestCase):
 		wh = warehouse()
 		frappe.get_doc({"doctype": "Stock Entry", "stock_entry_type": "Material Receipt", "company": field._company(),
 			"items": [{"item_code": code_item, "qty": 50, "t_warehouse": wh, "basic_rate": 1400}]}).insert().submit()
-		frappe.db.set_single_value("Mimaar Settings", "site_warehouse", wh)
-		frappe.clear_document_cache("Mimaar Settings", "Mimaar Settings")
+		frappe.db.set_single_value("Buildiary Settings", "site_warehouse", wh)
+		frappe.clear_document_cache("Buildiary Settings", "Buildiary Settings")
 		before = flt(frappe.db.get_value("Bin", {"item_code": code_item, "warehouse": wh}, "actual_qty"))
 		p = person("Card Test Mason")
 		code = identity.card_code(p.name)
@@ -66,13 +66,13 @@ class TestIdentity(IntegrationTestCase):
 			field.release([{"item_code": code_item, "qty": 2}], issued_to="Someone")
 		chk = identity.verify(code, a_file("l.png"), "Store issue")["check"]
 		se = field.release([{"item_code": code_item, "qty": 5}], check=chk, work_area="Walls")
-		self.assertEqual(frappe.db.get_value("Stock Entry", se, "mimaar_person"), p.name)
+		self.assertEqual(frappe.db.get_value("Stock Entry", se, "buildiary_person"), p.name)
 		with self.assertRaises(frappe.ValidationError):  # a check is used once
 			field.release([{"item_code": code_item, "qty": 1}], check=chk)
 		chk2 = identity.verify(code, a_file("l2.png"), "Store return")["check"]
 		back = field.return_to_store([{"item_code": code_item, "qty": 2}], check=chk2)
 		doc = frappe.get_doc("Stock Entry", back)
-		self.assertEqual((doc.docstatus, doc.mimaar_is_return, doc.stock_entry_type), (1, 1, "Material Receipt"))
+		self.assertEqual((doc.docstatus, doc.buildiary_is_return, doc.stock_entry_type), (1, 1, "Material Receipt"))
 		self.assertEqual(flt(frappe.db.get_value("Bin", {"item_code": code_item, "warehouse": wh}, "actual_qty")), before - 5 + 2)
 
 	def test_attendance_by_card_in_and_out(self):

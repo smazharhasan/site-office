@@ -1,7 +1,7 @@
 """Turning a site into the Buildiary console, and registering workspaces made outside sign-up.
 
-    bench --site my.<domain> execute mimaar.saas.console.setup_console --kwargs "{'base': '<domain>'}"
-    bench --site my.<domain> execute mimaar.saas.console.register_site --kwargs "{'host': 'x.<domain>', 'company': 'Villa 31', 'email': '...'}"
+    bench --site my.<domain> execute buildiary.saas.console.setup_console --kwargs "{'base': '<domain>'}"
+    bench --site my.<domain> execute buildiary.saas.console.register_site --kwargs "{'host': 'x.<domain>', 'company': 'Villa 31', 'email': '...'}"
 """
 
 import frappe
@@ -21,21 +21,21 @@ PLANS = [
 
 
 def setup_console(base=None, control=None, company="SMH Global Services", country="Saudi Arabia", support_email="info@smhglobal.com.pk"):
-	update_site_config("mabni_control", 1)
-	frappe.local.conf.mabni_control = 1
+	update_site_config("buildiary_control", 1)
+	frappe.local.conf.buildiary_control = 1
 	if not frappe.is_setup_complete():
 		from frappe.desk.page.setup_wizard.setup_wizard import setup_complete
 
-		from mimaar.saas.tenant import _abbr, _fy
-		from mimaar.saas.common import country_info
+		from buildiary.saas.tenant import _abbr, _fy
+		from buildiary.saas.common import country_info
 
 		ci = country_info(country)
 		fy = _fy(ci["fy_month"])
 		frappe.local.lang = "en"
-		setup_complete({"language": "English", "country": country, "timezone": ci["time_zone"], "currency": "USD", "full_name": "Mabni Admin",
+		setup_complete({"language": "English", "country": country, "timezone": ci["time_zone"], "currency": "USD", "full_name": "Buildiary Admin",
 			"company_name": company, "company_abbr": _abbr(company), "chart_of_accounts": "Standard", "fy_start_date": fy[0], "fy_end_date": fy[1], "setup_demo": 0})
 		frappe.db.commit()
-	s = frappe.get_single("Mabni Settings")
+	s = frappe.get_single("Buildiary Cloud Settings")
 	if base:
 		s.base_domain = base
 	s.control_host = control or s.control_host or f"my.{s.base_domain}"
@@ -50,22 +50,22 @@ def setup_console(base=None, control=None, company="SMH Global Services", countr
 		s.reserved_names = s.meta.get_field("reserved_names").default
 	s.save(ignore_permissions=True)
 	for p in PLANS:
-		if not frappe.db.exists("Mabni Plan", p["plan_name"]):
-			frappe.get_doc(dict(p, doctype="Mabni Plan", is_active=1)).insert(ignore_permissions=True)
-		elif frappe.db.get_value("Mabni Plan", p["plan_name"], "summary_en") == "For a family building its own home: one site, the builder and the site staff on your phone.":
-			frappe.db.set_value("Mabni Plan", p["plan_name"], {k: p[k] for k in ("summary_en", "summary_ur", "summary_ar")})
+		if not frappe.db.exists("Buildiary Plan", p["plan_name"]):
+			frappe.get_doc(dict(p, doctype="Buildiary Plan", is_active=1)).insert(ignore_permissions=True)
+		elif frappe.db.get_value("Buildiary Plan", p["plan_name"], "summary_en") == "For a family building its own home: one site, the builder and the site staff on your phone.":
+			frappe.db.set_value("Buildiary Plan", p["plan_name"], {k: p[k] for k in ("summary_en", "summary_ur", "summary_ar")})
 	ws = frappe.get_single("Website Settings")
 	ws.home_page = "start"
 	ws.app_name = "Buildiary"
-	ws.app_logo = "/assets/mimaar/images/buildiary-logo.svg"
+	ws.app_logo = "/assets/buildiary/images/buildiary-logo.svg"
 	ws.disable_signup = 1
 	ws.save(ignore_permissions=True)
 	admin = frappe.get_doc("User", "Administrator")
-	if "Mabni Admin" not in [r.role for r in admin.roles]:
-		admin.append_roles("Mabni Admin")
+	if "Buildiary Admin" not in [r.role for r in admin.roles]:
+		admin.append_roles("Buildiary Admin")
 		admin.save(ignore_permissions=True)
 	frappe.db.commit()
-	print("MABNI CONSOLE READY", s.control_host, s.base_domain)
+	print("BUILDIARY CONSOLE READY", s.control_host, s.base_domain)
 
 
 def rebase(base, dry_run=0):
@@ -76,16 +76,16 @@ def rebase(base, dry_run=0):
 	their addresses. Prints "MOVED <old> <new>" for each workspace (the script adds redirects)."""
 	import os
 
-	from mimaar.saas.common import push, site_dir, update_site_config
+	from buildiary.saas.common import push, site_dir, update_site_config
 
 	base = (base or "").strip().lower().strip(".")
 	if not base:
 		frappe.throw("Give the new main address, e.g. buildiary.app")
-	s = frappe.get_single("Mabni Settings")
+	s = frappe.get_single("Buildiary Cloud Settings")
 	old = (s.base_domain or "").strip().lower()
 	moved = []
-	for name in frappe.get_all("Mabni Tenant", pluck="name"):
-		t = frappe.get_doc("Mabni Tenant", name)
+	for name in frappe.get_all("Buildiary Tenant", pluck="name"):
+		t = frappe.get_doc("Buildiary Tenant", name)
 		host = (t.site_host or "").lower()
 		if t.is_internal or not old or not host.endswith("." + old):
 			continue
@@ -95,7 +95,7 @@ def rebase(base, dry_run=0):
 				os.rename(site_dir(host), site_dir(new))
 			if os.path.isdir(site_dir(new)):
 				update_site_config(new, "host_name", f"https://{new}")
-			frappe.db.set_value("Mabni Tenant", t.name, "site_host", new, update_modified=False)
+			frappe.db.set_value("Buildiary Tenant", t.name, "site_host", new, update_modified=False)
 		moved.append((host, new))
 	if not cint(dry_run):
 		s.base_domain = base
@@ -105,17 +105,47 @@ def rebase(base, dry_run=0):
 		s.flags.ignore_permissions = True
 		s.save()
 		frappe.db.commit()
-		for name in frappe.get_all("Mabni Tenant", pluck="name"):
-			push(frappe.get_doc("Mabni Tenant", name))
+		for name in frappe.get_all("Buildiary Tenant", pluck="name"):
+			push(frappe.get_doc("Buildiary Tenant", name))
 		frappe.db.commit()
 	for a, b in moved:
 		print("MOVED", a, b)
 	print("BASE", old, "->", base, "(dry run)" if cint(dry_run) else "")
 
 
+def move_site(old, new):
+	"""Moves one workspace to a new address (and its record to the new sub-name), keeping its data.
+	Run on the console, e.g. bench --site my.buildiary.app execute buildiary.saas.console.move_site
+	--kwargs "{'old': 'a.example.com', 'new': 'b.buildiary.app'}". Prints "MOVED <old> <new>"."""
+	import os
+
+	from frappe.model.rename_doc import rename_doc
+
+	from buildiary.saas.common import push, site_dir, update_site_config
+
+	old, new = (old or "").strip().lower(), (new or "").strip().lower()
+	if not old or not new or old == new:
+		frappe.throw("Give the old and the new address")
+	if os.path.isdir(site_dir(old)) and not os.path.exists(site_dir(new)):
+		os.rename(site_dir(old), site_dir(new))
+	if os.path.isdir(site_dir(new)):
+		update_site_config(new, "host_name", f"https://{new}")
+	name = frappe.db.get_value("Buildiary Tenant", {"site_host": old}, "name") or frappe.db.get_value("Buildiary Tenant", {"site_host": new}, "name")
+	if name:
+		sub = new.split(".")[0]
+		if name != sub and not frappe.db.exists("Buildiary Tenant", sub):
+			rename_doc("Buildiary Tenant", name, sub, force=True, ignore_permissions=True, show_alert=False)
+			name = sub
+		frappe.db.set_value("Buildiary Tenant", name, {"site_host": new, "subdomain": sub}, update_modified=False)
+		frappe.db.commit()
+		push(frappe.get_doc("Buildiary Tenant", name))
+		frappe.db.commit()
+	print("MOVED", old, new)
+
+
 def reserve(names):
 	"""Adds names customers can't take for their workspace (e.g. a name used by another app on the server)."""
-	s = frappe.get_single("Mabni Settings")
+	s = frappe.get_single("Buildiary Cloud Settings")
 	have = [x.strip().lower() for x in (s.reserved_names or "").split() if x.strip()]
 	add = [n for n in str(names).lower().split() if n and n not in have]
 	if add:
@@ -128,12 +158,12 @@ def reserve(names):
 
 def register_site(host, company, email, contact_name="Owner", sub=None, internal=1, mode="Owner", country="Pakistan", language="en"):
 	"""A workspace made outside sign-up (e.g. SMH Global's own) joins the console."""
-	from mimaar.saas.common import push
+	from buildiary.saas.common import push
 
 	sub = sub or host.split(".")[0]
-	t = frappe.get_doc("Mabni Tenant", sub) if frappe.db.exists("Mabni Tenant", sub) else frappe.new_doc("Mabni Tenant")
+	t = frappe.get_doc("Buildiary Tenant", sub) if frappe.db.exists("Buildiary Tenant", sub) else frappe.new_doc("Buildiary Tenant")
 	t.update({"subdomain": sub, "site_host": host, "company_name": company, "contact_name": contact_name, "email": email, "country": country, "language": language,
-		"mode": mode, "plan": frappe.db.get_value("Mabni Plan", {"mode": mode}, "name"), "is_internal": int(internal), "status": "Active",
+		"mode": mode, "plan": frappe.db.get_value("Buildiary Plan", {"mode": mode}, "name"), "is_internal": int(internal), "status": "Active",
 		"signed_up_on": t.signed_up_on or now_datetime(), "trial_ends": t.trial_ends or nowdate()})
 	if not t.get("tenant_key"):
 		t.tenant_key = frappe.generate_hash(length=40)

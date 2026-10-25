@@ -1,4 +1,4 @@
-frappe.ui.form.on("Mabni Payment", {
+frappe.ui.form.on("Buildiary Payment", {
 	refresh(frm) {
 		if (frm.is_new() || frm.doc.status !== "Waiting for check") return;
 		frm.add_custom_button(__("Payment received: activate"), () => {

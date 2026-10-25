@@ -9,7 +9,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt
 
-from mimaar.field import _hhmm, _need, _parse, _photo_ok, _psql, _store, caps
+from buildiary.field import _hhmm, _need, _parse, _photo_ok, _psql, _store, caps
 
 WATER = "WATER"
 
@@ -56,7 +56,7 @@ def _figures(wh, item=None):
 	released = _sum_by_item(f"""select x.item_code, sum(x.transfer_qty) from `tabStock Entry Detail` x join `tabStock Entry` s on s.name = x.parent
 		where s.docstatus = 1 and s.stock_entry_type = 'Material Issue' and x.s_warehouse = %(wh)s{cond} group by x.item_code""", args)
 	returned = _sum_by_item(f"""select x.item_code, sum(x.transfer_qty) from `tabStock Entry Detail` x join `tabStock Entry` s on s.name = x.parent
-		where s.docstatus = 1 and s.stock_entry_type = 'Material Receipt' and s.mimaar_is_return = 1 and x.t_warehouse = %(wh)s{cond} group by x.item_code""", args)
+		where s.docstatus = 1 and s.stock_entry_type = 'Material Receipt' and s.buildiary_is_return = 1 and x.t_warehouse = %(wh)s{cond} group by x.item_code""", args)
 	on_order = _sum_by_item(f"""select x.item_code, sum(greatest(x.qty - x.received_qty, 0) * x.conversion_factor) from `tabPurchase Order Item` x
 		join `tabPurchase Order` p on p.name = x.parent where p.docstatus = 1 and p.status not in ('Closed', 'Completed', 'On Hold'){cond}{_psql('p')} group by x.item_code""", args)
 	reorder = _sum_by_item(f"""select x.parent, x.warehouse_reorder_level from `tabItem Reorder` x where x.warehouse = %(wh)s{cond.replace('item_code', 'parent')}""", args)
@@ -104,12 +104,12 @@ def item(code):
 	money = c["money"] or c["owner"]
 	rate = flt(frappe.db.get_value("Bin", {"item_code": code, "warehouse": wh}, "valuation_rate")) if money else None
 	moves = []
-	for r in frappe.db.sql("""select p.name, p.posting_date d, p.posting_time t, p.supplier_name who, p.supplier_delivery_note ref, x.stock_qty qty, p.mimaar_identity_check idc
+	for r in frappe.db.sql("""select p.name, p.posting_date d, p.posting_time t, p.supplier_name who, p.supplier_delivery_note ref, x.stock_qty qty, p.buildiary_identity_check idc
 		from `tabPurchase Receipt Item` x join `tabPurchase Receipt` p on p.name = x.parent
 		where p.docstatus = 1 and x.item_code = %s and x.warehouse = %s order by p.posting_date desc, p.creation desc limit 60""", (code, wh), as_dict=True):
 		moves.append({"kind": "in", "name": r.name, "date": r.d, "time": _hhmm(r.t), "who": r.who, "ref": r.ref, "qty": flt(r.qty), "face": bool(r.idc)})
-	for r in frappe.db.sql("""select s.name, s.posting_date d, s.posting_time t, s.stock_entry_type typ, s.mimaar_is_return ret, s.mimaar_issued_to who, s.mimaar_work_area ref,
-			x.transfer_qty qty, s.mimaar_identity_check idc, s.mimaar_photo photo
+	for r in frappe.db.sql("""select s.name, s.posting_date d, s.posting_time t, s.stock_entry_type typ, s.buildiary_is_return ret, s.buildiary_issued_to who, s.buildiary_work_area ref,
+			x.transfer_qty qty, s.buildiary_identity_check idc, s.buildiary_photo photo
 		from `tabStock Entry Detail` x join `tabStock Entry` s on s.name = x.parent
 		where s.docstatus = 1 and x.item_code = %s and (x.s_warehouse = %s or x.t_warehouse = %s) order by s.posting_date desc, s.creation desc limit 60""", (code, wh, wh), as_dict=True):
 		kind = "out" if r.typ == "Material Issue" else "back" if r.ret else "adj"
@@ -131,7 +131,7 @@ def item(code):
 def identify(file_url):
 	"""Which store item is in this photo? The AI looks at the photo and picks from the item list."""
 	_can()
-	from mimaar import ai
+	from buildiary import ai
 
 	G = _groups()
 	cat = frappe.get_all("Item", filters={"disabled": 0, "is_stock_item": 1, "name": ["!=", WATER]}, fields=["name", "item_name", "item_group", "stock_uom"], limit_page_length=600)
@@ -189,7 +189,7 @@ def item_save(data):
 		if d.item_group:
 			it.item_group = d.item_group
 	else:
-		from mimaar.api import new_item
+		from buildiary.api import new_item
 
 		it = frappe.get_doc("Item", new_item(name, uom=d.uom or "Nos", item_group=d.item_group or None))
 	if _photo_ok(d.image):

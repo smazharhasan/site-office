@@ -10,15 +10,15 @@ if (!defined('ABSPATH')) {
 }
 
 // Set in wp-config (from the server's .env): the console's address and how to reach it inside the server.
-defined('MABNI_CONSOLE') || define('MABNI_CONSOLE', 'my.buildiary.app');
-defined('MABNI_CONSOLE_INTERNAL') || define('MABNI_CONSOLE_INTERNAL', '');
-defined('MABNI_SUPPORT_EMAIL') || define('MABNI_SUPPORT_EMAIL', 'info@smhglobal.com.pk');
-defined('MABNI_WHATSAPP') || define('MABNI_WHATSAPP', '');
+defined('BUILDIARY_CONSOLE') || define('BUILDIARY_CONSOLE', 'my.buildiary.app');
+defined('BUILDIARY_CONSOLE_INTERNAL') || define('BUILDIARY_CONSOLE_INTERNAL', '');
+defined('BUILDIARY_SUPPORT_EMAIL') || define('BUILDIARY_SUPPORT_EMAIL', 'info@smhglobal.com.pk');
+defined('BUILDIARY_WHATSAPP') || define('BUILDIARY_WHATSAPP', '');
 
-const MABNI_LANGS = ['en', 'ur', 'ar'];
+const BUILDIARY_LANGS = ['en', 'ur', 'ar'];
 
 /** The page's language comes from its address: /ur/... is Urdu, /ar/... is Arabic, the rest English. */
-function mabni_lang() {
+function buildiary_lang() {
 	static $lang = null;
 	if ($lang !== null) {
 		return $lang;
@@ -29,19 +29,19 @@ function mabni_lang() {
 	return $lang;
 }
 
-function mabni_is_admin_request() {
+function buildiary_is_admin_request() {
 	return is_admin() || (defined('REST_REQUEST') && REST_REQUEST) || wp_doing_ajax() || (defined('WP_CLI') && WP_CLI);
 }
 
 /** The address of a page in a language (slug '' is the home page). */
-function mabni_url($slug, $lang = null) {
-	$lang = $lang ?: mabni_lang();
+function buildiary_url($slug, $lang = null) {
+	$lang = $lang ?: buildiary_lang();
 	$prefix = $lang === 'en' ? '' : $lang . '/';
 	return home_url('/' . $prefix . ($slug ? trailingslashit($slug) : ''));
 }
 
 /** The page's slug without the language part, for the language switch. */
-function mabni_current_slug() {
+function buildiary_current_slug() {
 	$path = trim((string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
 	$parts = $path === '' ? [] : explode('/', $path);
 	if ($parts && in_array($parts[0], ['ur', 'ar'], true)) {
@@ -52,28 +52,28 @@ function mabni_current_slug() {
 
 // ---- right to left for Urdu and Arabic
 add_filter('locale', function ($locale) {
-	if (mabni_is_admin_request()) {
+	if (buildiary_is_admin_request()) {
 		return $locale;
 	}
-	return ['en' => 'en_US', 'ur' => 'ur', 'ar' => 'ar'][mabni_lang()];
+	return ['en' => 'en_US', 'ur' => 'ur', 'ar' => 'ar'][buildiary_lang()];
 });
 add_action('init', function () {
-	if (mabni_is_admin_request()) {
+	if (buildiary_is_admin_request()) {
 		return;
 	}
 	global $wp_locale;
-	if ($wp_locale && mabni_lang() !== 'en') {
+	if ($wp_locale && buildiary_lang() !== 'en') {
 		$wp_locale->text_direction = 'rtl';
 	}
 }, 1);
 add_filter('language_attributes', function ($out) {
-	if (mabni_is_admin_request()) {
+	if (buildiary_is_admin_request()) {
 		return $out;
 	}
-	return 'lang="' . mabni_lang() . '" dir="' . (mabni_lang() === 'en' ? 'ltr' : 'rtl') . '"';
+	return 'lang="' . buildiary_lang() . '" dir="' . (buildiary_lang() === 'en' ? 'ltr' : 'rtl') . '"';
 });
 add_filter('body_class', function ($c) {
-	$c[] = 'lang-' . mabni_lang();
+	$c[] = 'lang-' . buildiary_lang();
 	return $c;
 });
 
@@ -82,13 +82,13 @@ add_action('init', function () {
 	$path = trim((string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
 	if (preg_match('#^(?:(ur|ar)/)?start-trial$#', $path, $m)) {
 		$lang = $m[1] ?? 'en';
-		wp_redirect('https://' . MABNI_CONSOLE . '/start?lang=' . ($lang ?: 'en'), 302);
+		wp_redirect('https://' . BUILDIARY_CONSOLE . '/start?lang=' . ($lang ?: 'en'), 302);
 		exit;
 	}
 });
 
 // ---- words in the header and footer
-function mabni_t($key) {
+function buildiary_t($key) {
 	static $T = [
 		'en' => [
 			'features' => 'Features', 'pricing' => 'Pricing', 'about' => 'About', 'contact' => 'Contact', 'trial' => 'Start free trial', 'menu' => 'Menu', 'guides' => 'Guides', 'owners' => 'For home owners', 'builders' => 'For builders',
@@ -121,72 +121,72 @@ function mabni_t($key) {
 			'trial_note' => '7 أيام مجاناً، بدون بطاقة. ادفع بالتحويل البنكي عندما تكون جاهزاً.', 'currency' => 'العملة',
 		],
 	];
-	return $T[mabni_lang()][$key] ?? $T['en'][$key] ?? $key;
+	return $T[buildiary_lang()][$key] ?? $T['en'][$key] ?? $key;
 }
 
-function mabni_logo_svg($size = 36) {
-	return '<svg width="' . (int) $size . '" height="' . (int) $size . '" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><rect width="120" height="120" rx="26" fill="#1E3A5F"/><path d="M0 24H120M0 48H120M0 72H120M0 96H120M24 0V120M48 0V120M72 0V120M96 0V120" stroke="#FFFFFF" stroke-opacity=".10" stroke-width="1"/><g transform="translate(5 -3)"><g fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linejoin="miter"><path d="M34 22H70L80 32V44L72 51L82 58V80L72 90H34Z"/><path d="M45 33H66L69 36V42L66 45H45Z"/><path d="M45 57H68L71 60V76L68 79H45Z"/></g><g stroke="#F2B01E" stroke-width="3.5" fill="none"><path d="M34 102H82"/><path d="M34 96V108M82 96V108M58 98V106"/></g><g fill="#F2B01E"><rect x="24" y="30" width="12" height="5" rx="2.5"/><rect x="24" y="53" width="12" height="5" rx="2.5"/><rect x="24" y="76" width="12" height="5" rx="2.5"/></g></g></svg>';
+function buildiary_logo_svg($size = 36) {
+	return '<svg width="' . (int) $size . '" height="' . (int) $size . '" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><rect width="120" height="120" rx="26" fill="#1E3A5F"/><path d="M53.5 18H45A24 24 0 0 0 21 42V78A24 24 0 0 0 45 102H53.5Z M53.5 30H44A11 11 0 0 0 33 41V52.5H53.5Z M53.5 64.5H33V79A11 11 0 0 0 44 90H53.5Z M66.5 18H75A24 24 0 0 1 99 42V78A24 24 0 0 1 75 102H66.5Z M66.5 30V90H76A11 11 0 0 0 87 79V41A11 11 0 0 0 76 30Z" fill="#FFFFFF" fill-rule="evenodd"/><rect x="53.5" y="18" width="13.0" height="84" fill="#F2B01E"/></svg>';
 }
 
-function mabni_lang_links($class = 'mb-langs') {
-	$slug = mabni_current_slug();
+function buildiary_lang_links($class = 'mb-langs') {
+	$slug = buildiary_current_slug();
 	$names = ['en' => 'English', 'ur' => 'اردو', 'ar' => 'العربية'];
-	$out = '<div class="' . esc_attr($class) . '" role="group" aria-label="' . esc_attr(mabni_t('langs')) . '">';
+	$out = '<div class="' . esc_attr($class) . '" role="group" aria-label="' . esc_attr(buildiary_t('langs')) . '">';
 	foreach ($names as $code => $name) {
-		$cur = $code === mabni_lang();
-		$out .= '<a class="lang-' . $code . '" lang="' . $code . '" href="' . esc_url(mabni_url($slug, $code)) . '"' . ($cur ? ' aria-current="true"' : '') . '>' . esc_html($name) . '</a>';
+		$cur = $code === buildiary_lang();
+		$out .= '<a class="lang-' . $code . '" lang="' . $code . '" href="' . esc_url(buildiary_url($slug, $code)) . '"' . ($cur ? ' aria-current="true"' : '') . '>' . esc_html($name) . '</a>';
 	}
 	return $out . '</div>';
 }
 
-add_shortcode('mabni_header', function () {
+add_shortcode('buildiary_header', function () {
 	$nav = '';
-	$here = mabni_current_slug();
+	$here = buildiary_current_slug();
 	foreach (['features', 'pricing', 'guides', 'about', 'contact'] as $s) {
 		$cur = ($here === $s || strpos($here, $s . '/') === 0) ? ' aria-current="page"' : '';
-		$nav .= '<a href="' . esc_url(mabni_url($s)) . '"' . $cur . '>' . esc_html(mabni_t($s)) . '</a>';
+		$nav .= '<a href="' . esc_url(buildiary_url($s)) . '"' . $cur . '>' . esc_html(buildiary_t($s)) . '</a>';
 	}
 	return '<header class="mb-head"><div class="mb-wrap mb-head-in">'
-		. '<a class="mb-brand" href="' . esc_url(mabni_url('')) . '">' . mabni_logo_svg(36) . '<span>Buildiary</span></a>'
-		. '<nav class="mb-nav" id="mb-nav" aria-label="' . esc_attr(mabni_t('menu')) . '">' . $nav . mabni_lang_links('mb-langs mb-langs-nav') . '</nav>'
-		. '<div class="mb-head-end">' . mabni_lang_links() . '<a class="mb-btn mb-btn-sm" href="' . esc_url(mabni_url('start-trial')) . '">' . esc_html(mabni_t('trial')) . '</a>'
-		. '<button class="mb-menu" type="button" aria-controls="mb-nav" aria-expanded="false"><span class="screen-reader-text">' . esc_html(mabni_t('menu')) . '</span><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>'
+		. '<a class="mb-brand" href="' . esc_url(buildiary_url('')) . '">' . buildiary_logo_svg(36) . '<span>Buil<i class="bd-d">d</i>iary</span></a>'
+		. '<nav class="mb-nav" id="mb-nav" aria-label="' . esc_attr(buildiary_t('menu')) . '">' . $nav . buildiary_lang_links('mb-langs mb-langs-nav') . '</nav>'
+		. '<div class="mb-head-end">' . buildiary_lang_links() . '<a class="mb-btn mb-btn-sm" href="' . esc_url(buildiary_url('start-trial')) . '">' . esc_html(buildiary_t('trial')) . '</a>'
+		. '<button class="mb-menu" type="button" aria-controls="mb-nav" aria-expanded="false"><span class="screen-reader-text">' . esc_html(buildiary_t('menu')) . '</span><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>'
 		. '</div></div></header>';
 });
 
 // the maker: SMH Global Services, with its logo (light on dark backgrounds)
-function mabni_maker($tone = 'dark', $label = true) {
+function buildiary_maker($tone = 'dark', $label = true) {
 	$img = get_theme_file_uri('assets/' . ($tone === 'light' ? 'smh-global-light.svg' : 'smh-global.svg'));
-	return '<a class="mb-maker mb-maker-' . esc_attr($tone) . '" href="https://www.smhglobal.com.pk" rel="noopener">' . ($label ? '<span>' . esc_html(mabni_t('by_short')) . '</span>' : '')
+	return '<a class="mb-maker mb-maker-' . esc_attr($tone) . '" href="https://www.smhglobal.com.pk" rel="noopener">' . ($label ? '<span>' . esc_html(buildiary_t('by_short')) . '</span>' : '')
 		. '<img src="' . esc_url($img) . '" alt="SMH Global Services" width="84" height="36"></a>';
 }
-add_shortcode('mabni_maker', function () {
-	return '<div class="mb-maker-block">' . mabni_maker('dark', false) . '<p>' . esc_html(mabni_t('maker_line')) . ' · <a href="https://www.smhglobal.com.pk" rel="noopener">smhglobal.com.pk</a></p></div>';
+add_shortcode('buildiary_maker', function () {
+	return '<div class="mb-maker-block">' . buildiary_maker('dark', false) . '<p>' . esc_html(buildiary_t('maker_line')) . ' · <a href="https://www.smhglobal.com.pk" rel="noopener">smhglobal.com.pk</a></p></div>';
 });
 
-add_shortcode('mabni_footer', function () {
+add_shortcode('buildiary_footer', function () {
 	$link = function ($slug, $key) {
-		return '<a href="' . esc_url(mabni_url($slug)) . '">' . esc_html(mabni_t($key)) . '</a>';
+		return '<a href="' . esc_url(buildiary_url($slug)) . '">' . esc_html(buildiary_t($key)) . '</a>';
 	};
-	$wa = MABNI_WHATSAPP ? '<a href="https://wa.me/' . esc_attr(preg_replace('/\D/', '', MABNI_WHATSAPP)) . '" rel="noopener">WhatsApp +' . esc_html(preg_replace('/\D/', '', MABNI_WHATSAPP)) . '</a>' : '';
+	$wa = BUILDIARY_WHATSAPP ? '<a href="https://wa.me/' . esc_attr(preg_replace('/\D/', '', BUILDIARY_WHATSAPP)) . '" rel="noopener">WhatsApp +' . esc_html(preg_replace('/\D/', '', BUILDIARY_WHATSAPP)) . '</a>' : '';
 	return '<footer class="mb-foot"><div class="mb-wrap mb-foot-in">'
-		. '<div class="mb-foot-brand"><a class="mb-brand" href="' . esc_url(mabni_url('')) . '">' . mabni_logo_svg(32) . '<span>Buildiary</span></a><p>' . esc_html(mabni_t('tagline')) . '</p>' . mabni_lang_links() . '</div>'
-		. '<div><h2>' . esc_html(mabni_t('product')) . '</h2>' . $link('features', 'features') . $link('pricing', 'pricing') . $link('home-owners', 'owners') . $link('builders', 'builders') . $link('start-trial', 'trial') . '</div>'
-		. mabni_footer_guides()
-		. '<div><h2>' . esc_html(mabni_t('company')) . '</h2>' . $link('about', 'about') . $link('contact', 'contact') . $link('privacy', 'privacy') . $link('terms', 'terms') . '</div>'
-		. '<div><h2>' . esc_html(mabni_t('reach')) . '</h2><a href="mailto:' . esc_attr(MABNI_SUPPORT_EMAIL) . '">' . esc_html(MABNI_SUPPORT_EMAIL) . '</a>' . $wa . '<a href="https://www.smhglobal.com.pk" rel="noopener">smhglobal.com.pk</a></div>'
-		. '</div><div class="mb-wrap mb-foot-bottom"><span>© ' . esc_html(date('Y')) . ' SMH Global Services</span>' . mabni_maker('light') . '</div></footer>'
+		. '<div class="mb-foot-brand"><a class="mb-brand" href="' . esc_url(buildiary_url('')) . '">' . buildiary_logo_svg(32) . '<span>Buil<i class="bd-d">d</i>iary</span></a><p>' . esc_html(buildiary_t('tagline')) . '</p>' . buildiary_lang_links() . '</div>'
+		. '<div><h2>' . esc_html(buildiary_t('product')) . '</h2>' . $link('features', 'features') . $link('pricing', 'pricing') . $link('home-owners', 'owners') . $link('builders', 'builders') . $link('start-trial', 'trial') . '</div>'
+		. buildiary_footer_guides()
+		. '<div><h2>' . esc_html(buildiary_t('company')) . '</h2>' . $link('about', 'about') . $link('contact', 'contact') . $link('privacy', 'privacy') . $link('terms', 'terms') . '</div>'
+		. '<div><h2>' . esc_html(buildiary_t('reach')) . '</h2><a href="mailto:' . esc_attr(BUILDIARY_SUPPORT_EMAIL) . '">' . esc_html(BUILDIARY_SUPPORT_EMAIL) . '</a>' . $wa . '<a href="https://www.smhglobal.com.pk" rel="noopener">smhglobal.com.pk</a></div>'
+		. '</div><div class="mb-wrap mb-foot-bottom"><span>© ' . esc_html(date('Y')) . ' SMH Global Services</span>' . buildiary_maker('light') . '</div></footer>'
 		. '<script>(function(){var b=document.querySelector(".mb-menu"),n=document.getElementById("mb-nav");if(!b||!n)return;b.addEventListener("click",function(){var o=n.classList.toggle("open");b.setAttribute("aria-expanded",o?"true":"false");});})();</script>';
 });
 
 // the guides in this language, for the footer (their short names are the page titles)
-function mabni_footer_guides() {
-	$lang = mabni_lang();
+function buildiary_footer_guides() {
+	$lang = buildiary_lang();
 	$parent = get_page_by_path(($lang === 'en' ? '' : $lang . '/') . 'guides', OBJECT, 'page');
 	if (!$parent) {
 		return '';
 	}
-	$out = '<div><h2>' . esc_html(mabni_t('guides')) . '</h2>';
+	$out = '<div><h2>' . esc_html(buildiary_t('guides')) . '</h2>';
 	foreach (get_pages(['parent' => $parent->ID, 'sort_column' => 'menu_order,post_date,ID']) as $g) {
 		$out .= '<a href="' . esc_url(get_permalink($g)) . '">' . esc_html(get_the_title($g)) . '</a>';
 	}
@@ -194,36 +194,36 @@ function mabni_footer_guides() {
 }
 
 // ---- prices, from the console (cached for an hour), with the last known prices as a fallback
-function mabni_plans() {
-	$cached = get_transient('mabni_plans');
+function buildiary_plans() {
+	$cached = get_transient('buildiary_plans');
 	if ($cached) {
 		return $cached;
 	}
-	$url = MABNI_CONSOLE_INTERNAL ? rtrim(MABNI_CONSOLE_INTERNAL, '/') : 'https://' . MABNI_CONSOLE;
+	$url = BUILDIARY_CONSOLE_INTERNAL ? rtrim(BUILDIARY_CONSOLE_INTERNAL, '/') : 'https://' . BUILDIARY_CONSOLE;
 	$args = ['timeout' => 8, 'headers' => ['Accept' => 'application/json']];
-	if (MABNI_CONSOLE_INTERNAL) {
-		$args['headers']['Host'] = MABNI_CONSOLE;
+	if (BUILDIARY_CONSOLE_INTERNAL) {
+		$args['headers']['Host'] = BUILDIARY_CONSOLE;
 	}
-	$r = wp_remote_get($url . '/api/method/mimaar.saas.api.public_plans', $args);
+	$r = wp_remote_get($url . '/api/method/buildiary.saas.api.public_plans', $args);
 	$data = null;
 	if (!is_wp_error($r) && wp_remote_retrieve_response_code($r) === 200) {
 		$body = json_decode(wp_remote_retrieve_body($r), true);
 		$data = $body['message'] ?? null;
 	}
 	if ($data && !empty($data['plans'])) {
-		set_transient('mabni_plans', $data, HOUR_IN_SECONDS);
-		update_option('mabni_plans_last', $data, false);
+		set_transient('buildiary_plans', $data, HOUR_IN_SECONDS);
+		update_option('buildiary_plans_last', $data, false);
 		return $data;
 	}
-	return get_option('mabni_plans_last') ?: ['plans' => [
+	return get_option('buildiary_plans_last') ?: ['plans' => [
 		['name' => 'Owner', 'mode' => 'Owner', 'max_projects' => 2, 'max_users' => 10, 'storage_gb' => 10, 'summary' => [], 'usd' => ['month' => 15, 'year' => 150], 'PKR' => ['month' => 4200, 'year' => 42000], 'SAR' => ['month' => 55, 'year' => 560]],
 		['name' => 'Builder', 'mode' => 'Builder', 'max_projects' => 10, 'max_users' => 40, 'storage_gb' => 50, 'summary' => [], 'usd' => ['month' => 49, 'year' => 490], 'PKR' => ['month' => 13700, 'year' => 137200], 'SAR' => ['month' => 185, 'year' => 1840]],
 	], 'trial_days' => 7];
 }
 
-add_shortcode('mabni_prices', function () {
-	$data = mabni_plans();
-	$lang = mabni_lang();
+add_shortcode('buildiary_prices', function () {
+	$data = buildiary_plans();
+	$lang = buildiary_lang();
 	$cur = ['en' => 'USD', 'ur' => 'PKR', 'ar' => 'SAR'][$lang];
 	$fmt = function ($v, $c) {
 		$n = number_format((float) $v, ((float) $v == (int) $v) ? 0 : 2);
@@ -238,30 +238,30 @@ add_shortcode('mabni_prices', function () {
 				continue;
 			}
 			foreach (['month', 'year'] as $per) {
-				$prices .= '<span class="mb-price" data-cur="' . $c . '" data-per="' . $per . '"' . ($c === $cur && $per === 'month' ? '' : ' hidden') . '><b>' . esc_html($fmt($p[$k][$per], $c)) . '</b> <small>' . esc_html(mabni_t($per === 'month' ? 'per_month' : 'per_year')) . '</small></span>';
+				$prices .= '<span class="mb-price" data-cur="' . $c . '" data-per="' . $per . '"' . ($c === $cur && $per === 'month' ? '' : ' hidden') . '><b>' . esc_html($fmt($p[$k][$per], $c)) . '</b> <small>' . esc_html(buildiary_t($per === 'month' ? 'per_month' : 'per_year')) . '</small></span>';
 			}
 		}
 		$summary = $p['summary'][$lang] ?? ($p['summary']['en'] ?? '');
-		$feats = '<li>' . esc_html((int) $p['max_projects'] === 1 ? mabni_t('project1') : sprintf(mabni_t('projects'), (int) $p['max_projects'])) . '</li>'
-			. '<li>' . esc_html(sprintf(mabni_t('users'), (int) $p['max_users'])) . '</li><li>' . esc_html(sprintf(mabni_t('storage'), (int) $p['storage_gb'])) . '</li>';
-		$cards .= '<article class="mb-plan mb-plan-' . $key . '">' . ($key === 'builder' ? '<span class="mb-plan-tag">' . esc_html(mabni_t('popular')) . '</span>' : '')
-			. '<h3>' . esc_html(mabni_t($key)) . '</h3>' . ($summary ? '<p>' . esc_html($summary) . '</p>' : '') . '<div class="mb-prices">' . $prices . '</div>'
-			. '<ul>' . $feats . '</ul><a class="mb-btn" href="' . esc_url(mabni_url('start-trial')) . '">' . esc_html(mabni_t('start')) . '</a></article>';
+		$feats = '<li>' . esc_html((int) $p['max_projects'] === 1 ? buildiary_t('project1') : sprintf(buildiary_t('projects'), (int) $p['max_projects'])) . '</li>'
+			. '<li>' . esc_html(sprintf(buildiary_t('users'), (int) $p['max_users'])) . '</li><li>' . esc_html(sprintf(buildiary_t('storage'), (int) $p['storage_gb'])) . '</li>';
+		$cards .= '<article class="mb-plan mb-plan-' . $key . '">' . ($key === 'builder' ? '<span class="mb-plan-tag">' . esc_html(buildiary_t('popular')) . '</span>' : '')
+			. '<h3>' . esc_html(buildiary_t($key)) . '</h3>' . ($summary ? '<p>' . esc_html($summary) . '</p>' : '') . '<div class="mb-prices">' . $prices . '</div>'
+			. '<ul>' . $feats . '</ul><a class="mb-btn" href="' . esc_url(buildiary_url('start-trial')) . '">' . esc_html(buildiary_t('start')) . '</a></article>';
 	}
 	$curs = '';
 	foreach (['USD', 'PKR', 'SAR'] as $c) {
 		$curs .= '<button type="button" data-cur="' . $c . '" aria-pressed="' . ($c === $cur ? 'true' : 'false') . '">' . $c . '</button>';
 	}
 	return '<div class="mb-pricing" data-cur="' . $cur . '" data-per="month">'
-		. '<div class="mb-toggles"><div class="mb-seg" role="group"><button type="button" data-per="month" aria-pressed="true">' . esc_html(mabni_t('month')) . '</button><button type="button" data-per="year" aria-pressed="false">' . esc_html(mabni_t('year')) . ' <em>' . esc_html(mabni_t('save')) . '</em></button></div>'
-		. '<div class="mb-seg" role="group" aria-label="' . esc_attr(mabni_t('currency')) . '">' . $curs . '</div></div>'
-		. '<div class="mb-plans">' . $cards . '</div><p class="mb-note">' . esc_html(mabni_t('trial_note')) . '</p></div>'
+		. '<div class="mb-toggles"><div class="mb-seg" role="group"><button type="button" data-per="month" aria-pressed="true">' . esc_html(buildiary_t('month')) . '</button><button type="button" data-per="year" aria-pressed="false">' . esc_html(buildiary_t('year')) . ' <em>' . esc_html(buildiary_t('save')) . '</em></button></div>'
+		. '<div class="mb-seg" role="group" aria-label="' . esc_attr(buildiary_t('currency')) . '">' . $curs . '</div></div>'
+		. '<div class="mb-plans">' . $cards . '</div><p class="mb-note">' . esc_html(buildiary_t('trial_note')) . '</p></div>'
 		. '<script>(function(){document.querySelectorAll(".mb-pricing").forEach(function(w){function show(){w.querySelectorAll(".mb-price").forEach(function(p){p.hidden=!(p.dataset.cur===w.dataset.cur&&p.dataset.per===w.dataset.per);});w.querySelectorAll("button[data-cur]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.cur===w.dataset.cur);});w.querySelectorAll("button[data-per]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.per===w.dataset.per);});}w.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;if(b.dataset.cur)w.dataset.cur=b.dataset.cur;if(b.dataset.per)w.dataset.per=b.dataset.per;show();});show();});})();</script>';
 });
 
-// ---- icons (the description, the other languages and the rest for search engines are in mabni-seo.php)
+// ---- icons (the description, the other languages and the rest for search engines are in buildiary-seo.php)
 add_action('wp_head', function () {
-	if (mabni_is_admin_request()) {
+	if (buildiary_is_admin_request()) {
 		return;
 	}
 	echo '<link rel="icon" href="' . esc_url(get_theme_file_uri('assets/buildiary-logo.svg')) . "\" type=\"image/svg+xml\" />\n";

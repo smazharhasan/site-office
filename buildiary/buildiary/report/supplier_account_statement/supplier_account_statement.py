@@ -1,7 +1,7 @@
 import frappe
 from frappe import _
 
-from mimaar.api import statement_rows
+from buildiary.api import statement_rows
 
 
 def execute(filters=None):

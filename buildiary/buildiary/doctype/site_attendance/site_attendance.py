@@ -6,7 +6,7 @@ from frappe.model.document import Document
 class SiteAttendance(Document):
 	def validate(self):
 		if not self.project:
-			self.project = frappe.db.get_single_value("Mimaar Settings", "default_project")
+			self.project = frappe.db.get_single_value("Buildiary Settings", "default_project")
 		same = frappe.db.get_value("Site Attendance", {"date": self.date, "project": self.project, "docstatus": ["<", 2], "name": ["!=", self.name]})
 		if same:
 			frappe.throw(_("Attendance for {0} is already marked in {1}. Open that one and add the workers there.").format(frappe.format(self.date, "Date"), same))
@@ -24,7 +24,7 @@ class SiteAttendance(Document):
 	def before_submit(self):
 		if not self.rows:
 			frappe.throw(_("Add the workers first."))
-		if frappe.db.get_single_value("Mimaar Settings", "require_attendance_photo"):
+		if frappe.db.get_single_value("Buildiary Settings", "require_attendance_photo"):
 			if not self.group_photo:
 				frappe.throw(_("Take the team photo before submitting the attendance."), title=_("Team photo needed"))
 			if not self.location:

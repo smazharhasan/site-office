@@ -4,10 +4,10 @@
  "creation": "2026-10-24 12:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
- "module": "Mabni Cloud",
- "name": "Mabni Tenant",
+ "module": "Buildiary Cloud",
+ "name": "Buildiary Tenant",
  "owner": "Administrator",
- "modified": "2026-10-24 12:00:00.000000",
+ "modified": "2026-10-25 21:00:00.000000",
  "modified_by": "Administrator",
  "fields": [
   {
@@ -136,7 +136,7 @@
    "fieldname": "plan",
    "fieldtype": "Link",
    "label": "Plan",
-   "options": "Mabni Plan",
+   "options": "Buildiary Plan",
    "in_list_view": 1
   },
   {
@@ -313,7 +313,7 @@
  ],
  "permissions": [
   {
-   "role": "Mabni Admin",
+   "role": "Buildiary Admin",
    "read": 1,
    "write": 1,
    "create": 1,

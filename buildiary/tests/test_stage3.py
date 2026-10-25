@@ -1,20 +1,20 @@
-"""Build progress, dashboard, budget and Ask the project. Run: bench --site <site> run-tests --app mimaar"""
+"""Build progress, dashboard, budget and Ask the project. Run: bench --site <site> run-tests --app buildiary"""
 
 import frappe
 from frappe.tests import IntegrationTestCase
 from frappe.utils import add_days, flt, nowdate
 
-from mimaar import askai, build, dash, money
-from mimaar.tests.test_procurement import a_file
+from buildiary import askai, build, dash, money
+from buildiary.tests.test_procurement import a_file
 
 ASK_AI = "/opt/bench/fake_ask.json"
 
 
 def stage(code="T9", days_ago=10, length=20):
-	project = frappe.db.get_single_value("Mimaar Settings", "default_project")
+	project = frappe.db.get_single_value("Buildiary Settings", "default_project")
 	subj = f"{code} Test stage {frappe.generate_hash(length=4)}"
 	return frappe.get_doc({"doctype": "Task", "subject": subj, "project": project, "exp_start_date": add_days(nowdate(), -days_ago),
-		"exp_end_date": add_days(nowdate(), length - days_ago), "status": "Open", "mimaar_phase": "Grey structure", "task_weight": 1}).insert()
+		"exp_end_date": add_days(nowdate(), length - days_ago), "status": "Open", "buildiary_phase": "Grey structure", "task_weight": 1}).insert()
 
 
 class TestStage3(IntegrationTestCase):
@@ -23,7 +23,7 @@ class TestStage3(IntegrationTestCase):
 
 	def tearDown(self):
 		frappe.set_user("Administrator")
-		frappe.local.conf.pop("mimaar_fake_ai_file", None)
+		frappe.local.conf.pop("buildiary_fake_ai_file", None)
 
 	def test_report_verify_and_figures(self):
 		t = stage()
@@ -33,7 +33,7 @@ class TestStage3(IntegrationTestCase):
 			build.report(t.name, 30)  # more work needs a photo
 		build.report(t.name, 30, "Columns cast", [a_file("p1.png")])
 		t.reload()
-		self.assertEqual(flt(t.mimaar_reported), 30)
+		self.assertEqual(flt(t.buildiary_reported), 30)
 		self.assertEqual(flt(t.progress), 30)
 		self.assertEqual(t.status, "Working")
 		r = {x["name"]: x for x in build._stage_rows()}[t.name]
@@ -41,7 +41,7 @@ class TestStage3(IntegrationTestCase):
 		build.verify(t.name, 25, "Checked on site", [a_file("v1.png")])
 		t.reload()
 		self.assertEqual(flt(t.progress), 25)  # the owner's figure counts once it is there
-		self.assertTrue(t.mimaar_verified_on)
+		self.assertTrue(t.buildiary_verified_on)
 		build.report(t.name, 40, "More", [a_file("p2.png")])
 		t.reload()
 		self.assertEqual(flt(t.progress), 25)
@@ -76,17 +76,17 @@ class TestStage3(IntegrationTestCase):
 		self.assertTrue(b["cash"]["months"])
 		self.assertAlmostEqual(sum(b["cash"]["projected"]) + sum(b["cash"]["scheduled"]), b["total_projected"], delta=len(b["cash"]["months"]) + 1)
 		acc = money.budget_line_add("Test solar panels " + frappe.generate_hash(length=4), "Finishing materials", 250000)
-		self.assertEqual(frappe.db.get_value("Account", acc, "mimaar_budget_category"), "Finishing materials")
+		self.assertEqual(frappe.db.get_value("Account", acc, "buildiary_budget_category"), "Finishing materials")
 		line = money.budget_line(acc)
 		self.assertEqual(line["line"]["budget"], 250000)
 		self.assertEqual(line["line"]["phase"], "Finishing")
 
 	def test_ask_the_project(self):
-		frappe.local.conf["mimaar_fake_ai_file"] = ASK_AI
+		frappe.local.conf["buildiary_fake_ai_file"] = ASK_AI
 		r = askai.ask("Are we on schedule?")
 		self.assertIn("Owner brief", r["answer"])
 		self.assertEqual(len(r["followups"]), 2)
-		prompt = frappe.local.mimaar_last_prompt
+		prompt = frappe.local.buildiary_last_prompt
 		self.assertIn('"schedule"', prompt)
 		self.assertIn('"budget"', prompt)  # the owner sees money
 		data = askai.gather(False)
@@ -94,14 +94,14 @@ class TestStage3(IntegrationTestCase):
 		self.assertNotIn("total", (data["purchase_orders"] or [{}])[0])
 
 	def test_partner_and_owner_supervisor(self):
-		from mimaar import field, petty, stores
-		from mimaar.tests.test_identity import person
+		from buildiary import field, petty, stores
+		from buildiary.tests.test_identity import person
 
 		pt = person("Partner Test Builder", worker_type="Supervisor")
 		pt.app_access = "Partner (builder or consultant)"
 		pt.save()
 		user = frappe.db.get_value("Site Worker", pt.name, "user")
-		self.assertIn("Mimaar Partner", frappe.get_roles(user))
+		self.assertIn("Buildiary Partner", frappe.get_roles(user))
 		os_ = person("Owner Sup Test", worker_type="Supervisor")
 		os_.app_access = "Owner's supervisor"
 		os_.save()

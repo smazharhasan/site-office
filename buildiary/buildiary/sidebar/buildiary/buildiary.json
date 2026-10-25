@@ -1,5 +1,5 @@
 {
- "app": "mimaar",
+ "app": "buildiary",
  "creation": "2026-10-22 18:00:00.000000",
  "docstatus": 0,
  "doctype": "Sidebar",
@@ -17,7 +17,7 @@
    "icon": "house",
    "type": "Link",
    "label": "Home",
-   "link_to": "Mimaar",
+   "link_to": "Buildiary",
    "link_type": "Workspace",
    "child": 0,
    "indent": 0
@@ -507,17 +507,17 @@
    "icon": "settings",
    "type": "Link",
    "label": "Settings",
-   "link_to": "Mimaar Settings",
+   "link_to": "Buildiary Settings",
    "link_type": "DocType",
    "child": 0,
    "indent": 0
   }
  ],
- "modified": "2026-10-22 18:00:00.000000",
+ "modified": "2026-10-25 21:00:00.000000",
  "modified_by": "Administrator",
- "module": "Mimaar",
- "name": "Mimaar",
+ "module": "Buildiary",
+ "name": "Buildiary",
  "owner": "Administrator",
  "standard": 1,
- "title": "Mimaar"
+ "title": "Buildiary"
 }

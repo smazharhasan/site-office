@@ -1,4 +1,4 @@
-/* Mimaar field app: the phone design of the earlier Mimaar app ("colour" theme),
+/* Buildiary field app: the phone design of the earlier Buildiary app ("colour" theme),
    now on ERPNext. Lavender page, gradient header, white cards with coloured tops,
    bottom bar with the pink + button, sheets that rise from the bottom. */
 :root{
@@ -238,10 +238,10 @@ html[lang="ur"] .bottombar button{font-size:12.5px}
 .tbl{width:100%;border-collapse:collapse;font-size:13.5px}.tbl td,.tbl th{padding:8px 6px;border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent);text-align:start}.tbl th{color:var(--muted);font-weight:600;font-size:12px}.tbl .r{text-align:end;white-space:nowrap}
 @media (min-width:861px){.content{padding-top:18px}}
 
-/* ---------- themes (My settings): the same six looks as the earlier Mimaar app ---------- */
-html[data-skin="mabni"]{--bg:#eef1f4;--panel:#fff;--sunk:#e4e8ec;--line:#d3dae1;--ink:#14202b;--muted:#5b6875;--accent:#1e3a5f;--accent-ink:#fff;--accent-soft:#dde6f1;
+/* ---------- themes (My settings): the same six looks as the earlier Buildiary app ---------- */
+html[data-skin="buildiary"]{--bg:#eef1f4;--panel:#fff;--sunk:#e4e8ec;--line:#d3dae1;--ink:#14202b;--muted:#5b6875;--accent:#1e3a5f;--accent-ink:#fff;--accent-soft:#dde6f1;
   --k1:#1c7148;--k2:#284b78;--k3:#c98a0c;--k4:#b3402a;--k5:#1e3a5f;--k6:#2f6f9a;--k7:#2f7d9a;--k8:#5d8a3a}
-html[data-skin="mabni"][data-theme="dark"]{--bg:#0f151c;--panel:#17202a;--sunk:#1d2834;--line:#2b3744;--ink:#e6ebf0;--muted:#9eabb8;--accent:#f2b01e;--accent-ink:#1b1405;--accent-soft:#3a2e14;
+html[data-skin="buildiary"][data-theme="dark"]{--bg:#0f151c;--panel:#17202a;--sunk:#1d2834;--line:#2b3744;--ink:#e6ebf0;--muted:#9eabb8;--accent:#f2b01e;--accent-ink:#1b1405;--accent-soft:#3a2e14;
   --k5:#f2b01e;--k2:#8db4e2;--k6:#8db4e2;color-scheme:dark}
 html[data-skin="site"]{--bg:#f3f2ef;--panel:#fff;--sunk:#ebe9e4;--line:#d9d6cf;--ink:#1d2021;--muted:#62655f;--accent:#0f6f5c;--accent-ink:#fff;--accent-soft:#dcefe9;
   --k1:#0f6f5c;--k2:#2c5d9e;--k3:#b07a1e;--k4:#b3261e;--k5:#0f6f5c;--k6:#178a72;--k7:#2f7d9a;--k8:#5d8a3a}
@@ -505,3 +505,9 @@ html[lang="ur"] .md{line-height:2}
 .maker .mk-l{display:none}
 html[data-theme="dark"] .maker .mk-d{display:none}
 html[data-theme="dark"] .maker .mk-l{display:block}
+
+/* the Buildiary logo on the sign-in screen: the BD mark on its blue tile, the shared d of the name in amber */
+.login .logo,html:not([data-skin="colour"]) .login .logo{background:#1E3A5F;padding:0;overflow:hidden}
+.login .logo svg{width:100%;height:100%;display:block}
+.brandname .bd-d{font-style:normal;color:#E9A21B}
+html[data-theme=dark] .brandname .bd-d{color:#F2B01E}

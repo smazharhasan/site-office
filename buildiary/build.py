@@ -13,7 +13,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, date_diff, flt, getdate, now_datetime, nowdate, nowtime
 
-from mimaar.field import _need, _parse, _photo_ok, _project, _roles, caps
+from buildiary.field import _need, _parse, _photo_ok, _project, _roles, caps
 
 PHASES = ["Design", "Approvals", "Grey structure", "Finishing", "Handover"]
 
@@ -35,7 +35,7 @@ def _planned(t, today):
 
 
 def _built(t):
-	return flt(t.mimaar_verified) if t.mimaar_verified_on else (flt(t.mimaar_reported) or flt(t.progress))
+	return flt(t.buildiary_verified) if t.buildiary_verified_on else (flt(t.buildiary_reported) or flt(t.progress))
 
 
 def _photos(names, per=4):
@@ -68,8 +68,8 @@ def _stage_rows(project=None):
 	project = project or _project()
 	today = getdate(nowdate())
 	rows = frappe.get_all("Task", filters={"project": project, "status": ["!=", "Cancelled"]} if project else {"status": ["!=", "Cancelled"]},
-		fields=["name", "subject", "status", "progress", "exp_start_date", "exp_end_date", "task_weight", "mimaar_phase", "mimaar_reported", "mimaar_verified",
-			"mimaar_verified_on", "mimaar_verified_by", "is_group", "description"],
+		fields=["name", "subject", "status", "progress", "exp_start_date", "exp_end_date", "task_weight", "buildiary_phase", "buildiary_reported", "buildiary_verified",
+			"buildiary_verified_on", "buildiary_verified_by", "is_group", "description"],
 		order_by="exp_start_date asc, creation asc", limit_page_length=1000)
 	out = []
 	for t in rows:
@@ -83,9 +83,9 @@ def _stage_rows(project=None):
 		d = frappe.utils.strip_html(t.description or "")
 		if " · " in d:
 			ur = d.split(" · ", 1)[1].strip()
-		st = {"name": t.name, "code": code, "title": title, "title_ur": ur if any("\u0600" <= ch <= "\u06ff" for ch in ur) else "", "phase": t.mimaar_phase or "Other", "start": t.exp_start_date, "end": t.exp_end_date,
-			"weight": flt(t.task_weight) or 1, "reported": flt(t.mimaar_reported) or flt(t.progress), "verified": flt(t.mimaar_verified) if t.mimaar_verified_on else None,
-			"verified_on": t.mimaar_verified_on, "built": _built(t), "planned": _planned(t, today), "status": t.status,
+		st = {"name": t.name, "code": code, "title": title, "title_ur": ur if any("\u0600" <= ch <= "\u06ff" for ch in ur) else "", "phase": t.buildiary_phase or "Other", "start": t.exp_start_date, "end": t.exp_end_date,
+			"weight": flt(t.task_weight) or 1, "reported": flt(t.buildiary_reported) or flt(t.progress), "verified": flt(t.buildiary_verified) if t.buildiary_verified_on else None,
+			"verified_on": t.buildiary_verified_on, "built": _built(t), "planned": _planned(t, today), "status": t.status,
 			"days_left": date_diff(getdate(t.exp_end_date), today) if t.exp_end_date else None}
 		st["state"] = _state(st, today)
 		out.append(st)
@@ -144,12 +144,12 @@ def stage(name):
 
 def _set(t, reported=None, verified=None):
 	if reported is not None:
-		t.mimaar_reported = reported
+		t.buildiary_reported = reported
 	if verified is not None:
-		t.mimaar_verified = verified
-		t.mimaar_verified_by = frappe.session.user
-		t.mimaar_verified_on = nowdate()
-	built = flt(t.mimaar_verified) if t.mimaar_verified_on else flt(t.mimaar_reported)
+		t.buildiary_verified = verified
+		t.buildiary_verified_by = frappe.session.user
+		t.buildiary_verified_on = nowdate()
+	built = flt(t.buildiary_verified) if t.buildiary_verified_on else flt(t.buildiary_reported)
 	t.progress = built
 	if built >= 100:
 		t.status = "Completed"
@@ -181,7 +181,7 @@ def report(task, pct, note=None, photos=None, location=None):
 	t = frappe.get_doc("Task", task)
 	t.check_permission("read")
 	p = max(0, min(100, flt(pct)))
-	if not (_parse(photos) or []) and p > flt(t.mimaar_reported):
+	if not (_parse(photos) or []) and p > flt(t.buildiary_reported):
 		frappe.throw(_("Take at least one photo of the work."), title=_("Photo needed"))
 	u = _update(task, "Reported", p, note, photos, location)
 	_set(t, reported=p)
@@ -213,7 +213,7 @@ def add_photo(task, photos, note=None, location=None):
 @frappe.whitelist()
 def compare(task, before, after):
 	"""What changed between two photos of a stage (AI), with its estimate of the stage's progress."""
-	from mimaar import ai
+	from buildiary import ai
 
 	t = frappe.get_doc("Task", task)
 	t.check_permission("read")
@@ -227,5 +227,5 @@ def compare(task, before, after):
 		f"Photo 1 was taken on {dates[before]}, photo 2 on {dates[after]}. Describe in two or three short sentences what work was done between them, "
 		"and estimate how complete this stage looks in photo 2. Point out anything that looks wrong or unsafe. "
 		'Reply with only JSON: {"summary": string, "progress_estimate_pct": number, "concerns": [string]}')
-	r = ai.ask_many(prompt, [before, after]) if frappe.conf.get("mimaar_fake_ai_file") else ai._call(prompt, [ai._file(before), ai._file(after)], max_tokens=1024)
+	r = ai.ask_many(prompt, [before, after]) if frappe.conf.get("buildiary_fake_ai_file") else ai._call(prompt, [ai._file(before), ai._file(after)], max_tokens=1024)
 	return {"summary": r.get("summary") or "", "estimate": r.get("progress_estimate_pct"), "concerns": r.get("concerns") or []}

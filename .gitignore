@@ -3,6 +3,6 @@ __pycache__
 *.pyc
 *.egg-info
 .DS_Store
-mimaar/devtmp.py
-mimaar/migration/*.json
+buildiary/devtmp.py
+buildiary/migration/*.json
 dump.rdb

@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#1E3A5F">
 <title>Start your free trial · Buildiary</title>
 <meta name="description" content="Buildiary: construction site management for home owners and builders. Stores, payments, progress and people in English, Urdu and Arabic.">
-<link rel="icon" href="/assets/mimaar/images/buildiary-logo.svg">
+<link rel="icon" href="/assets/buildiary/images/buildiary-logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..110,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&family=Noto+Kufi+Arabic:wght@400;600;700&family=Noto+Nastaliq+Urdu:wght@400;600&display=swap">
@@ -45,7 +45,17 @@ html[lang=ur] .num, html[lang=ar] .num{font-family:var(--body)}
 .langs button[aria-pressed=true]{background:#fff;color:var(--blue)}
 .langs button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 .langs .ur{font-family:var(--ur)} .langs .ar{font-family:var(--ar)}
-.hero{display:grid;gap:16px;max-width:34rem;margin-block:auto}
+.hero{display:grid;gap:16px;max-width:34rem;margin-top:clamp(8px,4vh,48px)}
+.how{display:grid;gap:12px;max-width:34rem;padding:18px 20px;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:rgba(255,255,255,.05)}
+.how h3{margin:0;font:700 .8rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--amber)}
+html[lang=ur] .how h3,html[lang=ar] .how h3,html[lang=ur] .dim,html[lang=ar] .dim{font-family:inherit;font-weight:600;font-size:.95rem;line-height:1.6;letter-spacing:0;text-transform:none}
+.how ol{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:s}
+.how li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:start;counter-increment:s}
+.how li::before{content:counter(s);width:26px;height:26px;border-radius:50%;background:var(--amber);color:#1B1405;font:700 .85rem/26px var(--display);text-align:center}
+.how b{display:block;color:#fff;font-weight:600}.how span{color:var(--on-blue-2);font-size:.92rem}
+.by{margin-top:auto}
+@media (min-width:901px){.pitch{position:sticky;top:0;height:100vh;overflow-y:auto;padding-block:28px 28px;gap:24px}}
+@media (min-width:901px) and (max-height:760px){.points{display:none}}
 .hero h1{font:800 clamp(2rem,4.2vw,3.1rem)/1.06 var(--display);margin:0;color:#fff;text-wrap:balance;letter-spacing:-.01em}
 html[lang=ur] .hero h1{font:600 clamp(1.7rem,3.4vw,2.5rem)/1.9 var(--ur)}
 html[lang=ar] .hero h1{font:700 clamp(1.8rem,3.6vw,2.6rem)/1.45 var(--ar)}
@@ -59,7 +69,7 @@ html[lang=ar] .hero h1{font:700 clamp(1.8rem,3.6vw,2.6rem)/1.45 var(--ar)}
 .by img{height:34px;width:auto;display:block}
 /* the form side */
 .side{padding-block:32px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;align-items:flex-start;justify-content:center}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;width:100%;max-width:480px;display:grid;gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;width:100%;max-width:480px;display:grid;gap:14px}
 .card h2{font:750 1.45rem/1.15 var(--display);margin:0}
 html[lang=ur] .card h2{font:600 1.35rem/2 var(--ur)} html[lang=ar] .card h2{font:700 1.35rem/1.5 var(--ar)}
 .lede{color:var(--muted);margin:0}
@@ -101,7 +111,7 @@ html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem
 .btn.ghost{background:transparent;color:var(--blue-2);border:1.5px solid var(--line)}
 @media (prefers-color-scheme: dark){.btn.ghost{color:var(--ink)}}
 .err{background:color-mix(in srgb,var(--bad) 10%,var(--card));color:var(--bad);border-radius:10px;padding:10px 12px;font-size:.92rem}
-.hp{position:absolute;left:-5000px;width:1px;height:1px;overflow:hidden}
+.hp{position:absolute;top:0;inset-inline-start:0;width:1px;height:1px;overflow:hidden;opacity:0;clip-path:inset(50%);pointer-events:none}
 .code{font:600 1.8rem/1 var(--mono)!important;letter-spacing:.4em;text-align:center}
 .steps{list-style:none;margin:0;padding:0;display:grid;gap:12px}
 .steps li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:center;color:var(--muted)}
@@ -116,6 +126,7 @@ html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem
 .where{font:500 1rem/1.4 var(--mono);background:var(--field);border:1px dashed var(--line);border-radius:10px;padding:10px 12px;overflow-wrap:anywhere;direction:ltr}
 .small{font-size:.86rem;color:var(--muted)}
 .small a{color:inherit}
+.bd-d{font-style:normal;color:#F2B01E}
 </style>
 </head>
 <body>
@@ -123,8 +134,8 @@ html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem
   <section class="pitch">
     <div class="brand">
       <a class="logo" href="#" aria-label="Buildiary">
-        <svg viewBox="0 0 120 120" aria-hidden="true"><rect width="120" height="120" rx="26" fill="#fff" fill-opacity=".1"/><g transform="translate(5 -3)"><g fill="none" stroke="#fff" stroke-width="6" stroke-linejoin="miter"><path d="M34 22H70L80 32V44L72 51L82 58V80L72 90H34Z"/><path d="M45 33H66L69 36V42L66 45H45Z"/><path d="M45 57H68L71 60V76L68 79H45Z"/></g><g stroke="#F2B01E" stroke-width="3.5" fill="none"><path d="M34 102H82"/><path d="M34 96V108M82 96V108M58 98V106"/></g><g fill="#F2B01E"><rect x="24" y="30" width="12" height="5" rx="2.5"/><rect x="24" y="53" width="12" height="5" rx="2.5"/><rect x="24" y="76" width="12" height="5" rx="2.5"/></g></g></svg>
-        <b>Buildiary</b>
+        <svg viewBox="0 0 120 120" aria-hidden="true"><rect width="120" height="120" rx="26" fill="#fff" fill-opacity=".1"/><path d="M53.5 18H45A24 24 0 0 0 21 42V78A24 24 0 0 0 45 102H53.5Z M53.5 30H44A11 11 0 0 0 33 41V52.5H53.5Z M53.5 64.5H33V79A11 11 0 0 0 44 90H53.5Z M66.5 18H75A24 24 0 0 1 99 42V78A24 24 0 0 1 75 102H66.5Z M66.5 30V90H76A11 11 0 0 0 87 79V41A11 11 0 0 0 76 30Z" fill="#FFFFFF" fill-rule="evenodd"/><rect x="53.5" y="18" width="13.0" height="84" fill="#F2B01E"/></svg>
+        <b>Buil<i class="bd-d">d</i>iary</b>
       </a>
       <div class="langs" role="group" aria-label="Language">
         <button type="button" data-lang="en">English</button>
@@ -143,7 +154,12 @@ html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem
         <li><svg viewBox="0 0 24 24" fill="none" stroke="#F2B01E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span data-t="p4"></span></li>
       </ul>
     </div>
-    <a class="by" href="https://www.smhglobal.com.pk" target="_blank" rel="noopener"><span data-t="by_short"></span><img src="/assets/mimaar/images/smh-global-light.svg" alt="SMH Global Services"></a>
+    <div class="how"><h3 data-t="how"></h3><ol>
+      <li><div><b data-t="h1"></b><span data-t="h1d"></span></div></li>
+      <li><div><b data-t="h2"></b><span data-t="h2d"></span></div></li>
+      <li><div><b data-t="h3"></b><span data-t="h3d"></span></div></li>
+    </ol></div>
+    <a class="by" href="https://www.smhglobal.com.pk" target="_blank" rel="noopener"><span data-t="by_short"></span><img src="/assets/buildiary/images/smh-global-light.svg" alt="SMH Global Services"></a>
   </section>
 
   <main class="side">
@@ -161,12 +177,14 @@ html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem
         <div class="f"><label for="contact_name" data-t="name"></label><input type="text" id="contact_name" autocomplete="name" required maxlength="120"></div>
         <div class="f"><label for="phone" data-t="phone"></label><input type="tel" id="phone" autocomplete="tel" inputmode="tel" maxlength="40" dir="ltr"></div>
       </div>
-      <div class="f"><label for="email" data-t="email"></label><input type="email" id="email" autocomplete="email" required maxlength="140" dir="ltr"></div>
       <div class="row">
+        <div class="f"><label for="email" data-t="email"></label><input type="email" id="email" autocomplete="email" required maxlength="140" dir="ltr"></div>
         <div class="f"><label for="country" data-t="country"></label><select id="country"></select></div>
-        <div class="f"><label for="city" data-t="city"></label><input type="text" id="city" autocomplete="address-level2" maxlength="80"></div>
       </div>
-      <div class="f"><label for="company_name" id="l-company"></label><input type="text" id="company_name" required maxlength="120"></div>
+      <div class="row">
+        <div class="f"><label for="city" data-t="city"></label><input type="text" id="city" autocomplete="address-level2" maxlength="80"></div>
+        <div class="f"><label for="company_name" id="l-company"></label><input type="text" id="company_name" required maxlength="120"></div>
+      </div>
       <div class="f">
         <label for="subdomain" data-t="address"></label>
         <div class="addr"><input type="text" id="subdomain" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="30" inputmode="url"><span id="base"></span></div>
@@ -207,7 +225,7 @@ html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem
     <!-- 4. ready -->
     <section class="card" id="s-ready" hidden>
       <div class="ready">
-        <svg viewBox="0 0 120 120" aria-hidden="true"><rect width="120" height="120" rx="26" fill="#1E3A5F"/><g transform="translate(5 -3)"><g fill="none" stroke="#fff" stroke-width="6" stroke-linejoin="miter"><path d="M34 22H70L80 32V44L72 51L82 58V80L72 90H34Z"/><path d="M45 33H66L69 36V42L66 45H45Z"/><path d="M45 57H68L71 60V76L68 79H45Z"/></g><g stroke="#F2B01E" stroke-width="3.5" fill="none"><path d="M34 102H82"/><path d="M34 96V108M82 96V108M58 98V106"/></g><g fill="#F2B01E"><rect x="24" y="30" width="12" height="5" rx="2.5"/><rect x="24" y="53" width="12" height="5" rx="2.5"/><rect x="24" y="76" width="12" height="5" rx="2.5"/></g></g></svg>
+        <svg viewBox="0 0 120 120" aria-hidden="true"><rect width="120" height="120" rx="26" fill="#1E3A5F"/><path d="M53.5 18H45A24 24 0 0 0 21 42V78A24 24 0 0 0 45 102H53.5Z M53.5 30H44A11 11 0 0 0 33 41V52.5H53.5Z M53.5 64.5H33V79A11 11 0 0 0 44 90H53.5Z M66.5 18H75A24 24 0 0 1 99 42V78A24 24 0 0 1 75 102H66.5Z M66.5 30V90H76A11 11 0 0 0 87 79V41A11 11 0 0 0 76 30Z" fill="#FFFFFF" fill-rule="evenodd"/><rect x="53.5" y="18" width="13.0" height="84" fill="#F2B01E"/></svg>
         <h2 data-t="ready_t"></h2>
         <div class="where" id="ready-where"></div>
         <p class="lede" id="ready-d"></p>
@@ -232,6 +250,7 @@ const I18N = {
     dim: "Owner · Builder · Site", hero: "Every bag of cement, every payment, every day on site, in one place.",
     sub: "Buildiary keeps the owner and the builder on the same facts: stores, payments, progress photos and people, checked with AI.",
     p1: "Stores and deliveries with photos and site cards", p2: "Payments, budget and petty cash that add up", p3: "Progress you can see, stage by stage", p4: "English, Urdu and Arabic, on any phone",
+    how: "How it works", h1: "Start your trial", h1d: "Choose owner or builder and name your workspace. Ready in about a minute.", h2: "Add your team", h2d: "Each person gets a site card and signs in on their own phone.", h3: "Run the site from your phone", h3d: "Deliveries, payments and progress, recorded where they happen.",
     by: "A product of SMH Global Services", by_short: "A product of", title: "Start your free trial", trial_note: "{n} days free. No card needed.",
     q_mode: "What are you building?", owner_t: "My own home", owner_d: "I'm the owner and want to see everything my builder and site staff do.",
     builder_t: "Projects for clients", builder_d: "I'm a builder or contractor running several sites.", per_month: "{p} a month after the trial",
@@ -256,6 +275,7 @@ const I18N = {
     dim: "مالک · بلڈر · سائٹ", hero: "سیمنٹ کی ہر بوری، ہر ادائیگی، سائٹ کا ہر دن — ایک جگہ پر۔",
     sub: "بلڈیاری مالک اور بلڈر کو ایک ہی حقائق پر رکھتا ہے: اسٹور، ادائیگیاں، کام کی تصاویر اور لوگ، اے آئی کی جانچ کے ساتھ۔",
     p1: "اسٹور اور سامان کی وصولی، تصاویر اور سائٹ کارڈ کے ساتھ", p2: "ادائیگیاں، بجٹ اور پیٹی کیش، جن کا حساب پورا ہو", p3: "کام کی پیش رفت، مرحلہ وار، آنکھوں کے سامنے", p4: "انگریزی، اردو اور عربی میں، ہر فون پر",
+    how: "یہ کیسے کام کرتا ہے", h1: "مفت آزمائش شروع کریں", h1d: "مالک یا بلڈر چنیں اور ورک اسپیس کا نام رکھیں۔ تقریباً ایک منٹ میں تیار۔", h2: "اپنی ٹیم شامل کریں", h2d: "ہر شخص کو سائٹ کارڈ ملتا ہے اور وہ اپنے فون پر لاگ اِن کرتا ہے۔", h3: "سائٹ اپنے فون سے چلائیں", h3d: "مال کی آمد، ادائیگیاں اور کام کی پیش رفت، وہیں درج جہاں ہوں۔",
     by: "ایس ایم ایچ گلوبل سروسز کی پیشکش", by_short: "تیار کردہ", title: "مفت آزمائش شروع کریں", trial_note: "{n} دن مفت۔ کسی کارڈ کی ضرورت نہیں۔",
     q_mode: "آپ کیا بنا رہے ہیں؟", owner_t: "اپنا گھر", owner_d: "میں مالک ہوں اور بلڈر اور سائٹ کے عملے کا ہر کام دیکھنا چاہتا ہوں۔",
     builder_t: "کلائنٹس کے پروجیکٹ", builder_d: "میں بلڈر یا ٹھیکیدار ہوں اور کئی سائٹس چلاتا ہوں۔", per_month: "آزمائش کے بعد {p} ماہانہ",
@@ -280,6 +300,7 @@ const I18N = {
     dim: "المالك · المقاول · الموقع", hero: "كل كيس إسمنت، وكل دفعة، وكل يوم في الموقع، في مكان واحد.",
     sub: "بيلدياري يجمع المالك والمقاول على الحقائق نفسها: المخزن والدفعات وصور التقدّم والعمّال، مع تدقيق بالذكاء الاصطناعي.",
     p1: "المخزن والتوريدات بالصور وبطاقات الموقع", p2: "دفعات وميزانية وعهدة نقدية حساباتها مضبوطة", p3: "تقدّم العمل أمام عينيك، مرحلة بمرحلة", p4: "بالعربية والإنجليزية والأردية، على أي جوال",
+    how: "كيف يعمل", h1: "ابدأ تجربتك", h1d: "اختر المالك أو المقاول وسمِّ مساحة عملك. جاهزة في نحو دقيقة.", h2: "أضف فريقك", h2d: "يحصل كل شخص على بطاقة موقع ويدخل من جواله.", h3: "أدِر الموقع من جوالك", h3d: "التوريدات والدفعات وتقدّم العمل، تُسجَّل حيث تحدث.",
     by: "منتج من SMH Global Services", by_short: "منتج من", title: "ابدأ تجربتك المجانية", trial_note: "{n} أيام مجاناً. بدون بطاقة.",
     q_mode: "ماذا تبني؟", owner_t: "بيتي الخاص", owner_d: "أنا المالك وأريد أن أرى كل ما يقوم به المقاول وفريق الموقع.",
     builder_t: "مشاريع لعملائي", builder_d: "أنا مقاول أو شركة مقاولات أدير عدة مواقع.", per_month: "{p} شهرياً بعد التجربة",
@@ -304,7 +325,7 @@ const I18N = {
 const $ = (id) => document.getElementById(id);
 const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
 const sess = { get(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }, del(k) { try { sessionStorage.removeItem(k); } catch (e) {} } };
-let LANG = PAGE_LANG || store.get("mabni_lang") || ((navigator.language || "").startsWith("ar") ? "ar" : (navigator.language || "").startsWith("ur") ? "ur" : "en");
+let LANG = PAGE_LANG || store.get("buildiary_lang") || ((navigator.language || "").startsWith("ar") ? "ar" : (navigator.language || "").startsWith("ur") ? "ur" : "en");
 const t = (k, v) => { let s = (I18N[LANG] && I18N[LANG][k]) || I18N.en[k] || k; for (const x in v || {}) s = s.split("{" + x + "}").join(v[x]); return s; };
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 let EMAIL = "";
@@ -347,7 +368,7 @@ function prices() {
   }
 }
 document.querySelectorAll(".langs button").forEach((b) => b.addEventListener("click", () => {
-  LANG = b.dataset.lang; store.set("mabni_lang", LANG);
+  LANG = b.dataset.lang; store.set("buildiary_lang", LANG);
   document.cookie = "preferred_language=" + LANG + ";path=/;max-age=31536000;SameSite=Lax";
   paint();
 }));
@@ -386,7 +407,7 @@ function checkSub(byCompany) {
     if (!byCompany && !/^[a-z][a-z0-9-]{1,28}[a-z0-9]$/.test(name)) { subOk = false; subState("bad", name ? t("e_sub") : ""); return; }
     subState("", t("checking"));
     try {
-      const r = byCompany ? await api("mimaar.saas.signup.check", { company: $("company_name").value }, true) : await api("mimaar.saas.signup.check", { name }, true);
+      const r = byCompany ? await api("buildiary.saas.signup.check", { company: $("company_name").value }, true) : await api("buildiary.saas.signup.check", { name }, true);
       if (byCompany && !subTouched) $("subdomain").value = r.name;
       subOk = !!r.ok;
       subState(r.ok ? "ok" : "bad", r.ok ? "✓ " + t("available") + " · " + r.host : r.message);
@@ -420,8 +441,8 @@ $("s-form").addEventListener("submit", async (ev) => {
   if (!d.agree) return fail("s-err", t("e_agree"));
   const btn = $("s-go"); btn.disabled = true; btn.textContent = t("working");
   try {
-    const r = await api("mimaar.saas.signup.start", { data: d });
-    EMAIL = r.email; sess.set("mabni_signup", JSON.stringify({ token: r.token, email: r.email, host: r.host }));
+    const r = await api("buildiary.saas.signup.start", { data: d });
+    EMAIL = r.email; sess.set("buildiary_signup", JSON.stringify({ token: r.token, email: r.email, host: r.host }));
     paint();
     if (r.verify) { show("s-verify"); $("code").focus(); } else follow(r.token, r.host);
   } catch (e) { fail("s-err", e.message); }
@@ -433,15 +454,15 @@ $("s-verify").addEventListener("submit", async (ev) => {
   fail("v-err", "");
   const code = $("code").value.replace(/\D/g, "");
   if (code.length !== 6) return fail("v-err", t("e_code"));
-  const s = JSON.parse(sess.get("mabni_signup") || "{}");
+  const s = JSON.parse(sess.get("buildiary_signup") || "{}");
   const btn = $("v-go"); btn.disabled = true;
-  try { await api("mimaar.saas.signup.verify", { token: s.token, code }); follow(s.token, s.host); }
+  try { await api("buildiary.saas.signup.verify", { token: s.token, code }); follow(s.token, s.host); }
   catch (e) { fail("v-err", e.message); }
   finally { btn.disabled = false; }
 });
 $("v-resend").addEventListener("click", async () => {
-  const s = JSON.parse(sess.get("mabni_signup") || "{}");
-  try { await api("mimaar.saas.signup.resend", { token: s.token }); fail("v-err", ""); $("v-resend").textContent = t("sent"); }
+  const s = JSON.parse(sess.get("buildiary_signup") || "{}");
+  try { await api("buildiary.saas.signup.resend", { token: s.token }); fail("v-err", ""); $("v-resend").textContent = t("sent"); }
   catch (e) { fail("v-err", e.message); }
 });
 
@@ -458,14 +479,14 @@ function follow(token, host) {
     mark(secs < 25 ? 0 : secs < 55 ? 1 : 2);
     if (secs > 100) $("slow").hidden = false;
     try {
-      const r = await api("mimaar.saas.signup.status", { token }, true);
+      const r = await api("buildiary.saas.signup.status", { token }, true);
       if (r.url) {
-        mark(3); sess.del("mabni_signup");
+        mark(3); sess.del("buildiary_signup");
         EMAIL = r.email; paint();
         $("ready-where").textContent = r.host; $("ready-go").href = r.url + "?usr=" + encodeURIComponent(r.email);
         return setTimeout(() => show("s-ready"), 500);
       }
-      if (r.status === "Failed") { $("failed-d").textContent = r.message || ""; sess.del("mabni_signup"); return show("s-failed"); }
+      if (r.status === "Failed") { $("failed-d").textContent = r.message || ""; sess.del("buildiary_signup"); return show("s-failed"); }
       if (r.status === "Verifying email") return show("s-verify");
     } catch (e) {}
     pollT = setTimeout(tick, 3000);
@@ -474,7 +495,7 @@ function follow(token, host) {
 }
 
 paint();
-const resume = JSON.parse(sess.get("mabni_signup") || "null");
+const resume = JSON.parse(sess.get("buildiary_signup") || "null");
 if (resume && resume.token) { EMAIL = resume.email; paint(); follow(resume.token, resume.host); }
 </script>
 </body>

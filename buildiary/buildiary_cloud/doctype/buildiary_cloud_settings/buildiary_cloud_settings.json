@@ -4,10 +4,10 @@
  "creation": "2026-10-24 12:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
- "module": "Mabni Cloud",
- "name": "Mabni Settings",
+ "module": "Buildiary Cloud",
+ "name": "Buildiary Cloud Settings",
  "owner": "Administrator",
- "modified": "2026-10-24 12:00:00.000000",
+ "modified": "2026-10-25 21:00:00.000000",
  "modified_by": "Administrator",
  "fields": [
   {
@@ -20,19 +20,19 @@
    "fieldtype": "Data",
    "label": "Customer workspaces end with",
    "reqd": 1,
-   "description": "e.g. mabni.app — a customer named alnoor gets alnoor.mabni.app"
+   "description": "e.g. buildiary.app — a customer named alnoor gets alnoor.buildiary.app"
   },
   {
    "fieldname": "control_host",
    "fieldtype": "Data",
    "label": "This console's address",
-   "description": "e.g. my.mabni.app (sign-up page and this console)"
+   "description": "e.g. my.buildiary.app (sign-up page and this console)"
   },
   {
    "fieldname": "website_url",
    "fieldtype": "Data",
    "label": "Website",
-   "description": "e.g. https://mabni.app"
+   "description": "e.g. https://buildiary.app"
   },
   {
    "fieldname": "col_d",
@@ -101,7 +101,7 @@
    "fieldname": "reserved_names",
    "fieldtype": "Small Text",
    "label": "Names customers can't take",
-   "default": "www\nmy\napp\napi\nadmin\nconsole\nmail\nsmtp\nftp\nhelp\nsupport\ndocs\nstatus\nblog\nshop\ndemo\ntest\nstaging\nmabni\nsmh\nsmhglobal\nbilling\npay\nsecure\nlogin\naccount\naccounts\ncdn\nstatic\nassets\nfiles\nns1\nns2\noffice\nmimaar"
+   "default": "www\nmy\napp\napi\nadmin\nconsole\nmail\nsmtp\nftp\nhelp\nsupport\ndocs\nstatus\nblog\nshop\ndemo\ntest\nstaging\nbuildiary\nsmh\nsmhglobal\nbilling\npay\nsecure\nlogin\naccount\naccounts\ncdn\nstatic\nassets\nfiles\nns1\nns2\noffice"
   },
   {
    "fieldname": "money_section",
@@ -159,7 +159,7 @@
    "fieldname": "bank_accounts",
    "fieldtype": "Table",
    "label": "Bank accounts",
-   "options": "Mabni Bank Account"
+   "options": "Buildiary Bank Account"
   },
   {
    "fieldname": "ai_section",
@@ -215,7 +215,7 @@
  ],
  "permissions": [
   {
-   "role": "Mabni Admin",
+   "role": "Buildiary Admin",
    "read": 1,
    "write": 1,
    "create": 1,

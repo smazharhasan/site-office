@@ -1,8 +1,8 @@
-"""Shared helpers for Mabni Cloud.
+"""Shared helpers for Buildiary Cloud.
 
-One bench serves many sites. The console site (site_config "mabni_control": 1) keeps the
+One bench serves many sites. The console site (site_config "buildiary_control": 1) keeps the
 customers, plans and payments, signs new customers up and prepares their workspaces. Each
-customer's workspace is its own site; its site_config carries a "mabni" block with its
+customer's workspace is its own site; its site_config carries a "buildiary" block with its
 plan, mode and dates, which the console keeps up to date.
 """
 
@@ -21,11 +21,11 @@ NAME_RE = re.compile(r"^[a-z][a-z0-9-]{1,28}[a-z0-9]$")
 
 
 def is_control():
-	return bool(frappe.conf.get("mabni_control"))
+	return bool(frappe.conf.get("buildiary_control"))
 
 
 def settings():
-	return frappe.get_cached_doc("Mabni Settings")
+	return frappe.get_cached_doc("Buildiary Cloud Settings")
 
 
 def base_domain():
@@ -50,7 +50,7 @@ def bench_path():
 
 def internal_url():
 	"""How sites on this bench reach each other (the frontend's nginx inside Docker)."""
-	return frappe.conf.get("mabni_internal_url") or "http://frontend:8080"
+	return frappe.conf.get("buildiary_internal_url") or "http://frontend:8080"
 
 
 def read_site_config(host):
@@ -112,7 +112,7 @@ def to_usd(amount, currency):
 
 def plans(country=None, active_only=True):
 	out = []
-	for p in frappe.get_all("Mabni Plan", filters={"is_active": 1} if active_only else {}, fields=["*"], order_by="sort_order asc"):
+	for p in frappe.get_all("Buildiary Plan", filters={"is_active": 1} if active_only else {}, fields=["*"], order_by="sort_order asc"):
 		out.append({
 			"name": p.name, "mode": p.mode, "max_projects": cint(p.max_projects), "max_users": cint(p.max_users), "storage_gb": cint(p.storage_gb),
 			"summary": {"en": p.summary_en, "ur": p.summary_ur, "ar": p.summary_ar},
@@ -142,8 +142,8 @@ def tenant_state(t):
 
 
 def conf_block(t):
-	"""The "mabni" block written into the customer's site_config."""
-	plan = frappe.get_cached_doc("Mabni Plan", t.plan) if t.plan and frappe.db.exists("Mabni Plan", t.plan) else None
+	"""The "buildiary" block written into the customer's site_config."""
+	plan = frappe.get_cached_doc("Buildiary Plan", t.plan) if t.plan and frappe.db.exists("Buildiary Plan", t.plan) else None
 	s = settings()
 	return {
 		"tenant": t.name,
@@ -168,11 +168,11 @@ def push(t):
 	"""Write the customer's plan and dates into their workspace."""
 	if not t.site_host or not os.path.isdir(site_dir(t.site_host)):
 		return False
-	update_site_config(t.site_host, "mabni", conf_block(t))
+	update_site_config(t.site_host, "buildiary", conf_block(t))
 	key = t.get_password("tenant_key", raise_exception=False) if t.get("tenant_key") else None
 	if key:
-		update_site_config(t.site_host, "mabni_key", key)
-	update_site_config(t.site_host, "mabni_ai", ai_block())
+		update_site_config(t.site_host, "buildiary_key", key)
+	update_site_config(t.site_host, "buildiary_ai", ai_block())
 	return True
 
 

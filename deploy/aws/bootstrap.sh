@@ -1,39 +1,39 @@
 #!/bin/bash
-# Mabni (Mimaar ERP) on one AWS server (Ubuntu 24.04): Docker, a Caddy front door with automatic
-# https (more apps and websites can be added beside it), the first ERP site, the Mabni Cloud
+# Buildiary on one AWS server (Ubuntu 24.04): Docker, a Caddy front door with automatic
+# https (more apps and websites can be added beside it), the first ERP site, the Buildiary Cloud
 # set-up (one site per customer, picked by the address; certificates on demand) and daily
 # backups of every site to S3.
 #
 # Run as root, e.g. from EC2 user data:
-#   MIMAAR_DOMAIN=mimaar.1-2-3-4.sslip.io MIMAAR_DATA_FILE=/root/mimaar-data.json bash bootstrap.sh
-# Customers' workspaces are <name>.$MABNI_BASE (default: MIMAAR_DOMAIN without its first part);
-# the console (sign-up page, customers, payments) is $MABNI_CONSOLE (default my.$MABNI_BASE),
-# created with /opt/mimaar/mabni-console.sh.
+#   BUILDIARY_DOMAIN=buildiary.1-2-3-4.sslip.io BUILDIARY_DATA_FILE=/root/buildiary-data.json bash bootstrap.sh
+# Customers' workspaces are <name>.$BUILDIARY_BASE (default: BUILDIARY_DOMAIN without its first part);
+# the console (sign-up page, customers, payments) is $BUILDIARY_CONSOLE (default my.$BUILDIARY_BASE),
+# created with /opt/buildiary/buildiary-console.sh.
 # Safe to run again: it keeps the sites, the data and the passwords.
 set -uo pipefail
-exec > >(tee -a /var/log/mimaar-setup.log) 2>&1
-echo "== Mimaar setup $(date -u)"
+exec > >(tee -a /var/log/buildiary-setup.log) 2>&1
+echo "== Buildiary setup $(date -u)"
 
-DOMAIN="${MIMAAR_DOMAIN:?set MIMAAR_DOMAIN}"
-DATA_FILE="${MIMAAR_DATA_FILE:-/root/mimaar-data.json}"
-BASE="${MABNI_BASE:-${DOMAIN#*.}}"
-CONSOLE="${MABNI_CONSOLE:-my.$BASE}"
+DOMAIN="${BUILDIARY_DOMAIN:?set BUILDIARY_DOMAIN}"
+DATA_FILE="${BUILDIARY_DATA_FILE:-/root/buildiary-data.json}"
+BASE="${BUILDIARY_BASE:-${DOMAIN#*.}}"
+CONSOLE="${BUILDIARY_CONSOLE:-my.$BASE}"
 export DEBIAN_FRONTEND=noninteractive
 
 tok() { curl -s -X PUT http://169.254.169.254/latest/api/token -H 'X-aws-ec2-metadata-token-ttl-seconds: 300'; }
 idoc() { curl -s -H "X-aws-ec2-metadata-token: $(tok)" http://169.254.169.254/latest/dynamic/instance-identity/document; }
 REGION="$(idoc | sed -n 's/.*"region" *: *"\([^"]*\)".*/\1/p')"
 ACCOUNT="$(idoc | sed -n 's/.*"accountId" *: *"\([^"]*\)".*/\1/p')"
-BUCKET="${MIMAAR_BACKUP_BUCKET:-mimaar-backups-$ACCOUNT-$REGION}"
+BUCKET="${BUILDIARY_BACKUP_BUCKET:-buildiary-backups-$ACCOUNT-$REGION}"
 # the private image store in this account (deploy/aws/private-images.sh)
-IMAGE="${MIMAAR_IMAGE:-$ACCOUNT.dkr.ecr.$REGION.amazonaws.com/mabni:16}"
+IMAGE="${BUILDIARY_IMAGE:-$ACCOUNT.dkr.ecr.$REGION.amazonaws.com/buildiary:16}"
 
 # ---- 1. memory safety net and time zone
 if ! swapon --show | grep -q /swapfile; then
   fallocate -l 4G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
   grep -q '^/swapfile' /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
 fi
-echo 'vm.swappiness=10' > /etc/sysctl.d/90-mimaar.conf && sysctl -q -p /etc/sysctl.d/90-mimaar.conf
+echo 'vm.swappiness=10' > /etc/sysctl.d/90-buildiary.conf && sysctl -q -p /etc/sysctl.d/90-buildiary.conf
 timedatectl set-timezone Asia/Karachi || true
 
 # ---- 2. Docker and the AWS command line
@@ -43,19 +43,19 @@ command -v aws >/dev/null || snap install aws-cli --classic
 export PATH="$PATH:/snap/bin"
 docker network inspect web >/dev/null 2>&1 || docker network create web
 # private images (Amazon ECR): Docker signs in with the server's own AWS role, no stored password
-mkdir -p /opt/mimaar
+mkdir -p /opt/buildiary
 if [[ "$IMAGE" == *.dkr.ecr.* ]]; then
-  cat > /opt/mimaar/ecr-login.sh <<EOF
+  cat > /opt/buildiary/ecr-login.sh <<EOF
 #!/bin/bash
 # Signs Docker in to the private image store with the server's own AWS role (valid 12 hours).
 export PATH="\$PATH:/snap/bin"
 aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin ${IMAGE%%/*} >/dev/null
 EOF
 else
-  printf '#!/bin/bash\ntrue\n' > /opt/mimaar/ecr-login.sh
+  printf '#!/bin/bash\ntrue\n' > /opt/buildiary/ecr-login.sh
 fi
-chmod 700 /opt/mimaar/ecr-login.sh
-/opt/mimaar/ecr-login.sh || echo "Could not sign in to the image store"
+chmod 700 /opt/buildiary/ecr-login.sh
+/opt/buildiary/ecr-login.sh || echo "Could not sign in to the image store"
 
 # ---- 3. The front door: Caddy, automatic https. One file per app or website in /opt/edge/sites
 mkdir -p /opt/edge/sites /opt/edge/www
@@ -85,7 +85,7 @@ cat > /opt/edge/Caddyfile <<EOF
 #   docker compose -f /opt/edge/compose.yml exec caddy caddy reload --config /etc/caddy/Caddyfile
 {
 	# certificates for customers' workspaces are fetched on first visit, only for addresses
-	# the Mabni console knows (the :5555 block below asks it)
+	# the Buildiary console knows (the :5555 block below asks it)
 	on_demand_tls {
 		ask http://localhost:5555/check
 	}
@@ -96,23 +96,23 @@ cat > /opt/edge/Caddyfile <<EOF
 
 http://localhost:5555 {
 	bind 127.0.0.1
-	rewrite * /api/method/mimaar.saas.api.tls_ask?{query}
-	reverse_proxy mimaar-frontend:8080 {
+	rewrite * /api/method/buildiary.saas.api.tls_ask?{query}
+	reverse_proxy buildiary-frontend:8080 {
 		header_up Host $CONSOLE
 	}
 }
 
 import /etc/caddy/sites/*.caddy
 EOF
-cat > /opt/edge/sites/mimaar.caddy <<EOF
+cat > /opt/edge/sites/buildiary.caddy <<EOF
 $DOMAIN {
 	encode zstd gzip
 	header X-Robots-Tag "noindex, nofollow"
-	reverse_proxy mimaar-frontend:8080
+	reverse_proxy buildiary-frontend:8080
 }
 EOF
-cat > /opt/edge/sites/zz-mabni.caddy <<'EOF'
-# Mabni Cloud: every other address (customers' workspaces, the console) goes to the ERP,
+cat > /opt/edge/sites/zz-buildiary.caddy <<'EOF'
+# Buildiary Cloud: every other address (customers' workspaces, the console) goes to the ERP,
 # which picks the site by the address. Sites named in other files win over this one.
 https:// {
 	tls {
@@ -121,7 +121,7 @@ https:// {
 	encode zstd gzip
 	# workspaces are private: never in search results
 	header X-Robots-Tag "noindex, nofollow"
-	reverse_proxy mimaar-frontend:8080
+	reverse_proxy buildiary-frontend:8080
 }
 http:// {
 	redir https://{host}{uri} permanent
@@ -130,28 +130,28 @@ EOF
 docker compose -f /opt/edge/compose.yml up -d
 docker compose -f /opt/edge/compose.yml exec -T caddy caddy reload --config /etc/caddy/Caddyfile || true
 
-# ---- 4. Mimaar ERP
-mkdir -p /opt/mimaar/data
-cd /opt/mimaar || exit 1
+# ---- 4. Buildiary
+mkdir -p /opt/buildiary/data
+cd /opt/buildiary || exit 1
 if [ ! -f .env ]; then
   gen() { tr -dc 'A-HJ-NP-Za-km-z2-9' </dev/urandom | head -c "$1"; }
-  printf 'SITE=%s\nIMAGE=%s\nADMIN_PASSWORD=Mimaar-%s\nDB_ROOT_PASSWORD=%s\nBUCKET=%s\nREGION=%s\n' \
+  printf 'SITE=%s\nIMAGE=%s\nADMIN_PASSWORD=Buildiary-%s\nDB_ROOT_PASSWORD=%s\nBUCKET=%s\nREGION=%s\n' \
     "$DOMAIN" "$IMAGE" "$(gen 12)" "$(gen 28)" "$BUCKET" "$REGION" > .env
   chmod 600 .env
 fi
-grep -q '^MABNI_BASE=' .env || printf 'MABNI_BASE=%s\nMABNI_CONSOLE=%s\nMABNI_OWN_COMPANY="%s"\nMABNI_OWN_EMAIL=%s\n' \
-  "$BASE" "$CONSOLE" "${MABNI_OWN_COMPANY:-Villa 31}" "${MABNI_OWN_EMAIL:-info@smhglobal.com.pk}" >> .env
+grep -q '^BUILDIARY_BASE=' .env || printf 'BUILDIARY_BASE=%s\nBUILDIARY_CONSOLE=%s\nBUILDIARY_OWN_COMPANY="%s"\nBUILDIARY_OWN_EMAIL=%s\n' \
+  "$BASE" "$CONSOLE" "${BUILDIARY_OWN_COMPANY:-Villa 31}" "${BUILDIARY_OWN_EMAIL:-info@smhglobal.com.pk}" >> .env
 set -a; . ./.env; set +a
-[ -f "$DATA_FILE" ] && cp "$DATA_FILE" data/mimaar-data.json
+[ -f "$DATA_FILE" ] && cp "$DATA_FILE" data/buildiary-data.json
 
 # the owner reads the Administrator password in the AWS console (Systems Manager > Parameter Store)
-aws ssm put-parameter --region "$REGION" --name /mimaar/administrator-password --type SecureString \
+aws ssm put-parameter --region "$REGION" --name /buildiary/administrator-password --type SecureString \
   --value "$ADMIN_PASSWORD" --overwrite >/dev/null && echo "Administrator password saved in Parameter Store" \
-  || echo "Could not save the password in Parameter Store (it is in /opt/mimaar/.env)"
+  || echo "Could not save the password in Parameter Store (it is in /opt/buildiary/.env)"
 
 cat > compose.yml <<'EOF'
-# Mimaar ERP: Frappe 16 + ERPNext 16 + Mimaar. Settings are in .env (root only).
-name: mimaar
+# Buildiary: Frappe 16 + ERPNext 16 + Buildiary. Settings are in .env (root only).
+name: buildiary
 
 x-app: &app
   image: ${IMAGE}
@@ -217,11 +217,11 @@ services:
         export start=`date +%s`;
         until [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".db_host // empty"` ]] && [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".redis_cache // empty"` ]] && [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".redis_queue // empty"` ]];
         do echo "Waiting for the configuration"; sleep 5; if (( `date +%s`-start > 180 )); then echo "No configuration found"; exit 1; fi; done;
-        if [ -d "sites/$$SITE" ]; then echo "Site already there"; else bench new-site --mariadb-user-host-login-scope='%' --admin-password="$$ADMIN_PASSWORD" --db-root-username=root --db-root-password="$$DB_ROOT_PASSWORD" --install-app erpnext --install-app mimaar --set-default "$$SITE" || exit 1; fi;
+        if [ -d "sites/$$SITE" ]; then echo "Site already there"; else bench new-site --mariadb-user-host-login-scope='%' --admin-password="$$ADMIN_PASSWORD" --db-root-username=root --db-root-password="$$DB_ROOT_PASSWORD" --install-app erpnext --install-app buildiary --set-default "$$SITE" || exit 1; fi;
         bench --site "$$SITE" set-config host_name "https://$$SITE";
-        if [ -f /data/mimaar-data.json ]; then bench --site "$$SITE" execute mimaar.setup.local_site --kwargs "{'data_file': '/data/mimaar-data.json'}" || exit 1; else bench --site "$$SITE" execute mimaar.setup.local_site || exit 1; fi;
+        if [ -f /data/buildiary-data.json ]; then bench --site "$$SITE" execute buildiary.setup.local_site --kwargs "{'data_file': '/data/buildiary-data.json'}" || exit 1; else bench --site "$$SITE" execute buildiary.setup.local_site || exit 1; fi;
         bench --site "$$SITE" clear-cache;
-        echo "MIMAAR READY: https://$$SITE"
+        echo "BUILDIARY READY: https://$$SITE"
     depends_on:
       configurator:
         condition: service_completed_successfully
@@ -261,7 +261,7 @@ services:
     networks:
       default:
       web:
-        aliases: [mimaar-frontend]
+        aliases: [buildiary-frontend]
     depends_on:
       - backend
       - websocket
@@ -271,7 +271,7 @@ services:
     command: ["bench", "worker", "--queue", "long,default,short"]
     environment:
       <<: *redis-env
-      # Mabni Cloud prepares new customers' sites in this worker
+      # Buildiary Cloud prepares new customers' sites in this worker
       DB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     depends_on:
       configurator:
@@ -320,19 +320,19 @@ volumes:
   logs:
 EOF
 
-# ---- 5. Helper scripts: backup (daily, to S3) and update (new version of Mimaar)
+# ---- 5. Helper scripts: backup (daily, to S3) and update (new version of Buildiary)
 cat > sites.sh <<'EOF'
 #!/bin/bash
 # Lists the real sites (not the blank ones kept ready for new customers).
-cd /opt/mimaar
+cd /opt/buildiary
 docker compose exec -T backend bash -c 'cd sites && for d in */; do d=${d%/}; [ -f "$d/site_config.json" ] || continue; case "$d" in pool-*) ;; *) echo "$d";; esac; done'
 EOF
 cat > backup.sh <<'EOF'
 #!/bin/bash
 # Full backup (database and files) of every site, kept 14 days on the server and 60 days in S3.
-cd /opt/mimaar && set -a && . ./.env && set +a
+cd /opt/buildiary && set -a && . ./.env && set +a
 export PATH="$PATH:/snap/bin"
-VOL="$(docker volume inspect mimaar_sites -f '{{.Mountpoint}}')"
+VOL="$(docker volume inspect buildiary_sites -f '{{.Mountpoint}}')"
 FAIL=0
 for S in $(./sites.sh); do
   if docker compose exec -T backend bench --site "$S" backup --with-files --compress >/dev/null; then
@@ -346,10 +346,10 @@ exit $FAIL
 EOF
 cat > update.sh <<'EOF'
 #!/bin/bash
-# Gets the latest Mimaar ERP image and applies it to the site, keeping all data (backup first).
-exec 9>/run/mimaar-update.lock; flock 9
-cd /opt/mimaar && set -a && . ./.env && set +a
-/opt/mimaar/ecr-login.sh || echo "Could not sign in to the image store"
+# Gets the latest Buildiary image and applies it to the site, keeping all data (backup first).
+exec 9>/run/buildiary-update.lock; flock 9
+cd /opt/buildiary && set -a && . ./.env && set +a
+/opt/buildiary/ecr-login.sh || echo "Could not sign in to the image store"
 ./backup.sh || echo "Backup failed; continuing"
 docker compose pull && docker compose up -d || exit 1
 CODE=$(docker wait "$(docker compose ps -a -q create-site)")
@@ -359,31 +359,31 @@ for S in $(./sites.sh) $(docker compose exec -T backend bash -c 'cd sites && ls 
   docker compose exec -T backend bench --site "$S" migrate >/dev/null && docker compose exec -T backend bench --site "$S" clear-cache || { echo "$S: migrate FAILED"; OK=0; }
 done
 docker image prune -af >/dev/null 2>&1 || true   # old versions no container uses (about 4.5 GB each)
-[ "$OK" = 1 ] && echo "MIMAAR UPDATED"
+[ "$OK" = 1 ] && echo "BUILDIARY UPDATED"
 EOF
-cat > mabni-console.sh <<'EOF'
+cat > buildiary-console.sh <<'EOF'
 #!/bin/bash
-# Creates the Mabni console (sign-up page, customers, payments) at https://$MABNI_CONSOLE and
+# Creates the Buildiary console (sign-up page, customers, payments) at https://$BUILDIARY_CONSOLE and
 # registers the first site as SMH Global's own (free) workspace. Safe to run again.
-cd /opt/mimaar && set -a && . ./.env && set +a
-C="$MABNI_CONSOLE"
+cd /opt/buildiary && set -a && . ./.env && set +a
+C="$BUILDIARY_CONSOLE"
 if ! docker compose exec -T backend test -f "sites/$C/site_config.json"; then
   docker compose exec -T backend bench new-site "$C" --mariadb-user-host-login-scope='%' --admin-password="$ADMIN_PASSWORD" \
-    --db-root-username=root --db-root-password="$DB_ROOT_PASSWORD" --install-app erpnext --install-app mimaar || exit 1
+    --db-root-username=root --db-root-password="$DB_ROOT_PASSWORD" --install-app erpnext --install-app buildiary || exit 1
 fi
 docker compose exec -T backend bench --site "$C" set-config host_name "https://$C"
-docker compose exec -T backend bench --site "$C" execute mimaar.saas.console.setup_console --kwargs "{'base': '$MABNI_BASE', 'control': '$C'}" || exit 1
-docker compose exec -T backend bench --site "$C" execute mimaar.saas.console.register_site --kwargs "{'host': '$SITE', 'company': '$MABNI_OWN_COMPANY', 'email': '$MABNI_OWN_EMAIL'}" || exit 1
+docker compose exec -T backend bench --site "$C" execute buildiary.saas.console.setup_console --kwargs "{'base': '$BUILDIARY_BASE', 'control': '$C'}" || exit 1
+docker compose exec -T backend bench --site "$C" execute buildiary.saas.console.register_site --kwargs "{'host': '$SITE', 'company': '$BUILDIARY_OWN_COMPANY', 'email': '$BUILDIARY_OWN_EMAIL'}" || exit 1
 docker compose exec -T backend bench --site "$C" enable-scheduler
 docker compose exec -T backend bench --site "$C" clear-cache
-echo "MABNI CONSOLE READY: https://$C (sign in as Administrator)"
+echo "BUILDIARY CONSOLE READY: https://$C (sign in as Administrator)"
 EOF
 cat > autoupdate.sh <<'EOF'
 #!/bin/bash
-# Every 15 minutes: when a newer Mimaar ERP image has been published, apply it (update.sh backs up first).
-exec 9>/run/mimaar-update.lock; flock -n 9 || exit 0
-cd /opt/mimaar && set -a && . ./.env && set +a
-/opt/mimaar/ecr-login.sh || echo "Could not sign in to the image store"
+# Every 15 minutes: when a newer Buildiary image has been published, apply it (update.sh backs up first).
+exec 9>/run/buildiary-update.lock; flock -n 9 || exit 0
+cd /opt/buildiary && set -a && . ./.env && set +a
+/opt/buildiary/ecr-login.sh || echo "Could not sign in to the image store"
 # a new version needs about 5 GB free: clear old versions first if the disk is getting full
 [ "$(df --output=avail -BG / | tail -1 | tr -dc 0-9)" -ge 8 ] || docker image prune -af >/dev/null 2>&1
 docker pull -q "$IMAGE" >/dev/null 2>&1 || { echo "$(date '+%F %T') could not download $IMAGE ($(df -h --output=avail / | tail -1 | tr -d ' ') free)"; exit 0; }
@@ -392,11 +392,28 @@ RUNNING=$(docker inspect -f '{{.Image}}' "$(docker compose ps -q backend)" 2>/de
 [ -n "$NEW" ] && [ "$NEW" != "$RUNNING" ] || exit 0
 echo "$(date '+%F %T') new image $(docker image inspect -f '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$IMAGE")"
 exec 9>&-
-/opt/mimaar/update.sh
+/opt/buildiary/update.sh
+# the website's theme and pages travel in the same image
+[ -x /opt/website/update.sh ] && /opt/website/update.sh >> /var/log/buildiary-website.log 2>&1 || true
 EOF
-chmod 700 backup.sh update.sh autoupdate.sh sites.sh mabni-console.sh
-echo "*/15 * * * * root /opt/mimaar/autoupdate.sh >> /var/log/mimaar-update.log 2>&1" > /etc/cron.d/mimaar-autoupdate
-echo "30 2 * * * root /opt/mimaar/backup.sh >> /var/log/mimaar-backup.log 2>&1" > /etc/cron.d/mimaar-backup
+chmod 700 backup.sh update.sh autoupdate.sh sites.sh buildiary-console.sh
+mkdir -p /opt/website
+cat > /opt/website/update.sh <<'EOF'
+#!/bin/bash
+# Refreshes the website (theme and pages) from the files inside the running Buildiary image. The first
+# run installs it (deploy/website/setup.sh).
+#   /opt/website/update.sh            (pages edited in WordPress are kept)
+#   /opt/website/update.sh --force    (also overwrite pages edited in WordPress)
+set -euo pipefail
+cd /opt/buildiary && set -a && . ./.env && set +a
+T=$(mktemp -d); trap 'rm -rf "$T"' EXIT
+docker run --rm --entrypoint tar "$IMAGE" -C /home/frappe/frappe-bench/apps/buildiary/deploy -cf - website | tar -xf - -C "$T"
+echo "$(date '+%F %T') website from $(docker image inspect -f '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$IMAGE" | cut -c1-8)"
+bash "$T/website/setup.sh" "$@"
+EOF
+chmod 700 /opt/website/update.sh
+echo "*/15 * * * * root /opt/buildiary/autoupdate.sh >> /var/log/buildiary-update.log 2>&1" > /etc/cron.d/buildiary-autoupdate
+echo "30 2 * * * root /opt/buildiary/backup.sh >> /var/log/buildiary-backup.log 2>&1" > /etc/cron.d/buildiary-backup
 
 # S3 bucket for backups (private, encrypted, old backups removed after 60 days)
 if ! aws s3api head-bucket --bucket "$BUCKET" --region "$REGION" 2>/dev/null; then
@@ -406,9 +423,9 @@ if ! aws s3api head-bucket --bucket "$BUCKET" --region "$REGION" 2>/dev/null; th
     && echo "Backup bucket $BUCKET ready" || echo "Could not create the backup bucket $BUCKET"
 fi
 
-# ---- 6. Start Mimaar ERP
+# ---- 6. Start Buildiary
 docker compose pull -q
 docker compose up -d
 CODE=$(docker wait "$(docker compose ps -a -q create-site)")
 docker compose logs --no-log-prefix --tail 30 create-site
-if [ "$CODE" = "0" ]; then echo "== MIMAAR READY: https://$SITE"; else echo "== MIMAAR SETUP FAILED (code $CODE)"; fi
+if [ "$CODE" = "0" ]; then echo "== BUILDIARY READY: https://$SITE"; else echo "== BUILDIARY SETUP FAILED (code $CODE)"; fi

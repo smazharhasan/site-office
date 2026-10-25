@@ -2,31 +2,31 @@
 // confirm by submitting, revise with Cancel → Amend, lock the agreed one as final.
 frappe.ui.form.on("Supplier Quotation", {
 	onload(frm) {
-		if (frm.is_new() && mimaar._scan_next) {
-			mimaar._scan_next = false;
-			setTimeout(() => mimaar.scan_quotation(frm), 400);
+		if (frm.is_new() && buildiary._scan_next) {
+			buildiary._scan_next = false;
+			setTimeout(() => buildiary.scan_quotation(frm), 400);
 		}
 	},
 	refresh(frm) {
 		const d = frm.doc;
 		if (d.docstatus === 0) {
-			frm.add_custom_button(__("Scan the supplier's document"), () => mimaar.scan_quotation(frm)).addClass("btn-primary");
-			if (d.amended_from) frm.dashboard.set_headline(__("Revision {0} of {1}. Write what changed, then submit to confirm.", [(d.mimaar_revision || 1), d.amended_from]), "blue");
+			frm.add_custom_button(__("Scan the supplier's document"), () => buildiary.scan_quotation(frm)).addClass("btn-primary");
+			if (d.amended_from) frm.dashboard.set_headline(__("Revision {0} of {1}. Write what changed, then submit to confirm.", [(d.buildiary_revision || 1), d.amended_from]), "blue");
 		}
-		if (d.docstatus === 1 && !d.mimaar_final) {
+		if (d.docstatus === 1 && !d.buildiary_final) {
 			frm.dashboard.set_headline(__("Confirmed. It can't be edited: a change in price, discount or items is a new revision (Cancel, then Amend). Lock it as final when agreed."), "blue");
 			frm.add_custom_button(__("Lock as final"), () => {
 				frappe.confirm(__("Lock {0} as the final quotation? No more revisions can be made after this.", [d.name]), () =>
-					frappe.call({ method: "mimaar.procurement.mark_final", args: { name: d.name }, freeze: true }).then(() => frm.reload_doc()));
+					frappe.call({ method: "buildiary.procurement.mark_final", args: { name: d.name }, freeze: true }).then(() => frm.reload_doc()));
 			}).addClass("btn-primary");
 			setTimeout(() => frm.remove_custom_button(__("Purchase Order"), __("Create")), 50);
 		}
-		if (d.docstatus === 1 && d.mimaar_final) {
-			frm.dashboard.set_headline(__("Final quotation, locked on {0}. Raise the purchase order from it (Create → Purchase Order), or ask the supplier for their contract.", [frappe.datetime.str_to_user(d.mimaar_final_on)]), "green");
+		if (d.docstatus === 1 && d.buildiary_final) {
+			frm.dashboard.set_headline(__("Final quotation, locked on {0}. Raise the purchase order from it (Create → Purchase Order), or ask the supplier for their contract.", [frappe.datetime.str_to_user(d.buildiary_final_on)]), "green");
 			frm.page.btn_secondary && frm.page.btn_secondary.addClass("hide");
-			if (!d.mimaar_contract_requested)
+			if (!d.buildiary_contract_requested)
 				frm.add_custom_button(__("Ask for a contract instead"), () =>
-					frappe.call({ method: "mimaar.procurement.request_contract", args: { name: d.name } }).then(() => frm.reload_doc()), __("Create"));
+					frappe.call({ method: "buildiary.procurement.request_contract", args: { name: d.name } }).then(() => frm.reload_doc()), __("Create"));
 		}
 		if (d.docstatus === 2) {
 			frappe.db.get_value("Supplier Quotation", { amended_from: d.name }, "name").then((r) => {
@@ -37,26 +37,26 @@ frappe.ui.form.on("Supplier Quotation", {
 	},
 });
 
-mimaar.scan_quotation = async function (frm) {
-	if (!mimaar.ai_on()) {
-		const url = await mimaar.pick_file({});
-		frm.set_value("mimaar_document", url);
+buildiary.scan_quotation = async function (frm) {
+	if (!buildiary.ai_on()) {
+		const url = await buildiary.pick_file({});
+		frm.set_value("buildiary_document", url);
 		frappe.show_alert({ message: __("Document attached. AI reading is off: type in the lines."), indicator: "blue" });
 		return;
 	}
-	const url = await mimaar.pick_file({});
+	const url = await buildiary.pick_file({});
 	frappe.dom.freeze(__("Reading the document…"));
 	let r;
-	try { r = await frappe.call({ method: "mimaar.ai.read_quotation", args: { file_url: url } }); } finally { frappe.dom.unfreeze(); }
+	try { r = await frappe.call({ method: "buildiary.ai.read_quotation", args: { file_url: url } }); } finally { frappe.dom.unfreeze(); }
 	const q = r.message; if (!q) return;
-	frm.set_value("mimaar_document", url);
+	frm.set_value("buildiary_document", url);
 	let supplier = q.supplier;
-	if (!supplier && q.supplier_details && q.supplier_details.name) supplier = await mimaar.new_supplier_dialog(q);
+	if (!supplier && q.supplier_details && q.supplier_details.name) supplier = await buildiary.new_supplier_dialog(q);
 	if (supplier) await frm.set_value("supplier", supplier);
-	await mimaar.review_lines(frm, q);
+	await buildiary.review_lines(frm, q);
 };
 
-mimaar.new_supplier_dialog = function (q) {
+buildiary.new_supplier_dialog = function (q) {
 	const s = q.supplier_details || {};
 	return new Promise((resolve) => {
 		const d = new frappe.ui.Dialog({
@@ -73,18 +73,18 @@ mimaar.new_supplier_dialog = function (q) {
 			],
 			primary_action_label: __("Register supplier"),
 			primary_action(v) {
-				frappe.call({ method: "mimaar.api.register_supplier", args: Object.assign({ payment_terms: q.payment_terms, delivery_time: q.delivery_time }, v), freeze: true })
+				frappe.call({ method: "buildiary.api.register_supplier", args: Object.assign({ payment_terms: q.payment_terms, delivery_time: q.delivery_time }, v), freeze: true })
 					.then((r) => { d.hide(); resolve(r.message); });
 			},
 			secondary_action_label: __("Choose an existing supplier"),
 			secondary_action() { d.hide(); resolve(null); },
 		});
 		d.show();
-		mimaar._review_dialog = d;
+		buildiary._review_dialog = d;
 	});
 };
 
-mimaar.review_lines = function (frm, q) {
+buildiary.review_lines = function (frm, q) {
 	return new Promise((resolve) => {
 		const lines = (q.lines || []).map((l) => ({ text: l.text, item_code: l.item_code, new_item: 0, uom: l.uom || "Nos", qty: l.qty, rate: l.rate, discount_percentage: l.discount_percentage || 0 }));
 		const d = new frappe.ui.Dialog({
@@ -107,12 +107,12 @@ mimaar.review_lines = function (frm, q) {
 				{ fieldname: "valid_till", fieldtype: "Date", label: __("Valid until"), default: q.valid_till },
 				{ fieldname: "discount_amount", fieldtype: "Currency", label: __("Overall discount (Rs)"), default: q.discount_amount },
 				{ fieldname: "cb", fieldtype: "Column Break" },
-				{ fieldname: "mimaar_payment_terms", fieldtype: "Small Text", label: __("Payment terms"), default: q.payment_terms, reqd: 1 },
-				{ fieldname: "mimaar_advance_percent", fieldtype: "Percent", label: __("Advance asked (%)"), default: q.advance_percent },
-				{ fieldname: "mimaar_delivery_time", fieldtype: "Data", label: __("Delivery / completion time"), default: q.delivery_time, reqd: 1 },
+				{ fieldname: "buildiary_payment_terms", fieldtype: "Small Text", label: __("Payment terms"), default: q.payment_terms, reqd: 1 },
+				{ fieldname: "buildiary_advance_percent", fieldtype: "Percent", label: __("Advance asked (%)"), default: q.advance_percent },
+				{ fieldname: "buildiary_delivery_time", fieldtype: "Data", label: __("Delivery / completion time"), default: q.delivery_time, reqd: 1 },
 				{ fieldname: "terms", fieldtype: "Small Text", label: __("Other terms"), default: q.terms },
 				{ fieldname: "sb2", fieldtype: "Section Break" },
-				{ fieldtype: "HTML", options: `<div class="text-muted">${__("On the document")}: ${__("tax")} ${q.tax_percent || 0}% · ${__("other charges")} ${mimaar.money(q.other_charges)} · ${__("grand total")} <b>${mimaar.money(q.grand_total)}</b></div>` },
+				{ fieldtype: "HTML", options: `<div class="text-muted">${__("On the document")}: ${__("tax")} ${q.tax_percent || 0}% · ${__("other charges")} ${buildiary.money(q.other_charges)} · ${__("grand total")} <b>${buildiary.money(q.grand_total)}</b></div>` },
 			],
 			primary_action_label: __("Fill in the quotation"),
 			async primary_action(v) {
@@ -124,7 +124,7 @@ mimaar.review_lines = function (frm, q) {
 				if (rows.some((x) => !(x.qty > 0) || !(x.rate > 0))) return frappe.msgprint(__("Every line needs a quantity and a rate above 0."));
 				d.hide(); frappe.dom.freeze(__("Filling in…"));
 				try {
-					for (const x of rows) if (!x.item_code) x.item_code = (await frappe.call({ method: "mimaar.api.new_item", args: { item_name: x.text, uom: x.uom || "Nos" } })).message;
+					for (const x of rows) if (!x.item_code) x.item_code = (await frappe.call({ method: "buildiary.api.new_item", args: { item_name: x.text, uom: x.uom || "Nos" } })).message;
 					frm.clear_table("items");
 					for (const x of rows) {
 						const row = frm.add_child("items");
@@ -135,15 +135,15 @@ mimaar.review_lines = function (frm, q) {
 						if (x.discount_percentage) await frappe.model.set_value(row.doctype, row.name, "discount_percentage", x.discount_percentage);
 					}
 					frm.refresh_field("items");
-					for (const k of ["quotation_number", "transaction_date", "valid_till", "mimaar_payment_terms", "mimaar_advance_percent", "mimaar_delivery_time", "terms"]) if (v[k] != null && v[k] !== "") await frm.set_value(k, v[k]);
+					for (const k of ["quotation_number", "transaction_date", "valid_till", "buildiary_payment_terms", "buildiary_advance_percent", "buildiary_delivery_time", "terms"]) if (v[k] != null && v[k] !== "") await frm.set_value(k, v[k]);
 					if (v.discount_amount) { await frm.set_value("apply_discount_on", "Net Total"); await frm.set_value("discount_amount", v.discount_amount); }
 				} finally { frappe.dom.unfreeze(); }
-				if (q.tax_percent || q.other_charges) frappe.msgprint(__("The document shows tax {0}% and other charges {1}. Add them in the Taxes and Charges table.", [q.tax_percent || 0, mimaar.money(q.other_charges)]));
-				else if (q.grand_total && Math.abs((frm.doc.grand_total || 0) - q.grand_total) > 1) frappe.msgprint(__("Check the numbers: the document total is {0}, the lines add up to {1}.", [mimaar.money(q.grand_total), mimaar.money(frm.doc.grand_total)]));
+				if (q.tax_percent || q.other_charges) frappe.msgprint(__("The document shows tax {0}% and other charges {1}. Add them in the Taxes and Charges table.", [q.tax_percent || 0, buildiary.money(q.other_charges)]));
+				else if (q.grand_total && Math.abs((frm.doc.grand_total || 0) - q.grand_total) > 1) frappe.msgprint(__("Check the numbers: the document total is {0}, the lines add up to {1}.", [buildiary.money(q.grand_total), buildiary.money(frm.doc.grand_total)]));
 				resolve();
 			},
 		});
 		d.show();
-		mimaar._review_dialog = d;
+		buildiary._review_dialog = d;
 	});
 };

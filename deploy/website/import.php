@@ -20,9 +20,9 @@ if (!$pages) {
 }
 
 // (eval-file runs this file inside a function, so the list lives in $GLOBALS)
-$GLOBALS['mabni_changed'] = [];
+$GLOBALS['buildiary_changed'] = [];
 
-function mabni_upsert($path, $parent, $slug, $title, $content, $excerpt, $template, $force, $seo = '') {
+function buildiary_upsert($path, $parent, $slug, $title, $content, $excerpt, $template, $force, $seo = '') {
 	$page = get_page_by_path($path, OBJECT, 'page');
 	$hash = md5($content . '|' . $title . '|' . $excerpt);
 	$data = [
@@ -30,13 +30,13 @@ function mabni_upsert($path, $parent, $slug, $title, $content, $excerpt, $templa
 		'post_parent' => $parent, 'post_content' => $content, 'post_excerpt' => $excerpt, 'comment_status' => 'closed', 'ping_status' => 'closed',
 	];
 	if ($page) {
-		$last = get_post_meta($page->ID, '_mabni_hash', true);
+		$last = get_post_meta($page->ID, '_buildiary_hash', true);
 		$current = md5($page->post_content . '|' . $page->post_title . '|' . $page->post_excerpt);
 		if (!$force && $last && $current !== $last) {
 			WP_CLI::log("kept (edited in WordPress): /$path/");
 			return $page->ID;
 		}
-		update_post_meta($page->ID, '_mabni_seo_title', $seo);
+		update_post_meta($page->ID, '_buildiary_seo_title', $seo);
 		if ($current === $hash) {
 			return $page->ID;
 		}
@@ -50,10 +50,10 @@ function mabni_upsert($path, $parent, $slug, $title, $content, $excerpt, $templa
 	if (is_wp_error($id)) {
 		WP_CLI::error($id->get_error_message());
 	}
-	update_post_meta($id, '_mabni_hash', $hash);
+	update_post_meta($id, '_buildiary_hash', $hash);
 	update_post_meta($id, '_wp_page_template', $template ?: 'default');
-	update_post_meta($id, '_mabni_seo_title', $seo);
-	$GLOBALS['mabni_changed'][] = $id;
+	update_post_meta($id, '_buildiary_seo_title', $seo);
+	$GLOBALS['buildiary_changed'][] = $id;
 	return $id;
 }
 
@@ -64,7 +64,7 @@ foreach ($pages as $p) {
 		continue;
 	}
 	$slug = $p['lang'] === 'en' ? 'home' : $p['lang'];
-	$homes[$p['lang']] = mabni_upsert($slug, 0, $slug, $p['title'], file_get_contents("$dir/{$p['file']}"), $p['excerpt'], $p['template'], $force, $p['seo_title'] ?? '');
+	$homes[$p['lang']] = buildiary_upsert($slug, 0, $slug, $p['title'], file_get_contents("$dir/{$p['file']}"), $p['excerpt'], $p['template'], $force, $p['seo_title'] ?? '');
 }
 foreach ($pages as $p) {
 	if ($p['slug'] === 'home') {
@@ -81,7 +81,7 @@ foreach ($pages as $p) {
 		$above = get_page_by_path($up, OBJECT, 'page');
 		$parent = $above ? $above->ID : 0;
 	}
-	mabni_upsert($path, $parent, basename($p['slug']), $p['title'], file_get_contents("$dir/{$p['file']}"), $p['excerpt'], $p['template'], $force, $p['seo_title'] ?? '');
+	buildiary_upsert($path, $parent, basename($p['slug']), $p['title'], file_get_contents("$dir/{$p['file']}"), $p['excerpt'], $p['template'], $force, $p['seo_title'] ?? '');
 }
 
 // the English home page is the site's front page
@@ -95,7 +95,7 @@ flush_rewrite_rules(false);
 // WordPress's sample content
 foreach (['sample-page', 'privacy-policy'] as $s) {
 	$old = get_page_by_path($s);
-	if ($old && !get_post_meta($old->ID, '_mabni_hash', true)) {
+	if ($old && !get_post_meta($old->ID, '_buildiary_hash', true)) {
 		wp_delete_post($old->ID, true);
 	}
 }
@@ -104,8 +104,8 @@ if ($hello) {
 	wp_delete_post($hello->ID, true);
 }
 // tell search engines about new and changed pages (IndexNow), only on the real domain
-if ($GLOBALS['mabni_changed'] && function_exists('mabni_indexnow')) {
-	$r = mabni_indexnow(array_map('get_permalink', $GLOBALS['mabni_changed']));
+if ($GLOBALS['buildiary_changed'] && function_exists('buildiary_indexnow')) {
+	$r = buildiary_indexnow(array_map('get_permalink', $GLOBALS['buildiary_changed']));
 	WP_CLI::log('IndexNow: ' . $r);
 }
 WP_CLI::success(count($pages) . ' pages in place');

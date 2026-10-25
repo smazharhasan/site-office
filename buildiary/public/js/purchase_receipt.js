@@ -1,32 +1,32 @@
 // Receiving at site: only with the supplier's delivery note (scanned) and the receiver's photo.
 frappe.ui.form.on("Purchase Receipt", {
 	onload(frm) {
-		if (frm.is_new() && !frm.doc.mimaar_received_by) frm.set_value("mimaar_received_by", frappe.session.user_fullname);
+		if (frm.is_new() && !frm.doc.buildiary_received_by) frm.set_value("buildiary_received_by", frappe.session.user_fullname);
 	},
 	refresh(frm) {
 		const d = frm.doc;
 		if (d.docstatus === 0 && !d.is_return) {
-			frm.add_custom_button(__("Scan the delivery note / bill"), () => mimaar.scan_delivery(frm)).addClass("btn-primary");
+			frm.add_custom_button(__("Scan the delivery note / bill"), () => buildiary.scan_delivery(frm)).addClass("btn-primary");
 			const need = [];
 			if (!d.supplier_delivery_note) need.push(__("delivery note number"));
-			if (!d.mimaar_dn_scan) need.push(__("delivery note scan"));
-			if (!d.mimaar_receiver_photo) need.push(__("receiver's photo"));
+			if (!d.buildiary_dn_scan) need.push(__("delivery note scan"));
+			if (!d.buildiary_receiver_photo) need.push(__("receiver's photo"));
 			if (need.length) frm.dashboard.set_headline(__("Before submitting: {0}. Count what actually arrived; partial deliveries keep the purchase order open.", [need.join(", ")]), "orange");
 		}
 	},
 });
 
-mimaar.scan_delivery = async function (frm) {
-	await mimaar.save_first(frm);
-	const url = await mimaar.pick_file({ doctype: frm.doctype, docname: frm.doc.name });
-	await frm.set_value("mimaar_dn_scan", url);
-	if (!mimaar.ai_on()) { await frm.save(); return frappe.show_alert({ message: __("Scan attached. Enter the delivery note number and quantities."), indicator: "blue" }); }
+buildiary.scan_delivery = async function (frm) {
+	await buildiary.save_first(frm);
+	const url = await buildiary.pick_file({ doctype: frm.doctype, docname: frm.doc.name });
+	await frm.set_value("buildiary_dn_scan", url);
+	if (!buildiary.ai_on()) { await frm.save(); return frappe.show_alert({ message: __("Scan attached. Enter the delivery note number and quantities."), indicator: "blue" }); }
 	frappe.dom.freeze(__("Reading the document…"));
 	let r;
-	try { r = await frappe.call({ method: "mimaar.ai.read_delivery", args: { file_url: url, doctype: frm.doctype, name: frm.doc.name } }); } finally { frappe.dom.unfreeze(); }
+	try { r = await frappe.call({ method: "buildiary.ai.read_delivery", args: { file_url: url, doctype: frm.doctype, name: frm.doc.name } }); } finally { frappe.dom.unfreeze(); }
 	const x = r.message || {};
 	if (x.docNo) await frm.set_value("supplier_delivery_note", x.docNo);
-	if (x.vehicle) await frm.set_value("mimaar_vehicle", x.vehicle);
+	if (x.vehicle) await frm.set_value("buildiary_vehicle", x.vehicle);
 	const got = {};
 	(x.lines || []).forEach((l) => { if (l.index != null) got[l.index] = (got[l.index] || 0) + (l.qty || 0); });
 	if (Object.keys(got).length) {

@@ -1,11 +1,11 @@
-/* Mimaar field app on ERPNext.
- * The phone screens of the earlier Mimaar app (colour theme, big buttons, Urdu/English),
- * talking to ERPNext through mimaar.field. Every rule is checked by ERPNext on the server;
+/* Buildiary field app on ERPNext.
+ * The phone screens of the earlier Buildiary app (colour theme, big buttons, Urdu/English),
+ * talking to ERPNext through buildiary.field. Every rule is checked by ERPNext on the server;
  * this file only collects what the person sees and enters. */
 (() => {
 "use strict";
-const BOOT = window.MIMAAR_BOOT || {};
-const UR = window.MIMAAR_UR || {};
+const BOOT = window.BUILDIARY_BOOT || {};
+const UR = window.BUILDIARY_UR || {};
 const CSRF = () => (window.frappe && window.frappe.csrf_token) || BOOT.csrf || "";
 const NATIVE = !!window.ReactNativeWebView;
 const S = { b: BOOT.boot || null, lang: (BOOT.boot && BOOT.boot.lang) || BOOT.lang || "en", acts: {}, att: null, rel: null, cache: {} };
@@ -17,7 +17,7 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 const icon = (n, cls = "") => `<svg class="i ${cls}"><use href="#i-${n}"/></svg>`;
 const RTL = () => S.lang === "ur" || S.lang === "ar";
 const LOCALE = () => (S.lang === "ur" ? "ur-PK" : S.lang === "ar" ? "ar-SA-u-nu-latn-ca-gregory" : "en-GB");
-function t(s, ...a) { let x = (S.lang !== "en" && S.lang === window.MIMAAR_TR_LANG && UR[s]) || s; a.forEach((v, i) => { x = x.split(`{${i}}`).join(v); }); return x; }
+function t(s, ...a) { let x = (S.lang !== "en" && S.lang === window.BUILDIARY_TR_LANG && UR[s]) || s; a.forEach((v, i) => { x = x.split(`{${i}}`).join(v); }); return x; }
 const num = (n) => (+n || 0).toLocaleString("en-US", { maximumFractionDigits: 2 });
 /** Money in the company's currency: lakh and crore for rupees, thousands and millions elsewhere. */
 const CUR = () => (S.b && S.b.currency) || "PKR";
@@ -59,7 +59,7 @@ function serverMessage(j) {
   return "";
 }
 async function api(method, args = {}) {
-  const path = method.includes(".") ? method : `mimaar.field.${method}`;
+  const path = method.includes(".") ? method : `buildiary.field.${method}`;
   let r;
   try {
     r = await fetch(`/api/method/${path}`, { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", Accept: "application/json", "X-Frappe-CSRF-Token": CSRF() }, body: JSON.stringify(args) });
@@ -93,8 +93,8 @@ async function upload(file) {
 
 /* ---------- the phone app (live camera, GPS, card scanner) ---------- */
 const pending = {}; let seq = 0;
-window.MimaarNative = window.MimaarNative || {};
-window.MimaarNative.resolve = (id, res) => { const p = pending[id]; if (!p) return; delete pending[id]; if (res && res.error) p.reject(new UserError(res.error)); else p.resolve(res || {}); };
+window.BuildiaryNative = window.BuildiaryNative || {};
+window.BuildiaryNative.resolve = (id, res) => { const p = pending[id]; if (!p) return; delete pending[id]; if (res && res.error) p.reject(new UserError(res.error)); else p.resolve(res || {}); };
 function native(type, data = {}) {
   return new Promise((resolve, reject) => { const id = ++seq; pending[id] = { resolve, reject }; window.ReactNativeWebView.postMessage(JSON.stringify({ id, type, csrf: CSRF(), ...data })); });
 }
@@ -375,7 +375,7 @@ function picker(title, load, render, opts = {}) {
   });
 }
 const pickRow = (i, title, sub, img, end = "") => `<button class="lrow" data-pick="${i}">${img ? `<img class="lth" src="${esc(img)}" alt="">` : ""}<span class="lmain"><b>${esc(title)}</b>${sub ? `<span class="lsub">${esc(sub)}</span>` : ""}</span>${end ? `<span class="lend">${end}</span>` : ""}</button>`;
-const pickSupplier = (title = t("Choose the supplier")) => picker(title, (q) => api("suppliers", { q }), (r, i) => pickRow(i, r.supplier_name, t(r.mimaar_work_area || "")));
+const pickSupplier = (title = t("Choose the supplier")) => picker(title, (q) => api("suppliers", { q }), (r, i) => pickRow(i, r.supplier_name, t(r.buildiary_work_area || "")));
 const pickItem = (title = t("Choose the item"), opts = {}) => picker(title, (q) => (opts.stock ? api("stock", { q }).then((d) => d.rows.filter((r) => +r.qty > 0)) : api("item_search", { q })), (r, i) => pickRow(i, r.item_name, r.item_code, "", opts.stock ? `<b>${num(r.qty)}</b><span class="small muted">${esc(r.uom)}</span>` : esc(r.stock_uom || "")), { top: opts.allowNew ? `<button class="btn sm" data-new="1">${icon("plus")}${esc(t("Not in the list: add as a new item"))}</button>` : "" });
 const pickWorker = () => picker(t("Choose the worker"), (q) => api("workers", { q }), (r, i) => pickRow(i, r.full_name, [t(r.trade || ""), r.name].filter(Boolean).join(" · "), r.photo));
 
@@ -440,7 +440,7 @@ const GLOBAL = {
       if (to === "attcard") return attendanceByCard();
       if (to === "tanker") return tankerSheet();
       if (to === "tanklevel") return readingSheet();
-      if (to === "pettyexp") return busy(api("mimaar.petty.overview")).then((d) => { S.petty = d; if (d.no_person) { toast(t("Your sign-in isn't linked to a person on site, so you can't hold petty cash. Ask the owner."), "bad"); return; } expenseSheet(d); }).catch((e) => toast(e.message, "bad"));
+      if (to === "pettyexp") return busy(api("buildiary.petty.overview")).then((d) => { S.petty = d; if (d.no_person) { toast(t("Your sign-in isn't linked to a person on site, so you can't hold petty cash. Ask the owner."), "bad"); return; } expenseSheet(d); }).catch((e) => toast(e.message, "bad"));
       if (to === "paycard") return payByCard();
       if (to === "diary") return diarySheet();
       if (to === "snag") return snagNewSheet();
@@ -460,7 +460,7 @@ const GLOBAL = {
         const grp = (title, rows) => rows.length ? panel(title, `<div class="lst">${rows.join("")}</div>`, "", "plain") : "";
         res.innerHTML = [
           grp(t("Workers"), (r.workers || []).map((w) => lrow({ go: `worker/${w.name}`, title: w.full_name, sub: esc(t(w.trade || "")), img: w.photo }))),
-          grp(t("Suppliers"), (r.suppliers || []).map((s) => lrow({ go: `supplier/${s.name}`, title: s.supplier_name, sub: esc(t(s.mimaar_work_area || "")) }))),
+          grp(t("Suppliers"), (r.suppliers || []).map((s) => lrow({ go: `supplier/${s.name}`, title: s.supplier_name, sub: esc(t(s.buildiary_work_area || "")) }))),
           grp(t("Items in store"), (r.items || []).map((s) => lrow({ go: `item/${encodeURIComponent(s.item_code)}`, title: s.item_name, end: `<b>${num(s.qty)}</b><span class="small muted">${esc(t(s.uom))}</span>` }))),
           grp(t("Purchase orders"), (r.orders || []).map((o) => lrow({ go: `order/${o.name}`, title: `${o.supplier_name}`, sub: esc(o.name) }))),
           grp(t("Quotations"), (r.quotes || []).map((o) => lrow({ go: `quote/${o.name}`, title: `${o.supplier_name}`, sub: esc(o.name) }))),
@@ -471,7 +471,7 @@ const GLOBAL = {
 };
 
 /* ================================================================== dashboard */
-/** Mabni Cloud: the trial or plan line on the home screen (only on a Buildiary workspace). */
+/** Buildiary Cloud: the trial or plan line on the home screen (only on a Buildiary workspace). */
 function planBanner() {
   const p = S.b.plan;
   if (!p || !p.show) return "";
@@ -485,7 +485,7 @@ function planBanner() {
 
 VIEWS.dash = async (el) => {
   const b = S.b; setTop(t("Dashboard"));
-  const d = await api("mimaar.dash.overview"); const T = d.tiles; const c = C();
+  const d = await api("buildiary.dash.overview"); const T = d.tiles; const c = C();
   const tiles = [];
   if (T.paid) tiles.push(tile(t("Paid to suppliers"), money(T.paid.paid, 1), t("of {0} ordered", money(T.paid.committed, 1)), "money/bills", "k1"));
   if (T.budget) tiles.push(tile(t("Budget"), money(T.budget.budget, 1), t("{0} committed", money(T.budget.committed, 1)), "money/budget", "k2"));
@@ -553,14 +553,14 @@ VIEWS.dash = async (el) => {
 /** A dashboard panel that opens and closes (remembered on this phone). */
 function fold(id, title, body, openDefault = false) {
   let open = openDefault;
-  try { const v = localStorage.getItem(`mimaar.fold.${id}`); if (v != null) open = v === "1"; } catch (e) { /* no storage */ }
+  try { const v = localStorage.getItem(`buildiary.fold.${id}`); if (v != null) open = v === "1"; } catch (e) { /* no storage */ }
   return `<section class="panel fold ${open ? "open" : ""}" data-fold="${id}"><header data-ftoggle="${id}"><h2>${esc(title)}</h2><span class="btn sm">${esc(open ? t("Close") : t("Open"))}</span>${icon("chev", "lch")}</header><div class="fbody">${body}</div></section>`;
 }
 document.addEventListener("click", (e) => {
   const h = e.target.closest("[data-ftoggle]"); if (!h) return;
   const p = h.closest(".fold"); const open = !p.classList.contains("open"); p.classList.toggle("open", open);
   h.querySelector(".btn").textContent = open ? t("Close") : t("Open");
-  try { localStorage.setItem(`mimaar.fold.${h.dataset.ftoggle}`, open ? "1" : "0"); } catch (err) { /* no storage */ }
+  try { localStorage.setItem(`buildiary.fold.${h.dataset.ftoggle}`, open ? "1" : "0"); } catch (err) { /* no storage */ }
 });
 
 /* ================================================================== construction */
@@ -605,7 +605,7 @@ const sstate = (s) => pill(t(SSTATE[s.state][0]), SSTATE[s.state][1]);
 const stageBar = (s) => `<div class="sbar" role="img" aria-label="${esc(t("{0}% built, {1}% reported, {2}% planned", num(s.built), num(s.reported), num(s.planned)))}"><i class="rep" style="width:${Math.min(100, s.reported)}%"></i><i class="ver" style="width:${Math.min(100, s.verified || 0)}%"></i><b class="plan" style="left:${Math.min(100, s.planned)}%"></b></div>`;
 const buildLegend = () => `<div class="legend"><span><i class="g"></i>${esc(t("Built (verified)"))}</span><span><i class="a"></i>${esc(t("Reported"))}</span><span><i class="m"></i>${esc(t("Planned for today"))}</span></div>`;
 async function buildPane(pane) {
-  const d = await api("mimaar.build.stages");
+  const d = await api("buildiary.build.stages");
   S.build = d;
   const all = d.phases.flatMap((p) => p.stages);
   const opts = [["", t("All stages")], ["now", t("Building now")], ["behind", t("Behind plan")], ["soon", t("Starts soon")], ["done", t("Done")]].concat(d.phases.map((p) => ["ph:" + p.name, t(p.name)]));
@@ -667,7 +667,7 @@ function progressSheet(s, kind) {
   sh.querySelector("[data-save]").onclick = async () => {
     const v = vals(sh); const photos = [v.p1, v.p2, v.p3].filter(Boolean);
     if (!verify && !photos.length && +v.pct > s.reported) { sheetError(sh, t("Take at least one photo of the work.")); return; }
-    const res = await run(sh, () => api(verify ? "mimaar.build.verify" : "mimaar.build.report", { task: s.name, pct: v.pct, note: v.note, photos, location: v.location }), verify ? t("Check saved") : t("Progress saved"));
+    const res = await run(sh, () => api(verify ? "buildiary.build.verify" : "buildiary.build.report", { task: s.name, pct: v.pct, note: v.note, photos, location: v.location }), verify ? t("Check saved") : t("Progress saved"));
     if (res) { closeSheet(sh); render(); }
   };
 }
@@ -679,12 +679,12 @@ function stagePhotoSheet(s) {
   sh.querySelector("[data-save]").onclick = async () => {
     const v = vals(sh); const photos = [v.p1, v.p2, v.p3].filter(Boolean);
     if (!photos.length) { sheetError(sh, t("Take the photo first.")); return; }
-    const r = await run(sh, () => api("mimaar.build.add_photo", { task: s.name, photos, note: v.note, location: v.location }), t("Saved"));
+    const r = await run(sh, () => api("buildiary.build.add_photo", { task: s.name, photos, note: v.note, location: v.location }), t("Saved"));
     if (r) { closeSheet(sh); render(); }
   };
 }
 async function stagePhotos(s) {
-  const d = await busy(api("mimaar.build.stage", { name: s.name }));
+  const d = await busy(api("buildiary.build.stage", { name: s.name }));
   const ph = [];
   d.updates.forEach((u) => [u.photo_1, u.photo_2, u.photo_3].filter(Boolean).forEach((url) => ph.push({ url, date: u.date, kind: u.kind, note: u.note })));
   return { d, ph };
@@ -704,7 +704,7 @@ async function compareSheet(s) {
   const ai = sh.querySelector("[data-ai]");
   if (ai) ai.onclick = async () => {
     try {
-      const r = await busy(api("mimaar.build.compare", { task: s.name, before: ph[+a.value].url, after: ph[+b.value].url }), t("The AI is comparing the photos…"));
+      const r = await busy(api("buildiary.build.compare", { task: s.name, before: ph[+a.value].url, after: ph[+b.value].url }), t("The AI is comparing the photos…"));
       sh.querySelector("[data-res]").innerHTML = `<div class="verdict ${(r.concerns || []).length ? "warn" : "good"}">${icon("sparkle")}<span>${esc(r.summary)}${r.estimate != null ? `<br><b>${esc(t("Looks about {0}% done", num(r.estimate)))}</b>` : ""}${(r.concerns || []).map((c) => `<br>⚠ ${esc(c)}`).join("")}</span></div>`;
     } catch (e) { toast(e.message, "bad"); }
   };
@@ -872,7 +872,7 @@ const moveRow = (x) => lrow({ ic: x.kind === "in" ? "truck" : x.kind === "back" 
 /* every item as a card, with search, category and state filters */
 async function storeItems(pane) {
   const q0 = decodeURIComponent(location.hash.split("?")[1] || "");
-  const d = await api("mimaar.stores.items");
+  const d = await api("buildiary.stores.items");
   const R = d.rows; const st = (S.storeF = S.storeF || { g: "" });
   const n = (f) => R.filter(f).length;
   const tops = {};
@@ -904,7 +904,7 @@ const icard = (r) => `<button class="icard" data-go="item/${encodeURIComponent(r
 /* one item: figures, actions, orders to come, movements */
 VIEWS.item = async (el, [code]) => {
   setTop(t("Stores & water"), true); setTab("store");
-  const d = await api("mimaar.stores.item", { code });
+  const d = await api("buildiary.stores.item", { code });
   const c = C(); const showMoney = d.value != null;
   const stat = (l, v, cls = "", unit = "") => `<div class="istat ${cls}"><span>${esc(l)}</span><b>${v}</b>${unit ? `<em>${esc(unit)}</em>` : ""}</div>`;
   el.innerHTML = `<section class="panel plain"><div class="body"><div class="row" style="flex-wrap:nowrap;align-items:flex-start;gap:14px">${ithumb(d, true)}
@@ -930,7 +930,7 @@ async function identifyItem() {
   try { p = await takePhoto(t("Photo of the item")); } catch (e) { toast(e.message, "bad"); return; }
   if (!p) return;
   let r;
-  try { r = await busy(api("mimaar.stores.identify", { file_url: p.url }), t("The AI is looking at the photo…")); } catch (e) { toast(e.message, "bad"); return; }
+  try { r = await busy(api("buildiary.stores.identify", { file_url: p.url }), t("The AI is looking at the photo…")); } catch (e) { toast(e.message, "bad"); return; }
   const sh = sheet(t("Identify from a photo"), `<div class="stack"><div class="row" style="flex-wrap:nowrap;gap:12px;align-items:flex-start"><img class="ith big zoomable" src="${esc(p.url)}" alt="">
       <div style="min-width:0"><b>${esc(r.what || t("Not sure what this is"))}</b>${r.count ? `<span class="small muted" style="display:block">${esc(t("About {0} visible", r.count))}</span>` : ""}</div></div>
     ${r.matches.length ? panel(t("In the store list"), `<div class="lst">${r.matches.map((m) => lrow({ go: `item/${encodeURIComponent(m.code)}`, title: m.name, sub: esc(m.why || ""), end: pill(`${m.confidence}%`, m.confidence >= 70 ? "good" : "warn") })).join("")}</div>`, "", "plain") : `<div class="banner warn">${esc(t("This doesn't match any item in the store list."))}</div>`}
@@ -943,7 +943,7 @@ async function identifyItem() {
 async function itemSheet(d = {}) {
   const isNew = !d.code;
   let groups;
-  try { groups = await busy(api("mimaar.stores.groups")); } catch (e) { toast(e.message, "bad"); return; }
+  try { groups = await busy(api("buildiary.stores.groups")); } catch (e) { toast(e.message, "bad"); return; }
   const units = ["Nos", "Bag", "Kg", "Tonne", "Cubic Foot", "Square Foot", "Foot", "Litre", "Gallon", "Set", "Roll", "Coil", "Box", "Pair", "Lot", "Truck Load"];
   const unit = units.find((u) => u.toLowerCase() === String(d.uom || "").toLowerCase()) || "Nos";
   const topsList = [...new Set(groups.map((g) => g.top))];
@@ -960,7 +960,7 @@ async function itemSheet(d = {}) {
   sh.querySelector("[data-save]").onclick = async () => {
     if (!need(sh, ["item_name", "item_group"])) return;
     const v = vals(sh); v.code = d.code || "";
-    const r = await run(sh, () => api("mimaar.stores.item_save", { data: v }), t("Saved"));
+    const r = await run(sh, () => api("buildiary.stores.item_save", { data: v }), t("Saved"));
     if (r) { closeSheet(sh); go(`item/${encodeURIComponent(r)}`); }
   };
 }
@@ -970,7 +970,7 @@ const VERD = { Verified: "good", Check: "warn", Mismatch: "bad", "Not checked": 
 const verdictPill = (v) => (v ? pill(v === "Verified" ? t("AI ✓") : v === "Mismatch" ? t("AI: mismatch") : v === "Check" ? t("AI: check") : t("AI: not checked"), VERD[v] || "") : "");
 const REJ = "Brackish (rejected)";
 async function waterPane(pane) {
-  const d = await api("mimaar.water.overview");
+  const d = await api("buildiary.water.overview");
   S.water = d;
   const gauge = (k) => (k.kind === "Direct use" ? "" : `<button class="gauge" data-act="read" data-v="${esc(k.name)}"><span class="small b">${esc(t(k.name))}</span>
     <span class="tankv"><i style="height:${k.level == null ? 0 : Math.max(0, Math.min(100, k.level))}%"></i><b>${k.level == null ? "—" : num(k.level) + "%"}</b></span>
@@ -1033,7 +1033,7 @@ async function verifyTanker(box) {
   const v = vals(box); const out = box.querySelector("[data-ai]");
   if (!v.tanker_photo) { toast(t("Take a photo of the tanker with its number plate."), "bad"); return; }
   try {
-    const r = await busy(api("mimaar.water.verify_draft", { data: v }), t("The AI is checking the photos…"));
+    const r = await busy(api("buildiary.water.verify_draft", { data: v }), t("The AI is checking the photos…"));
     const k = VERD[r.verdict] || "warn";
     out.innerHTML = `<div class="verdict ${k || "warn"}" style="margin-top:8px">${icon(r.verdict === "Verified" ? "check" : "alert")}<span><b>${esc(t(r.verdict))}</b> ${esc(r.summary || "")}
       ${r.plate ? `<br>${esc(t("Number plate: {0}", r.plate))}` : ""}${r.gallons ? `<br>${esc(t("Tanker size about {0} gallons", num(r.gallons)))}` : ""}${r.tds ? `<br>${esc(t("TDS on the meter: {0}", r.tds))}` : ""}</span></div>`;
@@ -1046,12 +1046,12 @@ async function tankerSave(box, check) {
   if (v.water_type !== REJ && !v.bill_scan) throw new UserError(t("Scan the tanker's bill or slip."));
   v.paid_from_petty_cash = v.paid_from_petty_cash ? 1 : 0;
   if (v.paid_from_petty_cash && !(+v.cost > 0)) throw new UserError(t("Enter the cost paid from petty cash."));
-  const r = await api("mimaar.water.tanker_save", { data: v, check });
+  const r = await api("buildiary.water.tanker_save", { data: v, check });
   (r.warnings || []).forEach((w) => toast(w, "bad"));
   return r;
 }
 async function tankerSheet(d) {
-  d = d || (await busy(api("mimaar.water.overview")));
+  d = d || (await busy(api("buildiary.water.overview")));
   if (S.b.rules.card_for_receiving) {
     const r = await cardFlow({ title: t("Water tanker: receiver's site card"), action: "Receiving goods",
       step3: { label: "Tanker", ok: t("Save"), render(box) { tankerForm(box, d); }, submit(st, box) { return tankerSave(box, st.check.check); } } });
@@ -1063,7 +1063,7 @@ async function tankerSheet(d) {
   sh.querySelector("[data-save]").onclick = async () => { const r = await run(sh, () => tankerSave(box, null), t("Tanker saved")); if (r) { closeSheet(sh); if (location.hash.includes("water")) render(); } };
 }
 async function readingSheet(d, tank) {
-  d = d || (await busy(api("mimaar.water.overview")));
+  d = d || (await busy(api("buildiary.water.overview")));
   const tanks = d.tanks.filter((k) => k.kind !== "Direct use");
   if (!tanks.length) { toast(t("No tanks yet. The owner adds them under Tanks."), "bad"); return; }
   const cur = tank && tanks.some((k) => k.name === tank) ? tank : (tanks.find((k) => !d.read_today.includes(k.name)) || tanks[0]).name;
@@ -1093,7 +1093,7 @@ async function readingSheet(d, tank) {
   sh.querySelector("[data-save]").onclick = async () => {
     const v = vals(sh);
     if (!v.photo) { sheetError(sh, t("Take a photo inside the tank (through the manhole).")); return; }
-    const r = await run(sh, () => api("mimaar.water.reading_save", { tank: v.tank, level_pct: v.level_pct, photo: v.photo, notes: v.notes, location: v.location }));
+    const r = await run(sh, () => api("buildiary.water.reading_save", { tank: v.tank, level_pct: v.level_pct, photo: v.photo, notes: v.notes, location: v.location }));
     if (!r) return;
     closeSheet(sh);
     toast(r.used > 0 ? t("Saved. Water used since the last reading: about {0} gallons", num(Math.round(r.used))) : t("Saved"), "good");
@@ -1115,7 +1115,7 @@ function tanksSheet(d) {
     });
     const v = vals(sh);
     if (v.tank_name) jobs.push({ tank_name: v.tank_name, kind: v.kind, capacity_gallons: +v.capacity_gallons || 0, is_active: 1 });
-    const r = await run(sh, async () => { for (const j of jobs) await api("mimaar.water.tank_save", { data: j }); return true; }, t("Saved"));
+    const r = await run(sh, async () => { for (const j of jobs) await api("buildiary.water.tank_save", { data: j }); return true; }, t("Saved"));
     if (r) { closeSheet(sh); render(); }
   };
 }
@@ -1135,7 +1135,7 @@ function tankerDetail(r) {
       <div data-ai>${aiBox(r.ai_verdict, r.ai_summary)}</div>
       ${S.b.ai ? `<button class="btn" data-re="1">${icon("sparkle")}${esc(t("Check again with AI"))}</button>` : ""}</div>`, { full: true });
   const b = sh.querySelector("[data-re]");
-  if (b) b.onclick = async () => { try { const x = await busy(api("mimaar.water.recheck", { doctype: "Water Tanker", name: r.name }), t("The AI is checking the photos…")); sh.querySelector("[data-ai]").innerHTML = aiBox(x.ai_verdict, x.ai_summary); } catch (e) { toast(e.message, "bad"); } };
+  if (b) b.onclick = async () => { try { const x = await busy(api("buildiary.water.recheck", { doctype: "Water Tanker", name: r.name }), t("The AI is checking the photos…")); sh.querySelector("[data-ai]").innerHTML = aiBox(x.ai_verdict, x.ai_summary); } catch (e) { toast(e.message, "bad"); } };
 }
 function readingDetail(r) {
   if (!r) return;
@@ -1144,7 +1144,7 @@ function readingDetail(r) {
       ${r.ai_level_pct != null ? `<div class="kv"><span>${esc(t("AI estimate (% full)"))}</span><b>${num(r.ai_level_pct)}%</b></div>` : ""}${r.ai_clarity ? `<div class="kv"><span>${esc(t("Water clarity"))}</span><b>${esc(t(r.ai_clarity))}</b></div>` : ""}${r.notes ? `<div class="kv"><span>${esc(t("Notes"))}</span><b>${esc(r.notes)}</b></div>` : ""}</div>
       <div data-ai>${aiBox(r.ai_verdict, r.ai_summary)}</div>${S.b.ai ? `<button class="btn" data-re="1">${icon("sparkle")}${esc(t("Check again with AI"))}</button>` : ""}</div>`, { full: true });
   const b = sh.querySelector("[data-re]");
-  if (b) b.onclick = async () => { try { const x = await busy(api("mimaar.water.recheck", { doctype: "Water Tank Reading", name: r.name }), t("The AI is checking the photo…")); sh.querySelector("[data-ai]").innerHTML = aiBox(x.ai_verdict, x.ai_summary); } catch (e) { toast(e.message, "bad"); } };
+  if (b) b.onclick = async () => { try { const x = await busy(api("buildiary.water.recheck", { doctype: "Water Tank Reading", name: r.name }), t("The AI is checking the photo…")); sh.querySelector("[data-ai]").innerHTML = aiBox(x.ai_verdict, x.ai_summary); } catch (e) { toast(e.message, "bad"); } };
 }
 
 /* ================================================================== petty cash */
@@ -1152,7 +1152,7 @@ const PCST = { "Waiting for owner": "warn", Approved: "good", Rejected: "bad" };
 const METHODS = ["Cash in hand", "Bank transfer", "Cheque", "JazzCash / Easypaisa", "Raast"];
 VIEWS.petty = async (el) => {
   setTop(t("Petty cash"), true);
-  const d = await api("mimaar.petty.overview");
+  const d = await api("buildiary.petty.overview");
   S.petty = d;
   if (d.no_person) { el.innerHTML = `<div class="banner warn">${esc(t("Your sign-in isn't linked to a person on site, so you can't hold petty cash. Ask the owner."))}</div>`; return; }
   const tiles = [tile(t("Cash in hand"), money(d.in_hand), d.full ? t("with all cash holders") : t("with you"), "", "k1"), tile(t("Spent this month"), money(d.spent_month), t("{0} bills", d.bills_month), "", "k3"),
@@ -1205,12 +1205,12 @@ function expenseSheet(d) {
     if (!need(sh, ["amount", "category", "paid_to"].concat(d.full && d.holder_list.length ? ["holder"] : []))) return;
     const v = vals(sh);
     if (d.rules.bill && !v.bill_photo) { sheetError(sh, t("Take a photo of the bill or receipt.")); return; }
-    const r = await run(sh, () => api("mimaar.petty.entry_save", { data: Object.assign(v, { entry_type: "Expense" }) }));
+    const r = await run(sh, () => api("buildiary.petty.entry_save", { data: Object.assign(v, { entry_type: "Expense" }) }));
     if (r) { closeSheet(sh); toast(r.status === "Approved" ? t("Saved and booked") : t("Saved: waiting for the owner's check"), "good"); render(); }
   };
 }
 async function payByCard(d) {
-  d = d || (await busy(api("mimaar.petty.overview")));
+  d = d || (await busy(api("buildiary.petty.overview")));
   const r = await cardFlow({ title: t("Pay from petty cash by site card"), action: "Petty cash", step3: { label: "Payment", ok: t("Pay"),
     render(box) {
       box.innerHTML = `<div class="form">${holderSel(d, t("Paid from cash held by"))}${fld(t("Amount (Rs)"), inp("amount", "", "number"), { req: true })}
@@ -1221,7 +1221,7 @@ async function payByCard(d) {
       const v = vals(box);
       if (!(+v.amount > 0)) throw new UserError(t("Enter the amount."));
       if (!v.category) throw new UserError(t("Choose what the money was spent on."));
-      return api("mimaar.petty.entry_save", { data: Object.assign(v, { entry_type: "Expense", paid_to_person: st.who.name }), check: st.check.check });
+      return api("buildiary.petty.entry_save", { data: Object.assign(v, { entry_type: "Expense", paid_to_person: st.who.name }), check: st.check.check });
     } } });
   if (r) { toast(r.status === "Approved" ? t("Paid and booked") : t("Paid: waiting for the owner's check"), "good"); if (location.hash.includes("petty")) render(); }
 }
@@ -1238,7 +1238,7 @@ async function giveCash(d) {
   if (d.rules.card) {
     const r = await cardFlow({ title: t("Give cash by site card"), action: "Petty cash", step3: { label: "Cash", ok: t("Save"),
       render(box) { box.innerHTML = cashForm(d, true, false); wireForm(box); },
-      submit(st, box) { const v = vals(box); if (!(+v.amount > 0)) throw new UserError(t("Enter the amount.")); return api("mimaar.petty.entry_save", { data: Object.assign(v, { entry_type: "Cash given", holder: st.who.name }), check: st.check.check }); } } });
+      submit(st, box) { const v = vals(box); if (!(+v.amount > 0)) throw new UserError(t("Enter the amount.")); return api("buildiary.petty.entry_save", { data: Object.assign(v, { entry_type: "Cash given", holder: st.who.name }), check: st.check.check }); } } });
     if (r) { toast(t("Saved and booked"), "good"); render(); }
     return;
   }
@@ -1252,13 +1252,13 @@ function cashSheet(d, giving) {
     if (!need(sh, ["amount"].concat(d.full && d.holder_list.length ? ["holder"] : []))) return;
     const v = vals(sh);
     if (!v.proof_1 && !v.proof_2 && !v.proof_3) { sheetError(sh, t("Add at least one proof of the handover (signed receipt, photo, transfer screenshot or cheque).")); return; }
-    const r = await run(sh, () => api("mimaar.petty.entry_save", { data: Object.assign(v, { entry_type: giving ? "Cash given" : "Cash returned" }) }));
+    const r = await run(sh, () => api("buildiary.petty.entry_save", { data: Object.assign(v, { entry_type: giving ? "Cash given" : "Cash returned" }) }));
     if (r) { closeSheet(sh); toast(r.status === "Approved" ? t("Saved and booked") : t("Saved: waiting for the owner's check"), "good"); render(); }
   };
 }
 async function pcSheet(name) {
   let e;
-  try { e = await busy(api("mimaar.petty.entry", { name })); } catch (err) { toast(err.message, "bad"); return; }
+  try { e = await busy(api("buildiary.petty.entry", { name })); } catch (err) { toast(err.message, "bad"); return; }
   const kv = (l, v) => (v || v === 0 ? `<div class="kv"><span>${esc(l)}</span><b>${esc(v)}</b></div>` : "");
   const f = e.face;
   const canCheck = S.petty && S.petty.full && e.docstatus === 0 && e.status === "Waiting for owner";
@@ -1273,18 +1273,18 @@ async function pcSheet(name) {
       <div class="pfigs">${photoFig(e.bill_photo, t("Bill or receipt"))}${photoFig(e.proof_1, t("Proof 1"))}${photoFig(e.proof_2, t("Proof 2"))}${photoFig(e.proof_3, t("Proof 3"))}</div></div>`,
     { full: true, footer: canCheck ? `<button class="btn bad" data-no="1">${esc(t("Reject"))}</button><button class="btn good" data-ok="1">${icon("check")}${esc(t("Approve"))}</button>` : "" });
   if (!canCheck) return;
-  sh.querySelector("[data-ok]").onclick = async () => { const r = await run(sh, () => api("mimaar.petty.decide", { name, status: "Approved" }), t("Approved and booked")); if (r) { closeSheet(sh); render(); } };
+  sh.querySelector("[data-ok]").onclick = async () => { const r = await run(sh, () => api("buildiary.petty.decide", { name, status: "Approved" }), t("Approved and booked")); if (r) { closeSheet(sh); render(); } };
   sh.querySelector("[data-no]").onclick = async () => {
     const why = await ask(t("Reject"), t("Why is it rejected? The cash holder sees this."), "", { area: true, ok: t("Reject") });
     if (!why) return;
-    const r = await run(sh, () => api("mimaar.petty.decide", { name, status: "Rejected", note: why }), t("Rejected"));
+    const r = await run(sh, () => api("buildiary.petty.decide", { name, status: "Rejected", note: why }), t("Rejected"));
     if (r) { closeSheet(sh); render(); }
   };
 }
 async function budgetSheet(cat) {
   const v = await ask(t("Budget for {0}", t(cat)), t("Amount to add to this budget line (Rs). It is saved as a budget in the ERP."), "", { type: "number", ok: t("Add budget") });
   if (!v) return;
-  try { await busy(api("mimaar.petty.budget_add", { category: cat, amount: v })); toast(t("Budget added"), "good"); render(); } catch (e) { toast(e.message, "bad"); }
+  try { await busy(api("buildiary.petty.budget_add", { category: cat, amount: v })); toast(t("Budget added"), "good"); render(); } catch (e) { toast(e.message, "bad"); }
 }
 
 function releaseSheet(preset = []) {
@@ -1372,7 +1372,7 @@ VIEWS.receive = async (el, [po]) => {
 
 /* ================================================================== more */
 /** The maker: SMH Global Services (its logo, light or dark to suit the theme). */
-const MAKER = () => `<a class="maker" href="https://www.smhglobal.com.pk" target="_blank" rel="noopener"><span>${esc(t("A product of"))}</span><img class="mk-d" src="/assets/mimaar/images/smh-global.svg" alt="SMH Global Services"><img class="mk-l" src="/assets/mimaar/images/smh-global-light.svg" alt="SMH Global Services"></a>`;
+const MAKER = () => `<a class="maker" href="https://www.smhglobal.com.pk" target="_blank" rel="noopener"><span>${esc(t("A product of"))}</span><img class="mk-d" src="/assets/buildiary/images/smh-global.svg" alt="SMH Global Services"><img class="mk-l" src="/assets/buildiary/images/smh-global-light.svg" alt="SMH Global Services"></a>`;
 VIEWS.more = async (el) => {
   setTop(t("More"));
   const c = C(); const b = S.b;
@@ -1401,7 +1401,7 @@ function projChip() {
   return `<button class="projchip" data-act="project" aria-label="${esc(t("Change project"))}">${icon("house")}<span>${esc(S.b.project_name || "")}</span>${icon("chev", "dn")}</button>`;
 }
 async function switchProject(name) {
-  const r = await busy(api("mimaar.projects.switch", { name }), t("Opening…"));
+  const r = await busy(api("buildiary.projects.switch", { name }), t("Opening…"));
   S.b.project = r.project; S.b.project_name = r.project_name; S.b.store = r.store;
   S.b.projects = PROJECTS().map((p) => Object.assign(p, { current: p.name === r.project }));
   S.cache = {}; S.build = null; S.petty = null;
@@ -1422,7 +1422,7 @@ GLOBAL.project = () => {
 };
 VIEWS.projects = async (el) => {
   setTop(t("Projects"), true);
-  const d = await api("mimaar.projects.projects");
+  const d = await api("buildiary.projects.projects");
   S.b.projects = d.rows.map((r) => ({ name: r.name, title: r.title, status: r.status, done: r.done, start: r.start, end: r.end, current: r.current }));
   const limit = d.limit ? `<p class="small muted" style="margin:0 0 10px">${esc(t("{0} of {1} open projects on your plan", d.open, d.limit))}</p>` : "";
   const card = (r) => `<article class="pcard ${r.current ? "cur" : ""}">
@@ -1437,7 +1437,7 @@ VIEWS.projects = async (el) => {
       <p class="small muted" style="margin-top:8px">${esc(t("Each project has its own store, schedule, attendance, buying and budget. Workers and suppliers are shared."))}</p>` : ""}`;
   S.acts.pswitch = (v) => switchProject(v).catch((e) => toast(e.message, "bad"));
   S.acts.pnew = () => projectSheet();
-  S.acts.pstages = async (v) => { try { const n = await busy(api("mimaar.projects.add_stages", { name: v }), t("Saving…")); toast(t("{0} stages added", n), "good"); S.build = null; render(); } catch (e) { toast(e.message, "bad"); } };
+  S.acts.pstages = async (v) => { try { const n = await busy(api("buildiary.projects.add_stages", { name: v }), t("Saving…")); toast(t("{0} stages added", n), "good"); S.build = null; render(); } catch (e) { toast(e.message, "bad"); } };
   S.acts.pedit = (v) => projectSheet(d.rows.find((r) => r.name === v));
 };
 function projectSheet(p) {
@@ -1455,7 +1455,7 @@ function projectSheet(p) {
     if (!need(sh, ["title"])) return;
     const v = vals(sh);
     if (!edit) v.schedule = sh.querySelector("[name=schedule]").checked ? 1 : 0;
-    const r = await run(sh, () => edit ? api("mimaar.projects.edit", { name: p.name, data: v }) : api("mimaar.projects.new", { data: v }), edit ? t("Saved") : t("Project added"));
+    const r = await run(sh, () => edit ? api("buildiary.projects.edit", { name: p.name, data: v }) : api("buildiary.projects.new", { data: v }), edit ? t("Saved") : t("Project added"));
     if (!r) return;
     closeSheet(sh);
     if (edit) { if (p.current) S.b.project_name = v.title; render(); return; }
@@ -1498,7 +1498,7 @@ function cardFlow({ title, action, step3, needCard = 1 }) {
     }
     async function gotCode(code) {
       try {
-        const w = await busy(api("mimaar.api.find_worker", { code }), t("Finding the person…"));
+        const w = await busy(api("buildiary.api.find_worker", { code }), t("Finding the person…"));
         if (!w) return step1(t("This card is not recognised. Is the person registered?"));
         if (needCard && !w.card_scanned) return step1(t("Scan the person's site card. Typing the number is not enough here."));
         if (w.status !== "Active") return step1(t("{0} is {1} in the register and can't be used here.", w.full_name, ST(w.status)));
@@ -1515,7 +1515,7 @@ function cardFlow({ title, action, step3, needCard = 1 }) {
         try {
           const p = await takePhoto(t("Face of {0}", st.who.full_name), { facing: "front", live: true, face: true });
           if (!p) return;
-          const r = await busy(api("mimaar.identity.verify", { code: st.code, photo: p.url, action, location: p.loc || "", need_card: needCard }), t("Checking the face…"));
+          const r = await busy(api("buildiary.identity.verify", { code: st.code, photo: p.url, action, location: p.loc || "", need_card: needCard }), t("Checking the face…"));
           st.check = r;
           const kind = r.result === "Match" ? "good" : r.ok ? "warn" : "bad";
           const msg = r.result === "Match" ? t("Face matches ({0}%)", r.score) : r.result === "Not checked" ? t("Face not checked: {0}", r.notes || "")
@@ -1716,9 +1716,9 @@ VIEWS.person = async (el, [name]) => {
       : `${location.origin}/printview?doctype=Site%20Worker&name=${encodeURIComponent(w.name)}&format=Site%20Worker%20Card&no_letterhead=1&trigger_print=1`),
     call: () => openOut(`tel:${w.phone}`),
     async access() { const v = vals(el); try { await busy(api("worker_save", { data: { name: w.name, app_access: v.app_access, store_keeper: el.querySelector("[name=store_keeper]").checked ? 1 : 0 } }), t("Saving…")); toast(t("Access saved"), "good"); render(); } catch (e) { toast(e.message, "bad"); } },
-    async pin() { const pin = el.querySelector("[name=pin]").value.trim(); try { await busy(api("mimaar.identity.set_card_pin", { person: w.name, pin })); toast(t("PIN set. Card sign-in is on."), "good"); render(); } catch (e) { toast(e.message, "bad"); } },
-    async newcard() { if (!(await confirmBox(t("New card"), t("A new card makes the old site card stop working for signing in and for card scans. Print and hand over the new card."), t("New card")))) return; try { await busy(api("mimaar.identity.new_card", { person: w.name })); toast(t("New card made. Print it now."), "good"); render(); } catch (e) { toast(e.message, "bad"); } },
-    async off() { try { await busy(api("mimaar.identity.card_sign_in_off", { person: w.name })); toast(t("Card sign-in turned off"), "good"); render(); } catch (e) { toast(e.message, "bad"); } },
+    async pin() { const pin = el.querySelector("[name=pin]").value.trim(); try { await busy(api("buildiary.identity.set_card_pin", { person: w.name, pin })); toast(t("PIN set. Card sign-in is on."), "good"); render(); } catch (e) { toast(e.message, "bad"); } },
+    async newcard() { if (!(await confirmBox(t("New card"), t("A new card makes the old site card stop working for signing in and for card scans. Print and hand over the new card."), t("New card")))) return; try { await busy(api("buildiary.identity.new_card", { person: w.name })); toast(t("New card made. Print it now."), "good"); render(); } catch (e) { toast(e.message, "bad"); } },
+    async off() { try { await busy(api("buildiary.identity.card_sign_in_off", { person: w.name })); toast(t("Card sign-in turned off"), "good"); render(); } catch (e) { toast(e.message, "bad"); } },
   });
 };
 function personSheet(w = {}) {
@@ -1758,7 +1758,7 @@ VIEWS.suppliers = async (el) => {
   const list = el.querySelector("[data-list]"), q = el.querySelector("[name=q]"); let tm = null;
   const show = async () => {
     const rows = await api("suppliers", { q: q.value.trim() });
-    list.innerHTML = panel(t("Suppliers"), rows.length ? `<div class="lst">${rows.map((s) => lrow({ go: `supplier/${s.name}`, ic: "truck", title: s.supplier_name, sub: esc(t(s.mimaar_work_area || s.supplier_group || "")), end: s.due ? `<b>${money(s.due, 1)}</b><span class="small muted">${esc(t("to pay"))}</span>` : "" })).join("")}</div>` : empty(t("No suppliers yet")), `<span class="cnt">${rows.length}</span>`);
+    list.innerHTML = panel(t("Suppliers"), rows.length ? `<div class="lst">${rows.map((s) => lrow({ go: `supplier/${s.name}`, ic: "truck", title: s.supplier_name, sub: esc(t(s.buildiary_work_area || s.supplier_group || "")), end: s.due ? `<b>${money(s.due, 1)}</b><span class="small muted">${esc(t("to pay"))}</span>` : "" })).join("")}</div>` : empty(t("No suppliers yet")), `<span class="cnt">${rows.length}</span>`);
   };
   q.addEventListener("input", () => { clearTimeout(tm); tm = setTimeout(show, 300); });
   S.acts.new = () => supplierSheet();
@@ -1791,7 +1791,7 @@ VIEWS.supplier = async (el, [name]) => {
     ${sm ? `<div class="ctiles">${tile(t("Ordered"), money(sm.ordered, 1), "", "", "k2")}${tile(t("Received"), money(sm.received, 1), "", "", "k1")}${tile(t("Billed"), money(sm.billed, 1), "", "", "k3")}${tile(t("Paid"), money(sm.paid, 1), "", "", "k5")}${tile(t("Balance"), money(sm.balance, 1), sm.advance ? t("{0} advance", money(sm.advance, 1)) : "", "", "k4")}${tile(t("Due now"), money(sm.due, 1), "", "", "k6")}</div>
       <button class="btn pri big wide" data-act="stmt">${icon("file")}${esc(t("Send account statement"))}</button>` : ""}
     ${panel(t("Purchase orders"), s.orders.length ? `<div class="lst">${s.orders.map((o) => lrow({ go: `order/${o.name}`, title: o.name, sub: esc(fdate(o.transaction_date)), end: `<b>${money(o.grand_total, 1)}</b>${pill(ST(o.status), "info")}` })).join("")}</div>` : empty(t("No orders yet")))}
-    ${panel(t("Quotations"), s.quotes.length ? `<div class="lst">${s.quotes.map((q) => lrow({ go: `quote/${q.name}`, title: q.name, sub: esc(fdate(q.transaction_date)), end: `<b>${money(q.grand_total, 1)}</b>${q.mimaar_final ? pill(t("Final"), "good") : q.docstatus ? pill(t("Confirmed"), "info") : pill(t("Draft"), "warn")}` })).join("")}</div>` : empty(t("No quotations yet")))}
+    ${panel(t("Quotations"), s.quotes.length ? `<div class="lst">${s.quotes.map((q) => lrow({ go: `quote/${q.name}`, title: q.name, sub: esc(fdate(q.transaction_date)), end: `<b>${money(q.grand_total, 1)}</b>${q.buildiary_final ? pill(t("Final"), "good") : q.docstatus ? pill(t("Confirmed"), "info") : pill(t("Draft"), "warn")}` })).join("")}</div>` : empty(t("No quotations yet")))}
     ${s.rows && s.rows.length ? panel(t("Account"), `<div class="body" style="overflow-x:auto"><table class="tbl"><tr><th>${esc(t("Date"))}</th><th>${esc(t("Document"))}</th><th class="r">${esc(t("Billed"))}</th><th class="r">${esc(t("Paid"))}</th><th class="r">${esc(t("Balance"))}</th></tr>${s.rows.map((r) => `<tr><td>${esc(fdate(r.date))}</td><td class="small">${esc(t(r.voucher_type || ""))}<br>${esc(r.ref || r.voucher_no || "")}</td><td class="r num">${r.billed ? num(r.billed) : ""}</td><td class="r num">${r.paid ? num(r.paid) : ""}</td><td class="r num">${num(r.balance)}</td></tr>`).join("")}</table></div>`) : ""}`;
   Object.assign(S.acts, {
     call: () => openOut(`tel:${s.phone}`),
@@ -1814,7 +1814,7 @@ VIEWS.quotes = async (el) => {
   const rows = await api("quotations", { state: st || null });
   el.innerHTML = `<div class="row">${S.b.ai ? `<button class="btn pri big" data-act="scan">${icon("ai")}${esc(t("Scan a quotation"))}</button>` : ""}<button class="btn big" data-act="type">${icon("plus")}${esc(t("Type a quotation"))}</button></div>
     <div class="seg">${[["", "All"], ["Draft", "Draft"], ["Confirmed", "Confirmed"], ["Final", "Final"]].map(([v, l]) => `<button data-go="quotes${v ? "?" + v : ""}" aria-pressed="${st === v}">${esc(t(l))}</button>`).join("")}</div>
-    ${panel(t("Quotations"), rows.length ? `<div class="lst">${rows.map((q) => lrow({ go: `quote/${q.name}`, title: q.supplier_name, sub: esc([q.name, q.quotation_number, fdate(q.transaction_date), q.mimaar_revision ? t("revision {0}", q.mimaar_revision) : ""].filter(Boolean).join(" · ")), end: `<b>${money(q.grand_total, 1)}</b>${qstate(q.state)}` })).join("")}</div>` : empty(t("No quotations yet"), t("Scan the supplier's quotation to start.")), `<span class="cnt">${rows.length}</span>`)}`;
+    ${panel(t("Quotations"), rows.length ? `<div class="lst">${rows.map((q) => lrow({ go: `quote/${q.name}`, title: q.supplier_name, sub: esc([q.name, q.quotation_number, fdate(q.transaction_date), q.buildiary_revision ? t("revision {0}", q.buildiary_revision) : ""].filter(Boolean).join(" · ")), end: `<b>${money(q.grand_total, 1)}</b>${qstate(q.state)}` })).join("")}</div>` : empty(t("No quotations yet"), t("Scan the supplier's quotation to start.")), `<span class="cnt">${rows.length}</span>`)}`;
   Object.assign(S.acts, { scan: () => scanQuote(), type: () => quoteEditor({}) });
 };
 async function scanQuote() {
@@ -1994,7 +1994,7 @@ const lac = (n) => (SOUTH_ASIA() ? `${(Math.round(((+n || 0) / 1e5) * 10) / 10).
 const monthLbl = (m) => new Date(m + "-01T00:00:00").toLocaleDateString(LOCALE(), { month: "short", year: "2-digit" });
 VIEWS.budget = async (el) => {
   setTop(t("Budget"), true);
-  const d = await api("mimaar.money.budget_overview");
+  const d = await api("buildiary.money.budget_overview");
   S.budget = d;
   const pc = (a) => (d.budget ? `${num(Math.round((a / d.budget) * 100))}% ${t("of budget")}` : "");
   const tiles = [tile(t("Budgeted"), lac(d.budget), money(d.budget), "", "k5"), tile(t("Contracted (committed)"), lac(d.committed), pc(d.committed), "", "k2"),
@@ -2020,14 +2020,14 @@ VIEWS.budget = async (el) => {
   S.acts.addline = () => addBudgetLine(d);
 };
 async function budgetLineSheet(acc, d) {
-  let r; try { r = await busy(api("mimaar.money.budget_line", { account: acc })); } catch (e) { toast(e.message, "bad"); return; }
+  let r; try { r = await busy(api("buildiary.money.budget_line", { account: acc })); } catch (e) { toast(e.message, "bad"); return; }
   const x = r.line;
   const sh = sheet(x.name, `<div class="stack"><div class="ctiles">${tile(t("Budget"), money(x.budget, 1), t(x.category), "", "k5")}${tile(t("Committed"), money(x.committed, 1), "", "", "k2")}${tile(t("Paid"), money(x.paid, 1), "", "", "k1")}${tile(t("Left"), money(x.left, 1), x.over ? t("Over budget") : "", "", x.over ? "k4" : "k3")}</div>
       ${d.owner ? fld(t("Category"), sel("category", d.categories, x.category, false)) : ""}
       ${panel(t("Purchase orders"), r.orders.length ? `<div class="lst">${r.orders.map((o) => lrow({ go: `order/${o.name}`, title: o.supplier_name, sub: esc(`${o.name} · ${fdate(o.transaction_date)} · ${t("{0}% received · {1}% billed", num(o.per_received), num(o.per_billed))}`), end: `<b>${esc(money(o.amount, 1))}</b>` })).join("")}</div>` : empty(t("No orders yet")), "", "plain")}
       ${panel(t("Booked in the accounts"), r.postings.length ? `<div class="lst">${r.postings.map((g) => lrow({ title: `${t(g.voucher_type)} · ${g.voucher_no}`, sub: esc([fdate(g.posting_date), (g.remarks || "").slice(0, 90)].filter(Boolean).join(" · ")), end: `<b>${esc(money(g.amount, 1))}</b>`, chev: false })).join("")}</div>` : empty(t("Nothing booked yet")), "", "plain")}</div>`, { full: true });
   const cs = sh.querySelector("[name=category]");
-  if (cs) cs.onchange = async () => { try { await api("mimaar.money.budget_line_category", { account: acc, category: cs.value }); toast(t("Saved"), "good"); } catch (e) { toast(e.message, "bad"); } };
+  if (cs) cs.onchange = async () => { try { await api("buildiary.money.budget_line_category", { account: acc, category: cs.value }); toast(t("Saved"), "good"); } catch (e) { toast(e.message, "bad"); } };
 }
 function addBudgetLine(d) {
   const sh = sheet(t("New budget line"), `<div class="form">${fld(t("Budget line"), inp("name", "", "text", `placeholder="${esc(t("e.g. Solar panels"))}"`), { req: true })}
@@ -2037,7 +2037,7 @@ function addBudgetLine(d) {
   sh.querySelector("[data-save]").onclick = async () => {
     if (!need(sh, ["name", "amount"])) return;
     const v = vals(sh);
-    const r = await run(sh, () => api("mimaar.money.budget_line_add", v), t("Budget line added"));
+    const r = await run(sh, () => api("buildiary.money.budget_line_add", v), t("Budget line added"));
     if (r) { closeSheet(sh); render(); }
   };
 }
@@ -2072,7 +2072,7 @@ VIEWS.ask = async (el) => {
   const ask = async (q) => {
     q = (q || "").trim(); if (q.length < 3) { toast(t("Write your question."), "bad"); return; }
     try {
-      const r = await busy(api("mimaar.askai.ask", { question: q }), t("Looking through the project's records…"));
+      const r = await busy(api("buildiary.askai.ask", { question: q }), t("Looking through the project's records…"));
       S.askLog.push({ q, a: r.answer, f: r.followups }); qa_.value = ""; draw(); box.scrollIntoView({ behavior: "smooth" });
     } catch (e) { toast(e.message, "bad"); }
   };
@@ -2108,7 +2108,7 @@ VIEWS.connect = async (el) => {
 };
 
 /* ---------------- my settings: look, language, PIN ---------------- */
-const SKINS = [["mabni", "Buildiary blue", "Blueprint blue with amber, the Buildiary look", ["#1e3a5f", "#f2b01e", "#eef1f4"]], ["site", "Site green", "Calm green, the original look", ["#0f6f5c", "#dcefe9", "#f3f2ef"]], ["slate", "Slate & copper", "Cool grey with a copper accent", ["#1b2430", "#52627a", "#b4642d"]],
+const SKINS = [["buildiary", "Buildiary blue", "Blueprint blue with amber, the Buildiary look", ["#1e3a5f", "#f2b01e", "#eef1f4"]], ["site", "Site green", "Calm green, the original look", ["#0f6f5c", "#dcefe9", "#f3f2ef"]], ["slate", "Slate & copper", "Cool grey with a copper accent", ["#1b2430", "#52627a", "#b4642d"]],
   ["sand", "Desert sand", "Warm sand with indigo", ["#2a241b", "#b07a1e", "#3b4fa0"]], ["colour", "Colourful", "Bright colours on every menu and panel", ["#8b5cf6", "#ec4899", "#f59e0b"]],
   ["night", "Night", "Dark blue, easy on the eyes at night", ["#0b1220", "#111a2e", "#38bdf8"]], ["contrast", "High contrast", "Black and white, strongest readability", ["#000", "#fff", "#0040c0"]]];
 const UR_FONTS = [["Noto Nastaliq Urdu", "Nastaliq (Noto)", 1.95, "wght@400;600"], ["Gulzar", "Gulzar Nastaliq", 2.0, ""], ["Noto Naskh Arabic", "Naskh: clear and easy", 1.65, "wght@400;600"],
@@ -2117,8 +2117,8 @@ const EN_FONTS = [["IBM Plex Sans", "IBM Plex Sans", "wght@400;500;600;700"], ["
 const MODES = [["light", "Light"], ["dark", "Dark"], ["auto", "Follow the phone"]];
 const SIZES = [["s", "Small"], ["m", "Normal"], ["l", "Large"], ["xl", "Extra large"]];
 const UR_SAMPLE = "آج سائٹ پر 12 مزدور حاضر ہیں";
-function localLook() { try { return JSON.parse(localStorage.getItem("mimaar.look") || "{}"); } catch (e) { return {}; } }
-function look() { return Object.assign({ skin: "mabni", mode: "light", ur: "Noto Nastaliq Urdu", en: "IBM Plex Sans", size: "m" }, localLook(), (S.b && S.b.ui) || {}); }
+function localLook() { try { return JSON.parse(localStorage.getItem("buildiary.look") || "{}"); } catch (e) { return {}; } }
+function look() { return Object.assign({ skin: "buildiary", mode: "light", ur: "Noto Nastaliq Urdu", en: "IBM Plex Sans", size: "m" }, localLook(), (S.b && S.b.ui) || {}); }
 const loaded = new Set(["IBM Plex Sans", "Noto Nastaliq Urdu"]);
 function loadFont(fam, spec) {
   if (loaded.has(fam)) return; loaded.add(fam);
@@ -2140,7 +2140,7 @@ function applyLook(l = look()) {
 }
 async function saveLook(change) {
   const l = Object.assign(look(), change);
-  try { localStorage.setItem("mimaar.look", JSON.stringify(l)); } catch (e) { /* */ }
+  try { localStorage.setItem("buildiary.look", JSON.stringify(l)); } catch (e) { /* */ }
   if (S.b) { S.b.ui = l; api("ui_save", { ui: l }).catch(() => {}); }
   applyLook(l);
 }
@@ -2174,10 +2174,10 @@ VIEWS.settings = async (el) => {
     $$(`[data-${k}]`, el).forEach((y) => y.setAttribute("aria-pressed", String(y === x)));
   };
   Object.assign(S.acts, {
-    desk() { location.href = "/desk/mimaar"; },
+    desk() { location.href = "/desk/buildiary"; },
     async site() { if (await confirmBox(t("Change site address"), t("The app will ask for the site address again."), t("Change"))) native("forget").catch(() => {}); },
     async out() { await fetch("/api/method/logout", { credentials: "same-origin" }); if (NATIVE) native("signout").catch(() => {}); location.reload(); },
-    async pin() { const v = vals(el); try { await busy(api("mimaar.identity.change_my_pin", { current: v.cur, new: v.new })); toast(t("PIN changed"), "good"); render(); } catch (e) { toast(e.message, "bad"); } },
+    async pin() { const v = vals(el); try { await busy(api("buildiary.identity.change_my_pin", { current: v.cur, new: v.new })); toast(t("PIN changed"), "good"); render(); } catch (e) { toast(e.message, "bad"); } },
   });
 };
 
@@ -2185,16 +2185,16 @@ VIEWS.settings = async (el) => {
 function loginScreen() {
   document.documentElement.lang = S.lang; document.documentElement.dir = RTL() ? "rtl" : "ltr";
   applyLook();
-  $("#app").innerHTML = `<div class="login stack"><div class="logo"><svg viewBox="0 0 120 120" aria-hidden="true"><g transform="translate(5 -3)"><g fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="miter"><path d="M34 22H70L80 32V44L72 51L82 58V80L72 90H34Z"/><path d="M45 33H66L69 36V42L66 45H45Z"/><path d="M45 57H68L71 60V76L68 79H45Z"/></g><g stroke="#F2B01E" stroke-width="3.5" fill="none"><path d="M34 102H82"/><path d="M34 96V108M82 96V108M58 98V106"/></g><g fill="#F2B01E"><rect x="24" y="30" width="12" height="5" rx="2.5"/><rect x="24" y="53" width="12" height="5" rx="2.5"/><rect x="24" y="76" width="12" height="5" rx="2.5"/></g></g></svg></div><h1 style="text-align:center">${esc(t("Buildiary"))}</h1><p class="muted" style="text-align:center;margin:0">${esc(t("Sign in to your project"))}</p>
+  $("#app").innerHTML = `<div class="login stack"><div class="logo"><svg viewBox="0 0 120 120" aria-hidden="true"><path d="M53.5 18H45A24 24 0 0 0 21 42V78A24 24 0 0 0 45 102H53.5Z M53.5 30H44A11 11 0 0 0 33 41V52.5H53.5Z M53.5 64.5H33V79A11 11 0 0 0 44 90H53.5Z M66.5 18H75A24 24 0 0 1 99 42V78A24 24 0 0 1 75 102H66.5Z M66.5 30V90H76A11 11 0 0 0 87 79V41A11 11 0 0 0 76 30Z" fill="#FFFFFF" fill-rule="evenodd"/><rect x="53.5" y="18" width="13.0" height="84" fill="#F2B01E"/></svg></div><h1 class="brandname" style="text-align:center">Buil<i class="bd-d">d</i>iary</h1><p class="muted" style="text-align:center;margin:0">${esc(t("Sign in to your project"))}</p>
     <div class="seg"><button data-l="en" aria-pressed="${S.lang === "en"}">English</button><button data-l="ur" aria-pressed="${S.lang === "ur"}">اردو</button><button data-l="ar" aria-pressed="${S.lang === "ar"}">العربية</button></div>
     ${BOOT.card_sign_in ? `<button class="btn pri big wide" data-card="1">${icon("card")}${esc(t("Sign in with site card"))}</button><p class="small muted" style="text-align:center;margin:0">${esc(t("Scan your site card, type your PIN and take a photo of your face."))}</p>
       <div class="small muted" style="text-align:center">— ${esc(t("or"))} —</div>` : ""}
     <div class="form"><div class="fld"><label>${esc(t("Email or user name"))}</label><input name="usr" autocomplete="username" autocapitalize="none" class="ltr"></div><div class="fld"><label>${esc(t("Password"))}</label><input name="pwd" type="password" autocomplete="current-password" class="ltr"></div>
     <div data-err></div><button class="btn ${BOOT.card_sign_in ? "" : "pri"} big wide" data-login="1">${esc(t("Sign in"))}</button></div>${MAKER()}</div>`;
   $$("[data-l]").forEach((b) => { b.onclick = () => {
-    S.lang = b.dataset.l; try { localStorage.setItem("mimaar.lang", S.lang); } catch (e) { /* */ }
+    S.lang = b.dataset.l; try { localStorage.setItem("buildiary.lang", S.lang); } catch (e) { /* */ }
     // the page carries one language's words: switching between Urdu and Arabic reloads them
-    if (S.lang !== "en" && S.lang !== window.MIMAAR_TR_LANG) { document.cookie = `preferred_language=${S.lang};path=/;max-age=31536000;SameSite=Lax`; location.reload(); return; }
+    if (S.lang !== "en" && S.lang !== window.BUILDIARY_TR_LANG) { document.cookie = `preferred_language=${S.lang};path=/;max-age=31536000;SameSite=Lax`; location.reload(); return; }
     loginScreen(); }; });
   const go_ = async () => {
     const usr = $("[name=usr]").value.trim(), pwd = $("[name=pwd]").value;
@@ -2226,7 +2226,7 @@ async function cardSignIn() {
   const photo = await liveFaceData(t("Photo of your face"));
   if (!photo) return;
   try {
-    const r = await busy(fetch("/api/method/mimaar.identity.sign_in", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ code, pin, photo }) }), t("Checking…"));
+    const r = await busy(fetch("/api/method/buildiary.identity.sign_in", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ code, pin, photo }) }), t("Checking…"));
     let j = {}; try { j = await r.json(); } catch (e) { /* */ }
     if (r.ok && j.message && j.message.ok) { location.reload(); return; }
     $("[data-err]").innerHTML = `<div class="banner bad">${esc(serverMessage(j) || (r.status === 429 ? t("Too many tries. Wait a few minutes.") : t("This card and PIN were not accepted.")))}</div>`;
@@ -2237,10 +2237,10 @@ async function cardSignIn() {
 function start() {
   applyLook();
   if (window.matchMedia) matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => applyLook());
-  if (!S.b) { try { S.lang = localStorage.getItem("mimaar.lang") || S.lang; } catch (e) { /* */ } loginScreen(); return; }
+  if (!S.b) { try { S.lang = localStorage.getItem("buildiary.lang") || S.lang; } catch (e) { /* */ } loginScreen(); return; }
   layout(); render();
   if (NATIVE) native("ready", { lang: S.lang }).catch(() => {});
 }
-window.MimaarField = { t, api, go, S };
+window.BuildiaryField = { t, api, go, S };
 start();
 })();

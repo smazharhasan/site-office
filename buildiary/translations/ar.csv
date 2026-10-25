@@ -1091,7 +1091,6 @@ This entry has already been checked.,تمت مراجعة هذا القيد مس�
 This face check was already used. Scan the card again.,استُخدم هذا التحقق من الوجه مسبقاً. امسح البطاقة مجدداً.
 "This face check was for {0}, not {1}.",كان التحقق من الوجه لـ {0} وليس لـ {1}.
 This is not a Buildiary site card.,هذه ليست بطاقة موقع من بيلدياري.
-This is not the data file from the old Mimaar app.,هذا ليس ملف البيانات من تطبيق معمار القديم.
 This line is over its budget. The owner will see it.,هذا البند تجاوز ميزانيته. سيرى المالك ذلك.
 This month,هذا الشهر
 This name is reserved. Try another.,هذا الاسم محجوز. جرّب اسماً آخر.
@@ -1235,7 +1234,6 @@ Yes,نعم
 You can pay at most {0} here.,يمكنك دفع {0} بحدّ أقصى هنا.
 You don't have access to petty cash. Ask the owner.,ليس لديك صلاحية على العهدة. اطلب من المالك.
 You don't have access to this. Ask the owner.,ليس لديك صلاحية على هذا. اطلب من المالك.
-Your data from the old Mimaar app has been brought across.,تم نقل بياناتك من تطبيق معمار القديم.
 Your face is not clear in the photo. Face the camera in good light and try again.,وجهك غير واضح في الصورة. واجه الكاميرا في إضاءة جيدة وحاول مجدداً.
 Your free trial ends today,تنتهي تجربتك المجانية اليوم
 Your PIN,رمزك السري
@@ -1334,3 +1332,5 @@ Add the usual stages of building,أضف المراحل المعتادة للبن
 {0} stages added,تمت إضافة {0} مرحلة
 This project already has stages.,لهذا المشروع مراحل بالفعل.
 A product of,منتج من
+This is not a Buildiary project data file.,هذا ليس ملف بيانات مشروع بيلدياري.
+The project data has been brought in.,تم إدخال بيانات المشروع.

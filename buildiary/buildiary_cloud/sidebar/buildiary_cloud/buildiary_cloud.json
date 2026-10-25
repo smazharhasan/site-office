@@ -1,5 +1,5 @@
 {
- "app": "mimaar",
+ "app": "buildiary",
  "creation": "2026-10-24 12:00:00.000000",
  "docstatus": 0,
  "doctype": "Sidebar",
@@ -19,7 +19,7 @@
    "indent": 0,
    "type": "Link",
    "label": "Home",
-   "link_to": "Mabni Cloud",
+   "link_to": "Buildiary Cloud",
    "link_type": "Workspace"
   },
   {
@@ -35,7 +35,7 @@
    "indent": 0,
    "type": "Link",
    "label": "Customers",
-   "link_to": "Mabni Tenant",
+   "link_to": "Buildiary Tenant",
    "link_type": "DocType"
   },
   {
@@ -51,7 +51,7 @@
    "indent": 0,
    "type": "Link",
    "label": "Payments",
-   "link_to": "Mabni Payment",
+   "link_to": "Buildiary Payment",
    "link_type": "DocType"
   },
   {
@@ -67,7 +67,7 @@
    "indent": 0,
    "type": "Link",
    "label": "Plans and prices",
-   "link_to": "Mabni Plan",
+   "link_to": "Buildiary Plan",
    "link_type": "DocType"
   },
   {
@@ -98,15 +98,15 @@
    "indent": 0,
    "type": "Link",
    "label": "Settings",
-   "link_to": "Mabni Settings",
+   "link_to": "Buildiary Cloud Settings",
    "link_type": "DocType"
   }
  ],
- "modified": "2026-10-24 12:00:00.000000",
+ "modified": "2026-10-25 21:00:00.000000",
  "modified_by": "Administrator",
- "module": "Mabni Cloud",
- "name": "Mabni Cloud",
+ "module": "Buildiary Cloud",
+ "name": "Buildiary Cloud",
  "owner": "Administrator",
  "standard": 1,
- "title": "Mabni Cloud"
+ "title": "Buildiary Cloud"
 }

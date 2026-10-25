@@ -1,7 +1,7 @@
 from frappe.model.document import Document
 
 
-class MabniSettings(Document):
+class BuildiaryCloudSettings(Document):
 	def validate(self):
 		self.base_domain = (self.base_domain or "").strip().lower().strip(".").replace("https://", "").replace("http://", "")
 		if self.base_domain and not self.control_host:
@@ -12,4 +12,4 @@ class MabniSettings(Document):
 		# the AI key and the support details reach every workspace
 		import frappe
 
-		frappe.enqueue("mimaar.saas.billing.push_all", queue="long", timeout=1800, job_id="mabni-push-all", deduplicate=True)
+		frappe.enqueue("buildiary.saas.billing.push_all", queue="long", timeout=1800, job_id="buildiary-push-all", deduplicate=True)

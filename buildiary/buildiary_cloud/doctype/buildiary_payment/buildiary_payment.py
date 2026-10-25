@@ -2,10 +2,10 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
-from mimaar.saas.common import to_usd
+from buildiary.saas.common import to_usd
 
 
-class MabniPayment(Document):
+class BuildiaryPayment(Document):
 	def validate(self):
 		self.amount_usd = to_usd(self.amount, self.currency)
 		before = self.get_doc_before_save()
@@ -15,7 +15,7 @@ class MabniPayment(Document):
 			frappe.throw(_("Write why the payment is rejected; the customer sees it."))
 
 	def on_update(self):
-		from mimaar.saas.billing import apply_payment, reject_payment
+		from buildiary.saas.billing import apply_payment, reject_payment
 
 		before = self.get_doc_before_save()
 		was = before.status if before else None

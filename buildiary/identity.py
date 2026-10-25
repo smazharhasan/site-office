@@ -22,12 +22,12 @@ PREFIX = "MMR1:"
 MAX_TRIES = 5
 LOCK_MINUTES = 15
 CHECK_VALID_MINUTES = 20
-ACCESS_PROFILES = {"Site supervisor": ["Mimaar Site Supervisor"], "Owner's supervisor": ["Mimaar Owner Supervisor"], "Partner (builder or consultant)": ["Mimaar Partner"],
-	"Accountant": ["Mimaar Accountant"], "Owner": ["Mimaar Owner"]}
+ACCESS_PROFILES = {"Site supervisor": ["Buildiary Site Supervisor"], "Owner's supervisor": ["Buildiary Owner Supervisor"], "Partner (builder or consultant)": ["Buildiary Partner"],
+	"Accountant": ["Buildiary Accountant"], "Owner": ["Buildiary Owner"]}
 
 
 def _s():
-	return frappe.get_cached_doc("Mimaar Settings")
+	return frappe.get_cached_doc("Buildiary Settings")
 
 
 def is_owner():
@@ -53,7 +53,7 @@ def card_code(person):
 def card_qr(person):
 	"""QR image of the site card (for printing the card)."""
 	frappe.get_doc("Site Worker", person).check_permission("print")
-	from mimaar.api import qr_code
+	from buildiary.api import qr_code
 
 	return qr_code(card_code(person))
 
@@ -199,7 +199,7 @@ def face_check(person, photo_url=None, photo_data=None, action="Other", card_sca
 	elif not photo_url:
 		notes = _("No photo taken.")
 	else:
-		from mimaar import ai
+		from buildiary import ai
 
 		try:
 			r = ai.compare_faces(p.photo, photo_url)
@@ -326,7 +326,7 @@ def sync_user(p):
 	access = p.app_access or "No sign-in"
 	profiles = list(ACCESS_PROFILES.get(access, []))
 	if cint(p.store_keeper):
-		profiles.append("Mimaar Store Keeper")
+		profiles.append("Buildiary Store Keeper")
 	if not profiles:
 		if p.user and frappe.db.exists("User", p.user) and p.user != "Administrator":
 			frappe.db.set_value("User", p.user, "enabled", 0)
@@ -334,7 +334,7 @@ def sync_user(p):
 	if p.user and frappe.db.exists("User", p.user):
 		u = frappe.get_doc("User", p.user)
 	else:
-		email = f"{p.name.lower()}@staff.mimaar"
+		email = f"{p.name.lower()}@staff.buildiary"
 		u = frappe.get_doc("User", email) if frappe.db.exists("User", email) else frappe.new_doc("User")
 		u.email = email
 		u.send_welcome_email = 0

@@ -15,13 +15,13 @@ import time
 import frappe
 from frappe.utils import add_days, now_datetime, nowdate
 
-from mimaar.saas.common import base_domain, bench_path, conf_block, host_for, is_control, push, settings, site_dir, sites_path, update_site_config
+from buildiary.saas.common import base_domain, bench_path, conf_block, host_for, is_control, push, settings, site_dir, sites_path, update_site_config
 
-READY = ".mabni-ready"
+READY = ".buildiary-ready"
 
 
 def _db_root_password():
-	return os.environ.get("DB_ROOT_PASSWORD") or frappe.conf.get("mabni_db_root_password")
+	return os.environ.get("DB_ROOT_PASSWORD") or frappe.conf.get("buildiary_db_root_password")
 
 
 def _bench(args, timeout=1800):
@@ -36,7 +36,7 @@ class _Lock:
 	"""One pool or set-up job at a time on this bench."""
 
 	def __init__(self, name, wait=True):
-		self.path = os.path.join(sites_path(), f".mabni-{name}.lock")
+		self.path = os.path.join(sites_path(), f".buildiary-{name}.lock")
 		self.wait = wait
 
 	def __enter__(self):
@@ -66,7 +66,7 @@ def pool_sites(ready_only=True):
 
 
 def make_pool_site():
-	"""Create one blank site with ERPNext and Mimaar (a few minutes)."""
+	"""Create one blank site with ERPNext and Buildiary (a few minutes)."""
 	pw = _db_root_password()
 	if not pw:
 		frappe.log_error("Buildiary: no database root password for new workspaces (DB_ROOT_PASSWORD)")
@@ -74,7 +74,7 @@ def make_pool_site():
 	name = "pool-" + frappe.generate_hash(length=8).lower()
 	admin = frappe.generate_hash(length=24)
 	code, out = _bench(["new-site", name, "--db-root-username", "root", "--db-root-password", pw, "--admin-password", admin,
-		"--install-app", "erpnext", "--install-app", "mimaar", "--mariadb-user-host-login-scope=%"], timeout=3000)
+		"--install-app", "erpnext", "--install-app", "buildiary", "--mariadb-user-host-login-scope=%"], timeout=3000)
 	if code != 0 or not os.path.exists(os.path.join(site_dir(name), "site_config.json")):
 		frappe.log_error("Buildiary: could not prepare a workspace", out.replace(pw, "***"))
 		return None
@@ -86,9 +86,9 @@ def tick():
 	"""Every 10 minutes on the console: keep the pool full and pick up waiting sign-ups."""
 	if not is_control():
 		return
-	for t in frappe.get_all("Mabni Tenant", filters={"status": "Waiting"}, pluck="name"):
-		frappe.enqueue("mimaar.saas.provision.provision", queue="long", timeout=3600, tenant=t, job_id=f"mabni-provision-{t}", deduplicate=True)
-	frappe.enqueue("mimaar.saas.provision.fill_pool", queue="long", timeout=3600, job_id="mabni-fill-pool", deduplicate=True)
+	for t in frappe.get_all("Buildiary Tenant", filters={"status": "Waiting"}, pluck="name"):
+		frappe.enqueue("buildiary.saas.provision.provision", queue="long", timeout=3600, tenant=t, job_id=f"buildiary-provision-{t}", deduplicate=True)
+	frappe.enqueue("buildiary.saas.provision.fill_pool", queue="long", timeout=3600, job_id="buildiary-fill-pool", deduplicate=True)
 
 
 def fill_pool():
@@ -124,7 +124,7 @@ def provision(tenant):
 	"""Give a signed-up customer their workspace."""
 	if not is_control():
 		return
-	t = frappe.get_doc("Mabni Tenant", tenant)
+	t = frappe.get_doc("Buildiary Tenant", tenant)
 	if t.status not in ("Waiting", "Failed"):
 		return
 	with _Lock("provision"):
@@ -142,11 +142,11 @@ def provision(tenant):
 			_log(t, "Failed:\n" + frappe.get_traceback()[-3000:])
 			t.db_set("status", "Failed")
 			frappe.db.commit()
-			from mimaar.saas.common import notify_admins
+			from buildiary.saas.common import notify_admins
 
 			notify_admins(f"Buildiary: set-up failed for {t.company_name}", f"Workspace {host} could not be set up. Open the customer in the console and press Retry set-up.")
 			return
-	frappe.enqueue("mimaar.saas.provision.fill_pool", queue="long", timeout=3600, job_id="mabni-fill-pool", deduplicate=True)
+	frappe.enqueue("buildiary.saas.provision.fill_pool", queue="long", timeout=3600, job_id="buildiary-fill-pool", deduplicate=True)
 
 
 def _provision(t, host):
@@ -172,17 +172,17 @@ def _provision(t, host):
 	t.tenant_key = key
 	t.site_host = host
 	t.save(ignore_permissions=True)
-	update_site_config(host, "mabni_key", key)
-	payload = os.path.join(site_dir(host), "private", "mabni-setup.json")
+	update_site_config(host, "buildiary_key", key)
+	payload = os.path.join(site_dir(host), "private", "buildiary-setup.json")
 	os.makedirs(os.path.dirname(payload), exist_ok=True)
 	with open(os.open(payload, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600), "w", encoding="utf-8") as f:
 		json.dump({"company_name": t.company_name, "contact_name": t.contact_name, "email": t.email, "phone": t.phone, "country": t.country,
 			"language": t.language, "mode": t.mode, "password": t.get_password("first_password", raise_exception=False) or frappe.generate_hash(length=16)}, f)
 	_log(t, "Setting up the company and the owner's sign-in")
-	code, out = _bench(["--site", host, "execute", "mimaar.saas.tenant.setup", "--kwargs", json.dumps({"payload": payload})], timeout=1800)
+	code, out = _bench(["--site", host, "execute", "buildiary.saas.tenant.setup", "--kwargs", json.dumps({"payload": payload})], timeout=1800)
 	if os.path.exists(payload):
 		os.remove(payload)
-	if code != 0 or "MABNI SETUP OK" not in out:
+	if code != 0 or "BUILDIARY SETUP OK" not in out:
 		raise Exception("Set-up did not finish:\n" + out[-2500:])
 	t.reload()
 	t.status = "Trial"
@@ -191,10 +191,10 @@ def _provision(t, host):
 	t.save(ignore_permissions=True)
 	from frappe.utils.password import remove_encrypted_password
 
-	remove_encrypted_password("Mabni Tenant", t.name, "first_password")
-	update_site_config(host, "mabni", conf_block(t))
+	remove_encrypted_password("Buildiary Tenant", t.name, "first_password")
+	update_site_config(host, "buildiary", conf_block(t))
 	_log(t, f"Ready: https://{host}")
 	frappe.db.commit()
-	from mimaar.saas import billing
+	from buildiary.saas import billing
 
 	billing.welcome(t)

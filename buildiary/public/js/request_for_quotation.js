@@ -7,7 +7,7 @@ frappe.ui.form.on("Request for Quotation", {
 			frm.add_custom_button(__("Add suppliers of these items"), () => {
 				const items = (d.items || []).map((i) => i.item_code).filter(Boolean);
 				if (!items.length) return frappe.msgprint(__("Add the items first."));
-				frappe.call({ method: "mimaar.api.suppliers_for_items", args: { items } }).then((r) => {
+				frappe.call({ method: "buildiary.api.suppliers_for_items", args: { items } }).then((r) => {
 					const have = new Set((d.suppliers || []).map((s) => s.supplier)); let n = 0;
 					(r.message || []).forEach((s) => { if (!have.has(s)) { frm.add_child("suppliers", { supplier: s }); n++; } });
 					frm.refresh_field("suppliers");
@@ -17,9 +17,9 @@ frappe.ui.form.on("Request for Quotation", {
 			frm.dashboard.set_headline(__("Add the items and suppliers, then submit to finalise and lock it. After that it is sent to each supplier."), "blue");
 		}
 		if (d.docstatus === 1) {
-			frm.add_custom_button(__("PDF"), () => mimaar.pdf(frm), __("Send"));
+			frm.add_custom_button(__("PDF"), () => buildiary.pdf(frm), __("Send"));
 			(d.suppliers || []).forEach((s) => {
-				frm.add_custom_button(__("WhatsApp: {0}", [s.supplier_name || s.supplier]), () => mimaar.share(frm, s.supplier), __("Send"));
+				frm.add_custom_button(__("WhatsApp: {0}", [s.supplier_name || s.supplier]), () => buildiary.share(frm, s.supplier), __("Send"));
 			});
 		}
 	},

@@ -11,12 +11,12 @@ class WaterTanker(Document):
 		self.vehicle_no = (self.vehicle_no or "").strip().upper()
 
 	def on_submit(self):
-		from mimaar import water
+		from buildiary import water
 
 		water.tanker_submitted(self)
 
 	def on_cancel(self):
-		from mimaar import water
+		from buildiary import water
 
 		self.ignore_linked_doctypes = ("Petty Cash Entry", "Stock Entry", "Identity Check")
 		water.tanker_cancelled(self)

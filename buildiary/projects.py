@@ -13,7 +13,7 @@ import frappe
 from frappe import _
 from frappe.utils import add_days, cint, cstr, flt, getdate, nowdate
 
-KEY = "mabni_project"
+KEY = "buildiary_project"
 
 # documents that belong to a project (the header has a "project" field)
 TAGGED = ("Supplier Quotation", "Purchase Order", "Purchase Receipt", "Purchase Invoice", "Payment Entry", "Stock Entry",
@@ -41,9 +41,9 @@ WEIGHT = {"Design": 2, "Approval": 1, "Grey": 6, "Finishing": 9, "Handover": 3}
 
 # ---------------------------------------------------------------- which project
 def _cache():
-	if not hasattr(frappe.local, "mabni_projects"):
-		frappe.local.mabni_projects = {}
-	return frappe.local.mabni_projects
+	if not hasattr(frappe.local, "buildiary_projects"):
+		frappe.local.buildiary_projects = {}
+	return frappe.local.buildiary_projects
 
 
 def _live():
@@ -70,7 +70,7 @@ def current():
 		if mine in live:
 			pick = mine
 	if not pick:
-		d = frappe.db.get_single_value("Mimaar Settings", "default_project")
+		d = frappe.db.get_single_value("Buildiary Settings", "default_project")
 		if d in live:
 			pick = d
 	if not pick:
@@ -83,10 +83,10 @@ def current():
 def store(project=None):
 	"""The chosen project's store (warehouse)."""
 	project = project or current()
-	wh = frappe.db.get_value("Project", project, "mabni_store") if project and frappe.db.has_column("Project", "mabni_store") else None
+	wh = frappe.db.get_value("Project", project, "buildiary_store") if project and frappe.db.has_column("Project", "buildiary_store") else None
 	if wh:
 		return wh
-	s = frappe.db.get_single_value("Mimaar Settings", "site_warehouse")
+	s = frappe.db.get_single_value("Buildiary Settings", "site_warehouse")
 	if s:
 		return s
 	co = frappe.db.get_single_value("Global Defaults", "default_company")
@@ -145,7 +145,7 @@ def brief():
 def projects():
 	"""Every project with its figures, for the Projects screen."""
 	rows = brief()
-	from mimaar import build
+	from buildiary import build
 
 	for r in rows:
 		stages = build._stage_rows(r["name"])
@@ -161,7 +161,7 @@ def projects():
 
 def _plan_limit():
 	try:
-		from mimaar.saas.tenant import _limit
+		from buildiary.saas.tenant import _limit
 
 		return _limit("projects")
 	except Exception:
@@ -204,11 +204,11 @@ def _first_store_and_backfill():
 	if len(live) != 1:
 		return
 	first = live[0].name
-	wh = frappe.db.get_single_value("Mimaar Settings", "site_warehouse")
-	if wh and not frappe.db.get_value("Project", first, "mabni_store"):
-		frappe.db.set_value("Project", first, "mabni_store", wh, update_modified=False)
-	if not frappe.db.get_single_value("Mimaar Settings", "default_project"):
-		frappe.db.set_single_value("Mimaar Settings", "default_project", first)
+	wh = frappe.db.get_single_value("Buildiary Settings", "site_warehouse")
+	if wh and not frappe.db.get_value("Project", first, "buildiary_store"):
+		frappe.db.set_value("Project", first, "buildiary_store", wh, update_modified=False)
+	if not frappe.db.get_single_value("Buildiary Settings", "default_project"):
+		frappe.db.set_single_value("Buildiary Settings", "default_project", first)
 	for dt in TAGGED:
 		if frappe.db.table_exists(dt) and frappe.db.has_column(dt, "project"):
 			frappe.db.sql(f"update `tab{dt}` set project = %s where coalesce(project, '') = ''", first)
@@ -241,8 +241,8 @@ def standard_schedule(project, start=None, end=None, lang=None):
 		title = ar if lang == "ar" else en
 		t = frappe.get_doc({"doctype": "Task", "subject": f"{code} {title}", "project": project, "exp_start_date": add_days(start, int(a * k)), "exp_end_date": add_days(start, int(b * k)),
 			"status": "Open", "task_weight": WEIGHT.get(ph, 1), "description": f"{ph} · {ur}"})
-		if t.meta.has_field("mimaar_phase"):
-			t.mimaar_phase = phase_of.get(ph)
+		if t.meta.has_field("buildiary_phase"):
+			t.buildiary_phase = phase_of.get(ph)
 		t.insert(ignore_permissions=True)
 		names[code] = t.name
 	for code, *_rest in STAGES:
@@ -278,7 +278,7 @@ def new(data):
 	p = frappe.get_doc({"doctype": "Project", "project_name": title, "company": co, "status": "Open", "is_active": "Yes", "expected_start_date": start, "expected_end_date": end,
 		"percent_complete_method": "Task Weight", "notes": cstr(d.address).strip(), "estimated_costing": flt(d.budget), "cost_center": frappe.db.get_value("Company", co, "cost_center")})
 	p.insert(ignore_permissions=True)
-	p.db_set("mabni_store", _new_store(title, co))
+	p.db_set("buildiary_store", _new_store(title, co))
 	n = standard_schedule(p.name, start, end) if cint(d.get("schedule", 1)) else 0
 	frappe.defaults.set_user_default(KEY, p.name)
 	_cache().clear()

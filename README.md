@@ -1,4 +1,4 @@
-# Mimaar for ERPNext
+# Buildiary for ERPNext
 
 Construction procurement, site store, supplier accounts and site management for a
 house or building project, on top of standard ERPNext v16.
@@ -36,29 +36,21 @@ Built for the Villa 31 house project by SMH Global Services.
 ## Install
 
 ```
-bench get-app https://github.com/smazharhasan/site-office --branch erpnext-app
-bench --site <site> install-app mimaar
+bench get-app https://github.com/smazharhasan/buildiary --branch erpnext-app
+bench --site <site> install-app buildiary
 ```
 
-On Frappe Cloud: add the app from GitHub to your bench group, deploy, then install it on
-the site. See `docs/frappe-cloud.md`.
+Buildiary runs on AWS: see `deploy/aws/README.md`.
 
 ## Users
 
 Four role profiles are added (and a Site Supervisor role); pick one on each user (User → Roles → Role Profiles):
-**Mimaar Owner**, **Mimaar Site Supervisor**, **Mimaar Store Keeper**, **Mimaar Accountant**.
+**Buildiary Owner**, **Buildiary Site Supervisor**, **Buildiary Store Keeper**, **Buildiary Accountant**.
 Each user chooses English or Urdu under My Settings → Language.
-
-## Bringing data across from the old Mimaar app
-
-The project data is not kept in this public code. Open **Mimaar Settings**, click
-**Bring data from the old Mimaar app** and choose the exported file (`mimaar-data.json`):
-the item catalogue, budget, master schedule, suppliers and agreed payment plans are added.
-Safe to repeat.
 
 ## AI scanning
 
-Open **Mimaar Settings**, choose Gemini or Claude and paste your own API key there. It is
+Open **Buildiary Settings**, choose Gemini or Claude and paste your own API key there. It is
 kept encrypted on the server and never shown again in the browser.
 
 ## Licence

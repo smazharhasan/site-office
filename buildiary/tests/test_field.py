@@ -1,12 +1,12 @@
-"""The field app's server side (mimaar.field) and its page (/field): the same rules as ERPNext,
-reached through simple calls. Run with: bench --site <site> run-tests --app mimaar"""
+"""The field app's server side (buildiary.field) and its page (/field): the same rules as ERPNext,
+reached through simple calls. Run with: bench --site <site> run-tests --app buildiary"""
 
 import frappe
 from frappe.tests import IntegrationTestCase
 from frappe.utils import nowdate
 
-from mimaar import field
-from mimaar.tests.test_procurement import a_file, item, warehouse
+from buildiary import field
+from buildiary.tests.test_procurement import a_file, item, warehouse
 
 
 class TestField(IntegrationTestCase):
@@ -38,7 +38,7 @@ class TestField(IntegrationTestCase):
 			field.release([{"item_code": code, "qty": 0}], issued_to="Ustad")
 
 	def test_page(self):
-		from mimaar.www import field as page
+		from buildiary.www import field as page
 
 		ctx = frappe._dict()
 		page.get_context(ctx)

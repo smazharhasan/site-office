@@ -1,17 +1,15 @@
-"""Bring the project's set-up (first used for Villa 31) across from the old Mimaar app (Supabase) into ERPNext.
+"""Bring a project's set-up in from a project data file (first used for Villa 31; also the demo workspace).
 
 What comes across: the material catalogue (131 items), the 34 budget lines (as expense
 accounts with a project budget), the master schedule (15 milestones as project tasks with
 their links), the suppliers, and the agreed payment plans of Syed Brothers and MESCOMM as
 draft supplier quotations to review, confirm and lock.
 
-What doesn't: the test records made while trying the old app (test contract, test supplier,
+What doesn't: the test records made while trying the first app (test contract, test supplier,
 INS-001, test snags, RFQ-001/002 and PO-001).
 
 The project data is not kept in this code (the code is public, the data is not). It is a
-file exported from the old app. After the setup wizard, open Mimaar Settings, click
-"Bring data from the old Mimaar app" and choose that file. It is safe to run again:
-anything already there is left alone.
+file kept outside the code. It is safe to run again: anything already there is left alone.
 """
 
 import json
@@ -21,7 +19,7 @@ import re
 import frappe
 from frappe.utils import flt, getdate
 
-from mimaar.api import register_supplier
+from buildiary.api import register_supplier
 
 HERE = os.path.dirname(__file__)
 SERVICES = {
@@ -45,15 +43,15 @@ def log(*a):
 
 @frappe.whitelist()
 def import_file(file_url):
-	"""Called from Mimaar Settings with the file exported from the old app."""
+	"""Called from Buildiary Settings with the file exported from the old app."""
 	frappe.only_for("System Manager")
 	f = frappe.get_doc("File", {"file_url": file_url})
 	try:
 		data = json.loads(f.get_content())
 	except Exception:
-		frappe.throw(frappe._("This is not the data file from the old Mimaar app."))
+		frappe.throw(frappe._("This is not a Buildiary project data file."))
 	if not isinstance(data, dict) or any(k not in data for k in NEEDED):
-		frappe.throw(frappe._("This is not the data file from the old Mimaar app."))
+		frappe.throw(frappe._("This is not a Buildiary project data file."))
 	frappe.enqueue(run_job, queue="long", timeout=1800, data=data, user=frappe.session.user, file_name=f.name, now=frappe.flags.in_test)
 	return True
 
@@ -61,20 +59,20 @@ def import_file(file_url):
 def run_job(data, user, file_name=None):
 	try:
 		run(data=data)
-		msg = frappe._("Your data from the old Mimaar app has been brought across.") + "<br><br>" + "<br>".join(frappe.utils.escape_html(x) for x in LOG[-40:])
+		msg = frappe._("The project data has been brought in.") + "<br><br>" + "<br>".join(frappe.utils.escape_html(x) for x in LOG[-40:])
 		frappe.publish_realtime("msgprint", {"message": msg, "title": frappe._("Data brought across"), "indicator": "green"}, user=user)
 	except Exception:
 		frappe.db.rollback()
-		frappe.log_error("Mimaar: bringing data across")
+		frappe.log_error("Buildiary: bringing data across")
 		frappe.publish_realtime("msgprint", {"message": frappe._("Bringing the data across stopped with an error. Nothing half-done was kept; see Error Log."), "title": frappe._("Data not brought across"), "indicator": "red"}, user=user)
 
 
 def run(company=None, data=None):
-	frappe.flags.mimaar_migration = True
+	frappe.flags.buildiary_migration = True
 	LOG.clear()
 	try:
 		if data is None:
-			data = json.load(open(frappe.conf.get("mimaar_old_app_file") or os.path.join(HERE, "villa31.json"), encoding="utf-8"))
+			data = json.load(open(frappe.conf.get("buildiary_old_app_file") or os.path.join(HERE, "villa31.json"), encoding="utf-8"))
 		company = company or frappe.db.get_single_value("Global Defaults", "default_company") or frappe.get_all("Company", pluck="name")[0]
 		abbr = frappe.db.get_value("Company", company, "abbr")
 		fiscal_years(data["project"]["start"], data["project"]["end"], company)
@@ -89,7 +87,7 @@ def run(company=None, data=None):
 		budgets(company, project, data["budget"], accts)
 		sups = suppliers(data["suppliers"], codes)
 		plans(company, project, wh, data["payment_plan"], sups)
-		s = frappe.get_single("Mimaar Settings")
+		s = frappe.get_single("Buildiary Settings")
 		s.default_project = project
 		s.site_warehouse = wh
 		s.flags.ignore_permissions = True
@@ -97,7 +95,7 @@ def run(company=None, data=None):
 		frappe.db.commit()
 		log("Done:", data["project"].get("name") or project)
 	finally:
-		frappe.flags.mimaar_migration = False
+		frappe.flags.buildiary_migration = False
 
 
 def fiscal_years(start, end, company):
@@ -276,8 +274,8 @@ def plans(company, project, wh, plan, sups):
 		terms = "\n".join(f"{i}. {r['stage']}: Rs {flt(r['amount']):,.0f}, due about {getdate(r['due']).strftime('%d %b %Y')}" for i, r in enumerate(rows, 1))
 		advance = 100 if "advance at signing" in rows[0]["stage"].lower() and len(rows) == 1 else 0
 		sq = frappe.get_doc({"doctype": "Supplier Quotation", "supplier": supplier, "company": company, "transaction_date": frappe.utils.nowdate(), "project": project,
-			"quotation_number": f"Agreed plan: {service}", "mimaar_payment_terms": terms, "mimaar_advance_percent": advance, "mimaar_delivery_time": "As per the master schedule",
-			"terms": f"Payment plan brought across from the old Mimaar app. Review it, submit to confirm, then lock it as final to raise the purchase order.\n\n{terms}",
+			"quotation_number": f"Agreed plan: {service}", "buildiary_payment_terms": terms, "buildiary_advance_percent": advance, "buildiary_delivery_time": "As per the master schedule",
+			"terms": f"Payment plan brought in from the project data file. Review it, submit to confirm, then lock it as final to raise the purchase order.\n\n{terms}",
 			"items": [{"item_code": code, "qty": 1, "rate": total, "uom": "Nos", "warehouse": wh, "project": project}]})
 		sq.insert(ignore_permissions=True)
 		n += 1

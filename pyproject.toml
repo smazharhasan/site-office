@@ -1,9 +1,9 @@
 [project]
-name = "mimaar"
+name = "buildiary"
 authors = [
     { name = "SMH Global Services (Pvt) Ltd", email = "info@smhglobal.com.pk"}
 ]
-description = "Mimaar: construction procurement, stores, supplier accounts and site management on ERPNext"
+description = "Buildiary: construction procurement, stores, supplier accounts and site management on ERPNext"
 requires-python = ">=3.14"
 readme = "README.md"
 dynamic = ["version"]

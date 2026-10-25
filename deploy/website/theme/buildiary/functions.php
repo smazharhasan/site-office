@@ -1,11 +1,11 @@
 <?php
 /**
  * Buildiary theme: fonts and the stylesheet. Languages, header, footer and prices are in the
- * mu-plugin mabni-site.php.
+ * mu-plugin buildiary-site.php.
  */
 
 add_action('wp_enqueue_scripts', function () {
-	$lang = function_exists('mabni_lang') ? mabni_lang() : 'en';
+	$lang = function_exists('buildiary_lang') ? buildiary_lang() : 'en';
 	$families = 'family=Archivo:wdth,wght@75..110,600..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500';
 	if ($lang === 'ar') {
 		$families .= '&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700';
@@ -13,8 +13,8 @@ add_action('wp_enqueue_scripts', function () {
 	if ($lang === 'ur') {
 		$families .= '&family=Noto+Nastaliq+Urdu:wght@400;600;700';
 	}
-	wp_enqueue_style('mabni-fonts', 'https://fonts.googleapis.com/css2?' . $families . '&display=swap', [], null);
-	wp_enqueue_style('mabni', get_stylesheet_uri(), ['mabni-fonts'], wp_get_theme()->get('Version'));
+	wp_enqueue_style('buildiary-fonts', 'https://fonts.googleapis.com/css2?' . $families . '&display=swap', [], null);
+	wp_enqueue_style('buildiary', get_stylesheet_uri(), ['buildiary-fonts'], wp_get_theme()->get('Version'));
 });
 
 add_action('wp_head', function () {

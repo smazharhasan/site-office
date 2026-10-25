@@ -1,6 +1,6 @@
 """The owner's procurement rules, end to end, on a real ERPNext site:
 quotation → revision → final → PO → advance → partial receipts → invoice → payment → statement,
-plus store release and inspections. Run with: bench --site <site> run-tests --app mimaar"""
+plus store release and inspections. Run with: bench --site <site> run-tests --app buildiary"""
 
 import frappe
 from frappe.tests import IntegrationTestCase
@@ -12,8 +12,8 @@ from erpnext.buying.doctype.purchase_order.purchase_order import make_purchase_r
 from erpnext.buying.doctype.supplier_quotation.supplier_quotation import make_purchase_order
 from erpnext.stock.doctype.purchase_receipt.purchase_receipt import make_purchase_invoice
 
-from mimaar.api import register_supplier, statement_rows
-from mimaar.procurement import mark_final
+from buildiary.api import register_supplier, statement_rows
+from buildiary.procurement import mark_final
 
 
 def company():
@@ -39,10 +39,10 @@ def warehouse():
 
 class TestProcurement(IntegrationTestCase):
 	def assertRule(self, fn, *args):
-		frappe.db.savepoint("mimaar_rule")
+		frappe.db.savepoint("buildiary_rule")
 		with self.assertRaises(frappe.ValidationError) as cm:
 			fn(*args)
-		frappe.db.rollback(save_point="mimaar_rule")  # as a real request would
+		frappe.db.rollback(save_point="buildiary_rule")  # as a real request would
 		self.assertNotIsInstance(cm.exception, frappe.DocstatusTransitionError)
 		print("  refused as expected:", frappe.utils.strip_html(str(cm.exception))[:140])
 
@@ -55,14 +55,14 @@ class TestProcurement(IntegrationTestCase):
 
 	def quotation(self, rate=1450):
 		sq = frappe.get_doc({"doctype": "Supplier Quotation", "supplier": self.sup, "company": self.co, "transaction_date": nowdate(), "quotation_number": "Q-778",
-			"mimaar_payment_terms": "30% advance, balance on delivery", "mimaar_advance_percent": 30, "mimaar_delivery_time": "7 days",
+			"buildiary_payment_terms": "30% advance, balance on delivery", "buildiary_advance_percent": 30, "buildiary_delivery_time": "7 days",
 			"items": [{"item_code": self.cement, "qty": 500, "rate": rate, "uom": "Bag", "warehouse": self.wh}, {"item_code": self.sand, "qty": 1000, "rate": 95, "uom": "Cft", "warehouse": self.wh}]})
 		sq.insert(); sq.submit()
 		return sq
 
 	def revise(self, sq, rate, note="Rs 50 off cement"):
 		sq.reload(); sq.cancel()
-		new = frappe.copy_doc(sq); new.docstatus = 0; new.amended_from = sq.name; new.items[0].rate = rate; new.mimaar_revision_note = note
+		new = frappe.copy_doc(sq); new.docstatus = 0; new.amended_from = sq.name; new.items[0].rate = rate; new.buildiary_revision_note = note
 		new.insert(); new.submit()
 		return new
 
@@ -70,11 +70,11 @@ class TestProcurement(IntegrationTestCase):
 		sq = self.quotation()
 		# a revision needs a note, and gets the next revision number
 		sq.reload(); sq.cancel()
-		bad = frappe.copy_doc(sq); bad.docstatus = 0; bad.amended_from = sq.name; bad.mimaar_revision_note = ""
+		bad = frappe.copy_doc(sq); bad.docstatus = 0; bad.amended_from = sq.name; bad.buildiary_revision_note = ""
 		self.assertRule(bad.insert)
-		sq2 = frappe.copy_doc(sq); sq2.docstatus = 0; sq2.amended_from = sq.name; sq2.items[0].rate = 1400; sq2.mimaar_revision_note = "Rs 50 off cement"
+		sq2 = frappe.copy_doc(sq); sq2.docstatus = 0; sq2.amended_from = sq.name; sq2.items[0].rate = 1400; sq2.buildiary_revision_note = "Rs 50 off cement"
 		sq2.insert(); sq2.submit()
-		self.assertEqual(sq2.mimaar_revision, 1)
+		self.assertEqual(sq2.buildiary_revision, 1)
 		self.assertTrue(sq2.name.endswith("-1"))
 
 		# no purchase order before the quotation is locked as final
@@ -83,9 +83,9 @@ class TestProcurement(IntegrationTestCase):
 		self.assertRule(po.insert)
 
 		mark_final(sq2.name); sq2.reload()
-		self.assertEqual(sq2.mimaar_final, 1)
+		self.assertEqual(sq2.buildiary_final, 1)
 		self.assertRule(sq2.cancel)
-		again = frappe.copy_doc(sq2); again.docstatus = 0; again.amended_from = sq2.name; again.mimaar_revision_note = "x"
+		again = frappe.copy_doc(sq2); again.docstatus = 0; again.amended_from = sq2.name; again.buildiary_revision_note = "x"
 		self.assertRule(again.insert)
 
 		# purchase order from the final quotation, never above the quoted rate
@@ -96,14 +96,14 @@ class TestProcurement(IntegrationTestCase):
 		self.assertRule(po.insert)
 		po.items[0].rate = 1400
 		po.insert()
-		self.assertEqual(flt(po.mimaar_advance_percent), 30)
+		self.assertEqual(flt(po.buildiary_advance_percent), 30)
 		po.submit()
 		self.assertEqual(flt(po.grand_total), 500 * 1400 + 600 * 95)
 		self.assertRule(po.cancel)  # locked
-		from mimaar.procurement import update_items
+		from buildiary.procurement import update_items
 		row = po.items[0]
 		self.assertRule(update_items, "Purchase Order", frappe.as_json([{"docname": row.name, "item_code": row.item_code, "qty": row.qty, "rate": 1}]), po.name)
-		self.assertEqual(frappe.get_hooks("override_whitelisted_methods").get("erpnext.controllers.accounts_controller.update_child_qty_rate"), ["mimaar.procurement.update_items"])
+		self.assertEqual(frappe.get_hooks("override_whitelisted_methods").get("erpnext.controllers.accounts_controller.update_child_qty_rate"), ["buildiary.procurement.update_items"])
 
 		# advance: limited to 30%, needs proof
 		limit = flt(po.grand_total) * 0.3
@@ -114,13 +114,13 @@ class TestProcurement(IntegrationTestCase):
 		pe.reference_no, pe.reference_date = "TRX-1", nowdate()
 		pe.insert()
 		self.assertRule(pe.submit)  # no proof
-		pe.reload(); pe.mimaar_proof = a_file("proof.png"); pe.save(); pe.submit()
+		pe.reload(); pe.buildiary_proof = a_file("proof.png"); pe.save(); pe.submit()
 		po.reload()
 		self.assertAlmostEqual(flt(po.advance_paid), limit, 0)
 
 		# a payment not set against anything is refused
 		loose = frappe.get_doc({"doctype": "Payment Entry", "payment_type": "Pay", "party_type": "Supplier", "party": self.sup, "company": self.co, "paid_amount": 1000, "received_amount": 1000,
-			"paid_from": pe.paid_from, "paid_to": pe.paid_to, "reference_no": "X", "reference_date": nowdate(), "mimaar_proof": a_file()})
+			"paid_from": pe.paid_from, "paid_to": pe.paid_to, "reference_no": "X", "reference_date": nowdate(), "buildiary_proof": a_file()})
 		self.assertRule(loose.insert)
 
 		# receiving: only with the delivery note number, its scan and the receiver's photo; part delivery keeps the PO open
@@ -129,9 +129,9 @@ class TestProcurement(IntegrationTestCase):
 		pr.items[0].qty = pr.items[0].received_qty = 300
 		pr.insert()
 		self.assertRule(pr.submit)
-		pr.reload(); pr.supplier_delivery_note = "DN-4471"; pr.mimaar_dn_scan = a_file("dn.png"); pr.save()
+		pr.reload(); pr.supplier_delivery_note = "DN-4471"; pr.buildiary_dn_scan = a_file("dn.png"); pr.save()
 		self.assertRule(pr.submit)  # no receiver photo
-		pr.reload(); pr.mimaar_receiver_photo = a_file("face.png"); pr.save(); pr.submit()
+		pr.reload(); pr.buildiary_receiver_photo = a_file("face.png"); pr.save(); pr.submit()
 		po.reload()
 		self.assertTrue(0 < flt(po.per_received) < 100)
 		self.assertIn(po.status, ("To Receive and Bill", "To Receive"))
@@ -140,7 +140,7 @@ class TestProcurement(IntegrationTestCase):
 		cem = [r for r in pr2.items if r.item_code == self.cement][0]
 		self.assertEqual(flt(cem.qty), 200)
 		pr2.items = [cem]; cem.qty = cem.received_qty = 250
-		pr2.supplier_delivery_note = "DN-4480"; pr2.mimaar_dn_scan = a_file(); pr2.mimaar_receiver_photo = a_file()
+		pr2.supplier_delivery_note = "DN-4480"; pr2.buildiary_dn_scan = a_file(); pr2.buildiary_receiver_photo = a_file()
 		pr2.insert()
 		self.assertRule(pr2.submit)
 
@@ -149,18 +149,18 @@ class TestProcurement(IntegrationTestCase):
 		pi.bill_no, pi.bill_date = "B-123", nowdate()
 		pi.insert()
 		self.assertRule(pi.submit)  # no scan
-		pi.reload(); pi.mimaar_bill_scan = a_file("bill.png"); pi.set_advances(); pi.save(); pi.submit()
+		pi.reload(); pi.buildiary_bill_scan = a_file("bill.png"); pi.set_advances(); pi.save(); pi.submit()
 		self.assertAlmostEqual(flt(pi.grand_total), 300 * 1400, 0)
 		self.assertAlmostEqual(flt(pi.outstanding_amount), max(0, 300 * 1400 - limit), 0)
 
 		# billing more than received is refused (receipt required)
 		pi_bad = po_to_pi(po.name)
-		pi_bad.bill_no = "B-999"; pi_bad.mimaar_bill_scan = a_file()
+		pi_bad.bill_no = "B-999"; pi_bad.buildiary_bill_scan = a_file()
 		self.assertRule(lambda: (pi_bad.insert(), pi_bad.submit()))
 
 		# pay what is due
 		pay = get_payment_entry("Purchase Invoice", pi.name)
-		pay.reference_no, pay.reference_date, pay.mimaar_proof = "TRX-2", nowdate(), a_file()
+		pay.reference_no, pay.reference_date, pay.buildiary_proof = "TRX-2", nowdate(), a_file()
 		pay.insert(); pay.submit()
 		pi.reload()
 		self.assertEqual(flt(pi.outstanding_amount), 0)
@@ -172,13 +172,13 @@ class TestProcurement(IntegrationTestCase):
 
 		# store: release only what is in stock, to a named person
 		se = frappe.get_doc({"doctype": "Stock Entry", "stock_entry_type": "Material Issue", "company": self.co, "items": [{"item_code": self.cement, "qty": 400, "s_warehouse": self.wh}]})
-		se.mimaar_issued_to = "Ustad Rafiq"
+		se.buildiary_issued_to = "Ustad Rafiq"
 		se.insert()
 		self.assertRule(se.submit)
 		se2 = frappe.get_doc({"doctype": "Stock Entry", "stock_entry_type": "Material Issue", "company": self.co, "items": [{"item_code": self.cement, "qty": 100, "s_warehouse": self.wh}]})
 		se2.insert()
 		self.assertRule(se2.submit)  # nobody named
-		se3 = frappe.get_doc({"doctype": "Stock Entry", "stock_entry_type": "Material Issue", "company": self.co, "mimaar_issued_to": "Ustad Rafiq", "items": [{"item_code": self.cement, "qty": 100, "s_warehouse": self.wh}]})
+		se3 = frappe.get_doc({"doctype": "Stock Entry", "stock_entry_type": "Material Issue", "company": self.co, "buildiary_issued_to": "Ustad Rafiq", "items": [{"item_code": self.cement, "qty": 100, "s_warehouse": self.wh}]})
 		se3.insert(); se3.submit()
 
 	def test_inspection_makes_snags(self):
@@ -197,8 +197,8 @@ class TestProcurement(IntegrationTestCase):
 		self.assertTrue(snag.closed_on)
 
 	def test_attendance(self):
-		from mimaar.api import find_worker
-		from mimaar.mimaar.report.labour_attendance_summary.labour_attendance_summary import execute
+		from buildiary.api import find_worker
+		from buildiary.buildiary.report.labour_attendance_summary.labour_attendance_summary import execute
 
 		def worker(name, cnic, **kw):
 			existing = frappe.db.get_value("Site Worker", {"cnic": cnic})

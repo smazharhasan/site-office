@@ -33,9 +33,9 @@ def register_supplier(name, phone=None, contact=None, email=None, address=None, 
 			"supplier_type": "Company",
 			"country": "Pakistan",
 			"tax_id": ntn or None,
-			"mimaar_work_area": work_area,
-			"mimaar_payment_terms": payment_terms,
-			"mimaar_delivery_time": delivery_time,
+			"buildiary_work_area": work_area,
+			"buildiary_payment_terms": payment_terms,
+			"buildiary_delivery_time": delivery_time,
 		}
 	).insert()
 	if phone or email or contact:
@@ -81,7 +81,7 @@ def _phone(supplier):
 		c = frappe.db.get_value("Supplier", supplier, "supplier_primary_contact")
 		ph = frappe.db.get_value("Contact", c, "mobile_no") if c else ""
 	d = re.sub(r"\D", "", ph or "")
-	cc = frappe.db.get_single_value("Mimaar Settings", "country_code") or "92"
+	cc = frappe.db.get_single_value("Buildiary Settings", "country_code") or "92"
 	if d.startswith("0"):
 		d = cc + d[1:]
 	return d if len(d) >= 11 else ""
@@ -96,7 +96,7 @@ def share_link(doctype, name, supplier=None, print_format=None):
 	doc.check_permission("print")
 	if doc.docstatus != 1:
 		frappe.throw(_("Only a submitted (locked) document can be sent."))
-	days = cint(frappe.db.get_single_value("Mimaar Settings", "share_link_days")) or 30
+	days = cint(frappe.db.get_single_value("Buildiary Settings", "share_link_days")) or 30
 	key = doc.get_document_share_key(expires_on=add_days(nowdate(), days))
 	q = {"doctype": doctype, "name": name, "key": key}
 	if print_format:
@@ -171,7 +171,7 @@ def supplier_statement(supplier, from_date=None, to_date=None):
 def supplier_statement_pdf(supplier, from_date=None, to_date=None, share=0):
 	"""The statement as a PDF file; with share=1 also a link and WhatsApp message for the supplier."""
 	data = supplier_statement(supplier, from_date, to_date)
-	html = frappe.render_template("templates/mimaar_supplier_statement.html", {"d": data, "company": data["company"], "today": nowdate(), "frappe": frappe})
+	html = frappe.render_template("templates/buildiary_supplier_statement.html", {"d": data, "company": data["company"], "today": nowdate(), "frappe": frappe})
 	from frappe.utils.pdf import get_pdf
 
 	pdf = get_pdf(html)
@@ -212,7 +212,7 @@ def procurement_trace(query):
 			continue
 		d.lines = frappe.db.sql("select item_code, item_name, qty, received_qty, uom, supplier_quotation from `tabPurchase Order Item` where parent=%s order by idx", po, as_dict=True)
 		d.quotations = sorted({i.supplier_quotation for i in d.lines if i.supplier_quotation})
-		d.receipts = frappe.db.sql("select distinct p.name, p.posting_date, p.supplier_delivery_note, p.mimaar_received_by from `tabPurchase Receipt` p join `tabPurchase Receipt Item` i on i.parent=p.name where i.purchase_order=%s and p.docstatus=1 order by p.posting_date", po, as_dict=True)
+		d.receipts = frappe.db.sql("select distinct p.name, p.posting_date, p.supplier_delivery_note, p.buildiary_received_by from `tabPurchase Receipt` p join `tabPurchase Receipt Item` i on i.parent=p.name where i.purchase_order=%s and p.docstatus=1 order by p.posting_date", po, as_dict=True)
 		d.invoices = frappe.db.sql("select distinct p.name, p.posting_date, p.bill_no, p.grand_total, p.outstanding_amount, p.status from `tabPurchase Invoice` p join `tabPurchase Invoice Item` i on i.parent=p.name where i.purchase_order=%s and p.docstatus=1 order by p.posting_date", po, as_dict=True)
 		inv = [i.name for i in d.invoices] or ["-"]
 		d.payments = frappe.db.sql("select distinct p.name, p.posting_date, p.reference_no, r.allocated_amount, r.reference_doctype from `tabPayment Entry` p join `tabPayment Entry Reference` r on r.parent=p.name where p.docstatus=1 and ((r.reference_doctype='Purchase Order' and r.reference_name=%s) or (r.reference_doctype='Purchase Invoice' and r.reference_name in %s)) order by p.posting_date", (po, tuple(inv)), as_dict=True)
@@ -242,7 +242,7 @@ def suppliers_for_items(items):
 def find_worker(code):
 	"""A scanned site card, or a typed worker number, CNIC or society entry card number → the worker."""
 	frappe.has_permission("Site Worker", "read", throw=True)
-	from mimaar.identity import person_from_code
+	from buildiary.identity import person_from_code
 
 	name, scanned = person_from_code(code)
 	if not name:

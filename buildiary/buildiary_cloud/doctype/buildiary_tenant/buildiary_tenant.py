@@ -3,10 +3,10 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import add_days, getdate, nowdate
 
-from mimaar.saas.common import NAME_RE, base_domain, country_info, host_for, push, tenant_state
+from buildiary.saas.common import NAME_RE, base_domain, country_info, host_for, push, tenant_state
 
 
-class MabniTenant(Document):
+class BuildiaryTenant(Document):
 	def validate(self):
 		self.subdomain = (self.subdomain or "").strip().lower()
 		if self.is_new() and not NAME_RE.match(self.subdomain):
@@ -39,12 +39,12 @@ class MabniTenant(Document):
 		if self.status != "Failed":
 			frappe.throw(_("Only a failed set-up can be tried again."))
 		self.db_set("status", "Waiting")
-		frappe.enqueue("mimaar.saas.provision.provision", queue="long", timeout=3600, tenant=self.name, job_id=f"mabni-provision-{self.name}", deduplicate=True)
+		frappe.enqueue("buildiary.saas.provision.provision", queue="long", timeout=3600, tenant=self.name, job_id=f"buildiary-provision-{self.name}", deduplicate=True)
 		return "queued"
 
 	@frappe.whitelist()
 	def check_now(self):
-		from mimaar.saas.billing import check_tenant
+		from buildiary.saas.billing import check_tenant
 
 		check_tenant(self, reminders=False)
 		return self.status

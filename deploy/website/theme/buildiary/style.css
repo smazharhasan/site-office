@@ -8,7 +8,7 @@ Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
 License: GNU General Public License v2 or later
-Text Domain: mabni
+Text Domain: buildiary
 */
 
 /* Layout: a sticky white header, blueprint-blue hero with a faint drawing grid, alternating
@@ -268,3 +268,5 @@ body:is(.lang-ar, .lang-ur) .mb-more a::after { content: " ←"; }
 .mb-narrow .mb-lede { max-width: 780px; }
 .mb-narrow h1 { font-size: clamp(1.9rem, 4vw, 2.7rem); }
 .mb-foot-in > div > a { font-size: .95rem; }
+.mb-brand .bd-d { font-style: normal; color: #E9A21B; }
+.mb-foot .mb-brand .bd-d, .mb-hero .bd-d { color: var(--mb-amber); }

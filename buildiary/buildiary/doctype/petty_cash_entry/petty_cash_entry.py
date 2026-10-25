@@ -12,7 +12,7 @@ class PettyCashEntry(Document):
 			if self.category and not self.expense_account:
 				self.expense_account = frappe.db.get_value("Petty Cash Category", self.category, "expense_account")
 		prev = self.get_doc_before_save()
-		if prev and self.docstatus == 0 and prev.status in ("Approved", "Rejected") and not self.flags.mimaar_deciding:
+		if prev and self.docstatus == 0 and prev.status in ("Approved", "Rejected") and not self.flags.buildiary_deciding:
 			frappe.throw(_("This entry has been checked by the owner and can't be changed."))
 
 	def before_submit(self):
@@ -22,11 +22,11 @@ class PettyCashEntry(Document):
 			self.checked_at = now_datetime()
 
 	def on_submit(self):
-		from mimaar import petty
+		from buildiary import petty
 
 		self.db_set("journal_entry", petty.post(self))
 
 	def on_cancel(self):
-		from mimaar import petty
+		from buildiary import petty
 
 		petty.unpost(self)

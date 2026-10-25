@@ -51,7 +51,7 @@ AI document reading,AI سے دستاویز پڑھنا
 AI error,AI کی خرابی
 AI not set up,AI سیٹ اپ نہیں
 AI provider,AI فراہم کنندہ
-AI reading is off. Choose Gemini or Claude and paste the API key in Mimaar Settings.,AI سے پڑھنا بند ہے۔ معمار سیٹنگز میں Gemini یا Claude منتخب کریں اور API کی پیسٹ کریں۔
+AI reading is off. Choose Gemini or Claude and paste the API key in Buildiary Settings.,AI سے پڑھنا بند ہے۔ بلڈیاری سیٹنگز میں Gemini یا Claude منتخب کریں اور API کی پیسٹ کریں۔
 AP Summary,واجب الادا خلاصہ
 API Access,API رسائی
 API Key,API کی
@@ -1952,8 +1952,8 @@ Method,طریقہ
 Mid Center,درمیان وسط
 Middle Name,درمیانی نام
 Milestone,مرحلہ
-Mimaar,معمار
-Mimaar Settings,معمار سیٹنگز
+Buildiary,بلڈیاری
+Buildiary Settings,بلڈیاری سیٹنگز
 Min Order Qty,کم سے کم آرڈر مقدار
 Minimize,چھوٹا کریں
 Minimum,کم سے کم
@@ -2380,7 +2380,7 @@ Password cannot be filtered,پاس ورڈ سے فلٹر نہیں ہو سکتا
 Password changed,پاس ورڈ تبدیل ہو گیا
 Password missing in Email Account,ای میل اکاؤنٹ میں پاس ورڈ نہیں
 Paste,پیسٹ کریں
-Paste the API key in Mimaar Settings.,معمار سیٹنگز میں API کی پیسٹ کریں۔
+Paste the API key in Buildiary Settings.,بلڈیاری سیٹنگز میں API کی پیسٹ کریں۔
 Path,راستہ
 Pay,ادا کریں
 Pay only what is due,صرف واجب رقم ادا کریں
@@ -3528,7 +3528,7 @@ Text color,متن کا رنگ
 Text direction,متن کی سمت
 Text style,متن کا انداز
 The AI couldn't read this document. Try a clearer photo.,AI یہ دستاویز نہیں پڑھ سکا۔ زیادہ صاف تصویر لیں۔
-The AI service refused the request ({0}). Check the API key and model in Mimaar Settings.,AI سروس نے درخواست رد کر دی ({0})۔ معمار سیٹنگز میں API کی اور ماڈل چیک کریں۔
+The AI service refused the request ({0}). Check the API key and model in Buildiary Settings.,AI سروس نے درخواست رد کر دی ({0})۔ بلڈیاری سیٹنگز میں API کی اور ماڈل چیک کریں۔
 The CSV format is case sensitive,CSV فارمیٹ میں بڑے چھوٹے حروف کا فرق ہے
 The card was saved in another column,کارڈ دوسرے کالم میں محفوظ ہوا
 The diary date can't be in the future.,ڈائری کی تاریخ مستقبل کی نہیں ہو سکتی۔
@@ -4255,7 +4255,6 @@ Attendance,حاضری
 Attendance for {0} is already marked in {1}. Open that one and add the workers there.,{0} کی حاضری {1} میں پہلے سے لگی ہوئی ہے۔ وہی کھولیں اور کارکن اسی میں شامل کریں۔
 Attendance needs the team photo and the phone's location,حاضری کے لیے ٹیم کی تصویر اور فون کی لوکیشن ضروری ہے
 Blocked,روکا گیا
-Bring data from the old Mimaar app,پرانی معمار ایپ سے ڈیٹا لائیں
 Bringing the data across stopped with an error. Nothing half-done was kept; see Error Log.,ڈیٹا منتقل کرتے ہوئے خرابی آ گئی۔ ادھورا کچھ محفوظ نہیں ہوا؛ Error Log دیکھیں۔
 Bringing the data across. This takes a minute or two; a message appears here when it is done.,ڈیٹا منتقل ہو رہا ہے۔ ایک دو منٹ لگیں گے؛ مکمل ہونے پر یہاں پیغام آئے گا۔
 Builder staff,بلڈر کا عملہ
@@ -4267,7 +4266,6 @@ CNIC front,شناختی کارڈ (سامنے)
 Card not recognised: {0},کارڈ پہچانا نہیں گیا: {0}
 Card scanned,کارڈ اسکین ہوا
 Carpenter,بڑھئی
-"Choose the data file exported from the old Mimaar app (mimaar-data.json). Items, budget, schedule, suppliers and payment plans are added; anything already here is left alone, so it is safe to do again.",پرانی معمار ایپ سے نکالی گئی ڈیٹا فائل (mimaar-data.json) منتخب کریں۔ آئٹم، بجٹ، شیڈول، سپلائر اور ادائیگی کے پلان شامل ہوں گے؛ جو پہلے سے موجود ہے وہ نہیں بدلے گا، اس لیے دوبارہ کرنا محفوظ ہے۔
 Claude,Claude
 Consultant,کنسلٹنٹ
 Contractor,ٹھیکیدار
@@ -4297,10 +4295,10 @@ Location needed,لوکیشن ضروری ہے
 Location updated,لوکیشن اپ ڈیٹ ہو گئی
 Marked by,حاضری لگانے والا
 Mason,مستری (راج)
-Mimaar Accountant,معمار اکاؤنٹنٹ
-Mimaar Owner,معمار مالک
-Mimaar Site Supervisor,معمار سائٹ سپروائزر
-Mimaar Store Keeper,معمار اسٹور کیپر
+Buildiary Accountant,بلڈیاری اکاؤنٹنٹ
+Buildiary Owner,بلڈیاری مالک
+Buildiary Site Supervisor,بلڈیاری سائٹ سپروائزر
+Buildiary Store Keeper,بلڈیاری اسٹور کیپر
 Mistri,مستری
 Not done,نہیں ہوئی
 Painter,رنگ ساز
@@ -4331,7 +4329,6 @@ Team photo,ٹیم کی تصویر
 Team photo needed,ٹیم کی تصویر ضروری ہے
 "The phone's location is needed. Allow location for this site in the browser or app, then press Update location.","فون کی لوکیشن ضروری ہے۔ براؤزر یا ایپ میں اس سائٹ کو لوکیشن کی اجازت دیں، پھر ""لوکیشن اپ ڈیٹ کریں"" دبائیں۔"
 This CNIC is already registered for {0} ({1}).,یہ شناختی کارڈ پہلے سے {0} ({1}) کے نام درج ہے۔
-This is not the data file from the old Mimaar app.,یہ پرانی معمار ایپ کی ڈیٹا فائل نہیں ہے۔
 This phone or browser can't give the location.,یہ فون یا براؤزر لوکیشن نہیں دے سکتا۔
 Tile and marble,ٹائل اور ماربل
 Time in,آنے کا وقت
@@ -4344,7 +4341,6 @@ Welder,ویلڈر
 Worker,کارکن
 Workers,کارکن
 Workers and site cards,کارکن اور سائٹ کارڈ
-Your data from the old Mimaar app has been brought across.,پرانی معمار ایپ سے آپ کا ڈیٹا منتقل ہو گیا ہے۔
 {0} expired on {1},{0} کی میعاد {1} کو ختم ہو گئی
 {0} is already marked.,{0} کی حاضری پہلے ہی لگ چکی ہے۔
 {0} is {1} in the worker register: not allowed on site.,کارکنوں کے رجسٹر میں {0} کی حیثیت {1} ہے: سائٹ پر آنے کی اجازت نہیں۔
@@ -4357,7 +4353,7 @@ Site card,سائٹ کارڈ
 3. Who received it,3۔ کس نے وصول کیا
 "A locked purchase order can't be changed or cancelled. Check the quantities, rates and terms first.",لاک کیا گیا پرچیز آرڈر بدلا یا منسوخ نہیں ہو سکتا۔ پہلے مقدار، ریٹ اور شرائط چیک کر لیں۔
 AI filled {0} lines. Check them against what you see.,AI نے {0} لائنیں بھر دیں۔ جو سامان سامنے ہے اس سے ملا کر چیک کریں۔
-AI reading is off. The owner can turn it on in Mimaar Settings.,AI سے پڑھنا بند ہے۔ مالک اسے Mimaar Settings میں چالو کر سکتا ہے۔
+AI reading is off. The owner can turn it on in Buildiary Settings.,AI سے پڑھنا بند ہے۔ مالک اسے Buildiary Settings میں چالو کر سکتا ہے۔
 Add a check,چیک شامل کریں
 Add a problem,مسئلہ شامل کریں
 Add at least one item and its quantity.,کم از کم ایک آئٹم اور اس کی مقدار شامل کریں۔
@@ -4407,7 +4403,7 @@ Deliveries expected,متوقع ڈیلیوری
 Delivery note no.,چالان نمبر
 Diary,ڈائری
 Diary saved,ڈائری محفوظ ہو گئی
-Double-click 'Connect a phone' in the Mimaar ERP folder on this laptop. It shows the address and QR code for the phone.,اس لیپ ٹاپ پر Mimaar ERP فولڈر میں 'Connect a phone' پر ڈبل کلک کریں۔ یہ فون کے لیے پتا اور QR کوڈ دکھائے گا۔
+Double-click 'Connect a phone' in the Buildiary folder on this laptop. It shows the address and QR code for the phone.,اس لیپ ٹاپ پر Buildiary فولڈر میں 'Connect a phone' پر ڈبل کلک کریں۔ یہ فون کے لیے پتا اور QR کوڈ دکھائے گا۔
 Draft saved,ڈرافٹ محفوظ ہو گیا
 Due now,ابھی واجب
 Dust storm,آندھی
@@ -4431,7 +4427,7 @@ Item from the store,اسٹور سے آئٹم
 Items in store,اسٹور میں آئٹم
 Late,تاخیر
 Levels and lines are correct,لیول اور لائنیں درست ہیں
-"Location not available: allow location for Mimaar, then try again.",لوکیشن دستیاب نہیں: Mimaar کو لوکیشن کی اجازت دیں، پھر دوبارہ کوشش کریں۔
+"Location not available: allow location for Buildiary, then try again.",لوکیشن دستیاب نہیں: Buildiary کو لوکیشن کی اجازت دیں، پھر دوبارہ کوشش کریں۔
 Location not taken yet,ابھی لوکیشن نہیں لی گئی
 Lock,لاک کریں
 Lock purchase order,پرچیز آرڈر لاک کریں
@@ -4458,7 +4454,7 @@ New: {0},نیا: {0}
 No advances waiting,کوئی ایڈوانس باقی نہیں
 No bills to record,درج کرنے کو کوئی بل نہیں
 No budget yet,ابھی کوئی بجٹ نہیں
-No connection to Mimaar. Check the internet (or Wi-Fi) and try again.,Mimaar سے رابطہ نہیں ہو سکا۔ انٹرنیٹ (یا وائی فائی) چیک کریں اور دوبارہ کوشش کریں۔
+No connection to Buildiary. Check the internet (or Wi-Fi) and try again.,Buildiary سے رابطہ نہیں ہو سکا۔ انٹرنیٹ (یا وائی فائی) چیک کریں اور دوبارہ کوشش کریں۔
 No entries yet,ابھی کوئی اندراج نہیں
 No inspections yet,ابھی کوئی معائنہ نہیں
 No movements yet,ابھی کوئی آمد و رفت نہیں
@@ -4481,7 +4477,7 @@ Nothing to receive,وصول کرنے کو کچھ نہیں
 On schedule,شیڈول کے مطابق
 On site today,آج سائٹ پر
 On the paper: {0},کاغذ پر: {0}
-"On the phone, open the Mimaar ERP app, tap 'Scan the QR on the laptop' and point it here. The phone and this laptop must be on the same Wi-Fi.",فون پر Mimaar ERP ایپ کھولیں، 'لیپ ٹاپ کا QR اسکین کریں' دبائیں اور کیمرہ یہاں کریں۔ فون اور یہ لیپ ٹاپ ایک ہی وائی فائی پر ہوں۔
+"On the phone, open the Buildiary app, tap 'Scan the QR on the laptop' and point it here. The phone and this laptop must be on the same Wi-Fi.",فون پر Buildiary ایپ کھولیں، 'لیپ ٹاپ کا QR اسکین کریں' دبائیں اور کیمرہ یہاں کریں۔ فون اور یہ لیپ ٹاپ ایک ہی وائی فائی پر ہوں۔
 Open PDF,PDF کھولیں
 Open purchase order {0},پرچیز آرڈر {0} کھولیں
 Open snags,کھلی خرابیاں
@@ -4664,7 +4660,7 @@ Change site address,سائٹ کا پتہ بدلیں
 The app will ask for the site address again.,ایپ دوبارہ سائٹ کا پتہ پوچھے گی۔
 A new card makes the old site card stop working for signing in and for card scans. Print and hand over the new card.,نیا کارڈ بنانے سے پرانا سائٹ کارڈ سائن اِن اور اسکین کے لیے کام کرنا بند کر دے گا۔ نیا کارڈ پرنٹ کر کے حوالے کریں۔
 Access saved,رسائی محفوظ ہو گئی
-Access to Mimaar,معمار تک رسائی
+Access to Buildiary,بلڈیاری تک رسائی
 Accountant,اکاؤنٹنٹ
 Add by name (no card),نام سے شامل کریں (کارڈ کے بغیر)
 Add item being returned,واپس آنے والا آئٹم شامل کریں
@@ -4755,7 +4751,7 @@ Scan your site card,اپنا سائٹ کارڈ اسکین کریں
 "Search name, phone, CNIC or card",نام، فون، شناختی کارڈ یا کارڈ نمبر تلاش کریں
 Set PIN,PIN لگائیں
 Show all,سب دکھائیں
-Sign in to Mimaar,معمار میں سائن اِن
+Sign in to Buildiary,بلڈیاری میں سائن اِن
 Sign in with site card,سائٹ کارڈ سے سائن اِن
 Signs in as,کس حیثیت سے سائن اِن
 Site green,سائٹ سبز
@@ -4769,13 +4765,13 @@ Take face photo,چہرے کی تصویر لیں
 Take the photo again,دوبارہ تصویر لیں
 Taken now,ابھی لی گئی
 Text size,لکھائی کا سائز
-"The camera can't be opened here. Allow the camera for this site, or use the Mimaar app.",یہاں کیمرہ نہیں کھل سکا۔ اس سائٹ کو کیمرے کی اجازت دیں، یا معمار ایپ استعمال کریں۔
+"The camera can't be opened here. Allow the camera for this site, or use the Buildiary app.",یہاں کیمرہ نہیں کھل سکا۔ اس سائٹ کو کیمرے کی اجازت دیں، یا بلڈیاری ایپ استعمال کریں۔
 The face does not match.,چہرہ نہیں ملا۔
 The owner sets your first PIN.,آپ کا پہلا PIN مالک لگائے گا۔
-"This browser can't read QR codes. Use the Mimaar app on the phone, or Chrome.",یہ براؤزر QR کوڈ نہیں پڑھ سکتا۔ فون پر معمار ایپ یا کروم استعمال کریں۔
+"This browser can't read QR codes. Use the Buildiary app on the phone, or Chrome.",یہ براؤزر QR کوڈ نہیں پڑھ سکتا۔ فون پر بلڈیاری ایپ یا کروم استعمال کریں۔
 This card and PIN were not accepted.,یہ کارڈ اور PIN قبول نہیں ہوئے۔
 This card is not recognised. Is the person registered?,یہ کارڈ پہچانا نہیں گیا۔ کیا یہ شخص رجسٹرڈ ہے؟
-This is not a Mimaar site card.,یہ معمار کا سائٹ کارڈ نہیں ہے۔
+This is not a Buildiary site card.,یہ بلڈیاری کا سائٹ کارڈ نہیں ہے۔
 Time in marked for {0} at {1},{0} کی آمد {1} بجے درج ہو گئی
 Time out,روانگی
 Time out marked for {0} at {1},{0} کی روانگی {1} بجے درج ہو گئی
@@ -4805,9 +4801,9 @@ Store issue,اسٹور سے اجرا
 Store return,اسٹور میں واپسی
 Receiving goods,سامان کی وصولی
 Petty cash,پیٹی کیش
-Face check is off in Mimaar Settings.,Mimaar Settings میں چہرے کی جانچ بند ہے۔
+Face check is off in Buildiary Settings.,Buildiary Settings میں چہرے کی جانچ بند ہے۔
 Face did not match: {0} ({1}),چہرہ نہیں ملا: {0} ({1})
-Give this person access to Mimaar first (Signs in as).,پہلے اس شخص کو معمار کی رسائی دیں (کس حیثیت سے سائن اِن)۔
+Give this person access to Buildiary first (Signs in as).,پہلے اس شخص کو بلڈیاری کی رسائی دیں (کس حیثیت سے سائن اِن)۔
 No photo taken.,کوئی تصویر نہیں لی گئی۔
 No registered photo for this person.,اس شخص کی کوئی رجسٹرڈ تصویر نہیں۔
 Not allowed,اجازت نہیں
@@ -5085,7 +5081,7 @@ Tanker with number plate,نمبر پلیٹ کے ساتھ ٹینکر
 Tankers today,آج کے ٹینکر
 Tanks,ٹینکیاں
 Termite,دیمک
-The AI check runs after saving when an AI key is set in Mimaar Settings.,جب معمار سیٹنگز میں AI کی کلید لگی ہو تو محفوظ کرنے کے بعد AI جانچ ہوتی ہے۔
+The AI check runs after saving when an AI key is set in Buildiary Settings.,جب بلڈیاری سیٹنگز میں AI کی کلید لگی ہو تو محفوظ کرنے کے بعد AI جانچ ہوتی ہے۔
 The AI is checking the photos…,AI تصویریں جانچ رہا ہے…
 The AI is checking the photo…,AI تصویر جانچ رہا ہے…
 The AI is looking at the photo…,AI تصویر دیکھ رہا ہے…
@@ -5093,7 +5089,7 @@ The face check is for someone else.,چہرے کی جانچ کسی اور کی ہ
 The level is a percentage from 0 (empty) to 100 (full).,سطح 0 (خالی) سے 100 (بھری) تک فیصد میں ہے۔
 The owner records cash handed to a supervisor with Give cash.,"مالک سپروائزر کو دیا گیا نقد ""نقد دیں"" سے درج کرتا ہے۔"
 The owner sets this tank's size under Tanks.,"اس ٹینکی کا سائز مالک ""ٹینکیاں"" میں طے کرتا ہے۔"
-The petty cash account isn't set up. Open Mimaar Settings and choose it.,پیٹی کیش کا کھاتہ نہیں بنا۔ معمار سیٹنگز کھول کر اسے چنیں۔
+The petty cash account isn't set up. Open Buildiary Settings and choose it.,پیٹی کیش کا کھاتہ نہیں بنا۔ بلڈیاری سیٹنگز کھول کر اسے چنیں۔
 The tanks hold about {0} gallons more than the tankers recorded. Was a tanker not entered?,ٹینکیوں میں درج ٹینکروں سے تقریباً {0} گیلن زیادہ پانی ہے۔ کیا کوئی ٹینکر درج ہونے سے رہ گیا؟
 There is no budget for {0} yet.,{0} کا ابھی کوئی بجٹ نہیں۔
 There is no budget for {0} yet. Ask the owner to add it before spending.,{0} کا ابھی کوئی بجٹ نہیں۔ خرچ کرنے سے پہلے مالک سے بجٹ شامل کروائیں۔
@@ -5171,7 +5167,7 @@ All stages,تمام مراحل
 Approvals,منظوریاں
 Are we on schedule? What's behind?,کیا ہم شیڈول پر ہیں؟ کیا پیچھے ہے؟
 Ask the project,پروجیکٹ سے پوچھیں
-Ask the project needs the AI. The owner adds the Gemini key in Mimaar Settings.,"""پروجیکٹ سے پوچھیں"" کے لیے AI ضروری ہے۔ مالک معمار سیٹنگز میں Gemini کی کلید لگاتا ہے۔"
+Ask the project needs the AI. The owner adds the Gemini key in Buildiary Settings.,"""پروجیکٹ سے پوچھیں"" کے لیے AI ضروری ہے۔ مالک بلڈیاری سیٹنگز میں Gemini کی کلید لگاتا ہے۔"
 Behind plan,منصوبے سے پیچھے
 "Behind plan: {0} ({1}% built, {2}% planned)",منصوبے سے پیچھے: {0} ({1}% بنا، {2}% منصوبہ)
 Booked in the accounts,کھاتوں میں درج
@@ -5306,7 +5302,7 @@ of {0} ordered,{0} کے آرڈر میں سے
 Build progress,تعمیر کی پیش رفت
 Owner's supervisor,مالک کا سپروائزر
 Partner (builder or consultant),پارٹنر (بلڈر یا کنسلٹنٹ)
-"On the phone, install and open the Mimaar ERP app, tap 'Scan the QR on the laptop' and point it at this code, or type the address above.","فون پر معمار ERP ایپ انسٹال کر کے کھولیں، ""لیپ ٹاپ کا QR اسکین کریں"" پر ٹیپ کریں اور اس کوڈ کی طرف کریں، یا اوپر والا پتہ لکھ دیں۔"
+"On the phone, install and open the Buildiary app, tap 'Scan the QR on the laptop' and point it at this code, or type the address above.","فون پر بلڈیاری ERP ایپ انسٹال کر کے کھولیں، ""لیپ ٹاپ کا QR اسکین کریں"" پر ٹیپ کریں اور اس کوڈ کی طرف کریں، یا اوپر والا پتہ لکھ دیں۔"
 Choose from the phone (screenshot or PDF),فون سے چنیں (اسکرین شاٹ یا PDF)
 Ask the project needs the AI. The owner adds the Gemini key in Settings.,"""پروجیکٹ سے پوچھیں"" کے لیے AI ضروری ہے۔ مالک سیٹنگز میں Gemini کی کلید لگاتا ہے۔"
 Double-click 'Connect a phone' in the Buildiary folder on this laptop. It shows the address and QR code for the phone.,اس لیپ ٹاپ پر بلڈیاری فولڈر میں 'Connect a phone' پر ڈبل کلک کریں۔ یہ فون کے لیے پتا اور QR کوڈ دکھائے گا۔
@@ -5392,3 +5388,5 @@ Add the usual stages of building,تعمیر کے عام مراحل شامل کر
 {0} stages added,{0} مراحل شامل ہو گئے
 This project already has stages.,اس پروجیکٹ میں مراحل پہلے سے موجود ہیں۔
 A product of,تیار کردہ
+This is not a Buildiary project data file.,یہ بلڈیاری پروجیکٹ کی ڈیٹا فائل نہیں ہے۔
+The project data has been brought in.,پروجیکٹ کا ڈیٹا آ گیا ہے۔

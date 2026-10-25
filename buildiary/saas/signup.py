@@ -9,7 +9,7 @@ from frappe import _
 from frappe.rate_limiter import rate_limit
 from frappe.utils import add_to_date, cint, get_datetime, now_datetime, validate_email_address
 
-from mimaar.saas.common import NAME_RE, host_for, is_control, notify_admins, settings, site_dir
+from buildiary.saas.common import NAME_RE, host_for, is_control, notify_admins, settings, site_dir
 
 
 def _need_control():
@@ -29,7 +29,7 @@ def _name_problem(sub):
 		return _("Use 3 to 30 letters, numbers or dashes, starting with a letter.")
 	if sub in _reserved() or sub.startswith("pool-") or "--" in sub:
 		return _("This name is reserved. Try another.")
-	if frappe.db.exists("Mabni Tenant", sub) or os.path.isdir(site_dir(host_for(sub))):
+	if frappe.db.exists("Buildiary Tenant", sub) or os.path.isdir(site_dir(host_for(sub))):
 		return _("This name is taken. Try another.")
 	return None
 
@@ -97,13 +97,13 @@ def start(data=None):
 	if not frappe.db.exists("Country", d.country):
 		frappe.throw(_("Choose your country."))
 	mode = "Builder" if d.mode == "Builder" else "Owner"
-	have = frappe.db.get_value("Mabni Tenant", {"email": email, "status": ["not in", ["Failed", "Cancelled", "Verifying email"]]}, ["name", "site_host"], as_dict=True)
+	have = frappe.db.get_value("Buildiary Tenant", {"email": email, "status": ["not in", ["Failed", "Cancelled", "Verifying email"]]}, ["name", "site_host"], as_dict=True)
 	if have:
 		frappe.throw(_("This email already has a workspace at {0}. Sign in there, or contact us for another one.").format(have.site_host or have.name))
-	plan = frappe.db.get_value("Mabni Plan", {"mode": mode, "is_active": 1}, "name", order_by="sort_order asc")
+	plan = frappe.db.get_value("Buildiary Plan", {"mode": mode, "is_active": 1}, "name", order_by="sort_order asc")
 	verify = bool(s.require_email_verification)
 	t = frappe.get_doc({
-		"doctype": "Mabni Tenant", "subdomain": sub, "company_name": d.company_name.strip()[:120], "contact_name": d.contact_name.strip()[:120], "email": email,
+		"doctype": "Buildiary Tenant", "subdomain": sub, "company_name": d.company_name.strip()[:120], "contact_name": d.contact_name.strip()[:120], "email": email,
 		"phone": (d.phone or "").strip()[:40], "country": d.country, "city": (d.city or "").strip()[:80], "language": d.language if d.language in ("en", "ur", "ar") else "en",
 		"mode": mode, "plan": plan, "billing_period": "Monthly", "status": "Verifying email" if verify else "Waiting", "signed_up_on": now_datetime(),
 		"signup_ip": (frappe.local.request_ip or "")[:60], "signup_token": frappe.generate_hash(length=32), "first_password": d.password,
@@ -120,14 +120,14 @@ def _queue(t):
 	t.db_set("email_verified", 1 if t.status == "Verifying email" else t.email_verified)
 	t.db_set("status", "Waiting")
 	frappe.db.commit()
-	frappe.enqueue("mimaar.saas.provision.provision", queue="long", timeout=3600, tenant=t.name, job_id=f"mabni-provision-{t.name}", deduplicate=True, enqueue_after_commit=False)
+	frappe.enqueue("buildiary.saas.provision.provision", queue="long", timeout=3600, tenant=t.name, job_id=f"buildiary-provision-{t.name}", deduplicate=True, enqueue_after_commit=False)
 
 
 def _by_token(token):
-	name = frappe.db.get_value("Mabni Tenant", {"signup_token": token}, "name") if token else None
+	name = frappe.db.get_value("Buildiary Tenant", {"signup_token": token}, "name") if token else None
 	if not name:
 		frappe.throw(_("This sign-up has expired. Please start again."), frappe.DoesNotExistError)
-	return frappe.get_doc("Mabni Tenant", name)
+	return frappe.get_doc("Buildiary Tenant", name)
 
 
 @frappe.whitelist(allow_guest=True, methods=["POST"])

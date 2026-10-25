@@ -1,9 +1,9 @@
-"""The Mimaar field app (/field): everything a supervisor, store keeper or the owner
+"""The Buildiary field app (/field): everything a supervisor, store keeper or the owner
 does on site, on a phone, in English or Urdu.
 
 The app is only a simpler face. Every action below goes through the standard ERPNext
 documents (Purchase Receipt, Stock Entry, Payment Entry, Supplier Quotation ...), so
-the owner's rules in mimaar.procurement and ERPNext's own checks apply exactly as in
+the owner's rules in buildiary.procurement and ERPNext's own checks apply exactly as in
 the full ERPNext screens.
 """
 
@@ -18,7 +18,7 @@ LANGS = ("en", "ur", "ar")
 
 # ---------------------------------------------------------------- helpers
 def _settings():
-	return frappe.get_cached_doc("Mimaar Settings")
+	return frappe.get_cached_doc("Buildiary Settings")
 
 
 def _company():
@@ -26,28 +26,28 @@ def _company():
 
 
 def _project():
-	"""The project this person works in now (see mimaar.projects)."""
-	from mimaar.projects import current
+	"""The project this person works in now (see buildiary.projects)."""
+	from buildiary.projects import current
 
 	return current()
 
 
 def _store():
 	"""The current project's store."""
-	from mimaar.projects import store
+	from buildiary.projects import store
 
 	return store()
 
 
 def _only(filters=None):
 	"""List filters limited to the current project (when the workspace has more than one)."""
-	from mimaar.projects import only
+	from buildiary.projects import only
 
 	return only(filters)
 
 
 def _psql(alias=""):
-	from mimaar.projects import sql
+	from buildiary.projects import sql
 
 	return sql(alias)
 
@@ -70,7 +70,7 @@ def caps():
 	r = _roles()
 	owner = "System Manager" in r
 	inside = owner or bool(r & {"Site Supervisor", "Projects Manager", "Stock User", "Stock Manager", "Accounts User", "Accounts Manager", "Purchase User", "Purchase Manager"})
-	if "Mimaar Partner" in r and not inside:
+	if "Buildiary Partner" in r and not inside:
 		# a builder's or consultant's staff: build progress, diary, inspections and snags; no store, people or money
 		return {"owner": False, "buy": False, "suppliers": False, "money": False, "store": False, "site": True, "people": False, "new_supplier": False,
 			"new_item": False, "accountant": False, "partner": True}
@@ -116,8 +116,8 @@ def boot():
 		"project": project,
 		"project_name": frappe.db.get_value("Project", project, "project_name") if project else "",
 		"store": _store(),
-		"projects": __import__("mimaar.projects", fromlist=["brief"]).brief(),
-		"ai": __import__("mimaar.ai", fromlist=["available"]).available(),
+		"projects": __import__("buildiary.projects", fromlist=["brief"]).brief(),
+		"ai": __import__("buildiary.ai", fromlist=["available"]).available(),
 		"rules": {k: cint(s.get(k)) for k in ("require_dn_scan", "require_receiver_photo", "require_bill_scan", "require_payment_proof", "require_attendance_photo",
 			"card_for_store", "card_for_receiving", "card_for_petty_cash")},
 		"face_check": s.face_check or "Required",
@@ -129,21 +129,21 @@ def boot():
 
 
 def _plan():
-	"""Mabni Cloud: the trial or plan state (None on a laptop or own server)."""
-	from mimaar.saas.tenant import banner
+	"""Buildiary Cloud: the trial or plan state (None on a laptop or own server)."""
+	from buildiary.saas.tenant import banner
 
 	return banner()
 
 
 def _ui():
 	try:
-		return json.loads(frappe.defaults.get_user_default("mimaar_ui") or "{}")
+		return json.loads(frappe.defaults.get_user_default("buildiary_ui") or "{}")
 	except ValueError:
 		return {}
 
 
 def _me():
-	from mimaar.identity import my_person
+	from buildiary.identity import my_person
 
 	p = my_person()
 	if not p:
@@ -158,7 +158,7 @@ def ui_save(ui):
 	"""My settings (theme, fonts, text size): kept with the user, so they follow them to any phone."""
 	u = _parse(ui) or {}
 	keep = {k: str(u[k])[:40] for k in ("skin", "mode", "ur", "en", "size") if u.get(k)}
-	frappe.defaults.set_user_default("mimaar_ui", json.dumps(keep))
+	frappe.defaults.set_user_default("buildiary_ui", json.dumps(keep))
 	return keep
 
 
@@ -207,10 +207,10 @@ def dashboard():
 	if c["buy"]:
 		for q in frappe.get_list("Supplier Quotation", filters=_only({"docstatus": 0}), fields=["name", "supplier_name"], limit=10, order_by="creation desc"):
 			add("warn", _("Confirm quotation {0} from {1}").format(q.name, q.supplier_name), ["quote", q.name])
-		for q in frappe.get_list("Supplier Quotation", filters=_only({"docstatus": 1, "mimaar_final": 0, "status": ["!=", "Expired"]}), fields=["name", "supplier_name"], limit=10, order_by="creation desc"):
+		for q in frappe.get_list("Supplier Quotation", filters=_only({"docstatus": 1, "buildiary_final": 0, "status": ["!=", "Expired"]}), fields=["name", "supplier_name"], limit=10, order_by="creation desc"):
 			if not frappe.db.exists("Supplier Quotation", {"amended_from": q.name, "docstatus": ["<", 2]}):
 				add("info", _("Lock the agreed quotation {0} ({1}) as final, or revise it").format(q.name, q.supplier_name), ["quote", q.name])
-		for q in frappe.get_list("Supplier Quotation", filters=_only({"docstatus": 1, "mimaar_final": 1}), fields=["name", "supplier_name"], limit=20, order_by="creation desc"):
+		for q in frappe.get_list("Supplier Quotation", filters=_only({"docstatus": 1, "buildiary_final": 1}), fields=["name", "supplier_name"], limit=20, order_by="creation desc"):
 			if not frappe.db.exists("Purchase Order Item", {"supplier_quotation": q.name, "docstatus": ["<", 2]}):
 				add("warn", _("Raise the purchase order from final quotation {0} ({1})").format(q.name, q.supplier_name), ["quote", q.name])
 		for p in frappe.get_list("Purchase Order", filters=_only({"docstatus": 0}), fields=["name", "supplier_name"], limit=10, order_by="creation desc"):
@@ -262,8 +262,8 @@ def task_progress(name, progress, note=None, photo=None):
 	t.check_permission("write")
 	p = max(0, min(100, flt(progress)))
 	t.progress = p
-	if t.meta.has_field("mimaar_reported"):
-		t.mimaar_reported = p
+	if t.meta.has_field("buildiary_reported"):
+		t.buildiary_reported = p
 	if p >= 100:
 		t.status = "Completed"
 		t.completed_on = t.completed_on or nowdate()
@@ -433,7 +433,7 @@ def order_lines(po):
 def read_challan(po, file_url):
 	"""AI reads the delivery note against the order's lines (only the quantities are used)."""
 	_need("store")
-	from mimaar import ai
+	from buildiary import ai
 
 	doc = frappe.get_doc("Purchase Order", po)
 	doc.check_permission("read")
@@ -452,14 +452,14 @@ def receive(po, lines, dn_no=None, dn_scan=None, receiver_photo=None, goods_phot
 	"""Goods arrive at site against a purchase order. Part deliveries keep the order open.
 	The receiver is identified by their site card and a face check (when the owner requires it)."""
 	_need("store")
-	from mimaar.identity import needs_card, use_check
+	from buildiary.identity import needs_card, use_check
 
 	if needs_card("card_for_receiving") and not check:
 		frappe.throw(_("Scan the receiver's site card and take their photo first."), title=_("Receiver's site card"))
 	from erpnext.buying.doctype.purchase_order.purchase_order import make_purchase_receipt
 
 	want = {x.get("po_detail"): flt(x.get("qty")) for x in _parse(lines) or []}
-	from mimaar.projects import store
+	from buildiary.projects import store
 
 	wh = store(frappe.db.get_value("Purchase Order", po, "project") or None)
 	pr = make_purchase_receipt(po)
@@ -476,22 +476,22 @@ def receive(po, lines, dn_no=None, dn_scan=None, receiver_photo=None, goods_phot
 	pr.items = keep
 	pr.set_warehouse = pr.set_warehouse or wh
 	pr.supplier_delivery_note = (dn_no or "").strip()
-	pr.mimaar_dn_scan = dn_scan if _photo_ok(dn_scan) else None
-	pr.mimaar_receiver_photo = receiver_photo if _photo_ok(receiver_photo) else None
-	pr.mimaar_goods_photo = goods_photo if _photo_ok(goods_photo) else None
-	pr.mimaar_vehicle = vehicle
-	pr.mimaar_received_by = received_by or get_fullname(frappe.session.user)
+	pr.buildiary_dn_scan = dn_scan if _photo_ok(dn_scan) else None
+	pr.buildiary_receiver_photo = receiver_photo if _photo_ok(receiver_photo) else None
+	pr.buildiary_goods_photo = goods_photo if _photo_ok(goods_photo) else None
+	pr.buildiary_vehicle = vehicle
+	pr.buildiary_received_by = received_by or get_fullname(frappe.session.user)
 	if location:
 		pr.remarks = _("Received at {0}").format(location)
 	idc = frappe.get_doc("Identity Check", check) if check else None
 	if idc:
-		pr.mimaar_receiver = idc.person
-		pr.mimaar_received_by = idc.person_name
-		pr.mimaar_receiver_photo = pr.mimaar_receiver_photo or idc.live_photo
+		pr.buildiary_receiver = idc.person
+		pr.buildiary_received_by = idc.person_name
+		pr.buildiary_receiver_photo = pr.buildiary_receiver_photo or idc.live_photo
 	pr.insert()
 	if idc:
 		use_check(idc.name, "Receiving goods", "Purchase Receipt", pr.name, idc.person)
-		pr.db_set("mimaar_identity_check", idc.name)
+		pr.db_set("buildiary_identity_check", idc.name)
 	try:
 		pr.submit()
 	except Exception:
@@ -503,7 +503,7 @@ def receive(po, lines, dn_no=None, dn_scan=None, receiver_photo=None, goods_phot
 def _stock_entry(kind, items, check=None, issued_to=None, work_area=None, photo=None, remarks=None):
 	"""Material released from the store to the work, or returned from the work to the store."""
 	_need("store")
-	from mimaar.identity import needs_card, use_check
+	from buildiary.identity import needs_card, use_check
 
 	action = "Store issue" if kind == "issue" else "Store return"
 	if needs_card("card_for_store") and not check:
@@ -522,22 +522,22 @@ def _stock_entry(kind, items, check=None, issued_to=None, work_area=None, photo=
 		if short:
 			frappe.throw("<br>".join(short), title=_("Not enough in the store"))
 	d = {"doctype": "Stock Entry", "company": _company(), "project": _project(), "remarks": remarks,
-		"mimaar_issued_to": idc.person_name if idc else issued_to, "mimaar_person": idc.person if idc else None,
-		"mimaar_work_area": work_area, "mimaar_photo": photo if _photo_ok(photo) else (idc.live_photo if idc else None)}
+		"buildiary_issued_to": idc.person_name if idc else issued_to, "buildiary_person": idc.person if idc else None,
+		"buildiary_work_area": work_area, "buildiary_photo": photo if _photo_ok(photo) else (idc.live_photo if idc else None)}
 	if kind == "issue":
 		d.update({"stock_entry_type": "Material Issue", "from_warehouse": wh, "items": [{"item_code": x["item_code"], "qty": flt(x["qty"]), "s_warehouse": wh} for x in rows]})
 	else:
-		d.update({"stock_entry_type": "Material Receipt", "to_warehouse": wh, "mimaar_is_return": 1, "items": [{
+		d.update({"stock_entry_type": "Material Receipt", "to_warehouse": wh, "buildiary_is_return": 1, "items": [{
 			"item_code": x["item_code"], "qty": flt(x["qty"]), "t_warehouse": wh, "allow_zero_valuation_rate": 1,
 			"basic_rate": flt(frappe.db.get_value("Bin", {"item_code": x["item_code"], "warehouse": wh}, "valuation_rate")) or flt(frappe.db.get_value("Item", x["item_code"], "valuation_rate")),
 		} for x in rows]})
-	if not d["mimaar_issued_to"]:
+	if not d["buildiary_issued_to"]:
 		frappe.throw(_("Enter who takes or returns the material (mistri or group head)."))
 	se = frappe.get_doc(d)
 	se.insert()
 	if idc:
 		use_check(idc.name, action, "Stock Entry", se.name, idc.person)
-		se.mimaar_identity_check = idc.name
+		se.buildiary_identity_check = idc.name
 	try:
 		se.submit()
 	except Exception:
@@ -561,17 +561,17 @@ def return_to_store(items, check=None, returned_by=None, work_area=None, photo=N
 @frappe.whitelist()
 def movements(limit=40):
 	_need("store") if not caps()["site"] else None
-	pr = frappe.get_list("Purchase Receipt", filters=_only({"docstatus": 1}), fields=["name", "posting_date", "supplier_name", "supplier_delivery_note", "mimaar_received_by"], order_by="posting_date desc, creation desc", limit_page_length=cint(limit))
-	se = frappe.get_list("Stock Entry", filters=_only({"docstatus": 1, "stock_entry_type": ["in", ["Material Issue", "Material Receipt"]]}), fields=["name", "posting_date", "mimaar_issued_to", "mimaar_work_area", "stock_entry_type", "mimaar_is_return", "mimaar_identity_check"], order_by="posting_date desc, creation desc", limit_page_length=cint(limit))
+	pr = frappe.get_list("Purchase Receipt", filters=_only({"docstatus": 1}), fields=["name", "posting_date", "supplier_name", "supplier_delivery_note", "buildiary_received_by"], order_by="posting_date desc, creation desc", limit_page_length=cint(limit))
+	se = frappe.get_list("Stock Entry", filters=_only({"docstatus": 1, "stock_entry_type": ["in", ["Material Issue", "Material Receipt"]]}), fields=["name", "posting_date", "buildiary_issued_to", "buildiary_work_area", "stock_entry_type", "buildiary_is_return", "buildiary_identity_check"], order_by="posting_date desc, creation desc", limit_page_length=cint(limit))
 	out = []
 	for r in pr:
 		items = frappe.get_all("Purchase Receipt Item", filters={"parent": r.name}, fields=["item_name", "qty", "uom"], order_by="idx")
 		out.append({"kind": "in", "name": r.name, "date": r.posting_date, "who": r.supplier_name, "ref": r.supplier_delivery_note, "items": items})
 	for s in se:
-		if s.stock_entry_type == "Material Receipt" and not s.mimaar_is_return:
+		if s.stock_entry_type == "Material Receipt" and not s.buildiary_is_return:
 			continue
 		items = frappe.get_all("Stock Entry Detail", filters={"parent": s.name}, fields=["item_name", "qty", "uom"], order_by="idx")
-		out.append({"kind": "back" if s.stock_entry_type == "Material Receipt" else "out", "name": s.name, "date": s.posting_date, "who": s.mimaar_issued_to, "ref": s.mimaar_work_area, "items": items, "face": bool(s.mimaar_identity_check)})
+		out.append({"kind": "back" if s.stock_entry_type == "Material Receipt" else "out", "name": s.name, "date": s.posting_date, "who": s.buildiary_issued_to, "ref": s.buildiary_work_area, "items": items, "face": bool(s.buildiary_identity_check)})
 	out.sort(key=lambda x: (str(x["date"]), x["name"]), reverse=True)
 	return out[: cint(limit)]
 
@@ -629,7 +629,7 @@ def attendance_save(rows, group_photo=None, location=None, submit=0):
 def attendance_card(check, mode="in"):
 	"""Attendance by site card: the card was scanned and the face checked; mark time in or time out."""
 	_need("people")
-	from mimaar.identity import use_check
+	from buildiary.identity import use_check
 
 	idc = frappe.get_doc("Identity Check", check)
 	done = frappe.db.get_value("Site Attendance", {"date": nowdate(), "project": _project(), "docstatus": 1})
@@ -710,7 +710,7 @@ def person(name):
 	out["warnings"] = d.warnings()
 	out["contractor_name"] = frappe.db.get_value("Supplier", d.contractor, "supplier_name") if d.contractor else None
 	if caps()["owner"]:
-		from mimaar.identity import card_info
+		from buildiary.identity import card_info
 
 		out["card"] = card_info(d.name)
 	out["checks"] = frappe.get_all("Identity Check", filters={"person": d.name}, fields=["name", "action", "result", "score", "checked_at", "live_photo"], order_by="creation desc", limit=10) \
@@ -756,7 +756,7 @@ def people_summary():
 def suppliers(q=None):
 	_need("suppliers")
 	of = {"supplier_name": ["like", f"%{q}%"], "name": ["like", f"%{q}%"]} if q else None
-	rows = frappe.get_list("Supplier", filters={"disabled": 0}, or_filters=of, fields=["name", "supplier_name", "supplier_group", "mimaar_work_area", "mobile_no"], order_by="supplier_name asc", limit_page_length=500)
+	rows = frappe.get_list("Supplier", filters={"disabled": 0}, or_filters=of, fields=["name", "supplier_name", "supplier_group", "buildiary_work_area", "mobile_no"], order_by="supplier_name asc", limit_page_length=500)
 	if caps()["money"]:
 		due = dict(frappe.db.sql("select supplier, sum(outstanding_amount) from `tabPurchase Invoice` where docstatus = 1 group by supplier"))
 		for r in rows:
@@ -767,23 +767,23 @@ def suppliers(q=None):
 @frappe.whitelist()
 def supplier(name):
 	_need("suppliers")
-	from mimaar.api import _phone, statement_rows
+	from buildiary.api import _phone, statement_rows
 
 	s = frappe.get_doc("Supplier", name)
 	s.check_permission("read")
-	out = {"name": s.name, "supplier_name": s.supplier_name, "work_area": s.get("mimaar_work_area"), "phone": _phone(s.name), "payment_terms": s.get("mimaar_payment_terms"), "delivery_time": s.get("mimaar_delivery_time")}
+	out = {"name": s.name, "supplier_name": s.supplier_name, "work_area": s.get("buildiary_work_area"), "phone": _phone(s.name), "payment_terms": s.get("buildiary_payment_terms"), "delivery_time": s.get("buildiary_delivery_time")}
 	if caps()["money"] or caps()["buy"]:
 		st = statement_rows(s.name)
 		out["summary"] = {k: st.get(k) for k in ("ordered", "received", "billed", "paid", "balance", "due", "advance") if k in st}
 		out["rows"] = (st.get("rows") or [])[-30:]
-	out["quotes"] = frappe.get_list("Supplier Quotation", filters={"supplier": s.name, "docstatus": ["<", 2]}, fields=["name", "transaction_date", "grand_total", "docstatus", "mimaar_final"], order_by="creation desc", limit_page_length=10)
+	out["quotes"] = frappe.get_list("Supplier Quotation", filters={"supplier": s.name, "docstatus": ["<", 2]}, fields=["name", "transaction_date", "grand_total", "docstatus", "buildiary_final"], order_by="creation desc", limit_page_length=10)
 	out["orders"] = frappe.get_list("Purchase Order", filters={"supplier": s.name, "docstatus": ["<", 2]}, fields=["name", "transaction_date", "grand_total", "status", "per_received"], order_by="creation desc", limit_page_length=10)
 	return out
 
 
 @frappe.whitelist()
 def supplier_new(data):
-	from mimaar.api import register_supplier
+	from buildiary.api import register_supplier
 
 	d = _parse(data) or {}
 	return register_supplier(d.get("name"), phone=d.get("phone"), contact=d.get("contact"), email=d.get("email"), address=d.get("address"), ntn=d.get("ntn"), work_area=d.get("work_area"), payment_terms=d.get("payment_terms"), delivery_time=d.get("delivery_time"))
@@ -795,13 +795,13 @@ def _q_state(q):
 		return "Draft"
 	if q.docstatus == 2:
 		return "Replaced" if frappe.db.exists("Supplier Quotation", {"amended_from": q.name}) else "Cancelled"
-	return "Final" if cint(q.mimaar_final) else "Confirmed"
+	return "Final" if cint(q.buildiary_final) else "Confirmed"
 
 
 @frappe.whitelist()
 def quotations(state=None):
 	_need("buy")
-	rows = frappe.get_list("Supplier Quotation", filters=_only({"docstatus": ["<", 2]}), fields=["name", "supplier", "supplier_name", "transaction_date", "grand_total", "docstatus", "mimaar_final", "mimaar_revision", "quotation_number"], order_by="creation desc", limit_page_length=200)
+	rows = frappe.get_list("Supplier Quotation", filters=_only({"docstatus": ["<", 2]}), fields=["name", "supplier", "supplier_name", "transaction_date", "grand_total", "docstatus", "buildiary_final", "buildiary_revision", "quotation_number"], order_by="creation desc", limit_page_length=200)
 	for r in rows:
 		r.state = _q_state(r)
 		r.has_po = bool(frappe.db.exists("Purchase Order Item", {"supplier_quotation": r.name, "docstatus": ["<", 2]}))
@@ -816,9 +816,9 @@ def quotation(name):
 	po = frappe.db.get_value("Purchase Order Item", {"supplier_quotation": q.name, "docstatus": ["<", 2]}, "parent")
 	return {
 		"name": q.name, "state": _q_state(q), "docstatus": q.docstatus, "supplier": q.supplier, "supplier_name": q.supplier_name,
-		"date": q.transaction_date, "valid_till": q.valid_till, "number": q.quotation_number, "revision": q.mimaar_revision, "revision_note": q.mimaar_revision_note,
-		"amended_from": q.amended_from, "final_on": q.mimaar_final_on, "document": q.mimaar_document,
-		"payment_terms": q.mimaar_payment_terms, "advance_percent": q.mimaar_advance_percent, "delivery_time": q.mimaar_delivery_time,
+		"date": q.transaction_date, "valid_till": q.valid_till, "number": q.quotation_number, "revision": q.buildiary_revision, "revision_note": q.buildiary_revision_note,
+		"amended_from": q.amended_from, "final_on": q.buildiary_final_on, "document": q.buildiary_document,
+		"payment_terms": q.buildiary_payment_terms, "advance_percent": q.buildiary_advance_percent, "delivery_time": q.buildiary_delivery_time,
 		"total": q.total, "discount": q.discount_amount, "taxes": q.total_taxes_and_charges, "grand_total": q.grand_total, "po": po,
 		"lines": [{"name": r.name, "item_code": r.item_code, "item_name": r.item_name, "uom": r.uom, "qty": r.qty, "rate": r.rate, "amount": r.amount, "discount_percentage": r.discount_percentage} for r in q.items],
 	}
@@ -828,7 +828,7 @@ def quotation(name):
 def quotation_read(file_url):
 	"""AI reads a scanned quotation. The person checks the lines before anything is saved."""
 	_need("buy")
-	from mimaar.ai import read_quotation
+	from buildiary.ai import read_quotation
 
 	d = read_quotation(file_url)
 	d["file_url"] = file_url
@@ -851,7 +851,7 @@ def item_search(q=None, limit=20):
 def quotation_save(data):
 	"""Create a draft quotation (from a scan or typed), or update a draft's lines and terms."""
 	_need("buy")
-	from mimaar.api import new_item
+	from buildiary.api import new_item
 
 	d = _parse(data) or {}
 	if d.get("name"):
@@ -867,12 +867,12 @@ def quotation_save(data):
 		supplier = supplier_new(d["new_supplier"])
 	if supplier:
 		q.supplier = supplier
-	for k, f in (("number", "quotation_number"), ("date", "transaction_date"), ("valid_till", "valid_till"), ("payment_terms", "mimaar_payment_terms"),
-		("advance_percent", "mimaar_advance_percent"), ("delivery_time", "mimaar_delivery_time"), ("revision_note", "mimaar_revision_note"), ("terms", "terms")):
+	for k, f in (("number", "quotation_number"), ("date", "transaction_date"), ("valid_till", "valid_till"), ("payment_terms", "buildiary_payment_terms"),
+		("advance_percent", "buildiary_advance_percent"), ("delivery_time", "buildiary_delivery_time"), ("revision_note", "buildiary_revision_note"), ("terms", "terms")):
 		if d.get(k) not in (None, ""):
 			q.set(f, d[k])
 	if _photo_ok(d.get("document")):
-		q.mimaar_document = d["document"]
+		q.buildiary_document = d["document"]
 	if "lines" in d:
 		q.set("items", [])
 		for x in d["lines"]:
@@ -904,7 +904,7 @@ def quotation_confirm(name):
 @frappe.whitelist()
 def quotation_lock(name):
 	_need("buy")
-	from mimaar.procurement import mark_final
+	from buildiary.procurement import mark_final
 
 	mark_final(name)
 	return "Final"
@@ -921,7 +921,7 @@ def quotation_revise(name, note):
 	new = frappe.copy_doc(q)
 	new.amended_from = q.name
 	new.docstatus = 0
-	new.mimaar_revision_note = note
+	new.buildiary_revision_note = note
 	new.insert()
 	return new.name
 
@@ -930,13 +930,13 @@ def quotation_revise(name, note):
 @frappe.whitelist()
 def orders(state=None):
 	_need("buy") if not caps()["money"] else None
-	rows = frappe.get_list("Purchase Order", filters=_only({"docstatus": ["<", 2]}), fields=["name", "supplier", "supplier_name", "transaction_date", "schedule_date", "grand_total", "status", "per_received", "per_billed", "docstatus", "advance_paid", "mimaar_advance_percent"], order_by="creation desc", limit_page_length=200)
+	rows = frappe.get_list("Purchase Order", filters=_only({"docstatus": ["<", 2]}), fields=["name", "supplier", "supplier_name", "transaction_date", "schedule_date", "grand_total", "status", "per_received", "per_billed", "docstatus", "advance_paid", "buildiary_advance_percent"], order_by="creation desc", limit_page_length=200)
 	return [r for r in rows if not state or r.status == state]
 
 
 @frappe.whitelist()
 def order(name):
-	from mimaar.procurement import advance_limit
+	from buildiary.procurement import advance_limit
 
 	po = frappe.get_doc("Purchase Order", name)
 	po.check_permission("read")
@@ -945,8 +945,8 @@ def order(name):
 	return {
 		"name": po.name, "docstatus": po.docstatus, "status": po.status, "supplier": po.supplier, "supplier_name": po.supplier_name,
 		"date": po.transaction_date, "schedule_date": po.schedule_date, "per_received": po.per_received, "per_billed": po.per_billed,
-		"grand_total": po.grand_total if show_rates else None, "payment_terms": po.get("mimaar_payment_terms"), "advance_percent": po.get("mimaar_advance_percent"),
-		"delivery_time": po.get("mimaar_delivery_time"), "advance_limit": limit, "advance_paid": po.advance_paid, "advance_left": max(0, limit - flt(po.advance_paid)),
+		"grand_total": po.grand_total if show_rates else None, "payment_terms": po.get("buildiary_payment_terms"), "advance_percent": po.get("buildiary_advance_percent"),
+		"delivery_time": po.get("buildiary_delivery_time"), "advance_limit": limit, "advance_paid": po.advance_paid, "advance_left": max(0, limit - flt(po.advance_paid)),
 		"quotation": po.items[0].supplier_quotation if po.items else None,
 		"lines": [{"item_name": r.item_name, "item_code": r.item_code, "uom": r.uom, "qty": r.qty, "received": r.received_qty, "rate": r.rate if show_rates else None, "amount": r.amount if show_rates else None} for r in po.items],
 	}
@@ -959,7 +959,7 @@ def order_from_quotation(quotation, schedule_date=None):
 
 	po = make_purchase_order(quotation)
 	po.project = frappe.db.get_value("Supplier Quotation", quotation, "project") or _project()
-	from mimaar.projects import store
+	from buildiary.projects import store
 
 	wh = store(po.project)
 	sd = schedule_date or add_days(nowdate(), 7)
@@ -985,14 +985,14 @@ def order_lock(name):
 def share(doctype, name):
 	if doctype not in ("Purchase Order", "Request for Quotation", "Supplier Quotation"):
 		frappe.throw(_("This can't be shared."))
-	from mimaar.api import share_link
+	from buildiary.api import share_link
 
 	return share_link(doctype, name)
 
 
 @frappe.whitelist()
 def statement_share(supplier):
-	from mimaar.api import supplier_statement_pdf
+	from buildiary.api import supplier_statement_pdf
 
 	return supplier_statement_pdf(supplier, share=1)
 
@@ -1007,13 +1007,13 @@ def bills():
 		b.due_now = not b.due_date or getdate(b.due_date) <= today
 	to_bill = frappe.get_list("Purchase Receipt", filters=_only({"docstatus": 1, "status": "To Bill"}), fields=["name", "supplier", "supplier_name", "posting_date", "grand_total", "supplier_delivery_note"], order_by="posting_date asc", limit_page_length=200)
 	advances = []
-	from mimaar.procurement import advance_limit
+	from buildiary.procurement import advance_limit
 
-	for p in frappe.get_list("Purchase Order", filters=_only({"docstatus": 1, "status": ["not in", ["Closed", "Completed"]], "mimaar_advance_percent": [">", 0]}), fields=["name"], limit_page_length=100):
+	for p in frappe.get_list("Purchase Order", filters=_only({"docstatus": 1, "status": ["not in", ["Closed", "Completed"]], "buildiary_advance_percent": [">", 0]}), fields=["name"], limit_page_length=100):
 		po = frappe.get_doc("Purchase Order", p.name)
 		left = advance_limit(po) - flt(po.advance_paid)
 		if left > 1:
-			advances.append({"name": po.name, "supplier": po.supplier, "supplier_name": po.supplier_name, "left": left, "percent": po.mimaar_advance_percent, "grand_total": po.grand_total})
+			advances.append({"name": po.name, "supplier": po.supplier, "supplier_name": po.supplier_name, "left": left, "percent": po.buildiary_advance_percent, "grand_total": po.grand_total})
 	paid = frappe.get_list("Payment Entry", filters=_only({"docstatus": 1, "payment_type": "Pay", "party_type": "Supplier"}), fields=["name", "party_name", "posting_date", "paid_amount", "mode_of_payment", "reference_no"], order_by="posting_date desc, creation desc", limit_page_length=30)
 	return {"open": open_, "to_bill": to_bill, "advances": advances, "paid": paid}
 
@@ -1028,7 +1028,7 @@ def bill_from_receipt(receipt, bill_no, bill_date=None, bill_scan=None, due_date
 	pi.bill_date = bill_date or nowdate()
 	if due_date:
 		pi.due_date = due_date
-	pi.mimaar_bill_scan = bill_scan if _photo_ok(bill_scan) else None
+	pi.buildiary_bill_scan = bill_scan if _photo_ok(bill_scan) else None
 	pi.insert()
 	try:
 		pi.submit()
@@ -1068,8 +1068,8 @@ def pay(doctype, name, amount, mode="Cash", reference_no=None, reference_date=No
 	pe.reference_date = reference_date or nowdate()
 	if mode != "Cash" and not pe.reference_no:
 		frappe.throw(_("Enter the transaction or cheque number."))
-	pe.mimaar_proof = proof if _photo_ok(proof) else None
-	pe.mimaar_proof_2 = proof_2 if _photo_ok(proof_2) else None
+	pe.buildiary_proof = proof if _photo_ok(proof) else None
+	pe.buildiary_proof_2 = proof_2 if _photo_ok(proof_2) else None
 	pe.insert()
 	try:
 		pe.submit()
@@ -1121,7 +1121,7 @@ def search(q):
 	if c["people"]:
 		out["workers"] = frappe.get_list("Site Worker", or_filters={"full_name": ["like", like], "cnic": ["like", like], "name": ["like", like], "entry_card_no": ["like", like]}, fields=["name", "full_name", "trade", "photo"], limit_page_length=8)
 	if c["suppliers"]:
-		out["suppliers"] = frappe.get_list("Supplier", filters={"disabled": 0}, or_filters={"supplier_name": ["like", like], "name": ["like", like], "mobile_no": ["like", like]}, fields=["name", "supplier_name", "mimaar_work_area"], limit_page_length=8)
+		out["suppliers"] = frappe.get_list("Supplier", filters={"disabled": 0}, or_filters={"supplier_name": ["like", like], "name": ["like", like], "mobile_no": ["like", like]}, fields=["name", "supplier_name", "buildiary_work_area"], limit_page_length=8)
 	if c["store"] or c["site"]:
 		rows = stock(q)["rows"]
 		out["items"] = (sorted(rows, key=lambda r: -flt(r.qty)))[:8]
@@ -1136,7 +1136,7 @@ def search(q):
 @frappe.whitelist(allow_guest=True)
 def qr(text):
 	"""QR code image for the 'connect a phone' page."""
-	from mimaar.api import qr_code
+	from buildiary.api import qr_code
 
 	if len(text or "") > 300:
 		frappe.throw("Too long")

@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#1E3A5F">
 <meta name="robots" content="noindex">
 <title>Plan & billing · Buildiary</title>
-<link rel="icon" href="/assets/mimaar/images/buildiary-logo.svg">
+<link rel="icon" href="/assets/buildiary/images/buildiary-logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..110,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&family=Noto+Kufi+Arabic:wght@400;600;700&family=Noto+Nastaliq+Urdu:wght@400;600&display=swap">
@@ -107,14 +107,15 @@ html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem
 .maker{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.8rem;text-decoration:none}
 .maker img{height:30px;width:auto;display:block}
 .help-line b{color:var(--ink);font-family:var(--mono);direction:ltr;unicode-bidi:embed}
+.bd-d{font-style:normal;color:#F2B01E}
 </style>
 </head>
 <body>
 <header class="band">
   <div class="in top">
     <a class="logo" href="/field">
-      <svg viewBox="0 0 120 120" aria-hidden="true"><rect width="120" height="120" rx="26" fill="#fff" fill-opacity=".1"/><g transform="translate(5 -3)"><g fill="none" stroke="#fff" stroke-width="6" stroke-linejoin="miter"><path d="M34 22H70L80 32V44L72 51L82 58V80L72 90H34Z"/><path d="M45 33H66L69 36V42L66 45H45Z"/><path d="M45 57H68L71 60V76L68 79H45Z"/></g><g stroke="#F2B01E" stroke-width="3.5" fill="none"><path d="M34 102H82"/><path d="M34 96V108M82 96V108M58 98V106"/></g><g fill="#F2B01E"><rect x="24" y="30" width="12" height="5" rx="2.5"/><rect x="24" y="53" width="12" height="5" rx="2.5"/><rect x="24" y="76" width="12" height="5" rx="2.5"/></g></g></svg>
-      <b>Buildiary</b><span id="co"></span>
+      <svg viewBox="0 0 120 120" aria-hidden="true"><rect width="120" height="120" rx="26" fill="#fff" fill-opacity=".1"/><path d="M53.5 18H45A24 24 0 0 0 21 42V78A24 24 0 0 0 45 102H53.5Z M53.5 30H44A11 11 0 0 0 33 41V52.5H53.5Z M53.5 64.5H33V79A11 11 0 0 0 44 90H53.5Z M66.5 18H75A24 24 0 0 1 99 42V78A24 24 0 0 1 75 102H66.5Z M66.5 30V90H76A11 11 0 0 0 87 79V41A11 11 0 0 0 76 30Z" fill="#FFFFFF" fill-rule="evenodd"/><rect x="53.5" y="18" width="13.0" height="84" fill="#F2B01E"/></svg>
+      <b>Buil<i class="bd-d">d</i>iary</b><span id="co"></span>
     </a>
     <nav class="links"><a href="/field" id="back" data-t="back"></a><a href="/api/method/logout?redirect-to=/login" data-t="signout"></a></nav>
   </div>
@@ -164,7 +165,7 @@ html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem
   </section>
 
   <p class="help-line" id="support"></p>
-  <a class="maker" href="https://www.smhglobal.com.pk" target="_blank" rel="noopener"><span data-t="by_short"></span><img src="/assets/mimaar/images/smh-global.svg" alt="SMH Global Services"></a>
+  <a class="maker" href="https://www.smhglobal.com.pk" target="_blank" rel="noopener"><span data-t="by_short"></span><img src="/assets/buildiary/images/smh-global.svg" alt="SMH Global Services"></a>
   <p class="skel" id="loading" data-t="loading"></p>
 </main>
 
@@ -363,7 +364,7 @@ $("pay").addEventListener("submit", async (ev) => {
   if (!$("reference").value.trim() && !PROOF) return say("bad", t("e_ref"));
   const btn = $("pay-go"); btn.disabled = true;
   try {
-    await api("mimaar.saas.tenant.pay", { data: { plan: PLAN, billing_period: PERIOD, periods: 1, currency: $("currency").value, amount, paid_on: $("paid_on").value || null,
+    await api("buildiary.saas.tenant.pay", { data: { plan: PLAN, billing_period: PERIOD, periods: 1, currency: $("currency").value, amount, paid_on: $("paid_on").value || null,
       paid_to: $("paid_to").value, reference: $("reference").value.trim(), note: $("note").value.trim(), proof: PROOF } });
     say("ok", t("sent_ok")); $("reference").value = ""; $("note").value = ""; $("proof").value = ""; PROOF = null; $("proof-img").hidden = true;
     load();
@@ -374,7 +375,7 @@ $("pay").addEventListener("submit", async (ev) => {
 async function load() {
   if (!CFG.owner) { $("not-owner").hidden = false; $("loading").hidden = true; return; }
   try {
-    ACC = await api("mimaar.saas.tenant.billing");
+    ACC = await api("buildiary.saas.tenant.billing");
     if (ACC.state) header(ACC.state);
     if (!load.done) PERIOD = ACC.billing_period === "Yearly" ? "Yearly" : "Monthly";
     load.done = true;

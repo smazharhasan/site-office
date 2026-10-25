@@ -1,10 +1,10 @@
-// Mimaar: shared helpers for the forms (scanning, sharing) and right-to-left Urdu.
+// Buildiary: shared helpers for the forms (scanning, sharing) and right-to-left Urdu.
 (function () {
 	const RTL = ["ar", "he", "fa", "ps", "ur"];
 	if (frappe.utils) frappe.utils.is_rtl = function (lang = null) { return RTL.includes(lang || frappe.boot.lang); };
 
-	window.mimaar = window.mimaar || {};
-	const M = window.mimaar;
+	window.buildiary = window.buildiary || {};
+	const M = window.buildiary;
 
 	// pick a file (photo or PDF; the phone offers the camera) and return its URL
 	M.pick_file = function (opts = {}) {
@@ -18,7 +18,7 @@
 		});
 	};
 
-	M.ai_on = function () { return !!(frappe.boot.mimaar && frappe.boot.mimaar.ai); };
+	M.ai_on = function () { return !!(frappe.boot.buildiary && frappe.boot.buildiary.ai); };
 
 	M.open_whatsapp = function (m) {
 		if (!m) return;
@@ -30,7 +30,7 @@
 		window.open(`mailto:${encodeURIComponent(m.email || "")}?subject=${encodeURIComponent(subject || "")}&body=${encodeURIComponent(body)}`, "_blank");
 	};
 	M.share = function (frm, supplier) {
-		return frappe.call({ method: "mimaar.api.share_link", args: { doctype: frm.doctype, name: frm.doc.name, supplier: supplier || null }, freeze: true })
+		return frappe.call({ method: "buildiary.api.share_link", args: { doctype: frm.doctype, name: frm.doc.name, supplier: supplier || null }, freeze: true })
 			.then((r) => M.open_whatsapp(r.message));
 	};
 	M.pdf = function (frm) {

@@ -6,7 +6,7 @@
 # Then, at the registrar (Namecheap), set each domain's nameservers to the four printed here.
 set -euo pipefail
 export AWS_DEFAULT_REGION="${REGION:-ap-south-1}"
-IP=$(aws ec2 describe-addresses --filters Name=tag:Name,Values="${SERVER_NAME:-mimaar-server}" --query 'Addresses[0].PublicIp' --output text)
+IP=$(aws ec2 describe-addresses --filters Name=tag:Name,Values="${SERVER_NAME:-buildiary-server}" --query 'Addresses[0].PublicIp' --output text)
 [ -n "$IP" ] && [ "$IP" != "None" ] || { echo "No fixed address found for the server"; exit 1; }
 for D in "$@"; do
   Z=$(aws route53 list-hosted-zones-by-name --dns-name "$D." --query "HostedZones[?Name=='$D.'].Id | [0]" --output text)

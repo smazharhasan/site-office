@@ -9,6 +9,6 @@ class WaterTankReading(Document):
 		self.gallons = cap * flt(self.level_pct) / 100
 
 	def on_trash(self):
-		from mimaar import water
+		from buildiary import water
 
 		water.cancel_entries(self.name)

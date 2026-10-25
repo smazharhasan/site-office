@@ -1,17 +1,17 @@
-# Builds the Mabni server image (Frappe 16 + ERPNext 16 + Mabni, with the website files) using
+# Builds the Buildiary server image (Frappe 16 + ERPNext 16 + Buildiary, with the website files) using
 # frappe_docker's official layered build, and puts it in the private image store in AWS (ECR).
-# GitHub signs in to AWS with no stored password: the role mabni-github-server only trusts this
-# repository's erpnext-app branch and may only upload to the "mabni" store (deploy/aws/private-images.sh).
+# GitHub signs in to AWS with no stored password: the role buildiary-github only trusts this
+# repository's erpnext-app branch and may only upload to the "buildiary" store (deploy/aws/private-images.sh).
 # The server checks for a new image every 15 minutes and applies it (backup first).
-name: Build the Mabni server image
+name: Build the Buildiary server image
 on:
   push: { branches: [erpnext-app], paths-ignore: ["deploy/aws/**", "docs/**", "*.md", ".github/**"] }
   workflow_dispatch:
 permissions: { contents: read, id-token: write }
-concurrency: { group: mabni-image, cancel-in-progress: true }
+concurrency: { group: buildiary-image, cancel-in-progress: true }
 env:
-  IMAGE: 640538430239.dkr.ecr.ap-south-1.amazonaws.com/mabni
-  AWS_ROLE: arn:aws:iam::640538430239:role/mabni-github-server
+  IMAGE: 640538430239.dkr.ecr.ap-south-1.amazonaws.com/buildiary
+  AWS_ROLE: arn:aws:iam::640538430239:role/buildiary-github
   AWS_REGION: ap-south-1
 
 jobs:
@@ -39,7 +39,7 @@ jobs:
             CACHE_BUST=${{ github.sha }}
           secret-files: apps_json=apps.json
           labels: |
-            org.opencontainers.image.description=Mabni on Frappe 16 + ERPNext 16
+            org.opencontainers.image.description=Buildiary on Frappe 16 + ERPNext 16
             org.opencontainers.image.revision=${{ github.sha }}
           provenance: false
           push: true

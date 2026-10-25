@@ -1,4 +1,4 @@
-"""Runs on a customer's workspace (a site whose site_config has a "mabni" block):
+"""Runs on a customer's workspace (a site whose site_config has a "buildiary" block):
 
 - setup(): the first set-up after the console prepared the site (company, the owner's
   sign-in, language, first project);
@@ -9,7 +9,7 @@
 - usage(): the console's daily look at users, projects and storage;
 - the plan's limits on people and projects.
 
-A site without the "mabni" block (a laptop, the owner's own server) has none of this.
+A site without the "buildiary" block (a laptop, the owner's own server) has none of this.
 """
 
 import hmac
@@ -23,13 +23,13 @@ from werkzeug.exceptions import HTTPException
 from werkzeug.wrappers import Response
 
 
-def mabni():
-	return frappe.conf.get("mabni") or {}
+def buildiary():
+	return frappe.conf.get("buildiary") or {}
 
 
 # ---------------------------------------------------------------- where the plan stands
 def state(m=None):
-	m = m if m is not None else mabni()
+	m = m if m is not None else buildiary()
 	if not m:
 		return None
 	today = getdate(nowdate())
@@ -68,9 +68,9 @@ def banner():
 # ---------------------------------------------------------------- the check on every request
 OPEN_PATHS = (
 	"/assets/", "/files/", "/billing", "/login", "/logout", "/update-password", "/favicon", "/robots.txt", "/website_script.js",
-	"/api/method/login", "/api/method/logout", "/api/method/ping", "/api/method/mimaar.saas.tenant.", "/api/method/frappe.auth.get_logged_user",
+	"/api/method/login", "/api/method/logout", "/api/method/ping", "/api/method/buildiary.saas.tenant.", "/api/method/frappe.auth.get_logged_user",
 	"/api/method/frappe.www.login.", "/api/method/frappe.core.doctype.user.user.reset_password", "/api/method/frappe.core.doctype.user.user.update_password",
-	"/api/method/frappe.core.doctype.user.user.test_password_strength", "/api/method/mimaar.field.set_language", "/manifest.json", "/sw.js",
+	"/api/method/frappe.core.doctype.user.user.test_password_strength", "/api/method/buildiary.field.set_language", "/manifest.json", "/sw.js",
 )
 
 
@@ -97,7 +97,7 @@ class _Ended(HTTPException):
 
 
 def enforce():
-	m = frappe.conf.get("mabni")
+	m = frappe.conf.get("buildiary")
 	if not m or m.get("internal"):
 		return
 	req = getattr(frappe.local, "request", None)
@@ -116,19 +116,19 @@ def enforce():
 
 def home_page(user=None):
 	"""People on a Buildiary workspace land in the field app after signing in."""
-	if mabni() and (user or frappe.session.user) not in ("Guest", None):
+	if buildiary() and (user or frappe.session.user) not in ("Guest", None):
 		return "field"
 	return None
 
 
 # ---------------------------------------------------------------- plan limits
 def _limit(key):
-	return cint((mabni().get("limits") or {}).get(key))
+	return cint((buildiary().get("limits") or {}).get(key))
 
 
 def check_users(doc, method=None):
 	n = _limit("users")
-	if not n or doc.user_type != "System User" or doc.name in ("Administrator", "Guest") or frappe.flags.in_install or frappe.flags.mabni_setup:
+	if not n or doc.user_type != "System User" or doc.name in ("Administrator", "Guest") or frappe.flags.in_install or frappe.flags.buildiary_setup:
 		return
 	have = frappe.db.count("User", {"user_type": "System User", "enabled": 1, "name": ["not in", ["Administrator", "Guest"]]})
 	if have >= n:
@@ -138,7 +138,7 @@ def check_users(doc, method=None):
 
 def check_projects(doc, method=None):
 	n = _limit("projects")
-	if not n or frappe.flags.in_install or frappe.flags.mabni_setup:
+	if not n or frappe.flags.in_install or frappe.flags.buildiary_setup:
 		return
 	have = frappe.db.count("Project", {"status": "Open"})
 	if have >= n:
@@ -163,10 +163,10 @@ def _fy(month):
 
 
 def setup(payload):
-	"""bench --site <workspace> execute mimaar.saas.tenant.setup --kwargs "{'payload': '<file>'}"
+	"""bench --site <workspace> execute buildiary.saas.tenant.setup --kwargs "{'payload': '<file>'}"
 
 	The file (written by the console in the site's private folder) is read and deleted."""
-	from mimaar.saas.common import country_info
+	from buildiary.saas.common import country_info
 
 	with open(payload, encoding="utf-8") as f:
 		d = frappe._dict(json.load(f))
@@ -174,7 +174,7 @@ def setup(payload):
 		os.remove(payload)
 	except OSError:
 		pass
-	frappe.flags.mabni_setup = True
+	frappe.flags.buildiary_setup = True
 	ci = country_info(d.country)
 	lang = d.language if d.language in ("en", "ur", "ar") else "en"
 	if not frappe.is_setup_complete():
@@ -195,7 +195,7 @@ def setup(payload):
 
 	create_or_update_user({"email": d.email, "full_name": d.contact_name, "password": d.password})
 	u = frappe.get_doc("User", d.email)
-	u.role_profile_name = "Mimaar Owner"
+	u.role_profile_name = "Buildiary Owner"
 	u.language = lang
 	u.time_zone = ci["time_zone"]
 	u.mobile_no = d.phone or u.mobile_no
@@ -215,25 +215,25 @@ def setup(payload):
 	vals = {"default_project": project, "site_warehouse": store, "country_code": ci["dial"] or "92"}
 	for k, v in vals.items():
 		if v:
-			frappe.db.set_single_value("Mimaar Settings", k, v)
-	from mimaar.setup import apply_settings
+			frappe.db.set_single_value("Buildiary Settings", k, v)
+	from buildiary.setup import apply_settings
 
 	apply_settings()
 	# the project's store, and the usual stages of building (changed later in Project > Tasks)
-	from mimaar.projects import standard_schedule
+	from buildiary.projects import standard_schedule
 
-	if store and frappe.db.has_column("Project", "mabni_store"):
-		frappe.db.set_value("Project", project, "mabni_store", store, update_modified=False)
+	if store and frappe.db.has_column("Project", "buildiary_store"):
+		frappe.db.set_value("Project", project, "buildiary_store", store, update_modified=False)
 	standard_schedule(project, lang=lang)
 	frappe.db.commit()
 	frappe.clear_cache()
-	print("MABNI SETUP OK", d.company_name)
+	print("BUILDIARY SETUP OK", d.company_name)
 	return "ok"
 
 
 # ---------------------------------------------------------------- the console asks
 def _key_ok(key):
-	mine = frappe.conf.get("mabni_key")
+	mine = frappe.conf.get("buildiary_key")
 	return bool(mine and key and hmac.compare_digest(str(mine), str(key)))
 
 
@@ -265,18 +265,18 @@ def _owner():
 
 
 def _console(method, data):
-	from mimaar.saas.common import call_site
+	from buildiary.saas.common import call_site
 
-	m = mabni()
+	m = buildiary()
 	if not m.get("console"):
 		frappe.throw(_("This workspace isn't connected to Buildiary."))
-	return call_site(m["console"], method, dict(data, tenant=m.get("tenant"), key=frappe.conf.get("mabni_key")))
+	return call_site(m["console"], method, dict(data, tenant=m.get("tenant"), key=frappe.conf.get("buildiary_key")))
 
 
 @frappe.whitelist()
 def billing():
 	_owner()
-	info = _console("mimaar.saas.api.account", {}) or {}
+	info = _console("buildiary.saas.api.account", {}) or {}
 	info["state"] = state()
 	info["me"] = {"name": frappe.utils.get_fullname(frappe.session.user), "email": frappe.session.user}
 	return info
@@ -296,4 +296,4 @@ def pay(data):
 	if d.proof and len(d.proof) > 7_000_000:
 		frappe.throw(_("The photo is too large. Send a smaller one (under 5 MB)."))
 	d.submitted_by = f"{frappe.utils.get_fullname(frappe.session.user)} <{frappe.session.user}>"
-	return _console("mimaar.saas.api.payment_submit", {"data": d})
+	return _console("buildiary.saas.api.payment_submit", {"data": d})

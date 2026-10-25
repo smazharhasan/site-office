@@ -33,15 +33,15 @@ def boot(bootinfo):
 	import frappe
 
 	try:
-		from mimaar.ai import available
+		from buildiary.ai import available
 
 		provider = "On" if available() else "Off"
-		lock_po = frappe.db.get_single_value("Mimaar Settings", "lock_submitted_po")
+		lock_po = frappe.db.get_single_value("Buildiary Settings", "lock_submitted_po")
 	except Exception:
 		provider, lock_po = None, 1
-	bootinfo.mimaar = {
+	bootinfo.buildiary = {
 		"rtl": RTL,
-		"ai": bool((provider and provider != "Off") or frappe.conf.get("mimaar_fake_ai_file")),
+		"ai": bool((provider and provider != "Off") or frappe.conf.get("buildiary_fake_ai_file")),
 		"lock_po": bool(lock_po),
 	}
 

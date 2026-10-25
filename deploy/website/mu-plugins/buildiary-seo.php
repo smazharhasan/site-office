@@ -9,16 +9,16 @@ if (!defined('ABSPATH')) {
 	exit;
 }
 
-function mabni_seo_front() {
+function buildiary_seo_front() {
 	return !(is_admin() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST) || (defined('WP_CLI') && WP_CLI));
 }
 
-function mabni_seo_lang() {
-	return function_exists('mabni_lang') ? mabni_lang() : 'en';
+function buildiary_seo_lang() {
+	return function_exists('buildiary_lang') ? buildiary_lang() : 'en';
 }
 
 /** The page being shown, or null (404, search). */
-function mabni_seo_page() {
+function buildiary_seo_page() {
 	if (!is_singular()) {
 		return null;
 	}
@@ -26,63 +26,63 @@ function mabni_seo_page() {
 	return $p instanceof WP_Post ? $p : null;
 }
 
-function mabni_seo_title($post) {
-	$t = get_post_meta($post->ID, '_mabni_seo_title', true);
+function buildiary_seo_title($post) {
+	$t = get_post_meta($post->ID, '_buildiary_seo_title', true);
 	return $t ?: wp_strip_all_tags(get_the_title($post)) . ' · Buildiary';
 }
 
-function mabni_seo_description($post) {
+function buildiary_seo_description($post) {
 	return wp_strip_all_tags($post->post_excerpt ?: wp_trim_words(strip_shortcodes($post->post_content), 30, '…'));
 }
 
-function mabni_seo_asset($file) {
+function buildiary_seo_asset($file) {
 	return get_theme_file_uri('assets/' . $file);
 }
 
 // ---- the title in the browser tab and in search results
 add_filter('pre_get_document_title', function ($title) {
-	if (!mabni_seo_front()) {
+	if (!buildiary_seo_front()) {
 		return $title;
 	}
-	$p = mabni_seo_page();
-	return $p ? mabni_seo_title($p) : $title;
+	$p = buildiary_seo_page();
+	return $p ? buildiary_seo_title($p) : $title;
 }, 20);
 
 // ---- page images: width and height for the screenshots (no jump while loading; WordPress then
 //      loads the first one early and the rest only when scrolled to)
 add_filter('render_block_core/image', function ($html) {
-	if (strpos($html, '/themes/mabni/assets/') === false || strpos($html, ' width=') !== false) {
+	if (strpos($html, '/themes/buildiary/assets/') === false || strpos($html, ' width=') !== false) {
 		return $html;
 	}
-	return preg_replace('#<img (?=[^>]*/themes/mabni/assets/(?:en|ur|ar)-[a-z]+\.(?:webp|png))#', '<img width="780" height="1688" ', $html, 1);
+	return preg_replace('#<img (?=[^>]*/themes/buildiary/assets/(?:en|ur|ar)-[a-z]+\.(?:webp|png))#', '<img width="780" height="1688" ', $html, 1);
 });
 
 // ---- head: description, the other languages, social cards and structured data
 add_action('wp_head', function () {
-	if (!mabni_seo_front()) {
+	if (!buildiary_seo_front()) {
 		return;
 	}
-	$lang = mabni_seo_lang();
-	$post = mabni_seo_page();
-	$slug = function_exists('mabni_current_slug') ? mabni_current_slug() : '';
+	$lang = buildiary_seo_lang();
+	$post = buildiary_seo_page();
+	$slug = function_exists('buildiary_current_slug') ? buildiary_current_slug() : '';
 	if (is_404() || !$post) {
 		return;
 	}
-	$title = mabni_seo_title($post);
-	$desc = mabni_seo_description($post);
+	$title = buildiary_seo_title($post);
+	$desc = buildiary_seo_description($post);
 	$url = wp_get_canonical_url($post) ?: get_permalink($post);
 	if ($desc) {
 		echo '<meta name="description" content="' . esc_attr($desc) . "\" />\n";
 	}
 	// the same page in English, Urdu and Arabic
 	foreach (['en', 'ur', 'ar'] as $l) {
-		echo '<link rel="alternate" hreflang="' . $l . '" href="' . esc_url(mabni_url($slug, $l)) . "\" />\n";
+		echo '<link rel="alternate" hreflang="' . $l . '" href="' . esc_url(buildiary_url($slug, $l)) . "\" />\n";
 	}
-	echo '<link rel="alternate" hreflang="x-default" href="' . esc_url(mabni_url($slug, 'en')) . "\" />\n";
+	echo '<link rel="alternate" hreflang="x-default" href="' . esc_url(buildiary_url($slug, 'en')) . "\" />\n";
 
 	// social cards (WhatsApp, LinkedIn, Facebook, X)
 	$locales = ['en' => 'en_US', 'ur' => 'ur_PK', 'ar' => 'ar_SA'];
-	$img = mabni_seo_asset('og-' . $lang . '.png');
+	$img = buildiary_seo_asset('og-' . $lang . '.png');
 	$is_guide = strpos($slug, 'guides/') === 0;
 	$meta = [
 		['property', 'og:type', $is_guide ? 'article' : 'website'],
@@ -108,11 +108,11 @@ add_action('wp_head', function () {
 	foreach ($meta as [$attr, $key, $value]) {
 		echo '<meta ' . $attr . '="' . esc_attr($key) . '" content="' . esc_attr($value) . "\" />\n";
 	}
-	echo '<script type="application/ld+json">' . wp_json_encode(mabni_seo_graph($post, $slug, $lang, $title, $desc, $url), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "</script>\n";
+	echo '<script type="application/ld+json">' . wp_json_encode(buildiary_seo_graph($post, $slug, $lang, $title, $desc, $url), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "</script>\n";
 }, 1);
 
 /** Structured data for this page: the company, the website, the product, the page, its questions. */
-function mabni_seo_graph($post, $slug, $lang, $title, $desc, $url) {
+function buildiary_seo_graph($post, $slug, $lang, $title, $desc, $url) {
 	$home = home_url('/');
 	$org = [
 		'@type' => 'Organization',
@@ -120,9 +120,9 @@ function mabni_seo_graph($post, $slug, $lang, $title, $desc, $url) {
 		'name' => 'SMH Global Services',
 		'legalName' => 'SMH Global Services (Private) Limited',
 		'url' => 'https://www.smhglobal.com.pk',
-		'logo' => ['@type' => 'ImageObject', 'url' => mabni_seo_asset('smh-global.png')],
-		'email' => defined('MABNI_SUPPORT_EMAIL') ? MABNI_SUPPORT_EMAIL : 'info@smhglobal.com.pk',
-		'brand' => ['@type' => 'Brand', 'name' => 'Buildiary', 'logo' => mabni_seo_asset('buildiary-512.png')],
+		'logo' => ['@type' => 'ImageObject', 'url' => buildiary_seo_asset('smh-global.png')],
+		'email' => defined('BUILDIARY_SUPPORT_EMAIL') ? BUILDIARY_SUPPORT_EMAIL : 'info@smhglobal.com.pk',
+		'brand' => ['@type' => 'Brand', 'name' => 'Buildiary', 'logo' => buildiary_seo_asset('buildiary-512.png')],
 	];
 	$site = [
 		'@type' => 'WebSite',
@@ -133,7 +133,7 @@ function mabni_seo_graph($post, $slug, $lang, $title, $desc, $url) {
 		'inLanguage' => ['en', 'ur', 'ar'],
 		'publisher' => ['@id' => $home . '#org'],
 	];
-	$graph = [$org, $site, mabni_seo_app($lang)];
+	$graph = [$org, $site, buildiary_seo_app($lang)];
 
 	$types = ['about' => 'AboutPage', 'contact' => 'ContactPage', 'guides' => 'CollectionPage'];
 	$page = [
@@ -145,10 +145,10 @@ function mabni_seo_graph($post, $slug, $lang, $title, $desc, $url) {
 		'inLanguage' => $lang,
 		'isPartOf' => ['@id' => $home . '#website'],
 		'about' => ['@id' => $home . '#app'],
-		'primaryImageOfPage' => mabni_seo_asset('og-' . $lang . '.png'),
+		'primaryImageOfPage' => buildiary_seo_asset('og-' . $lang . '.png'),
 		'dateModified' => get_post_modified_time('c', true, $post),
 	];
-	$crumbs = mabni_seo_crumbs($slug, $lang);
+	$crumbs = buildiary_seo_crumbs($slug, $lang);
 	if ($crumbs) {
 		$page['breadcrumb'] = ['@id' => $url . '#crumbs'];
 		$graph[] = ['@type' => 'BreadcrumbList', '@id' => $url . '#crumbs', 'itemListElement' => $crumbs];
@@ -159,18 +159,18 @@ function mabni_seo_graph($post, $slug, $lang, $title, $desc, $url) {
 		$graph[] = [
 			'@type' => 'Article',
 			'@id' => $url . '#article',
-			'headline' => wp_strip_all_tags(mabni_seo_h1($post) ?: get_the_title($post)),
+			'headline' => wp_strip_all_tags(buildiary_seo_h1($post) ?: get_the_title($post)),
 			'description' => $desc,
 			'inLanguage' => $lang,
 			'mainEntityOfPage' => ['@id' => $url . '#page'],
-			'image' => mabni_seo_asset('og-' . $lang . '.png'),
+			'image' => buildiary_seo_asset('og-' . $lang . '.png'),
 			'datePublished' => get_post_time('c', true, $post),
 			'dateModified' => get_post_modified_time('c', true, $post),
 			'author' => ['@id' => $home . '#org'],
 			'publisher' => ['@id' => $home . '#org'],
 		];
 	}
-	$faq = mabni_seo_faq($post->post_content);
+	$faq = buildiary_seo_faq($post->post_content);
 	if ($faq) {
 		$graph[] = ['@type' => 'FAQPage', '@id' => $url . '#faq', 'url' => $url, 'inLanguage' => $lang, 'isPartOf' => ['@id' => $home . '#website'], 'mainEntity' => $faq];
 	}
@@ -178,7 +178,7 @@ function mabni_seo_graph($post, $slug, $lang, $title, $desc, $url) {
 }
 
 /** The product, with its current prices from the console. */
-function mabni_seo_app($lang) {
+function buildiary_seo_app($lang) {
 	$home = home_url('/');
 	$text = [
 		'en' => 'Construction site management app for home owners and builders: deliveries, the site store, payments, budget, build progress, inspections and the site team, on the phone. English, Urdu and Arabic. 7-day free trial.',
@@ -197,8 +197,8 @@ function mabni_seo_app($lang) {
 		'English, Urdu and Arabic',
 	];
 	$offers = [];
-	$pricing = function_exists('mabni_url') ? mabni_url('pricing', $lang) : home_url('/pricing/');
-	$data = function_exists('mabni_plans') ? mabni_plans() : ['plans' => []];
+	$pricing = function_exists('buildiary_url') ? buildiary_url('pricing', $lang) : home_url('/pricing/');
+	$data = function_exists('buildiary_plans') ? buildiary_plans() : ['plans' => []];
 	foreach ($data['plans'] ?? [] as $plan) {
 		foreach (['usd' => 'USD', 'PKR' => 'PKR', 'SAR' => 'SAR'] as $k => $cur) {
 			foreach (['month' => 'P1M', 'year' => 'P1Y'] as $per => $dur) {
@@ -228,8 +228,8 @@ function mabni_seo_app($lang) {
 		'applicationSubCategory' => 'Construction management software',
 		'operatingSystem' => 'Web browser, Android',
 		'inLanguage' => ['en', 'ur', 'ar'],
-		'image' => mabni_seo_asset('buildiary-512.png'),
-		'screenshot' => [mabni_seo_asset($lang . '-dash.webp'), mabni_seo_asset($lang . '-build.webp'), mabni_seo_asset($lang . '-store.webp'), mabni_seo_asset($lang . '-budget.webp')],
+		'image' => buildiary_seo_asset('buildiary-512.png'),
+		'screenshot' => [buildiary_seo_asset($lang . '-dash.webp'), buildiary_seo_asset($lang . '-build.webp'), buildiary_seo_asset($lang . '-store.webp'), buildiary_seo_asset($lang . '-budget.webp')],
 		'featureList' => $features,
 		'publisher' => ['@id' => $home . '#org'],
 		'countriesSupported' => ['PK', 'SA', 'AE', 'QA', 'OM', 'BH', 'KW'],
@@ -241,28 +241,28 @@ function mabni_seo_app($lang) {
 }
 
 /** The page's place in the site, from its address. */
-function mabni_seo_crumbs($slug, $lang) {
+function buildiary_seo_crumbs($slug, $lang) {
 	if ($slug === '') {
 		return [];
 	}
 	$names = ['en' => 'Home', 'ur' => 'ہوم', 'ar' => 'الرئيسية'];
-	$items = [['@type' => 'ListItem', 'position' => 1, 'name' => $names[$lang], 'item' => mabni_url('', $lang)]];
+	$items = [['@type' => 'ListItem', 'position' => 1, 'name' => $names[$lang], 'item' => buildiary_url('', $lang)]];
 	$path = '';
 	foreach (explode('/', $slug) as $i => $part) {
 		$path = ltrim($path . '/' . $part, '/');
 		$full = ($lang === 'en' ? '' : $lang . '/') . $path;
 		$page = get_page_by_path($full, OBJECT, 'page');
-		$items[] = ['@type' => 'ListItem', 'position' => $i + 2, 'name' => $page ? wp_strip_all_tags(get_the_title($page)) : $part, 'item' => mabni_url($path, $lang)];
+		$items[] = ['@type' => 'ListItem', 'position' => $i + 2, 'name' => $page ? wp_strip_all_tags(get_the_title($page)) : $part, 'item' => buildiary_url($path, $lang)];
 	}
 	return $items;
 }
 
-function mabni_seo_h1($post) {
+function buildiary_seo_h1($post) {
 	return preg_match('#<h1[^>]*>(.*?)</h1>#s', $post->post_content, $m) ? $m[1] : '';
 }
 
 /** The questions and answers shown on the page (the <details> blocks). */
-function mabni_seo_faq($content) {
+function buildiary_seo_faq($content) {
 	if (!preg_match_all('#<summary>(.*?)</summary>\s*(?:<!--[^>]*-->\s*)?<p[^>]*>(.*?)</p>#s', $content, $m, PREG_SET_ORDER)) {
 		return [];
 	}
@@ -338,10 +338,10 @@ add_action('init', function () {
 	if ($path === 'llms.txt') {
 		header('Content-Type: text/plain; charset=utf-8');
 		header('Cache-Control: public, max-age=3600');
-		echo mabni_llms_txt();
+		echo buildiary_llms_txt();
 		exit;
 	}
-	$key = get_option('mabni_indexnow_key');
+	$key = get_option('buildiary_indexnow_key');
 	if ($key && $path === $key . '.txt') {
 		header('Content-Type: text/plain; charset=utf-8');
 		echo $key;
@@ -349,7 +349,7 @@ add_action('init', function () {
 	}
 }, 0);
 
-function mabni_llms_txt() {
+function buildiary_llms_txt() {
 	$page = function ($path) {
 		$p = get_page_by_path($path, OBJECT, 'page');
 		if (!$p || $p->post_status !== 'publish') {
@@ -359,7 +359,7 @@ function mabni_llms_txt() {
 	};
 	$out = "# Buildiary\n\n> Buildiary is a construction site management app for people building their own home and for builders and contractors running client sites, mainly in Pakistan, Saudi Arabia and the Gulf. It records deliveries, the site store, payments, the budget, build progress, inspections and the site team on the phone, in English, Urdu and Arabic. It is made by SMH Global Services (Private) Limited (https://www.smhglobal.com.pk). Every new workspace is free for 7 days; plans are paid monthly or yearly in USD, PKR or SAR.\n\n";
 	$out .= "## Key facts\n\n- Two modes: Owner (someone building their own house) and Builder (a contractor running several client sites, each with its own store).\n- Works in any phone or computer browser; an Android app is available for site staff.\n- Languages: English, Urdu and Arabic, chosen per person; Urdu and Arabic read right to left.\n- Built on ERPNext (open-source accounting and stock), with double-entry accounts behind every payment.\n- Each customer workspace is a separate database with daily backups.\n";
-	$data = function_exists('mabni_plans') ? mabni_plans() : ['plans' => []];
+	$data = function_exists('buildiary_plans') ? buildiary_plans() : ['plans' => []];
 	foreach ($data['plans'] ?? [] as $p) {
 		if (!empty($p['usd'])) {
 			$out .= '- ' . $p['name'] . ' plan: up to ' . (int) $p['max_projects'] . ' projects and ' . (int) $p['max_users'] . ' users; USD ' . $p['usd']['month'] . ' a month or USD ' . $p['usd']['year'] . ' a year'
@@ -380,17 +380,17 @@ function mabni_llms_txt() {
 }
 
 // ---- IndexNow: tells Bing and the other IndexNow search engines straight away when a page changes
-function mabni_indexnow_key() {
-	$key = get_option('mabni_indexnow_key');
+function buildiary_indexnow_key() {
+	$key = get_option('buildiary_indexnow_key');
 	if (!$key) {
 		$key = strtolower(wp_generate_password(32, false, false));
-		update_option('mabni_indexnow_key', $key, false);
+		update_option('buildiary_indexnow_key', $key, false);
 	}
 	return $key;
 }
 
 /** Sends these addresses to IndexNow; only when the site is open to search engines. */
-function mabni_indexnow($urls) {
+function buildiary_indexnow($urls) {
 	$urls = array_values(array_unique(array_filter($urls)));
 	if (!$urls || !get_option('blog_public')) {
 		return 'skipped';
@@ -399,7 +399,7 @@ function mabni_indexnow($urls) {
 	if (filter_var($host, FILTER_VALIDATE_IP) || preg_match('/(sslip|nip)\.io$|localhost|\.local$|\.test$/', $host)) {
 		return 'skipped (temporary address)';
 	}
-	$key = mabni_indexnow_key();
+	$key = buildiary_indexnow_key();
 	$r = wp_remote_post('https://api.indexnow.org/indexnow', [
 		'timeout' => 15,
 		'headers' => ['Content-Type' => 'application/json; charset=utf-8'],
@@ -408,14 +408,14 @@ function mabni_indexnow($urls) {
 	return is_wp_error($r) ? 'error: ' . $r->get_error_message() : 'HTTP ' . wp_remote_retrieve_response_code($r) . ' for ' . count($urls) . ' pages';
 }
 
-function mabni_indexnow_all() {
+function buildiary_indexnow_all() {
 	$ids = get_posts(['post_type' => 'page', 'post_status' => 'publish', 'numberposts' => -1, 'fields' => 'ids']);
-	return mabni_indexnow(array_map('get_permalink', $ids));
+	return buildiary_indexnow(array_map('get_permalink', $ids));
 }
 
 // pages edited in WordPress are announced too (the update script announces its own changes)
 add_action('transition_post_status', function ($new, $old, $post) {
 	if ($new === 'publish' && $post->post_type === 'page' && !(defined('WP_CLI') && WP_CLI)) {
-		mabni_indexnow([get_permalink($post)]);
+		buildiary_indexnow([get_permalink($post)]);
 	}
 }, 10, 3);

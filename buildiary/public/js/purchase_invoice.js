@@ -3,22 +3,22 @@ frappe.ui.form.on("Purchase Invoice", {
 	refresh(frm) {
 		const d = frm.doc;
 		if (d.docstatus === 0 && !d.is_return) {
-			frm.add_custom_button(__("Scan the bill"), () => mimaar.scan_invoice(frm)).addClass("btn-primary");
+			frm.add_custom_button(__("Scan the bill"), () => buildiary.scan_invoice(frm)).addClass("btn-primary");
 		}
 		if (d.docstatus === 1 && flt(d.outstanding_amount) > 0) {
-			frm.dashboard.set_headline(__("Due to the supplier: {0}. Pay it with Create → Payment; advances already paid can be set against it.", [mimaar.money(d.outstanding_amount)]), "orange");
+			frm.dashboard.set_headline(__("Due to the supplier: {0}. Pay it with Create → Payment; advances already paid can be set against it.", [buildiary.money(d.outstanding_amount)]), "orange");
 		}
 	},
 });
 
-mimaar.scan_invoice = async function (frm) {
-	await mimaar.save_first(frm);
-	const url = await mimaar.pick_file({ doctype: frm.doctype, docname: frm.doc.name });
-	await frm.set_value("mimaar_bill_scan", url);
-	if (!mimaar.ai_on()) { await frm.save(); return frappe.show_alert({ message: __("Scan attached. Enter the bill number and quantities."), indicator: "blue" }); }
+buildiary.scan_invoice = async function (frm) {
+	await buildiary.save_first(frm);
+	const url = await buildiary.pick_file({ doctype: frm.doctype, docname: frm.doc.name });
+	await frm.set_value("buildiary_bill_scan", url);
+	if (!buildiary.ai_on()) { await frm.save(); return frappe.show_alert({ message: __("Scan attached. Enter the bill number and quantities."), indicator: "blue" }); }
 	frappe.dom.freeze(__("Reading the document…"));
 	let r;
-	try { r = await frappe.call({ method: "mimaar.ai.read_invoice", args: { file_url: url, doctype: frm.doctype, name: frm.doc.name } }); } finally { frappe.dom.unfreeze(); }
+	try { r = await frappe.call({ method: "buildiary.ai.read_invoice", args: { file_url: url, doctype: frm.doctype, name: frm.doc.name } }); } finally { frappe.dom.unfreeze(); }
 	const x = r.message || {};
 	if (x.invoiceNo) await frm.set_value("bill_no", x.invoiceNo);
 	if (x.date) await frm.set_value("bill_date", x.date);
@@ -37,6 +37,6 @@ mimaar.scan_invoice = async function (frm) {
 	}
 	await frm.save();
 	if (x.grandTotal && Math.abs(flt(frm.doc.grand_total) - x.grandTotal) > 1)
-		frappe.msgprint(__("The total written on the bill is {0}; at the purchase order rates the received quantities come to {1}. Check before submitting.", [mimaar.money(x.grandTotal), mimaar.money(frm.doc.grand_total)]));
+		frappe.msgprint(__("The total written on the bill is {0}; at the purchase order rates the received quantities come to {1}. Check before submitting.", [buildiary.money(x.grandTotal), buildiary.money(frm.doc.grand_total)]));
 	else frappe.show_alert({ message: __("Filled in from the bill. Check every line and number."), indicator: "green" }, 7);
 };

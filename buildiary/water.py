@@ -1,6 +1,6 @@
 """Water on site: the tanks, their daily level, and the tankers that fill them.
 
-Water is kept as stock (item WATER, in gallons, in the water store set in Mimaar Settings):
+Water is kept as stock (item WATER, in gallons, in the water store set in Buildiary Settings):
 - a tanker adds water: Stock Entry (Material Receipt) at the tanker's cost;
 - each level reading turns the tanks' levels into gallons; when the tanks hold less than the
   books, the difference is booked as used (Stock Entry, Material Issue to the project).
@@ -14,7 +14,7 @@ import frappe
 from frappe import _
 from frappe.utils import add_days, cint, flt, get_first_day, getdate, nowdate, nowtime
 
-from mimaar.field import _company, _hhmm, _need, _only, _parse, _photo_ok, _project, _psql, _settings, caps
+from buildiary.field import _company, _hhmm, _need, _only, _parse, _photo_ok, _project, _psql, _settings, caps
 
 ITEM = "WATER"
 REJECTED = "Brackish (rejected)"
@@ -31,11 +31,11 @@ def _can():
 def _wh():
 	wh = _settings().water_warehouse
 	if not wh:
-		from mimaar.setup import water_setup
+		from buildiary.setup import water_setup
 
 		water_setup()
-		frappe.clear_document_cache("Mimaar Settings", "Mimaar Settings")
-		wh = frappe.db.get_single_value("Mimaar Settings", "water_warehouse")
+		frappe.clear_document_cache("Buildiary Settings", "Buildiary Settings")
+		wh = frappe.db.get_single_value("Buildiary Settings", "water_warehouse")
 	return wh
 
 
@@ -89,8 +89,8 @@ def _stock_entry(kind, gallons, ref, rate=0, remarks=None, project=None):
 		d = {"stock_entry_type": "Material Receipt", "to_warehouse": wh}
 	else:
 		row.update({"s_warehouse": wh})
-		d = {"stock_entry_type": "Material Issue", "from_warehouse": wh, "mimaar_issued_to": _("Site work (water used)")}
-	se = frappe.get_doc(dict(d, doctype="Stock Entry", company=_company(), project=project or _project(), remarks=remarks, mimaar_water_ref=ref, items=[row]))
+		d = {"stock_entry_type": "Material Issue", "from_warehouse": wh, "buildiary_issued_to": _("Site work (water used)")}
+	se = frappe.get_doc(dict(d, doctype="Stock Entry", company=_company(), project=project or _project(), remarks=remarks, buildiary_water_ref=ref, items=[row]))
 	se.flags.ignore_permissions = True
 	se.insert()
 	se.submit()
@@ -98,7 +98,7 @@ def _stock_entry(kind, gallons, ref, rate=0, remarks=None, project=None):
 
 
 def cancel_entries(ref):
-	for n in frappe.get_all("Stock Entry", filters={"mimaar_water_ref": ref, "docstatus": 1}, pluck="name", order_by="creation desc"):
+	for n in frappe.get_all("Stock Entry", filters={"buildiary_water_ref": ref, "docstatus": 1}, pluck="name", order_by="creation desc"):
 		se = frappe.get_doc("Stock Entry", n)
 		se.flags.ignore_permissions = True
 		se.cancel()
@@ -221,7 +221,7 @@ def reading_save(tank, level_pct, photo=None, notes=None, location=None):
 		"gallons": flt(t.capacity_gallons) * lv / 100, "photo": photo, "notes": notes, "location": location, "project": _project()})
 	doc.insert()
 	used, warning = book_usage(doc.name)
-	_queue("mimaar.water.check_reading", name=doc.name)
+	_queue("buildiary.water.check_reading", name=doc.name)
 	return {"name": doc.name, "gallons": doc.gallons, "used": used, "warning": warning}
 
 
@@ -229,7 +229,7 @@ def reading_save(tank, level_pct, photo=None, notes=None, location=None):
 def tanker_save(data, check=None):
 	"""A water tanker at the gate: number plate, size, water type, TDS, bill; the receiver by site card and face."""
 	c = _can()
-	from mimaar.identity import needs_card, use_check
+	from buildiary.identity import needs_card, use_check
 
 	d = frappe._dict(_parse(data) or {})
 	if needs_card("card_for_receiving") and not check:
@@ -247,7 +247,7 @@ def tanker_save(data, check=None):
 	if tank and not frappe.db.exists("Water Tank", tank):
 		frappe.throw(_("Choose the tank it was emptied into."))
 	if cint(d.paid_from_petty_cash) and not rejected and flt(d.cost) > 0:
-		from mimaar import petty
+		from buildiary import petty
 
 		h = petty.holder_for(d.holder)
 		if not h:
@@ -272,11 +272,11 @@ def tanker_save(data, check=None):
 	if not rejected and cint(d.tds_ppm) > _tds_limit():
 		warnings.append(_("TDS {0} ppm is above {1}: not fit for concrete or curing.").format(cint(d.tds_ppm), _tds_limit()))
 	if doc.paid_from_petty_cash and flt(doc.cost) > 0:
-		from mimaar import petty
+		from buildiary import petty
 
 		pc = petty.water_expense(doc, d.holder)
 		doc.db_set("petty_cash_entry", pc)
-	_queue("mimaar.water.check_tanker", name=doc.name)
+	_queue("buildiary.water.check_tanker", name=doc.name)
 	return {"name": doc.name, "warnings": warnings}
 
 
@@ -304,7 +304,7 @@ def tank_save(data):
 # ---------------------------------------------------------------- AI checks (run in the background after saving)
 def _queue(method, **kw):
 	s = _settings()
-	from mimaar.ai import available
+	from buildiary.ai import available
 
 	if not available():
 		return
@@ -338,7 +338,7 @@ def _tanker_result(r):
 
 
 def check_tanker(name):
-	from mimaar import ai
+	from buildiary import ai
 
 	doc = frappe.get_doc("Water Tanker", name)
 	files = [f for f in (doc.tanker_photo, doc.tds_photo, doc.bill_scan) if f]
@@ -354,13 +354,13 @@ def check_tanker(name):
 def verify_draft(data):
 	"""Verify with AI before saving: the tanker photo (number plate), the TDS photo and the bill."""
 	_can()
-	from mimaar import ai
+	from buildiary import ai
 
 	d = frappe._dict(_parse(data) or {})
 	files = [f for f in (d.tanker_photo, d.tds_photo, d.bill_scan) if _photo_ok(f)]
 	if not files:
 		frappe.throw(_("Take a photo of the tanker with its number plate."))
-	fake = frappe.conf.get("mimaar_fake_ai_file")
+	fake = frappe.conf.get("buildiary_fake_ai_file")
 	if fake:
 		r = ai.ask_many(_tanker_prompt(d), files)
 	else:
@@ -370,7 +370,7 @@ def verify_draft(data):
 
 
 def check_reading(name):
-	from mimaar import ai
+	from buildiary import ai
 
 	doc = frappe.get_doc("Water Tank Reading", name)
 	if not doc.photo:

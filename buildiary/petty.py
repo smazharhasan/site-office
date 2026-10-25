@@ -17,7 +17,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt, get_first_day, getdate, now_datetime, nowdate
 
-from mimaar.field import _company, _only, _parse, _photo_ok, _project, _psql, _roles, _settings, caps
+from buildiary.field import _company, _only, _parse, _photo_ok, _project, _psql, _roles, _settings, caps
 
 TYPES = ("Expense", "Cash given", "Cash returned")
 METHODS = ("Cash in hand", "Bank transfer", "Cheque", "JazzCash / Easypaisa", "Raast")
@@ -38,7 +38,7 @@ def _can():
 
 
 def _me():
-	from mimaar.identity import my_person
+	from buildiary.identity import my_person
 
 	return my_person()
 
@@ -55,11 +55,11 @@ def holders():
 def _cash_account():
 	acc = _settings().petty_cash_account
 	if not acc:
-		from mimaar.setup import petty_setup
+		from buildiary.setup import petty_setup
 
 		petty_setup()
-		frappe.clear_document_cache("Mimaar Settings", "Mimaar Settings")
-		acc = frappe.db.get_single_value("Mimaar Settings", "petty_cash_account")
+		frappe.clear_document_cache("Buildiary Settings", "Buildiary Settings")
+		acc = frappe.db.get_single_value("Buildiary Settings", "petty_cash_account")
 	if not acc:
 		frappe.throw(_("The petty cash account isn't set up. Open Settings and choose it."))
 	return acc
@@ -207,7 +207,7 @@ def entry(name):
 def entry_save(data, check=None):
 	"""Record an expense, cash given or cash returned. The owner's own entries are approved at once."""
 	_can()
-	from mimaar.identity import needs_card, use_check
+	from buildiary.identity import needs_card, use_check
 
 	d = frappe._dict(_parse(data) or {})
 	typ = d.entry_type or "Expense"
@@ -304,7 +304,7 @@ def decide(name, status, note=None):
 		doc.checked_at = now_datetime()
 		doc.check_note = note
 		doc.flags.ignore_permissions = True
-		doc.flags.mimaar_deciding = True
+		doc.flags.buildiary_deciding = True
 		doc.save()
 	else:
 		frappe.throw(_("Approve or reject."))

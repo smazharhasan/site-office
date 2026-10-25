@@ -4,20 +4,20 @@
 #   bash deploy/website/setup.sh            first set-up, or update the theme and the pages
 #   bash deploy/website/setup.sh --force    also overwrite pages that were edited in WordPress
 #
-# The site answers at https://$MABNI_BASE and https://www.$MABNI_BASE (from /opt/mimaar/.env).
-# The WordPress admin password is saved in Parameter Store: /mabni/wordpress-admin-password.
+# The site answers at https://$BUILDIARY_BASE and https://www.$BUILDIARY_BASE (from /opt/buildiary/.env).
+# The WordPress admin password is saved in Parameter Store: /buildiary/wordpress-admin-password.
 set -euo pipefail
 SRC="$(cd "$(dirname "$0")" && pwd)"
 FORCE=""; [ "${1:-}" = "--force" ] && FORCE="force"
-set -a; . /opt/mimaar/.env; set +a
-BASE="${MABNI_BASE:?MABNI_BASE missing in /opt/mimaar/.env}"
-CONSOLE="${MABNI_CONSOLE:-my.$BASE}"
+set -a; . /opt/buildiary/.env; set +a
+BASE="${BUILDIARY_BASE:?BUILDIARY_BASE missing in /opt/buildiary/.env}"
+CONSOLE="${BUILDIARY_CONSOLE:-my.$BASE}"
 W=/opt/website
 mkdir -p "$W"
 cd "$W"
 if [ ! -f .env ]; then
   gen() { tr -dc 'A-HJ-NP-Za-km-z2-9' </dev/urandom | head -c "$1"; }
-  printf 'DB_PASSWORD=%s\nDB_ROOT_PASSWORD=%s\nWP_ADMIN_PASSWORD=Mabni-%s\n' "$(gen 24)" "$(gen 28)" "$(gen 14)" > .env
+  printf 'DB_PASSWORD=%s\nDB_ROOT_PASSWORD=%s\nWP_ADMIN_PASSWORD=Buildiary-%s\n' "$(gen 24)" "$(gen 28)" "$(gen 14)" > .env
   chmod 600 .env
 fi
 set -a; . ./.env; set +a
@@ -25,7 +25,7 @@ set -a; . ./.env; set +a
 # the theme, the site plugin and the pages, from the repository (the folders are emptied and
 # refilled, not replaced, so the running WordPress container sees the new files)
 for d in theme mu-plugins content; do mkdir -p "$d"; find "$d" -mindepth 1 -delete; done
-cp -r "$SRC/theme/mabni/." theme/
+cp -r "$SRC/theme/buildiary/." theme/
 cp -r "$SRC/mu-plugins/." mu-plugins/
 cp -r "$SRC/content/." content/
 cat "$SRC/import.php" > import.php
@@ -62,19 +62,19 @@ services:
     environment:
       <<: *dbenv
       WORDPRESS_CONFIG_EXTRA: |
-        define('MABNI_CONSOLE', getenv('MABNI_CONSOLE'));
-        define('MABNI_CONSOLE_INTERNAL', 'http://mimaar-frontend:8080');
-        define('MABNI_SUPPORT_EMAIL', getenv('MABNI_SUPPORT_EMAIL') ?: 'info@smhglobal.com.pk');
-        define('MABNI_WHATSAPP', getenv('MABNI_WHATSAPP') ?: '');
+        define('BUILDIARY_CONSOLE', getenv('BUILDIARY_CONSOLE'));
+        define('BUILDIARY_CONSOLE_INTERNAL', 'http://buildiary-frontend:8080');
+        define('BUILDIARY_SUPPORT_EMAIL', getenv('BUILDIARY_SUPPORT_EMAIL') ?: 'info@smhglobal.com.pk');
+        define('BUILDIARY_WHATSAPP', getenv('BUILDIARY_WHATSAPP') ?: '');
         if (($$_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https') { $$_SERVER['HTTPS'] = 'on'; }
         define('DISALLOW_FILE_EDIT', true);
         define('WP_AUTO_UPDATE_CORE', 'minor');
-      MABNI_CONSOLE: ${MABNI_CONSOLE}
-      MABNI_SUPPORT_EMAIL: ${MABNI_SUPPORT_EMAIL:-info@smhglobal.com.pk}
-      MABNI_WHATSAPP: ${MABNI_WHATSAPP:-}
+      BUILDIARY_CONSOLE: ${BUILDIARY_CONSOLE}
+      BUILDIARY_SUPPORT_EMAIL: ${BUILDIARY_SUPPORT_EMAIL:-info@smhglobal.com.pk}
+      BUILDIARY_WHATSAPP: ${BUILDIARY_WHATSAPP:-}
     volumes:
       - wp:/var/www/html
-      - ./theme:/var/www/html/wp-content/themes/mabni:ro
+      - ./theme:/var/www/html/wp-content/themes/buildiary:ro
       - ./mu-plugins:/var/www/html/wp-content/mu-plugins:ro
     networks:
       default:
@@ -88,10 +88,10 @@ services:
       db: { condition: service_healthy }
     environment:
       <<: *dbenv
-      MABNI_CONSOLE: ${MABNI_CONSOLE}
+      BUILDIARY_CONSOLE: ${BUILDIARY_CONSOLE}
     volumes:
       - wp:/var/www/html
-      - ./theme:/var/www/html/wp-content/themes/mabni:ro
+      - ./theme:/var/www/html/wp-content/themes/buildiary:ro
       - ./mu-plugins:/var/www/html/wp-content/mu-plugins:ro
       - ./content:/content:ro
       - ./import.php:/import.php:ro
@@ -101,23 +101,23 @@ volumes:
   db:
   wp:
 EOF
-grep -q '^MABNI_CONSOLE=' .env || echo "MABNI_CONSOLE=$CONSOLE" >> .env
+grep -q '^BUILDIARY_CONSOLE=' .env || echo "BUILDIARY_CONSOLE=$CONSOLE" >> .env
 docker compose pull -q
 docker compose up -d
 wp() { docker compose run --rm -T --entrypoint wp cli "$@"; }
 for i in $(seq 1 30); do [ -f "$(docker volume inspect website_wp -f '{{.Mountpoint}}')/wp-config.php" ] && break; sleep 3; done
 if ! wp core is-installed 2>/dev/null; then
-  wp core install --url="https://$BASE" --title="Buildiary" --admin_user=mabni-admin --admin_password="$WP_ADMIN_PASSWORD" --admin_email="${MABNI_OWN_EMAIL:-info@smhglobal.com.pk}" --skip-email
+  wp core install --url="https://$BASE" --title="Buildiary" --admin_user=buildiary-admin --admin_password="$WP_ADMIN_PASSWORD" --admin_email="${BUILDIARY_OWN_EMAIL:-info@smhglobal.com.pk}" --skip-email
   wp option update blogdescription "Construction site management"
   wp option update timezone_string "Asia/Karachi"
   # a temporary address is kept out of search engines; switched on when the real domain is in place
   case "$BASE" in *sslip.io|*nip.io) wp option update blog_public 0 ;; *) wp option update blog_public 1 ;; esac
   export PATH="$PATH:/snap/bin"
   REGION="$(curl -s -H "X-aws-ec2-metadata-token: $(curl -s -X PUT http://169.254.169.254/latest/api/token -H 'X-aws-ec2-metadata-token-ttl-seconds: 60')" http://169.254.169.254/latest/meta-data/placement/region || true)"
-  [ -n "$REGION" ] && aws ssm put-parameter --region "$REGION" --name /mabni/wordpress-admin-password --type SecureString --value "$WP_ADMIN_PASSWORD" --overwrite >/dev/null \
-    && echo "WordPress admin password saved in Parameter Store (/mabni/wordpress-admin-password)" || true
+  [ -n "$REGION" ] && aws ssm put-parameter --region "$REGION" --name /buildiary/wordpress-admin-password --type SecureString --value "$WP_ADMIN_PASSWORD" --overwrite >/dev/null \
+    && echo "WordPress admin password saved in Parameter Store (/buildiary/wordpress-admin-password)" || true
 fi
-wp theme activate mabni
+wp theme activate buildiary
 wp option update blogname "Buildiary" >/dev/null
 wp option update blogdescription "Construction site management app for home owners and builders" >/dev/null
 wp language core install ur ar >/dev/null 2>&1 || echo "Language packs not installed (no internet?)"
@@ -144,4 +144,4 @@ $BASE, www.$BASE {
 }
 EOF
 docker compose -f /opt/edge/compose.yml exec -T caddy caddy reload --config /etc/caddy/Caddyfile
-echo "WEBSITE READY: https://$BASE (admin: https://$BASE/wp-admin, user mabni-admin)"
+echo "WEBSITE READY: https://$BASE (admin: https://$BASE/wp-admin, user buildiary-admin)"

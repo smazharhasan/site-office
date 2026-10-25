@@ -6,7 +6,7 @@ import frappe
 from frappe import _
 from frappe.utils import add_days, cint, flt, getdate, nowdate
 
-from mimaar.field import _company, _only, _project, _psql, _store, caps, dashboard as old_dashboard
+from buildiary.field import _company, _only, _project, _psql, _store, caps, dashboard as old_dashboard
 
 
 def _sql1(q, a=None):
@@ -18,7 +18,7 @@ def _sql1(q, a=None):
 def overview():
 	c = caps()
 	partner = c.get("partner")
-	from mimaar import petty
+	from buildiary import petty
 
 	full_money = petty.approver() or c["money"]
 	today = nowdate()
@@ -31,7 +31,7 @@ def overview():
 		tiles["paid"] = {"paid": k["paid"], "committed": k["committed"], "due_now": k["due_now"]}
 		tiles["budget"] = {"budget": k["budget"], "committed": k["committed"]}
 	if (c["store"] or c["site"]) and not partner:
-		from mimaar import stores
+		from buildiary import stores
 
 		bins, received, released, returned, on_order, reorder = stores._figures(_store())
 		low = [code for code, q in bins.items() if reorder.get(code) and q <= reorder[code]]
@@ -71,7 +71,7 @@ def overview():
 		g = {"quote": "Buying", "order": "Buying", "receive": "Stores", "bill": "Money", "billnew": "Money", "snag": "Quality", "task": "Build", "worker": "People"}.get(a["go"][0], "Other")
 		acts.append(dict(a, g=g))
 	if (c["store"] or c["site"]) and not partner:
-		from mimaar import water
+		from buildiary import water
 
 		read = {r for r in frappe.get_all("Water Tank Reading", filters=_only({"date": today}), pluck="tank")}
 		missing = [t.name for t in water._level_tanks() if t.name not in read]
@@ -86,7 +86,7 @@ def overview():
 			acts.append({"k": "warn", "t": _("Check petty cash: Rs {0} by {1} ({2})").format(frappe.format(e.amount, {"fieldtype": "Float", "precision": 0}), e.holder_name, _(e.category or "")),
 				"go": ["petty", e.name], "g": "Money"})
 	if c["site"]:
-		from mimaar import build
+		from buildiary import build
 
 		for s in [s for s in build._stage_rows() if s["state"] == "behind"][:5]:
 			acts.append({"k": "bad", "t": _("Behind plan: {0} ({1}% built, {2}% planned)").format(s["title"], round(s["built"]), round(s["planned"])), "go": ["stage", s["name"]], "g": "Build"})
@@ -104,14 +104,14 @@ def overview():
 	if (c["people"] or c["site"]) and not partner:
 		panels["labour"] = labour_today()
 	if c["site"] or c["owner"]:
-		from mimaar import build
+		from buildiary import build
 
 		s = build.stages()
 		panels["stages"] = {"counts": s["counts"], "now": s["now"], "next": s["next"], "built": s["built"], "planned": s["planned"],
 			"phases": [{"name": p["name"], "start": p["start"], "end": p["end"], "built": p["built"], "planned": p["planned"]} for p in s["phases"]]}
 	if (c["store"] or c["site"]) and not partner:
 		rel = frappe.db.sql(f"""select s.posting_date d, count(distinct s.name) n, sum(x.transfer_qty) q from `tabStock Entry` s join `tabStock Entry Detail` x on x.parent = s.name
-			where s.docstatus = 1 and s.stock_entry_type = 'Material Issue' and ifnull(s.mimaar_water_ref, '') = '' and s.posting_date >= %s{_psql('s')} group by s.posting_date""", add_days(today, -13), as_dict=True)
+			where s.docstatus = 1 and s.stock_entry_type = 'Material Issue' and ifnull(s.buildiary_water_ref, '') = '' and s.posting_date >= %s{_psql('s')} group by s.posting_date""", add_days(today, -13), as_dict=True)
 		m = {str(r.d): cint(r.n) for r in rel}
 		days = [str(add_days(today, -i)) for i in range(13, -1, -1)]
 		panels["released"] = {"days": days, "count": [m.get(d, 0) for d in days]}
@@ -121,7 +121,7 @@ def overview():
 def budget_by_category():
 	"""Budget, booked (spent) and ordered-but-not-yet-billed, by budget category."""
 	co = _company()
-	rows = frappe.db.sql(f"""select coalesce(nullif(a.mimaar_budget_category, ''), 'Other') cat, b.account, sum(b.budget_amount) budget
+	rows = frappe.db.sql(f"""select coalesce(nullif(a.buildiary_budget_category, ''), 'Other') cat, b.account, sum(b.budget_amount) budget
 		from `tabBudget` b join `tabAccount` a on a.name = b.account where b.docstatus = 1 and b.company = %s{_psql('b')} group by cat, b.account""", co, as_dict=True)
 	spent = dict(frappe.db.sql(f"select account, sum(debit - credit) from `tabGL Entry` where is_cancelled = 0 and company = %s{_psql()} group by account", co))
 	ordered = dict(frappe.db.sql(f"""select i.expense_account, sum(i.base_net_amount * (1 - least(1, coalesce(p.per_billed, 0) / 100))) from `tabPurchase Order Item` i
