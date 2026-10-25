@@ -49,7 +49,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--mb-amber); outl
 .mb-head { position: sticky; top: 0; z-index: 50; background: rgba(255, 255, 255, .94); backdrop-filter: blur(10px); border-bottom: 1px solid var(--mb-line); }
 .mb-head-in { display: flex; align-items: center; gap: 20px; min-height: 68px; }
 .mb-brand { display: inline-flex; align-items: center; gap: 10px; color: var(--mb-ink); text-decoration: none; }
-.mb-brand span { font: 800 1.45rem/1 var(--mb-display); letter-spacing: -.01em; }
+.mb-brand .bd-name { height: 26px; width: auto; display: block; }
 .mb-nav { display: flex; gap: 4px; margin-inline-start: 12px; flex: 1; }
 .mb-nav a { color: var(--mb-ink); text-decoration: none; padding: 8px 12px; border-radius: 8px; font-weight: 500; }
 .mb-nav a:hover, .mb-nav a[aria-current] { background: var(--mb-concrete); }
@@ -70,7 +70,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--mb-amber); outl
 	.mb-menu { display: inline-flex; }
 	.mb-head-end { margin-inline-start: auto; }
 }
-@media (max-width: 420px) { .mb-head-end .mb-btn-sm { padding: 10px 12px; font-size: .9rem; } .mb-brand span { font-size: 1.25rem; } }
+@media (max-width: 420px) { .mb-head-end .mb-btn-sm { padding: 10px 12px; font-size: .9rem; } .mb-brand .bd-name { height: 22px; } }
 
 /* ---- buttons */
 .mb-btn, .wp-block-button__link { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--mb-amber); color: #1B1405 !important; text-decoration: none; font: 700 1rem/1.2 var(--mb-display); padding: 14px 22px; border-radius: 12px; border: 0; min-height: 48px; box-sizing: border-box; transition: filter .15s; }
@@ -268,5 +268,3 @@ body:is(.lang-ar, .lang-ur) .mb-more a::after { content: " ←"; }
 .mb-narrow .mb-lede { max-width: 780px; }
 .mb-narrow h1 { font-size: clamp(1.9rem, 4vw, 2.7rem); }
 .mb-foot-in > div > a { font-size: .95rem; }
-.mb-brand .bd-d { font-style: normal; color: #E9A21B; }
-.mb-foot .mb-brand .bd-d, .mb-hero .bd-d { color: var(--mb-amber); }

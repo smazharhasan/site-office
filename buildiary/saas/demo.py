@@ -3,7 +3,7 @@ anyone who wants to see Buildiary with data in it:
 
     bench --site <workspace> execute buildiary.saas.demo.make
 
-Amounts follow the company's currency (rupees, or riyals at about 1/75). Safe to run once
+Amounts follow the company's currency (rupees; riyals and dirhams at about 1/75; dollars at 1/280). Safe to run once
 on a fresh workspace; it does nothing if the sample project is already there."""
 
 import random
@@ -18,10 +18,14 @@ RULES = ("po_needs_final_quotation", "require_dn_scan", "require_receiver_photo"
 	"require_attendance_photo", "card_for_store", "card_for_receiving", "card_for_petty_cash", "petty_bill_required", "petty_needs_budget")
 
 
+# rupees to the company's money, roughly (the sample project's figures are written in rupees)
+SCALE = {"PKR": 1.0, "INR": 1.0, "SAR": 1 / 75.0, "AED": 1 / 76.0, "QAR": 1 / 77.0, "USD": 1 / 280.0}
+
+
 def _k():
 	co = frappe.db.get_single_value("Global Defaults", "default_company")
 	cur = frappe.db.get_value("Company", co, "default_currency")
-	return (1.0 if cur in ("PKR", "INR") else 1 / 75.0), co
+	return SCALE.get(cur, 1 / 75.0), co
 
 
 def _r(v, k, step=1):

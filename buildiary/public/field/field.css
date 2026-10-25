@@ -509,5 +509,6 @@ html[data-theme="dark"] .maker .mk-l{display:block}
 /* the Buildiary logo on the sign-in screen: the BD mark on its blue tile, the shared d of the name in amber */
 .login .logo,html:not([data-skin="colour"]) .login .logo{background:#1E3A5F;padding:0;overflow:hidden}
 .login .logo svg{width:100%;height:100%;display:block}
-.brandname .bd-d{font-style:normal;color:#E9A21B}
-html[data-theme=dark] .brandname .bd-d{color:#F2B01E}
+.brandname{color:#1E3A5F;margin:4px 0 2px}
+.brandname .bd-name{height:32px;width:auto;display:inline-block}
+html[data-theme=dark] .brandname{color:#fff}
