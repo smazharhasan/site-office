@@ -95,6 +95,8 @@ async function upload(file) {
 const pending = {}; let seq = 0;
 window.BuildiaryNative = window.BuildiaryNative || {};
 window.BuildiaryNative.resolve = (id, res) => { const p = pending[id]; if (!p) return; delete pending[id]; if (res && res.error) p.reject(new UserError(res.error)); else p.resolve(res || {}); };
+// the Android app 1.0.0 answers under its earlier name: remove this line once every phone has 1.1.0 or later
+window.MimaarNative = window.BuildiaryNative;
 function native(type, data = {}) {
   return new Promise((resolve, reject) => { const id = ++seq; pending[id] = { resolve, reject }; window.ReactNativeWebView.postMessage(JSON.stringify({ id, type, csrf: CSRF(), ...data })); });
 }
