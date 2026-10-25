@@ -12,20 +12,20 @@ def _send(t, subject, body):
 	if not t.email:
 		return
 	s = settings()
-	foot = f"<p style='color:#667'>Mabni · SMH Global Services<br>{escape_html(s.support_email or '')} {escape_html(s.support_whatsapp or '')}</p>"
+	foot = f"<p style='color:#667'>Buildiary · SMH Global Services<br>{escape_html(s.support_email or '')} {escape_html(s.support_whatsapp or '')}</p>"
 	try:
 		frappe.sendmail(recipients=[t.email], subject=subject, message=body + foot, delayed=True, reference_doctype="Mabni Tenant", reference_name=t.name)
 	except Exception:
-		frappe.log_error(f"Mabni: could not queue the email '{subject}'")
+		frappe.log_error(f"Buildiary: could not queue the email '{subject}'")
 
 
 def welcome(t):
 	url = f"https://{t.site_host}"
-	_send(t, "Your Mabni workspace is ready", f"""<p>Assalam-o-Alaikum {escape_html(t.contact_name)},</p>
+	_send(t, "Your Buildiary workspace is ready", f"""<p>Assalam-o-Alaikum {escape_html(t.contact_name)},</p>
 <p>Your workspace <b>{escape_html(t.company_name)}</b> is ready at <a href="{url}">{url}</a>.</p>
 <p>Sign in with <b>{escape_html(t.email)}</b> and the password you chose. Your free trial runs until <b>{frappe.format(t.trial_ends, 'Date')}</b>.</p>
-<p>On your phone, open the address in the browser and choose <i>Add to Home Screen</i>, or install the Mabni app and type <b>{escape_html(t.subdomain)}</b>.</p>""")
-	notify_admins(f"Mabni: new customer {t.company_name}", f"{escape_html(t.contact_name)} ({escape_html(t.email)}, {escape_html(t.phone or '')}, {escape_html(t.country or '')}) started a {t.mode} trial at {url}.")
+<p>On your phone, open the address in the browser and choose <i>Add to Home Screen</i>, or install the Buildiary app and type <b>{escape_html(t.subdomain)}</b>.</p>""")
+	notify_admins(f"Buildiary: new customer {t.company_name}", f"{escape_html(t.contact_name)} ({escape_html(t.email)}, {escape_html(t.phone or '')}, {escape_html(t.country or '')}) started a {t.mode} trial at {url}.")
 
 
 # ---------------------------------------------------------------- a checked payment
@@ -74,7 +74,7 @@ def daily():
 			frappe.db.commit()
 		except Exception:
 			frappe.db.rollback()
-			frappe.log_error(f"Mabni: daily check failed for {name}")
+			frappe.log_error(f"Buildiary: daily check failed for {name}")
 
 
 def push_all():
@@ -85,7 +85,7 @@ def push_all():
 		try:
 			push(frappe.get_doc("Mabni Tenant", name))
 		except Exception:
-			frappe.log_error(f"Mabni: could not update {name}")
+			frappe.log_error(f"Buildiary: could not update {name}")
 
 
 def check_tenant(t, reminders=True):
@@ -111,11 +111,11 @@ def _remind(t):
 	what = "trial" if not t.paid_until else "plan"
 	url = f"https://{t.site_host}/billing"
 	if t.status in ("Trial", "Active") and left in (7, 2) and (what == "plan" or left == 2):
-		key, subject, body = f"{end}:{left}", f"Your Mabni {what} ends in {left} days", f"<p>Your {what} for <b>{escape_html(t.company_name)}</b> ends on <b>{frappe.format(end, 'Date')}</b>. Choose a plan and pay by bank transfer in <a href='{url}'>Plan &amp; billing</a> so your team can keep working.</p>"
+		key, subject, body = f"{end}:{left}", f"Your Buildiary {what} ends in {left} days", f"<p>Your {what} for <b>{escape_html(t.company_name)}</b> ends on <b>{frappe.format(end, 'Date')}</b>. Choose a plan and pay by bank transfer in <a href='{url}'>Plan &amp; billing</a> so your team can keep working.</p>"
 	elif t.status == "Payment due":
-		key, subject, body = f"{end}:due", f"Your Mabni {what} has ended", f"<p>Your {what} for <b>{escape_html(t.company_name)}</b> ended on <b>{frappe.format(end, 'Date')}</b>. Your workspace stays open for a few more days. Pay in <a href='{url}'>Plan &amp; billing</a> to keep it running.</p>"
+		key, subject, body = f"{end}:due", f"Your Buildiary {what} has ended", f"<p>Your {what} for <b>{escape_html(t.company_name)}</b> ended on <b>{frappe.format(end, 'Date')}</b>. Your workspace stays open for a few more days. Pay in <a href='{url}'>Plan &amp; billing</a> to keep it running.</p>"
 	elif t.status == "Suspended":
-		key, subject, body = f"{end}:stop", "Your Mabni workspace is paused", f"<p>The workspace for <b>{escape_html(t.company_name)}</b> is paused because the {what} ended. Your data is safe. Sign in and open <a href='{url}'>Plan &amp; billing</a> to pay and open it again.</p>"
+		key, subject, body = f"{end}:stop", "Your Buildiary workspace is paused", f"<p>The workspace for <b>{escape_html(t.company_name)}</b> is paused because the {what} ended. Your data is safe. Sign in and open <a href='{url}'>Plan &amp; billing</a> to pay and open it again.</p>"
 	if key and t.last_reminder != key:
 		_send(t, subject, body)
 		t.db_set("last_reminder", key, update_modified=False)

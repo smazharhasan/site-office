@@ -129,10 +129,10 @@ def after_migrate():
 
 def brand():
 	"""The product's name and logo on the sign-in page and in the browser tab."""
-	if (frappe.db.get_single_value("Website Settings", "app_name") or "") in ("", "Frappe", "ERPNext", "Mimaar"):
-		frappe.db.set_single_value("Website Settings", "app_name", "Mabni")
-	if not frappe.db.get_single_value("Website Settings", "app_logo"):
-		frappe.db.set_single_value("Website Settings", "app_logo", "/assets/mimaar/images/mabni-logo.svg")
+	if (frappe.db.get_single_value("Website Settings", "app_name") or "") in ("", "Frappe", "ERPNext", "Mimaar", "Mabni"):
+		frappe.db.set_single_value("Website Settings", "app_name", "Buildiary")
+	if (frappe.db.get_single_value("Website Settings", "app_logo") or "") in ("", "/assets/mimaar/images/mabni-logo.svg"):
+		frappe.db.set_single_value("Website Settings", "app_logo", "/assets/mimaar/images/buildiary-logo.svg")
 
 
 def after_setup(args=None):

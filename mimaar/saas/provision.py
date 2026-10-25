@@ -69,14 +69,14 @@ def make_pool_site():
 	"""Create one blank site with ERPNext and Mimaar (a few minutes)."""
 	pw = _db_root_password()
 	if not pw:
-		frappe.log_error("Mabni: no database root password for new workspaces (DB_ROOT_PASSWORD)")
+		frappe.log_error("Buildiary: no database root password for new workspaces (DB_ROOT_PASSWORD)")
 		return None
 	name = "pool-" + frappe.generate_hash(length=8).lower()
 	admin = frappe.generate_hash(length=24)
 	code, out = _bench(["new-site", name, "--db-root-username", "root", "--db-root-password", pw, "--admin-password", admin,
 		"--install-app", "erpnext", "--install-app", "mimaar", "--mariadb-user-host-login-scope=%"], timeout=3000)
 	if code != 0 or not os.path.exists(os.path.join(site_dir(name), "site_config.json")):
-		frappe.log_error("Mabni: could not prepare a workspace", out.replace(pw, "***"))
+		frappe.log_error("Buildiary: could not prepare a workspace", out.replace(pw, "***"))
 		return None
 	open(os.path.join(site_dir(name), READY), "w").close()
 	return name
@@ -144,7 +144,7 @@ def provision(tenant):
 			frappe.db.commit()
 			from mimaar.saas.common import notify_admins
 
-			notify_admins(f"Mabni: set-up failed for {t.company_name}", f"Workspace {host} could not be set up. Open the customer in the console and press Retry set-up.")
+			notify_admins(f"Buildiary: set-up failed for {t.company_name}", f"Workspace {host} could not be set up. Open the customer in the console and press Retry set-up.")
 			return
 	frappe.enqueue("mimaar.saas.provision.fill_pool", queue="long", timeout=3600, job_id="mabni-fill-pool", deduplicate=True)
 

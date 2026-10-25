@@ -1,6 +1,6 @@
 <?php
 /**
- * Mabni theme: fonts and the stylesheet. Languages, header, footer and prices are in the
+ * Buildiary theme: fonts and the stylesheet. Languages, header, footer and prices are in the
  * mu-plugin mabni-site.php.
  */
 

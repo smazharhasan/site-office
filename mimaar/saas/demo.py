@@ -1,5 +1,5 @@
 """A sample project (fictional names and figures) for the website's screenshots and for
-anyone who wants to see Mabni with data in it:
+anyone who wants to see Buildiary with data in it:
 
     bench --site <workspace> execute mimaar.saas.demo.make
 

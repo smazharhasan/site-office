@@ -1,17 +1,17 @@
 app_name = "mimaar"
-app_title = "Mabni"
+app_title = "Buildiary"
 app_publisher = "SMH Global Services (Pvt) Ltd"
 app_description = "Construction procurement, stores, supplier accounts and site management on ERPNext"
 app_email = "info@smhglobal.com.pk"
 app_license = "mit"
 required_apps = ["frappe/erpnext"]
-app_logo_url = "/assets/mimaar/images/mabni-logo.svg"
+app_logo_url = "/assets/mimaar/images/buildiary-logo.svg"
 app_home = "/desk/mimaar"
 
 add_to_apps_screen = [
 	{
 		"name": app_name,
-		"logo": "/assets/mimaar/images/mabni-logo.svg",
+		"logo": "/assets/mimaar/images/buildiary-logo.svg",
 		"title": app_title,
 		"route": app_home,
 	}
@@ -36,8 +36,8 @@ doctype_list_js = {
 }
 
 website_context = {
-	"favicon": "/assets/mimaar/images/mabni-logo.svg",
-	"splash_image": "/assets/mimaar/images/mabni-logo.svg",
+	"favicon": "/assets/mimaar/images/buildiary-logo.svg",
+	"splash_image": "/assets/mimaar/images/buildiary-logo.svg",
 }
 
 jinja = {"methods": ["mimaar.api.qr_code", "mimaar.identity.card_code"]}

@@ -1,4 +1,4 @@
-"""Turning a site into the Mabni console, and registering workspaces made outside sign-up.
+"""Turning a site into the Buildiary console, and registering workspaces made outside sign-up.
 
     bench --site my.<domain> execute mimaar.saas.console.setup_console --kwargs "{'base': '<domain>'}"
     bench --site my.<domain> execute mimaar.saas.console.register_site --kwargs "{'host': 'x.<domain>', 'company': 'Villa 31', 'email': '...'}"
@@ -56,8 +56,8 @@ def setup_console(base=None, control=None, company="SMH Global Services", countr
 			frappe.db.set_value("Mabni Plan", p["plan_name"], {k: p[k] for k in ("summary_en", "summary_ur", "summary_ar")})
 	ws = frappe.get_single("Website Settings")
 	ws.home_page = "start"
-	ws.app_name = "Mabni"
-	ws.app_logo = "/assets/mimaar/images/mabni-logo.svg"
+	ws.app_name = "Buildiary"
+	ws.app_logo = "/assets/mimaar/images/buildiary-logo.svg"
 	ws.disable_signup = 1
 	ws.save(ignore_permissions=True)
 	admin = frappe.get_doc("User", "Administrator")

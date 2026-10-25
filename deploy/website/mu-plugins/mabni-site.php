@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: Mabni website
- * Description: Languages (English, Urdu, Arabic by address: /, /ur/, /ar/), the header and footer, live prices from the Mabni console and the "Start free trial" link.
+ * Plugin Name: Buildiary website
+ * Description: Languages (English, Urdu, Arabic by address: /, /ur/, /ar/), the header and footer, live prices from the Buildiary console and the "Start free trial" link.
  * Version: 1.0
  */
 
@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Set in wp-config (from the server's .env): the console's address and how to reach it inside the server.
-defined('MABNI_CONSOLE') || define('MABNI_CONSOLE', 'my.mabni.app');
+defined('MABNI_CONSOLE') || define('MABNI_CONSOLE', 'my.buildiary.app');
 defined('MABNI_CONSOLE_INTERNAL') || define('MABNI_CONSOLE_INTERNAL', '');
 defined('MABNI_SUPPORT_EMAIL') || define('MABNI_SUPPORT_EMAIL', 'info@smhglobal.com.pk');
 defined('MABNI_WHATSAPP') || define('MABNI_WHATSAPP', '');
@@ -125,7 +125,7 @@ function mabni_t($key) {
 }
 
 function mabni_logo_svg($size = 36) {
-	return '<svg width="' . (int) $size . '" height="' . (int) $size . '" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><rect width="120" height="120" rx="26" fill="#1E3A5F"/><rect x="24" y="30" width="15" height="60" rx="3" fill="#fff"/><rect x="81" y="30" width="15" height="60" rx="3" fill="#fff"/><polyline points="39,52 55,70 81,34" fill="none" stroke="#F2B01E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+	return '<svg width="' . (int) $size . '" height="' . (int) $size . '" viewBox="0 0 120 120" aria-hidden="true" focusable="false"><rect width="120" height="120" rx="26" fill="#1E3A5F"/><path d="M0 24H120M0 48H120M0 72H120M0 96H120M24 0V120M48 0V120M72 0V120M96 0V120" stroke="#FFFFFF" stroke-opacity=".10" stroke-width="1"/><g transform="translate(5 -3)"><g fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linejoin="miter"><path d="M34 22H70L80 32V44L72 51L82 58V80L72 90H34Z"/><path d="M45 33H66L69 36V42L66 45H45Z"/><path d="M45 57H68L71 60V76L68 79H45Z"/></g><g stroke="#F2B01E" stroke-width="3.5" fill="none"><path d="M34 102H82"/><path d="M34 96V108M82 96V108M58 98V106"/></g><g fill="#F2B01E"><rect x="24" y="30" width="12" height="5" rx="2.5"/><rect x="24" y="53" width="12" height="5" rx="2.5"/><rect x="24" y="76" width="12" height="5" rx="2.5"/></g></g></svg>';
 }
 
 function mabni_lang_links($class = 'mb-langs') {
@@ -146,7 +146,7 @@ add_shortcode('mabni_header', function () {
 		$nav .= '<a href="' . esc_url(mabni_url($s)) . '"' . $cur . '>' . esc_html(mabni_t($s)) . '</a>';
 	}
 	return '<header class="mb-head"><div class="mb-wrap mb-head-in">'
-		. '<a class="mb-brand" href="' . esc_url(mabni_url('')) . '">' . mabni_logo_svg(36) . '<span>Mabni</span></a>'
+		. '<a class="mb-brand" href="' . esc_url(mabni_url('')) . '">' . mabni_logo_svg(36) . '<span>Buildiary</span></a>'
 		. '<nav class="mb-nav" id="mb-nav" aria-label="' . esc_attr(mabni_t('menu')) . '">' . $nav . mabni_lang_links('mb-langs mb-langs-nav') . '</nav>'
 		. '<div class="mb-head-end">' . mabni_lang_links() . '<a class="mb-btn mb-btn-sm" href="' . esc_url(mabni_url('start-trial')) . '">' . esc_html(mabni_t('trial')) . '</a>'
 		. '<button class="mb-menu" type="button" aria-controls="mb-nav" aria-expanded="false"><span class="screen-reader-text">' . esc_html(mabni_t('menu')) . '</span><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>'
@@ -159,7 +159,7 @@ add_shortcode('mabni_footer', function () {
 	};
 	$wa = MABNI_WHATSAPP ? '<a href="https://wa.me/' . esc_attr(preg_replace('/\D/', '', MABNI_WHATSAPP)) . '" rel="noopener">WhatsApp +' . esc_html(preg_replace('/\D/', '', MABNI_WHATSAPP)) . '</a>' : '';
 	return '<footer class="mb-foot"><div class="mb-wrap mb-foot-in">'
-		. '<div class="mb-foot-brand"><a class="mb-brand" href="' . esc_url(mabni_url('')) . '">' . mabni_logo_svg(32) . '<span>Mabni</span></a><p>' . esc_html(mabni_t('tagline')) . '</p>' . mabni_lang_links() . '</div>'
+		. '<div class="mb-foot-brand"><a class="mb-brand" href="' . esc_url(mabni_url('')) . '">' . mabni_logo_svg(32) . '<span>Buildiary</span></a><p>' . esc_html(mabni_t('tagline')) . '</p>' . mabni_lang_links() . '</div>'
 		. '<div><h2>' . esc_html(mabni_t('product')) . '</h2>' . $link('features', 'features') . $link('pricing', 'pricing') . $link('start-trial', 'trial') . '</div>'
 		. '<div><h2>' . esc_html(mabni_t('company')) . '</h2>' . $link('about', 'about') . $link('contact', 'contact') . $link('privacy', 'privacy') . $link('terms', 'terms') . '</div>'
 		. '<div><h2>' . esc_html(mabni_t('reach')) . '</h2><a href="mailto:' . esc_attr(MABNI_SUPPORT_EMAIL) . '">' . esc_html(MABNI_SUPPORT_EMAIL) . '</a>' . $wa . '<a href="https://www.smhglobal.com.pk" rel="noopener">smhglobal.com.pk</a></div>'

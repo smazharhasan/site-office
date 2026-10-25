@@ -123,7 +123,7 @@ def set_card_pin(person, pin, enable=1):
 	"""Owner: set the PIN for signing in with the card, and turn card sign-in on."""
 	frappe.only_for("System Manager")
 	if not frappe.db.get_value("Site Worker", person, "user"):
-		frappe.throw(_("Give this person access to Mabni first (Signs in as)."))
+		frappe.throw(_("Give this person access to Buildiary first (Signs in as)."))
 	c = ensure_card(person)
 	_set_pin(c, pin)
 	c.sign_in_enabled = cint(enable)

@@ -78,7 +78,7 @@ def payment_submit(tenant=None, key=None, data=None):
 		f = frappe.get_doc({"doctype": "File", "file_name": f"{p.name}-proof.{ext}", "is_private": 1, "attached_to_doctype": "Mabni Payment",
 			"attached_to_name": p.name, "attached_to_field": "proof", "content": base64.b64decode(b64)}).insert(ignore_permissions=True)
 		p.db_set("proof", f.file_url)
-	notify_admins(f"Mabni: payment to check from {t.company_name}", f"{p.currency} {p.amount} for {p.plan} ({p.billing_period}). Open Mabni Payment {p.name} in the console.")
+	notify_admins(f"Buildiary: payment to check from {t.company_name}", f"{p.currency} {p.amount} for {p.plan} ({p.billing_period}). Open Mabni Payment {p.name} in the console.")
 	return {"name": p.name}
 
 

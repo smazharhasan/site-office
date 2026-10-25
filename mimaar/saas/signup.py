@@ -65,8 +65,8 @@ def _send_code(t):
 
 	code = f"{secrets.randbelow(1000000):06d}"
 	t.db_set({"verify_code": _hash(code), "verify_expires": add_to_date(now_datetime(), minutes=30), "verify_tries": 0})
-	frappe.sendmail(recipients=[t.email], subject=f"{code} is your Mabni code",
-		message=f"<p>Your code to start Mabni is</p><p style='font-size:28px;font-weight:700;letter-spacing:4px'>{code}</p><p>It works for 30 minutes.</p>", now=True)
+	frappe.sendmail(recipients=[t.email], subject=f"{code} is your Buildiary code",
+		message=f"<p>Your code to start Buildiary is</p><p style='font-size:28px;font-weight:700;letter-spacing:4px'>{code}</p><p>It works for 30 minutes.</p>", now=True)
 
 
 @frappe.whitelist(allow_guest=True, methods=["POST"])

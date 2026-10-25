@@ -63,7 +63,7 @@ async function api(method, args = {}) {
   let r;
   try {
     r = await fetch(`/api/method/${path}`, { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", Accept: "application/json", "X-Frappe-CSRF-Token": CSRF() }, body: JSON.stringify(args) });
-  } catch (e) { throw new UserError(t("No connection to Mabni. Check the internet (or Wi-Fi) and try again.")); }
+  } catch (e) { throw new UserError(t("No connection to Buildiary. Check the internet (or Wi-Fi) and try again.")); }
   let j = {}; try { j = await r.json(); } catch (e) { /* not json */ }
   if (r.status === 401 || r.status === 403) {
     const who = await fetch("/api/method/frappe.auth.get_logged_user", { credentials: "same-origin", headers: { Accept: "application/json" } }).catch(() => null);
@@ -155,7 +155,7 @@ function liveCamera(title, { facing = "environment", face = false } = {}) {
     const start = async () => {
       stop();
       try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: mode, width: { ideal: 1280 }, height: { ideal: 1280 } }, audio: false }); video.srcObject = stream; await video.play().catch(() => {}); note.hidden = false; }
-      catch (e) { note.textContent = t("The camera can't be opened here. Allow the camera for this site, or use the Mabni app."); }
+      catch (e) { note.textContent = t("The camera can't be opened here. Allow the camera for this site, or use the Buildiary app."); }
     };
     const finish = (v) => { if (done) return; done = true; stop(); closeSheet(sh); resolve(v); };
     sh.querySelector("[data-flip]").onclick = () => { mode = mode === "user" ? "environment" : "user"; start(); };
@@ -180,12 +180,12 @@ function qrReader(box, flipBtn) {
   const video = box.querySelector("video"), note = box.querySelector(".note");
   const stop = () => { stopped = true; if (stream) stream.getTracks().forEach((x) => x.stop()); stream = null; };
   const result = new Promise(async (resolve, reject) => {
-    if (!("BarcodeDetector" in window)) { reject(new UserError(t("This browser can't read QR codes. Use the Mabni app on the phone, or Chrome."))); return; }
+    if (!("BarcodeDetector" in window)) { reject(new UserError(t("This browser can't read QR codes. Use the Buildiary app on the phone, or Chrome."))); return; }
     const det = new window.BarcodeDetector({ formats: ["qr_code"] });
     const open = async () => {
       if (stream) stream.getTracks().forEach((x) => x.stop());
       try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: mode }, audio: false }); video.srcObject = stream; await video.play().catch(() => {}); }
-      catch (e) { reject(new UserError(t("The camera can't be opened here. Allow the camera for this site, or use the Mabni app."))); }
+      catch (e) { reject(new UserError(t("The camera can't be opened here. Allow the camera for this site, or use the Buildiary app."))); }
     };
     if (flipBtn) flipBtn.onclick = () => { mode = mode === "user" ? "environment" : "user"; open(); };
     await open();
@@ -471,7 +471,7 @@ const GLOBAL = {
 };
 
 /* ================================================================== dashboard */
-/** Mabni Cloud: the trial or plan line on the home screen (only on a Mabni workspace). */
+/** Mabni Cloud: the trial or plan line on the home screen (only on a Buildiary workspace). */
 function planBanner() {
   const p = S.b.plan;
   if (!p || !p.show) return "";
@@ -1627,7 +1627,7 @@ VIEWS.att = async (el) => {
     async add() { const w = await pickWorker(); if (w) addWorker(w); },
     rm(i) { A.rows.splice(+i, 1); draw(); persist(true); },
     st(v) { const [i, s] = v.split("|"); A.rows[+i].status = s; draw(); persist(true); },
-    async loc() { const l = await busy(getLocation(), t("Getting the location…")); if (!l) { toast(t("Location not available: allow location for Mabni, then try again."), "bad"); return; } A.location = l; el.querySelector("[data-loc]").textContent = l; el.querySelector("[name=location]").value = l; },
+    async loc() { const l = await busy(getLocation(), t("Getting the location…")); if (!l) { toast(t("Location not available: allow location for Buildiary, then try again."), "bad"); return; } A.location = l; el.querySelector("[data-loc]").textContent = l; el.querySelector("[name=location]").value = l; },
     save() { persist(false); },
     async submit() {
       const v = vals(el); A.group_photo = v.group_photo || A.group_photo; A.location = v.location || A.location;
@@ -1639,7 +1639,7 @@ VIEWS.att = async (el) => {
 
 /* ---------------- people and access ---------------- */
 const STAFF_TYPES = ["Supervisor", "Engineer", "Store keeper", "Accountant", "Owner", "Builder staff", "Consultant"];
-const PEOPLE_FILTERS = [["all", "All"], ["site", "On site today"], ["labour", "Labour and mistri"], ["staff", "Site staff"], ["access", "Sign in to Mabni"], ["left", "Left or blocked"]];
+const PEOPLE_FILTERS = [["all", "All"], ["site", "On site today"], ["labour", "Labour and mistri"], ["staff", "Site staff"], ["access", "Sign in to Buildiary"], ["left", "Left or blocked"]];
 VIEWS.workers = (el) => VIEWS.people(el);
 VIEWS.people = async (el) => {
   setTop(t("People and access"), true); setTab("more");
@@ -1690,7 +1690,7 @@ VIEWS.person = async (el, [name]) => {
       ${kv(t("Police verification"), t(w.police_verification || "Not done"))}${kv(t("Joined on"), fdate(w.joined_on))}${c.money ? kv(t("Daily wage"), w.daily_wage ? money(w.daily_wage) : "") : ""}
       ${kv(t("Emergency contact"), w.emergency_contact)}${kv(t("Address"), [w.address, w.address_ur].filter(Boolean).join(" · "))}${kv(t("Notes"), w.notes)}</div>`)}
     ${panel(t("Documents"), `<div class="body docs">${doc("photo", t("Photo"))}${doc("cnic_front", t("CNIC front"))}${doc("cnic_back", t("CNIC back"))}${doc("entry_card_photo", t("BTK registration card"))}${doc("police_document", t("Police verification letter"))}</div>`)}
-    ${c.owner ? panel(t("Access to Mabni"), `<div class="body form">${fld(t("Signs in as"), chips("app_access", [["No sign-in", t("No sign-in")], ["Site supervisor", t("Site supervisor")], ["Owner's supervisor", t("Owner's supervisor")], ["Partner (builder or consultant)", t("Partner (builder or consultant)")], ["Accountant", t("Accountant")], ["Owner", t("Owner")]], w.app_access || "No sign-in"))}
+    ${c.owner ? panel(t("Access to Buildiary"), `<div class="body form">${fld(t("Signs in as"), chips("app_access", [["No sign-in", t("No sign-in")], ["Site supervisor", t("Site supervisor")], ["Owner's supervisor", t("Owner's supervisor")], ["Partner (builder or consultant)", t("Partner (builder or consultant)")], ["Accountant", t("Accountant")], ["Owner", t("Owner")]], w.app_access || "No sign-in"))}
       <label class="row" style="gap:10px"><input type="checkbox" name="store_keeper" ${w.store_keeper ? "checked" : ""} style="width:22px;height:22px"><span>${esc(t("Also store keeper (receives, issues and returns material)"))}</span></label>
       <button class="btn wide" data-act="access">${icon("check")}${esc(t("Save access"))}</button></div>`) : ""}
     ${c.owner ? panel(t("Sign in with site card"), `<div class="body form">
@@ -2100,13 +2100,13 @@ VIEWS.connect = async (el) => {
   let img = ""; if (u) { try { img = await api("qr", { text: u }); } catch (e) { /* */ } }
   el.innerHTML = panel(t("Connect a phone"), `<div class="body stack" style="align-items:center;text-align:center">
     ${u ? `${img ? `<img src="${esc(img)}" alt="" style="width:240px;height:240px;background:#fff;padding:10px;border-radius:14px">` : ""}<b class="ltr" style="font-size:20px;overflow-wrap:anywhere">${esc(u)}</b>
-      <span>${esc(local || /^\d+\.\d+\.\d+\.\d+(:\d+)?$/.test(u) ? t("On the phone, open the Mabni app, tap 'Scan the QR on the laptop' and point it here. The phone and this laptop must be on the same Wi-Fi.")
-        : t("On the phone, install and open the Mabni app, tap 'Scan the QR on the laptop' and point it at this code, or type the address above."))}</span>`
-      : `<span>${esc(t("Double-click 'Connect a phone' in the Mabni folder on this laptop. It shows the address and QR code for the phone."))}</span>`}</div>`);
+      <span>${esc(local || /^\d+\.\d+\.\d+\.\d+(:\d+)?$/.test(u) ? t("On the phone, open the Buildiary app, tap 'Scan the QR on the laptop' and point it here. The phone and this laptop must be on the same Wi-Fi.")
+        : t("On the phone, install and open the Buildiary app, tap 'Scan the QR on the laptop' and point it at this code, or type the address above."))}</span>`
+      : `<span>${esc(t("Double-click 'Connect a phone' in the Buildiary folder on this laptop. It shows the address and QR code for the phone."))}</span>`}</div>`);
 };
 
 /* ---------------- my settings: look, language, PIN ---------------- */
-const SKINS = [["mabni", "Mabni blue", "Blueprint blue with amber, the Mabni look", ["#1e3a5f", "#f2b01e", "#eef1f4"]], ["site", "Site green", "Calm green, the original look", ["#0f6f5c", "#dcefe9", "#f3f2ef"]], ["slate", "Slate & copper", "Cool grey with a copper accent", ["#1b2430", "#52627a", "#b4642d"]],
+const SKINS = [["mabni", "Buildiary blue", "Blueprint blue with amber, the Buildiary look", ["#1e3a5f", "#f2b01e", "#eef1f4"]], ["site", "Site green", "Calm green, the original look", ["#0f6f5c", "#dcefe9", "#f3f2ef"]], ["slate", "Slate & copper", "Cool grey with a copper accent", ["#1b2430", "#52627a", "#b4642d"]],
   ["sand", "Desert sand", "Warm sand with indigo", ["#2a241b", "#b07a1e", "#3b4fa0"]], ["colour", "Colourful", "Bright colours on every menu and panel", ["#8b5cf6", "#ec4899", "#f59e0b"]],
   ["night", "Night", "Dark blue, easy on the eyes at night", ["#0b1220", "#111a2e", "#38bdf8"]], ["contrast", "High contrast", "Black and white, strongest readability", ["#000", "#fff", "#0040c0"]]];
 const UR_FONTS = [["Noto Nastaliq Urdu", "Nastaliq (Noto)", 1.95, "wght@400;600"], ["Gulzar", "Gulzar Nastaliq", 2.0, ""], ["Noto Naskh Arabic", "Naskh: clear and easy", 1.65, "wght@400;600"],
@@ -2183,7 +2183,7 @@ VIEWS.settings = async (el) => {
 function loginScreen() {
   document.documentElement.lang = S.lang; document.documentElement.dir = RTL() ? "rtl" : "ltr";
   applyLook();
-  $("#app").innerHTML = `<div class="login stack"><div class="logo"><svg viewBox="0 0 120 120" aria-hidden="true"><rect x="24" y="30" width="15" height="60" rx="3" fill="currentColor"/><rect x="81" y="30" width="15" height="60" rx="3" fill="currentColor"/><polyline points="39,52 55,70 81,34" fill="none" stroke="#F2B01E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h1 style="text-align:center">${esc(t("Mabni"))}</h1><p class="muted" style="text-align:center;margin:0">${esc(t("Sign in to your project"))}</p>
+  $("#app").innerHTML = `<div class="login stack"><div class="logo"><svg viewBox="0 0 120 120" aria-hidden="true"><g transform="translate(5 -3)"><g fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="miter"><path d="M34 22H70L80 32V44L72 51L82 58V80L72 90H34Z"/><path d="M45 33H66L69 36V42L66 45H45Z"/><path d="M45 57H68L71 60V76L68 79H45Z"/></g><g stroke="#F2B01E" stroke-width="3.5" fill="none"><path d="M34 102H82"/><path d="M34 96V108M82 96V108M58 98V106"/></g><g fill="#F2B01E"><rect x="24" y="30" width="12" height="5" rx="2.5"/><rect x="24" y="53" width="12" height="5" rx="2.5"/><rect x="24" y="76" width="12" height="5" rx="2.5"/></g></g></svg></div><h1 style="text-align:center">${esc(t("Buildiary"))}</h1><p class="muted" style="text-align:center;margin:0">${esc(t("Sign in to your project"))}</p>
     <div class="seg"><button data-l="en" aria-pressed="${S.lang === "en"}">English</button><button data-l="ur" aria-pressed="${S.lang === "ur"}">اردو</button><button data-l="ar" aria-pressed="${S.lang === "ar"}">العربية</button></div>
     ${BOOT.card_sign_in ? `<button class="btn pri big wide" data-card="1">${icon("card")}${esc(t("Sign in with site card"))}</button><p class="small muted" style="text-align:center;margin:0">${esc(t("Scan your site card, type your PIN and take a photo of your face."))}</p>
       <div class="small muted" style="text-align:center">— ${esc(t("or"))} —</div>` : ""}
@@ -2209,7 +2209,7 @@ function loginScreen() {
 async function cardSignIn() {
   const code = await scanCode(t("Scan your site card"));
   if (!code) return;
-  if (!code.startsWith("MMR1:")) { toast(t("This is not a Mabni site card."), "bad"); return; }
+  if (!code.startsWith("MMR1:")) { toast(t("This is not a Buildiary site card."), "bad"); return; }
   const pin = await new Promise((resolve) => {
     let v = "", done = false;
     const sh = sheet(t("Your PIN"), `<div class="stack" style="align-items:center"><p style="margin:0">${esc(t("Type your PIN"))}</p><div class="pindots">${[0, 1, 2, 3, 4, 5].map((i) => `<i data-d="${i}"></i>`).join("")}</div>
@@ -2228,7 +2228,7 @@ async function cardSignIn() {
     let j = {}; try { j = await r.json(); } catch (e) { /* */ }
     if (r.ok && j.message && j.message.ok) { location.reload(); return; }
     $("[data-err]").innerHTML = `<div class="banner bad">${esc(serverMessage(j) || (r.status === 429 ? t("Too many tries. Wait a few minutes.") : t("This card and PIN were not accepted.")))}</div>`;
-  } catch (e) { $("[data-err]").innerHTML = `<div class="banner bad">${esc(t("No connection to Mabni. Check the internet (or Wi-Fi) and try again."))}</div>`; }
+  } catch (e) { $("[data-err]").innerHTML = `<div class="banner bad">${esc(t("No connection to Buildiary. Check the internet (or Wi-Fi) and try again."))}</div>`; }
 }
 
 /* ---------------- start ---------------- */

@@ -115,7 +115,7 @@ def enforce():
 
 
 def home_page(user=None):
-	"""People on a Mabni workspace land in the field app after signing in."""
+	"""People on a Buildiary workspace land in the field app after signing in."""
 	if mabni() and (user or frappe.session.user) not in ("Guest", None):
 		return "field"
 	return None
@@ -269,7 +269,7 @@ def _console(method, data):
 
 	m = mabni()
 	if not m.get("console"):
-		frappe.throw(_("This workspace isn't connected to Mabni Cloud."))
+		frappe.throw(_("This workspace isn't connected to Buildiary."))
 	return call_site(m["console"], method, dict(data, tenant=m.get("tenant"), key=frappe.conf.get("mabni_key")))
 
 

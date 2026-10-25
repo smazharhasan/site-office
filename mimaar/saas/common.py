@@ -191,4 +191,4 @@ def notify_admins(subject, message):
 		try:
 			frappe.sendmail(recipients=emails, subject=subject, message=message, delayed=True)
 		except Exception:
-			frappe.log_error("Mabni: could not queue an admin email")
+			frappe.log_error("Buildiary: could not queue an admin email")

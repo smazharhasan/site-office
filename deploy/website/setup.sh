@@ -1,5 +1,5 @@
 #!/bin/bash
-# The Mabni website (WordPress, English / Urdu / Arabic) on the Mabni server, behind Caddy.
+# The Buildiary website (WordPress, English / Urdu / Arabic) on the Buildiary server, behind Caddy.
 #
 #   bash deploy/website/setup.sh            first set-up, or update the theme and the pages
 #   bash deploy/website/setup.sh --force    also overwrite pages that were edited in WordPress
@@ -31,7 +31,7 @@ cp -r "$SRC/content/." content/
 cat "$SRC/import.php" > import.php
 
 cat > compose.yml <<'EOF'
-# The Mabni website. Passwords are in .env (root only).
+# The Buildiary website. Passwords are in .env (root only).
 name: website
 x-db-env: &dbenv
   WORDPRESS_DB_HOST: db
@@ -107,7 +107,7 @@ docker compose up -d
 wp() { docker compose run --rm -T --entrypoint wp cli "$@"; }
 for i in $(seq 1 30); do [ -f "$(docker volume inspect website_wp -f '{{.Mountpoint}}')/wp-config.php" ] && break; sleep 3; done
 if ! wp core is-installed 2>/dev/null; then
-  wp core install --url="https://$BASE" --title="Mabni" --admin_user=mabni-admin --admin_password="$WP_ADMIN_PASSWORD" --admin_email="${MABNI_OWN_EMAIL:-info@smhglobal.com.pk}" --skip-email
+  wp core install --url="https://$BASE" --title="Buildiary" --admin_user=mabni-admin --admin_password="$WP_ADMIN_PASSWORD" --admin_email="${MABNI_OWN_EMAIL:-info@smhglobal.com.pk}" --skip-email
   wp option update blogdescription "Construction site management"
   wp option update timezone_string "Asia/Karachi"
   # a temporary address is kept out of search engines; switched on when the real domain is in place
@@ -118,6 +118,7 @@ if ! wp core is-installed 2>/dev/null; then
     && echo "WordPress admin password saved in Parameter Store (/mabni/wordpress-admin-password)" || true
 fi
 wp theme activate mabni
+wp option update blogname "Buildiary" >/dev/null
 wp language core install ur ar >/dev/null 2>&1 || echo "Language packs not installed (no internet?)"
 wp eval-file /import.php /content $FORCE
 wp rewrite structure '/%postname%/' >/dev/null

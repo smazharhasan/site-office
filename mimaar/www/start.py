@@ -1,4 +1,4 @@
-"""/start on the Mabni console: the public sign-up page (English, Urdu, Arabic)."""
+"""/start on the Buildiary console: the public sign-up page (English, Urdu, Arabic)."""
 
 import json
 
