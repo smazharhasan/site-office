@@ -119,6 +119,7 @@ if ! wp core is-installed 2>/dev/null; then
 fi
 wp theme activate mabni
 wp option update blogname "Buildiary" >/dev/null
+wp option update blogdescription "Construction site management app for home owners and builders" >/dev/null
 wp language core install ur ar >/dev/null 2>&1 || echo "Language packs not installed (no internet?)"
 wp eval-file /import.php /content $FORCE
 wp rewrite structure '/%postname%/' >/dev/null
@@ -130,6 +131,15 @@ $BASE, www.$BASE {
 	encode zstd gzip
 	@www host www.$BASE
 	redir @www https://$BASE{uri} permanent
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-X-Powered-By
+	}
+	# theme files, images and fonts: kept by browsers for a week (pages themselves are always fresh)
+	@static path /wp-content/themes/* /wp-content/uploads/* /wp-includes/*
+	header @static Cache-Control "public, max-age=604800"
 	reverse_proxy website-wp:80
 }
 EOF

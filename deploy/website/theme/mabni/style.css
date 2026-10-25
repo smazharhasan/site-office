@@ -1,9 +1,9 @@
 /*
 Theme Name: Buildiary
-Theme URI: https://mabni.app
+Theme URI: https://buildiary.app
 Author: SMH Global Services
 Description: The Buildiary website: construction site management for home owners and builders. English, Urdu and Arabic.
-Version: 1.0.0
+Version: 1.1.0
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
@@ -201,8 +201,8 @@ body:is(.lang-ar, .lang-ur) .mb-faq summary { font-family: inherit; }
 
 /* ---- footer */
 .mb-foot { background: #10233A; color: var(--mb-on-blue-2); padding: 56px 0 24px; margin-top: 0; }
-.mb-foot-in { display: grid; grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr)); gap: 28px; }
-@media (max-width: 860px) { .mb-foot-in { grid-template-columns: 1fr 1fr; } .mb-foot-brand { grid-column: 1 / -1; } }
+.mb-foot-in { display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(4, minmax(0, 1fr)); gap: 28px; }
+@media (max-width: 980px) { .mb-foot-in { grid-template-columns: 1fr 1fr; } .mb-foot-brand { grid-column: 1 / -1; } }
 @media (max-width: 480px) { .mb-foot-in { grid-template-columns: 1fr; } }
 .mb-foot .mb-brand { color: #fff; }
 .mb-foot p { max-width: 42ch; font-size: .95rem; }
@@ -225,3 +225,46 @@ body:is(.lang-ar, .lang-ur) .mb-foot h2 { font-family: inherit; }
 .mb-maker-block .mb-maker img { height: 48px; }
 .mb-maker-block p { margin: 0; color: var(--mb-muted, #5b6875); }
 .mb-foot-bottom { align-items: center; }
+
+/* ---- guides and the pages for owners and builders */
+.mb-crumbs { font-size: .9rem; color: var(--mb-muted); margin-bottom: 1.2rem; }
+.mb-crumbs a { color: var(--mb-blue-2); text-decoration: none; }
+.mb-crumbs a:hover { text-decoration: underline; }
+.mb-crumbs span[aria-hidden] { margin-inline: 6px; color: var(--mb-line); }
+.mb-article { font-size: 1.06rem; line-height: 1.7; }
+body.lang-ur .mb-article { line-height: 2.1; }
+.mb-article > h2 { margin: 2.6rem 0 .8rem; font-size: clamp(1.35rem, 2.4vw, 1.7rem); }
+.mb-article > h2:first-child { margin-top: 0; }
+.mb-article > h3 { margin: 1.8rem 0 .4rem; font-size: 1.15rem; color: var(--mb-blue); }
+.mb-article p, .mb-article li { color: #2A3642; }
+.mb-article ul, .mb-article ol { padding-inline-start: 1.3rem; display: grid; gap: 6px; }
+.mb-article li::marker { color: var(--mb-blue-2); }
+.mb-table { margin: 1.4rem 0; border: 1px solid var(--mb-line); border-radius: 14px; overflow: hidden; }
+.mb-table table { width: 100%; border-collapse: collapse; font-size: .96rem; line-height: 1.5; }
+.mb-table th, .mb-table td { text-align: start; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--mb-line); }
+.mb-table thead th { background: var(--mb-blue); color: #fff; font-weight: 600; }
+.mb-table tbody tr:nth-child(even) { background: var(--mb-concrete); }
+.mb-table tbody tr:last-child > * { border-bottom: 0; }
+.mb-table tbody th { font-weight: 600; color: var(--mb-ink); }
+@media (max-width: 640px) {
+	/* each row becomes a small card, each value with its column's name */
+	.mb-table { border: 0; border-radius: 0; overflow: visible; }
+	.mb-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px); }
+	.mb-table table, .mb-table tbody, .mb-table tr, .mb-table th, .mb-table td { display: block; width: auto; }
+	.mb-table tr { border: 1px solid var(--mb-line); border-radius: 12px; margin-bottom: 10px; padding: 6px 0; background: #fff !important; }
+	.mb-table th, .mb-table td { border: 0; padding: 6px 14px; }
+	.mb-table td[data-label]:not([data-label=""])::before { content: attr(data-label); display: block; font-size: .8rem; font-weight: 600; color: var(--mb-blue-2); }
+	.mb-table tbody tr > :first-child { font-weight: 700; color: var(--mb-ink); }
+}
+.mb-more { margin-top: .9rem !important; }
+.mb-more a, .mb-guide h3 a { color: var(--mb-blue); font-weight: 600; text-decoration: none; }
+.mb-more a::after { content: " →"; }
+body:is(.lang-ar, .lang-ur) .mb-more a::after { content: " ←"; }
+.mb-more a:hover, .mb-guide h3 a:hover { text-decoration: underline; }
+.mb-guide { display: flex; flex-direction: column; }
+.mb-guide .mb-more { margin-top: auto !important; padding-top: .9rem; }
+/* page heads: the introduction starts where the heading starts */
+.mb-pagehead:not(.mb-narrow) > .mb-lede { margin-inline-start: max(0px, calc((100% - 1160px) / 2)) !important; margin-inline-end: auto !important; }
+.mb-narrow .mb-lede { max-width: 780px; }
+.mb-narrow h1 { font-size: clamp(1.9rem, 4vw, 2.7rem); }
+.mb-foot-in > div > a { font-size: .95rem; }

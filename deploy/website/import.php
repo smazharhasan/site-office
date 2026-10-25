@@ -19,7 +19,10 @@ if (!$pages) {
 	WP_CLI::error("No pages in $dir/pages.json");
 }
 
-function mabni_upsert($path, $parent, $slug, $title, $content, $excerpt, $template, $force) {
+// (eval-file runs this file inside a function, so the list lives in $GLOBALS)
+$GLOBALS['mabni_changed'] = [];
+
+function mabni_upsert($path, $parent, $slug, $title, $content, $excerpt, $template, $force, $seo = '') {
 	$page = get_page_by_path($path, OBJECT, 'page');
 	$hash = md5($content . '|' . $title . '|' . $excerpt);
 	$data = [
@@ -33,6 +36,7 @@ function mabni_upsert($path, $parent, $slug, $title, $content, $excerpt, $templa
 			WP_CLI::log("kept (edited in WordPress): /$path/");
 			return $page->ID;
 		}
+		update_post_meta($page->ID, '_mabni_seo_title', $seo);
 		if ($current === $hash) {
 			return $page->ID;
 		}
@@ -48,6 +52,8 @@ function mabni_upsert($path, $parent, $slug, $title, $content, $excerpt, $templa
 	}
 	update_post_meta($id, '_mabni_hash', $hash);
 	update_post_meta($id, '_wp_page_template', $template ?: 'default');
+	update_post_meta($id, '_mabni_seo_title', $seo);
+	$GLOBALS['mabni_changed'][] = $id;
 	return $id;
 }
 
@@ -58,15 +64,24 @@ foreach ($pages as $p) {
 		continue;
 	}
 	$slug = $p['lang'] === 'en' ? 'home' : $p['lang'];
-	$homes[$p['lang']] = mabni_upsert($slug, 0, $slug, $p['title'], file_get_contents("$dir/{$p['file']}"), $p['excerpt'], $p['template'], $force);
+	$homes[$p['lang']] = mabni_upsert($slug, 0, $slug, $p['title'], file_get_contents("$dir/{$p['file']}"), $p['excerpt'], $p['template'], $force, $p['seo_title'] ?? '');
 }
 foreach ($pages as $p) {
 	if ($p['slug'] === 'home') {
 		continue;
 	}
-	$parent = $p['lang'] === 'en' ? 0 : $homes[$p['lang']];
+	// a page under another (guides/site-diary) sits under that page; the parents come first in pages.json
 	$path = $p['lang'] === 'en' ? $p['slug'] : "{$p['lang']}/{$p['slug']}";
-	mabni_upsert($path, $parent, $p['slug'], $p['title'], file_get_contents("$dir/{$p['file']}"), $p['excerpt'], $p['template'], $force);
+	$up = dirname($path);
+	if ($up === '.') {
+		$parent = 0;
+	} elseif ($up === $p['lang']) {
+		$parent = $homes[$p['lang']];
+	} else {
+		$above = get_page_by_path($up, OBJECT, 'page');
+		$parent = $above ? $above->ID : 0;
+	}
+	mabni_upsert($path, $parent, basename($p['slug']), $p['title'], file_get_contents("$dir/{$p['file']}"), $p['excerpt'], $p['template'], $force, $p['seo_title'] ?? '');
 }
 
 // the English home page is the site's front page
@@ -87,5 +102,10 @@ foreach (['sample-page', 'privacy-policy'] as $s) {
 $hello = get_page_by_path('hello-world', OBJECT, 'post');
 if ($hello) {
 	wp_delete_post($hello->ID, true);
+}
+// tell search engines about new and changed pages (IndexNow), only on the real domain
+if ($GLOBALS['mabni_changed'] && function_exists('mabni_indexnow')) {
+	$r = mabni_indexnow(array_map('get_permalink', $GLOBALS['mabni_changed']));
+	WP_CLI::log('IndexNow: ' . $r);
 }
 WP_CLI::success(count($pages) . ' pages in place');

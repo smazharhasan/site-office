@@ -3,6 +3,7 @@
   "lang": "en",
   "slug": "home",
   "title": "Buildiary: construction site management for owners and builders",
+  "seo_title": "Buildiary: Construction Management App for Owners & Builders",
   "excerpt": "Buildiary puts your construction site on your phone: deliveries, store, payments, progress photos and people, checked with AI. English, Urdu and Arabic. 7 days free.",
   "template": "",
   "file": "en/home.html"
@@ -11,6 +12,7 @@
   "lang": "en",
   "slug": "features",
   "title": "Every part of the site, in one app",
+  "seo_title": "Features: Stores, Payments, Progress & Site Diary | Buildiary",
   "excerpt": "Stores, payments, budget, build progress, people, water tankers, petty cash and AI checks: what Buildiary does for owners and builders.",
   "template": "",
   "file": "en/features.html"
@@ -19,6 +21,7 @@
   "lang": "en",
   "slug": "pricing",
   "title": "Simple prices, in your currency",
+  "seo_title": "Buildiary Pricing: Owner & Builder Plans, 7 Days Free",
   "excerpt": "Buildiary plans for home owners and builders, monthly or yearly, in USD, PKR or SAR. 7 days free.",
   "template": "",
   "file": "en/pricing.html"
@@ -27,6 +30,7 @@
   "lang": "en",
   "slug": "about",
   "title": "Built on a real building site",
+  "seo_title": "About Buildiary, a product of SMH Global Services",
   "excerpt": "Buildiary is a product of SMH Global Services, made for home owners and builders who want to see their site clearly.",
   "template": "",
   "file": "en/about.html"
@@ -35,6 +39,7 @@
   "lang": "en",
   "slug": "contact",
   "title": "Talk to us",
+  "seo_title": "Contact Buildiary: Sales, Demo and Support",
   "excerpt": "Contact the Buildiary team at SMH Global Services.",
   "template": "",
   "file": "en/contact.html"
@@ -43,6 +48,7 @@
   "lang": "en",
   "slug": "privacy",
   "title": "Privacy policy",
+  "seo_title": "Privacy Policy | Buildiary",
   "excerpt": "How Buildiary handles the data of customers and the people who use their workspaces.",
   "template": "page-plain",
   "file": "en/privacy.html"
@@ -51,14 +57,88 @@
   "lang": "en",
   "slug": "terms",
   "title": "Terms of service",
+  "seo_title": "Terms of Service | Buildiary",
   "excerpt": "The terms for using Buildiary, including the free trial, plans, payments and data.",
   "template": "page-plain",
   "file": "en/terms.html"
  },
  {
+  "lang": "en",
+  "slug": "home-owners",
+  "title": "For home owners",
+  "seo_title": "House Construction App for Home Owners | Buildiary",
+  "excerpt": "Build your own house without standing on site all day: Buildiary tracks material, payments, progress photos and the budget by phase, in English, Urdu and Arabic.",
+  "template": "",
+  "file": "en/home-owners.html"
+ },
+ {
+  "lang": "en",
+  "slug": "builders",
+  "title": "For builders",
+  "seo_title": "Construction Software for Builders & Contractors | Buildiary",
+  "excerpt": "Construction management software for builders and contractors in Pakistan and the Gulf: a store for each site, crews and attendance, purchasing, bills and progress reports.",
+  "template": "",
+  "file": "en/builders.html"
+ },
+ {
+  "lang": "en",
+  "slug": "guides",
+  "title": "Guides",
+  "seo_title": "Guides to Building a House and Running a Site | Buildiary",
+  "excerpt": "Practical guides for home owners and builders: the stages of building a house, material control, site diaries, budgets and slab inspections.",
+  "template": "",
+  "file": "en/guides.html"
+ },
+ {
+  "lang": "en",
+  "slug": "guides/house-construction-stages",
+  "title": "Construction stages",
+  "seo_title": "House Construction Stages: A 14-Step Schedule | Buildiary",
+  "excerpt": "The 14 stages of building a typical two-storey house in Pakistan and the Gulf, how long each takes, what depends on what, and what to check before moving on.",
+  "template": "",
+  "file": "en/guides/house-construction-stages.html"
+ },
+ {
+  "lang": "en",
+  "slug": "guides/construction-material-control",
+  "title": "Material control",
+  "seo_title": "Construction Material Control: Stop Loss on Site | Buildiary",
+  "excerpt": "Cement, steel, tiles and fittings are a large part of a house's cost. A simple routine (order, receive, store, release, reconcile) keeps them under control.",
+  "template": "",
+  "file": "en/guides/construction-material-control.html"
+ },
+ {
+  "lang": "en",
+  "slug": "guides/construction-site-diary",
+  "title": "Site diary",
+  "seo_title": "Construction Site Diary: What to Record Every Day | Buildiary",
+  "excerpt": "What a daily site diary should record (weather, people, work done, deliveries, instructions and problems) and why it protects owners and builders alike.",
+  "template": "",
+  "file": "en/guides/construction-site-diary.html"
+ },
+ {
+  "lang": "en",
+  "slug": "guides/house-construction-budget",
+  "title": "Budget and payments",
+  "seo_title": "How to Budget a House Build and Control Payments | Buildiary",
+  "excerpt": "Split the budget by phase, keep a contingency, decide finishes early, pay against work done and keep proof of every payment. A practical guide for home owners.",
+  "template": "",
+  "file": "en/guides/house-construction-budget.html"
+ },
+ {
+  "lang": "en",
+  "slug": "guides/roof-slab-checklist",
+  "title": "Roof slab checklist",
+  "seo_title": "Roof Slab Casting Checklist: Before, During, After | Buildiary",
+  "excerpt": "A roof slab can't be fixed after it sets. Check the formwork, steel, cover, services and concrete before you pour, and cure the slab properly afterwards.",
+  "template": "",
+  "file": "en/guides/roof-slab-checklist.html"
+ },
+ {
   "lang": "ur",
   "slug": "home",
   "title": "بلڈیاری: گھر بنانے والوں اور بلڈرز کے لیے سائٹ مینجمنٹ",
+  "seo_title": "بلڈیاری: گھر کی تعمیر اور سائٹ مینجمنٹ کی ایپ | Buildiary",
   "excerpt": "بلڈیاری آپ کی تعمیراتی سائٹ کو آپ کے فون پر لے آتا ہے: سامان کی وصولی، اسٹور، ادائیگیاں، کام کی تصاویر اور لوگ، اے آئی کی جانچ کے ساتھ۔ انگریزی، اردو اور عربی میں۔ 7 دن مفت۔",
   "template": "",
   "file": "ur/home.html"
@@ -67,6 +147,7 @@
   "lang": "ur",
   "slug": "features",
   "title": "سائٹ کا ہر حصہ، ایک ایپ میں",
+  "seo_title": "خصوصیات: اسٹور، ادائیگیاں، پیش رفت اور سائٹ ڈائری | بلڈیاری",
   "excerpt": "اسٹور، ادائیگیاں، بجٹ، تعمیر کی پیش رفت، لوگ، پانی کے ٹینکر، پیٹی کیش اور اے آئی کی جانچ: بلڈیاری مالکان اور بلڈرز کے لیے کیا کرتا ہے۔",
   "template": "",
   "file": "ur/features.html"
@@ -75,6 +156,7 @@
   "lang": "ur",
   "slug": "pricing",
   "title": "سادہ قیمتیں، آپ کی کرنسی میں",
+  "seo_title": "قیمتیں: مالک اور بلڈر پلان، 7 دن مفت | بلڈیاری",
   "excerpt": "گھر بنانے والوں اور بلڈرز کے لیے بلڈیاری کے پلان، ماہانہ یا سالانہ، ڈالر، روپے یا ریال میں۔ 7 دن مفت۔",
   "template": "",
   "file": "ur/pricing.html"
@@ -83,6 +165,7 @@
   "lang": "ur",
   "slug": "about",
   "title": "ایک حقیقی تعمیراتی سائٹ پر بنا",
+  "seo_title": "بلڈیاری کے بارے میں، ایس ایم ایچ گلوبل سروسز کی پیشکش",
   "excerpt": "بلڈیاری ایس ایم ایچ گلوبل سروسز کی پیشکش ہے، ان مالکان اور بلڈرز کے لیے جو اپنی سائٹ صاف دیکھنا چاہتے ہیں۔",
   "template": "",
   "file": "ur/about.html"
@@ -91,6 +174,7 @@
   "lang": "ur",
   "slug": "contact",
   "title": "ہم سے بات کریں",
+  "seo_title": "بلڈیاری سے رابطہ: سیلز، ڈیمو اور مدد",
   "excerpt": "ایس ایم ایچ گلوبل سروسز میں بلڈیاری کی ٹیم سے رابطہ کریں۔",
   "template": "",
   "file": "ur/contact.html"
@@ -99,6 +183,7 @@
   "lang": "ur",
   "slug": "privacy",
   "title": "رازداری کی پالیسی",
+  "seo_title": "رازداری کی پالیسی | بلڈیاری",
   "excerpt": "بلڈیاری اپنے صارفین اور ان کے ورک اسپیس استعمال کرنے والوں کا ڈیٹا کیسے رکھتا ہے۔",
   "template": "page-plain",
   "file": "ur/privacy.html"
@@ -107,14 +192,88 @@
   "lang": "ur",
   "slug": "terms",
   "title": "شرائطِ استعمال",
+  "seo_title": "شرائطِ استعمال | بلڈیاری",
   "excerpt": "بلڈیاری کے استعمال کی شرائط، بشمول مفت آزمائش، پلان، ادائیگی اور ڈیٹا۔",
   "template": "page-plain",
   "file": "ur/terms.html"
  },
  {
+  "lang": "ur",
+  "slug": "home-owners",
+  "title": "گھر بنوانے والوں کے لیے",
+  "seo_title": "گھر کی تعمیر کی ایپ، گھر بنوانے والوں کے لیے | بلڈیاری",
+  "excerpt": "سارا دن سائٹ پر کھڑے ہوئے بغیر اپنا گھر بنوائیں: بلڈیاری مال، ادائیگیوں، کام کی تصویروں اور مرحلہ وار بجٹ کا حساب رکھتی ہے، اردو، انگریزی اور عربی میں۔",
+  "template": "",
+  "file": "ur/home-owners.html"
+ },
+ {
+  "lang": "ur",
+  "slug": "builders",
+  "title": "بلڈرز کے لیے",
+  "seo_title": "بلڈرز اور ٹھیکیداروں کے لیے کنسٹرکشن سافٹ ویئر | بلڈیاری",
+  "excerpt": "پاکستان اور خلیج کے بلڈرز اور ٹھیکیداروں کے لیے کنسٹرکشن مینجمنٹ سافٹ ویئر: ہر سائٹ کا الگ اسٹور، عملہ اور حاضری، خریداری، بل اور کام کی رپورٹیں۔",
+  "template": "",
+  "file": "ur/builders.html"
+ },
+ {
+  "lang": "ur",
+  "slug": "guides",
+  "title": "رہنمائی",
+  "seo_title": "گھر کی تعمیر اور سائٹ چلانے کی رہنمائی | بلڈیاری",
+  "excerpt": "گھر بنوانے والوں اور بلڈرز کے لیے عملی رہنمائی: گھر کی تعمیر کے مراحل، مال کا کنٹرول، سائٹ ڈائری، بجٹ اور لینٹر کی جانچ۔",
+  "template": "",
+  "file": "ur/guides.html"
+ },
+ {
+  "lang": "ur",
+  "slug": "guides/house-construction-stages",
+  "title": "تعمیر کے مراحل",
+  "seo_title": "گھر کی تعمیر کے مراحل: 14 مرحلوں کا شیڈول | بلڈیاری",
+  "excerpt": "پاکستان اور خلیج میں دو منزلہ گھر کی تعمیر کے 14 مراحل، ہر مرحلے میں کتنا وقت لگتا ہے، کون سا کام کس کے بعد ہوتا ہے، اور آگے بڑھنے سے پہلے کیا چیک کریں۔",
+  "template": "",
+  "file": "ur/guides/house-construction-stages.html"
+ },
+ {
+  "lang": "ur",
+  "slug": "guides/construction-material-control",
+  "title": "مال کا کنٹرول",
+  "seo_title": "سائٹ پر تعمیراتی مال کا کنٹرول: چوری اور ضیاع روکیں | بلڈیاری",
+  "excerpt": "سیمنٹ، سریا، ٹائلیں اور فٹنگز گھر کے خرچ کا بڑا حصہ ہیں۔ ایک سادہ طریقہ، آرڈر، وصولی، اسٹور، اجرا اور ملان، انہیں قابو میں رکھتا ہے۔",
+  "template": "",
+  "file": "ur/guides/construction-material-control.html"
+ },
+ {
+  "lang": "ur",
+  "slug": "guides/construction-site-diary",
+  "title": "سائٹ ڈائری",
+  "seo_title": "سائٹ ڈائری: روزانہ کیا لکھیں | بلڈیاری",
+  "excerpt": "روزانہ سائٹ ڈائری میں کیا لکھیں، موسم، لوگ، ہونے والا کام، مال، ہدایات اور مسائل، اور یہ مالک اور ٹھیکیدار دونوں کو کیسے بچاتی ہے۔",
+  "template": "",
+  "file": "ur/guides/construction-site-diary.html"
+ },
+ {
+  "lang": "ur",
+  "slug": "guides/house-construction-budget",
+  "title": "بجٹ اور ادائیگیاں",
+  "seo_title": "گھر کی تعمیر کا بجٹ کیسے بنائیں اور ادائیگیاں کیسے قابو میں رکھیں | بلڈیاری",
+  "excerpt": "بجٹ مرحلہ وار بنائیں، ہنگامی رقم رکھیں، فنشنگ پہلے طے کریں، ہوئے کام کی ادائیگی کریں اور ہر ادائیگی کا ثبوت رکھیں۔ گھر بنوانے والوں کے لیے عملی رہنمائی۔",
+  "template": "",
+  "file": "ur/guides/house-construction-budget.html"
+ },
+ {
+  "lang": "ur",
+  "slug": "guides/roof-slab-checklist",
+  "title": "لینٹر کی چیک لسٹ",
+  "seo_title": "لینٹر ڈالنے کی چیک لسٹ: پہلے، دوران اور بعد میں | بلڈیاری",
+  "excerpt": "لینٹر جم جائے تو ٹھیک نہیں ہو سکتا۔ کنکریٹ سے پہلے شٹرنگ، سریا، کور، پائپ اور مکسچر چیک کریں، اور بعد میں ٹھیک سے ترائی کریں۔",
+  "template": "",
+  "file": "ur/guides/roof-slab-checklist.html"
+ },
+ {
   "lang": "ar",
   "slug": "home",
   "title": "بيلدياري: إدارة مواقع البناء للمالك والمقاول",
+  "seo_title": "بيلدياري: تطبيق إدارة مواقع البناء للمالك والمقاول | Buildiary",
   "excerpt": "بيلدياري يضع موقع البناء على جوالك: التوريدات والمخزن والدفعات وصور التقدّم والعمّال، مع تدقيق بالذكاء الاصطناعي. بالعربية والإنجليزية والأردية. 7 أيام مجاناً.",
   "template": "",
   "file": "ar/home.html"
@@ -123,6 +282,7 @@
   "lang": "ar",
   "slug": "features",
   "title": "كل جزء من الموقع، في تطبيق واحد",
+  "seo_title": "المزايا: المخزن والدفعات وتقدّم العمل ويومية الموقع | بيلدياري",
   "excerpt": "المخزن والدفعات والميزانية وتقدّم البناء والعمّال ووايتات الماء والعهدة النقدية وتدقيق الذكاء الاصطناعي: ما يقدّمه بيلدياري للمالك والمقاول.",
   "template": "",
   "file": "ar/features.html"
@@ -131,6 +291,7 @@
   "lang": "ar",
   "slug": "pricing",
   "title": "أسعار بسيطة، بعملتك",
+  "seo_title": "الأسعار: باقة المالك وباقة المقاول، 7 أيام مجاناً | بيلدياري",
   "excerpt": "باقات بيلدياري للمالك والمقاول، شهرياً أو سنوياً، بالدولار أو الريال أو الروبية. 7 أيام مجاناً.",
   "template": "",
   "file": "ar/pricing.html"
@@ -139,6 +300,7 @@
   "lang": "ar",
   "slug": "about",
   "title": "وُلد في موقع بناء حقيقي",
+  "seo_title": "عن بيلدياري، منتج من SMH Global Services",
   "excerpt": "بيلدياري منتج من SMH Global Services، للمالك والمقاول الذي يريد أن يرى موقعه بوضوح.",
   "template": "",
   "file": "ar/about.html"
@@ -147,6 +309,7 @@
   "lang": "ar",
   "slug": "contact",
   "title": "تحدّث إلينا",
+  "seo_title": "تواصل مع بيلدياري: المبيعات والعرض التجريبي والدعم",
   "excerpt": "تواصل مع فريق بيلدياري في SMH Global Services.",
   "template": "",
   "file": "ar/contact.html"
@@ -155,6 +318,7 @@
   "lang": "ar",
   "slug": "privacy",
   "title": "سياسة الخصوصية",
+  "seo_title": "سياسة الخصوصية | بيلدياري",
   "excerpt": "كيف يتعامل بيلدياري مع بيانات العملاء ومستخدمي مساحات العمل.",
   "template": "page-plain",
   "file": "ar/privacy.html"
@@ -163,8 +327,81 @@
   "lang": "ar",
   "slug": "terms",
   "title": "شروط الخدمة",
+  "seo_title": "شروط الخدمة | بيلدياري",
   "excerpt": "شروط استخدام بيلدياري، بما فيها التجربة المجانية والباقات والدفع والبيانات.",
   "template": "page-plain",
   "file": "ar/terms.html"
+ },
+ {
+  "lang": "ar",
+  "slug": "home-owners",
+  "title": "لمن يبني بيته",
+  "seo_title": "تطبيق بناء البيت لمن يبني بيته بنفسه | بيلدياري",
+  "excerpt": "ابنِ بيتك دون أن تقف في الموقع طوال اليوم: بيلدياري يتابع المواد والدفعات وصور التقدّم والميزانية حسب المرحلة، بالعربية والإنجليزية والأردية.",
+  "template": "",
+  "file": "ar/home-owners.html"
+ },
+ {
+  "lang": "ar",
+  "slug": "builders",
+  "title": "للمقاولين",
+  "seo_title": "برنامج إدارة مشاريع البناء للمقاولين | بيلدياري",
+  "excerpt": "برنامج لإدارة مشاريع البناء للمقاولين في الخليج وباكستان: مخزن لكل موقع، العمّال والحضور، المشتريات والفواتير وتقارير التقدّم.",
+  "template": "",
+  "file": "ar/builders.html"
+ },
+ {
+  "lang": "ar",
+  "slug": "guides",
+  "title": "الأدلة",
+  "seo_title": "أدلة بناء البيت وإدارة الموقع | بيلدياري",
+  "excerpt": "أدلة عملية لمن يبني بيته وللمقاولين: مراحل بناء البيت، ضبط المواد، يومية الموقع، الميزانية وفحص صبة السقف.",
+  "template": "",
+  "file": "ar/guides.html"
+ },
+ {
+  "lang": "ar",
+  "slug": "guides/house-construction-stages",
+  "title": "مراحل البناء",
+  "seo_title": "مراحل بناء البيت: جدول من 14 مرحلة | بيلدياري",
+  "excerpt": "المراحل الأربع عشرة لبناء بيت من دورين، كم تستغرق كل مرحلة، وما الذي يعتمد على ماذا، وما الذي تفحصه قبل الانتقال إلى ما بعدها.",
+  "template": "",
+  "file": "ar/guides/house-construction-stages.html"
+ },
+ {
+  "lang": "ar",
+  "slug": "guides/construction-material-control",
+  "title": "ضبط المواد",
+  "seo_title": "ضبط مواد البناء في الموقع: أوقف الهدر والفقد | بيلدياري",
+  "excerpt": "الأسمنت والحديد والبلاط والتركيبات جزء كبير من كلفة البيت. روتين بسيط، طلب واستلام وتخزين وصرف ومطابقة، يبقيها تحت السيطرة.",
+  "template": "",
+  "file": "ar/guides/construction-material-control.html"
+ },
+ {
+  "lang": "ar",
+  "slug": "guides/construction-site-diary",
+  "title": "يومية الموقع",
+  "seo_title": "يومية موقع البناء: ماذا تسجّل كل يوم | بيلدياري",
+  "excerpt": "ما الذي تسجّله يومية الموقع، الطقس والعمّال والعمل المنجز والتوريدات والتعليمات والمشكلات، ولماذا تحمي المالك والمقاول معاً.",
+  "template": "",
+  "file": "ar/guides/construction-site-diary.html"
+ },
+ {
+  "lang": "ar",
+  "slug": "guides/house-construction-budget",
+  "title": "الميزانية والدفعات",
+  "seo_title": "ميزانية بناء البيت وضبط الدفعات | بيلدياري",
+  "excerpt": "قسّم الميزانية حسب المرحلة، واحتفظ باحتياطي، واختر التشطيبات مبكراً، وادفع مقابل العمل المنجز، واحتفظ بإثبات كل دفعة. دليل عملي لمن يبني بيته.",
+  "template": "",
+  "file": "ar/guides/house-construction-budget.html"
+ },
+ {
+  "lang": "ar",
+  "slug": "guides/roof-slab-checklist",
+  "title": "فحص صبة السقف",
+  "seo_title": "قائمة فحص صبة السقف: قبل الصب وأثناءه وبعده | بيلدياري",
+  "excerpt": "لا يمكن إصلاح السقف بعد أن يتصلّب. افحص الشدة والحديد والغطاء الخرساني والتمديدات والخلطة قبل الصب، وعالج السقف جيداً بعده.",
+  "template": "",
+  "file": "ar/guides/roof-slab-checklist.html"
  }
 ]

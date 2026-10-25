@@ -107,6 +107,7 @@ EOF
 cat > /opt/edge/sites/mimaar.caddy <<EOF
 $DOMAIN {
 	encode zstd gzip
+	header X-Robots-Tag "noindex, nofollow"
 	reverse_proxy mimaar-frontend:8080
 }
 EOF
@@ -118,6 +119,8 @@ https:// {
 		on_demand
 	}
 	encode zstd gzip
+	# workspaces are private: never in search results
+	header X-Robots-Tag "noindex, nofollow"
 	reverse_proxy mimaar-frontend:8080
 }
 http:// {
@@ -355,7 +358,7 @@ OK=1
 for S in $(./sites.sh) $(docker compose exec -T backend bash -c 'cd sites && ls -d pool-* 2>/dev/null'); do
   docker compose exec -T backend bench --site "$S" migrate >/dev/null && docker compose exec -T backend bench --site "$S" clear-cache || { echo "$S: migrate FAILED"; OK=0; }
 done
-docker image prune -af --filter "until=72h" >/dev/null 2>&1 || true
+docker image prune -af >/dev/null 2>&1 || true   # old versions no container uses (about 4.5 GB each)
 [ "$OK" = 1 ] && echo "MIMAAR UPDATED"
 EOF
 cat > mabni-console.sh <<'EOF'
@@ -381,7 +384,9 @@ cat > autoupdate.sh <<'EOF'
 exec 9>/run/mimaar-update.lock; flock -n 9 || exit 0
 cd /opt/mimaar && set -a && . ./.env && set +a
 /opt/mimaar/ecr-login.sh || echo "Could not sign in to the image store"
-docker pull -q "$IMAGE" >/dev/null 2>&1 || exit 0
+# a new version needs about 5 GB free: clear old versions first if the disk is getting full
+[ "$(df --output=avail -BG / | tail -1 | tr -dc 0-9)" -ge 8 ] || docker image prune -af >/dev/null 2>&1
+docker pull -q "$IMAGE" >/dev/null 2>&1 || { echo "$(date '+%F %T') could not download $IMAGE ($(df -h --output=avail / | tail -1 | tr -d ' ') free)"; exit 0; }
 NEW=$(docker image inspect -f '{{.Id}}' "$IMAGE" 2>/dev/null)
 RUNNING=$(docker inspect -f '{{.Image}}' "$(docker compose ps -q backend)" 2>/dev/null)
 [ -n "$NEW" ] && [ "$NEW" != "$RUNNING" ] || exit 0

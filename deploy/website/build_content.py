@@ -18,7 +18,7 @@ def attrs(d):
 	return (" " + json.dumps(d, ensure_ascii=False, separators=(",", ":"))) if d else ""
 
 
-def group(inner, cls="", tag="div", full=False, wide=True):
+def group(inner, cls="", tag="div", full=False, wide=True, size="1160px"):
 	a = {}
 	if tag != "div":
 		a["tagName"] = tag
@@ -27,7 +27,7 @@ def group(inner, cls="", tag="div", full=False, wide=True):
 	if cls:
 		a["className"] = cls
 	if wide:
-		a["layout"] = {"type": "constrained", "contentSize": "1160px"}
+		a["layout"] = {"type": "constrained", "contentSize": size}
 	klass = " ".join(x for x in ["wp-block-group", "alignfull" if full else "", cls] if x)
 	return f'<!-- wp:group{attrs(a)} -->\n<{tag} class="{klass}">{inner}</{tag}>\n<!-- /wp:group -->\n'
 
@@ -69,6 +69,8 @@ def ul(items, cls=""):
 
 
 def image(src, alt, cls="", caption=""):
+	# the image's width and height are added when the page is shown (mabni-seo.php), so the block
+	# stays exactly as the WordPress editor writes it
 	a = {"className": cls} if cls else {}
 	k = "wp-block-image" + (" " + cls if cls else "")
 	cap = f'<figcaption class="wp-element-caption">{caption}</figcaption>' if caption else ""
@@ -106,7 +108,7 @@ def page_home(L, w):
 			p(w["hero_eyebrow"], "mb-eyebrow") + h(1, w["hero_title"]) + p(w["hero_lede"], "mb-lede")
 			+ buttons([(w["cta_trial"], url(L, "start-trial"), False), (w["cta_prices"], url(L, "pricing"), True)])
 			+ p(w["hero_note"], "mb-note"),
-			image(f"{IMG}/{L}-dash.png", w["shot_dash"], "mb-hero-shot"),
+			image(f"{IMG}/{L}-dash.webp", w["shot_dash"], "mb-hero-shot"),
 		]),
 		"mb-hero", "section", True)
 	modes = group(
@@ -125,8 +127,8 @@ def page_home(L, w):
 		"mb-section", "section", True)
 	shots = group(
 		p(w["shots_eyebrow"], "mb-eyebrow mb-center") + h(2, w["shots_title"], "mb-center")
-		+ group(image(f"{IMG}/{L}-build.png", w["shot_build"], caption=w["shot_build"]) + image(f"{IMG}/{L}-store.png", w["shot_store"], caption=w["shot_store"])
-			+ image(f"{IMG}/{L}-budget.png", w["shot_budget"], caption=w["shot_budget"]), "mb-phones", wide=False),
+		+ group(image(f"{IMG}/{L}-build.webp", w["shot_build"], caption=w["shot_build"]) + image(f"{IMG}/{L}-store.webp", w["shot_store"], caption=w["shot_store"])
+			+ image(f"{IMG}/{L}-budget.webp", w["shot_budget"], caption=w["shot_budget"]), "mb-phones", wide=False),
 		"mb-section mb-alt", "section", True)
 	local = group(
 		columns([
@@ -137,10 +139,15 @@ def page_home(L, w):
 	prices = group(
 		p(w["price_eyebrow"], "mb-eyebrow mb-center") + h(2, w["price_title"], "mb-center") + html("[mabni_prices]"),
 		"mb-section mb-alt", "section", True)
+	guides = group(
+		p(w["guides_eyebrow"], "mb-eyebrow mb-center") + h(2, w["guides_title"], "mb-center")
+		+ guide_cards(L, [g for g in G[L]["pages"] if g["kind"] == "guide"][:3])
+		+ buttons([(w["guides_all"], url(L, "guides"), True)], "mb-center-buttons"),
+		"mb-section", "section", True)
 	faq = group(
 		h(2, w["faq_title"], "mb-center") + group("".join(details(q, a) for q, a in w["faq"]), "mb-faq", wide=False),
-		"mb-section", "section", True)
-	return hero + modes + feats + steps + shots + local + prices + faq + cta(L, w)
+		"mb-section mb-alt", "section", True)
+	return hero + modes + feats + steps + shots + local + prices + guides + faq + cta(L, w)
 
 
 def cta(L, w):
@@ -203,6 +210,89 @@ def page_legal(L, w, key):
 	return out
 
 
+# ---------------------------------------------------------------- guides and solution pages
+G = {L: json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), f"guides_{L}.json"), encoding="utf-8")) for L in LANGS}
+
+
+def link(href, text, cls=""):
+	k = f' class="{cls}"' if cls else ""
+	return f'<a{k} href="{href}">{text}</a>'
+
+
+def ol(items):
+	li = "".join(f"<!-- wp:list-item -->\n<li>{x}</li>\n<!-- /wp:list-item -->\n" for x in items)
+	return f'<!-- wp:list {{"ordered":true}} -->\n<ol class="wp-block-list">{li}</ol>\n<!-- /wp:list -->\n'
+
+
+def table(head, rows):
+	"""A table that becomes labelled cards on a phone (each cell carries its column's name)."""
+	th = "".join(f"<th scope=\"col\">{escape(x)}</th>" for x in head)
+	body = ""
+	for r in rows:
+		cells = ""
+		for i, x in enumerate(r):
+			tag = "th scope=\"row\"" if i == 0 and head[0] == "" else "td"
+			label = escape(head[i]) if head[i] else ""
+			cells += f'<{tag} data-label="{label}">{escape(x)}</{tag.split()[0]}>'
+		body += f"<tr>{cells}</tr>"
+	return html(f'<div class="mb-table"><table><thead><tr>{th}</tr></thead><tbody>{body}</tbody></table></div>')
+
+
+def blocks(items):
+	out = ""
+	for b in items:
+		kind = b[0]
+		if kind in ("h2", "h3"):
+			out += h(int(kind[1]), b[1])
+		elif kind == "p":
+			out += p(b[1])
+		elif kind == "ul":
+			out += ul(b[1])
+		elif kind == "ol":
+			out += ol(b[1])
+		elif kind == "table":
+			out += table(b[1], b[2])
+	return out
+
+
+def crumbs(L, trail):
+	nav = G[L]["nav"]
+	parts = [link(url(L), nav["home"])] + [link(href, text) for href, text in trail[:-1]] + [f'<span aria-current="page">{trail[-1][1]}</span>']
+	return html(f'<nav class="mb-crumbs" aria-label="breadcrumb">{" <span aria-hidden=\"true\">›</span> ".join(parts)}</nav>')
+
+
+def guide_cards(L, items):
+	nav = G[L]["nav"]
+	cards = "".join(box(h(3, link(url(L, g["slug"]), g["title"])) + p(g["excerpt"]) + p(link(url(L, g["slug"]), nav["read"]), "mb-more"), "mb-card mb-guide") for g in items)
+	return group(cards, "mb-cards", wide=False)
+
+
+def faq_section(L, items, alt=False):
+	if not items:
+		return ""
+	return group(h(2, G[L]["nav"]["faq"], "mb-center") + group("".join(details(q, a) for q, a in items), "mb-faq", wide=False), "mb-section" + (" mb-alt" if alt else ""), "section", True)
+
+
+def page_extra(L, w, g):
+	nav = G[L]["nav"]
+	guides = [x for x in G[L]["pages"] if x["kind"] == "guide"]
+	if g["kind"] == "guide":
+		trail = [(url(L, "guides"), nav["guides"]), (url(L, g["slug"]), g["short"])]
+	else:
+		trail = [(url(L, g["slug"]), g["title"] if g["kind"] == "index" else (nav["owners"] if g["slug"] == "home-owners" else nav["builders"]))]
+	head = group(crumbs(L, trail) + p(g["eyebrow"], "mb-eyebrow") + h(1, g["title"]) + p(g["lede"], "mb-lede"), "mb-pagehead mb-narrow", "section", True, size="780px")
+	if g["kind"] == "index":
+		return head + group(guide_cards(L, guides), "mb-section", "section", True) + cta(L, w)
+	body = group(blocks(g["blocks"]), "mb-section mb-article", "section", True, size="780px")
+	out = head + body + faq_section(L, g.get("faq"), alt=True)
+	if g["kind"] == "guide":
+		others = [x for x in guides if x["slug"] != g["slug"]][:3]
+		out += group(h(2, nav["related"], "mb-center") + guide_cards(L, others), "mb-section", "section", True)
+	else:
+		out += group(p(w["guides_eyebrow"], "mb-eyebrow mb-center") + h(2, w["guides_title"], "mb-center") + guide_cards(L, guides[:3]), "mb-section", "section", True)
+	return out + cta(L, w)
+
+
 PAGES = [
 	("home", page_home, "home_title", "home_excerpt", ""),
 	("features", page_features, "features_title", "features_excerpt", ""),
@@ -218,12 +308,19 @@ def main():
 	index = []
 	for L in LANGS:
 		w = dict(T["en"], **T[L])
-		os.makedirs(os.path.join(OUT, L), exist_ok=True)
+		os.makedirs(os.path.join(OUT, L, "guides"), exist_ok=True)
 		for slug, fn, title_key, ex_key, template in PAGES:
 			body = fn(L, w)
 			with open(os.path.join(OUT, L, f"{slug}.html"), "w", encoding="utf-8") as f:
 				f.write(body)
-			index.append({"lang": L, "slug": slug, "title": w[title_key], "excerpt": w[ex_key], "template": template, "file": f"{L}/{slug}.html"})
+			index.append({"lang": L, "slug": slug, "title": w[title_key], "seo_title": w.get(f"{slug}_seo", ""), "excerpt": w[ex_key], "template": template, "file": f"{L}/{slug}.html"})
+		for g in G[L]["pages"]:
+			body = page_extra(L, w, g)
+			with open(os.path.join(OUT, L, f"{g['slug']}.html"), "w", encoding="utf-8") as f:
+				f.write(body)
+			nav = G[L]["nav"]
+			name = g.get("short") or {"home-owners": nav["owners"], "builders": nav["builders"], "guides": nav["guides"]}.get(g["slug"], g["title"])
+			index.append({"lang": L, "slug": g["slug"], "title": name, "seo_title": g["seo_title"], "excerpt": g["excerpt"], "template": "", "file": f"{L}/{g['slug']}.html"})
 	with open(os.path.join(OUT, "pages.json"), "w", encoding="utf-8") as f:
 		json.dump(index, f, ensure_ascii=False, indent=1)
 	print(len(index), "pages")

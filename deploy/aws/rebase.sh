@@ -28,12 +28,19 @@ B bench --site "$NEW_C" execute mimaar.saas.console.rebase --kwargs "{'base': '$
 grep -q "^BASE .* -> $NEW" /tmp/rebase.out || { echo "The console did not take the new address: stopping"; exit 1; }
 sed -i "s|^MABNI_BASE=.*|MABNI_BASE=$NEW|; s|^MABNI_CONSOLE=.*|MABNI_CONSOLE=$NEW_C|" .env
 sed -i "s|header_up Host $OLD_C|header_up Host $NEW_C|" /opt/edge/Caddyfile
+echo "== housekeeping: private addresses stay out of search results; updates clear old versions"
+for f in /opt/edge/sites/zz-mabni.caddy /opt/edge/sites/mimaar.caddy /opt/edge/sites/office.caddy; do
+  [ -f "$f" ] && ! grep -q X-Robots-Tag "$f" && sed -i '0,/encode zstd gzip/s//encode zstd gzip\n\theader X-Robots-Tag "noindex, nofollow"/' "$f"
+done
+sed -i 's|docker image prune -af --filter "until=72h"|docker image prune -af|' update.sh
+grep -q 'df --output=avail' autoupdate.sh || sed -i 's|^docker pull -q "\$IMAGE" >/dev/null 2>&1 \|\| exit 0$|[ "$(df --output=avail -BG / \| tail -1 \| tr -dc 0-9)" -ge 8 ] \|\| docker image prune -af >/dev/null 2>\&1\n&|' autoupdate.sh
 echo "== website"
 sed -i "s|^MABNI_CONSOLE=.*|MABNI_CONSOLE=$NEW_C|" /opt/website/.env
 W() { docker compose -f /opt/website/compose.yml --project-directory /opt/website run --rm -T --entrypoint wp cli "$@"; }
 W search-replace "https://$OLD" "https://$NEW" --all-tables --skip-columns=guid --quiet || true
 W option update home "https://$NEW" >/dev/null; W option update siteurl "https://$NEW" >/dev/null; W option update blog_public 1 >/dev/null
 /opt/website/update.sh   # new website.caddy for the new address, Caddy reloaded
+echo "IndexNow: $(W eval 'echo mabni_indexnow_all();' 2>/dev/null || true)"
 echo "== the old addresses redirect"
 {
   printf '%s, www.%s {\n\tredir https://%s{uri} permanent\n}\n' "$OLD" "$OLD" "$NEW"

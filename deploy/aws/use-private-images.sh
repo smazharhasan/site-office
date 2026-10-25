@@ -81,6 +81,7 @@ echo "*/15 * * * * root /opt/office/update.sh >> /var/log/mabni-office.log 2>&1"
 cat > /opt/edge/sites/office.caddy <<EOF
 office.$MABNI_BASE {
 	encode zstd gzip
+	header X-Robots-Tag "noindex, nofollow"
 	@root path /
 	redir @root /site-office/
 	reverse_proxy office-web:80

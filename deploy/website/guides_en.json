@@ -1,0 +1,920 @@
+{
+ "nav": {
+  "guides": "Guides",
+  "owners": "For home owners",
+  "builders": "For builders",
+  "related": "More guides",
+  "read": "Read the guide",
+  "home": "Home",
+  "faq": "Questions people ask",
+  "solutions": "Who it's for"
+ },
+ "pages": [
+  {
+   "slug": "home-owners",
+   "kind": "solution",
+   "seo_title": "House Construction App for Home Owners | Buildiary",
+   "title": "Building your own home? See every bag, bill and slab from your phone.",
+   "excerpt": "Build your own house without standing on site all day: Buildiary tracks material, payments, progress photos and the budget by phase, in English, Urdu and Arabic.",
+   "eyebrow": "For home owners",
+   "lede": "Most families build a house once. Buildiary keeps the record a good site engineer would keep: deliveries, the store, payments and progress, each with a photo, a name and a time. You can check your builder's work from home, from the office or from abroad.",
+   "blocks": [
+    [
+     "h2",
+     "What goes wrong when you can't be on site"
+    ],
+    [
+     "ul",
+     [
+      "Cement, steel and tiles arrive short, or leave the site without a record.",
+      "Bills don't match what was delivered, and advances are hard to follow.",
+      "Progress reports are a few WhatsApp photos with no date or place.",
+      "The money runs out before the finishing starts."
+     ]
+    ],
+    [
+     "h2",
+     "How Buildiary helps"
+    ],
+    [
+     "ul",
+     [
+      "Every delivery is received against your order, with a photo of the delivery note and the name of the person who checked it.",
+      "Every bag that leaves the store goes to a named mistri for a named job.",
+      "You approve petty cash and supplier payments, and the proof stays with each payment.",
+      "Progress is recorded stage by stage, from design to handover, with dated photos.",
+      "The budget is split into grey structure and finishing, so you see early when a phase is running over.",
+      "Ask questions in plain words, such as 'How much cement came this month?', in English, Urdu or Arabic."
+     ]
+    ],
+    [
+     "h2",
+     "Buildiary, or a notebook, Excel and WhatsApp?"
+    ],
+    [
+     "table",
+     [
+      "",
+      "Notebook, Excel, WhatsApp",
+      "Buildiary"
+     ],
+     [
+      [
+       "Deliveries",
+       "Written later, if at all",
+       "Recorded at the gate, with a photo of the delivery note"
+      ],
+      [
+       "Store",
+       "Counted when someone remembers",
+       "Live stock; every release against a person"
+      ],
+      [
+       "Payments",
+       "Spread across chats and receipts",
+       "Each payment with its proof, against the budget"
+      ],
+      [
+       "Progress",
+       "Photos without a date or place",
+       "Stage by stage, with dated photos"
+      ],
+      [
+       "Who sees what",
+       "Whoever has the file or the chat",
+       "Each person sees what their role needs"
+      ],
+      [
+       "Language",
+       "Mixed",
+       "English, Urdu or Arabic, for each person"
+      ]
+     ]
+    ],
+    [
+     "h2",
+     "Building back home while you work abroad?"
+    ],
+    [
+     "p",
+     "Many families in the Gulf, the UK and North America build a house in Pakistan through a relative or a builder. Buildiary runs in the browser on any phone or computer, so you see the day's deliveries, payments and photos wherever you are, and the person on site records them in Urdu."
+    ],
+    [
+     "ul",
+     [
+      "See the site the same day, not at the end of the month",
+      "Approve petty cash and payments before money is spent",
+      "Your relative, engineer and builder work in one shared record"
+     ]
+    ]
+   ],
+   "faq": [
+    [
+     "Do I need to understand construction to use Buildiary?",
+     "No. Buildiary follows a standard house-building schedule from design to handover, so you can see which stage the work is in and what comes next."
+    ],
+    [
+     "My builder doesn't use apps. Can his team still use it?",
+     "Yes. Screens have big buttons and few words, in Urdu, Arabic or English. Workers can use a site card with a PIN. If a supervisor can send a WhatsApp photo, he can record a delivery."
+    ],
+    [
+     "Can I use Buildiary while living abroad?",
+     "Yes. It runs in the browser on any phone or computer, so you can follow the site and approve payments from anywhere."
+    ],
+    [
+     "How many houses can I manage?",
+     "The Owner plan covers up to two projects, for example your house and a parent's. See the pricing page for the price in USD, PKR or SAR; the first 7 days are free."
+    ]
+   ]
+  },
+  {
+   "slug": "builders",
+   "kind": "solution",
+   "seo_title": "Construction Software for Builders & Contractors | Buildiary",
+   "title": "Run every client site from one app, and show clients progress they can trust.",
+   "excerpt": "Construction management software for builders and contractors in Pakistan and the Gulf: a store for each site, crews and attendance, purchasing, bills and progress reports.",
+   "eyebrow": "For builders and contractors",
+   "lede": "Buildiary's Builder mode gives each site its own store, crew and schedule, while purchasing, bills and accounts stay together for your office.",
+   "blocks": [
+    [
+     "h2",
+     "One workspace, many sites"
+    ],
+    [
+     "ul",
+     [
+      "Each project has its own store, so stock never mixes between sites.",
+      "Switch projects with one tap; lists show only the chosen site.",
+      "A standard schedule from design to handover is set to each project's start and finish dates.",
+      "The Builder plan covers up to ten open projects."
+     ]
+    ],
+    [
+     "h2",
+     "From quotation to payment"
+    ],
+    [
+     "ol",
+     [
+      "Collect supplier quotations and compare them.",
+      "Turn the best quotation into a purchase order.",
+      "Receive the goods at the site against the order, with a photo of the delivery note.",
+      "Match the supplier's bill to what was received, and pay with proof.",
+      "See what is ordered, received and paid against each site's budget."
+     ]
+    ],
+    [
+     "h2",
+     "People on site"
+    ],
+    [
+     "ul",
+     [
+      "Site cards with a PIN for workers and staff",
+      "Attendance with a face check",
+      "Daily site diary, inspections and snag lists",
+      "Each person works in English, Urdu or Arabic"
+     ]
+    ],
+    [
+     "h2",
+     "Reports your clients will trust"
+    ],
+    [
+     "p",
+     "Progress is recorded stage by stage with dated photos, so the report a client sees is built from the same records your team keeps every day. No more chasing the site for photos at the end of the month."
+    ],
+    [
+     "h2",
+     "Accounts that follow the rules"
+    ],
+    [
+     "p",
+     "Buildiary is built on ERPNext, the open-source business system. Every payment and stock movement is backed by proper double-entry accounts, and your office can open the full system on a computer when it needs to."
+    ]
+   ],
+   "faq": [
+    [
+     "How many sites can I run on Buildiary?",
+     "The Builder plan covers up to ten open projects at a time. Contact us if you need more."
+    ],
+    [
+     "Does each site have its own store?",
+     "Yes. Each project gets its own store when it is created, and receipts, releases and stock are kept for each site separately."
+    ],
+    [
+     "Can my accountant use it?",
+     "Yes. The accountant works with bills, payments and the budget; site staff see only what their role needs."
+    ],
+    [
+     "Can I move from the Owner plan to the Builder plan?",
+     "Yes, at any time. The new plan starts when we confirm your payment."
+    ]
+   ]
+  },
+  {
+   "slug": "guides",
+   "kind": "index",
+   "seo_title": "Guides to Building a House and Running a Site | Buildiary",
+   "title": "Guides for building well",
+   "excerpt": "Practical guides for home owners and builders: the stages of building a house, material control, site diaries, budgets and slab inspections.",
+   "eyebrow": "Guides",
+   "lede": "Plain-language guides from the Buildiary team on building a house in Pakistan and the Gulf: what happens when, what to check and what to write down.",
+   "blocks": [],
+   "faq": []
+  },
+  {
+   "slug": "guides/house-construction-stages",
+   "kind": "guide",
+   "seo_title": "House Construction Stages: A 14-Step Schedule | Buildiary",
+   "title": "The stages of building a house, from design to handover",
+   "excerpt": "The 14 stages of building a typical two-storey house in Pakistan and the Gulf, how long each takes, what depends on what, and what to check before moving on.",
+   "eyebrow": "Guide",
+   "lede": "A typical two-storey family house moves through five phases (design, approval, grey structure, finishing and handover) in about 18 months. Here is the order of work most good builders follow, and what to check at each step.",
+   "blocks": [
+    [
+     "h2",
+     "The five phases at a glance"
+    ],
+    [
+     "table",
+     [
+      "Phase",
+      "What happens",
+      "Typical time"
+     ],
+     [
+      [
+       "Design",
+       "Brief, concept plans, then structural, electrical and plumbing drawings",
+       "About 2 months"
+      ],
+      [
+       "Approval",
+       "Building plan approved by the authority or society",
+       "About 1 month, alongside design"
+      ],
+      [
+       "Grey structure",
+       "Excavation, foundation, columns, slabs, walls and plaster",
+       "About 8 months"
+      ],
+      [
+       "Finishing",
+       "Wiring and plumbing, tiles, woodwork, kitchen, paint and fittings",
+       "About 7 months"
+      ],
+      [
+       "Handover",
+       "Snag list, repairs and handover",
+       "About 3 weeks"
+      ]
+     ]
+    ],
+    [
+     "p",
+     "These times are typical for a two-storey house. Size, weather, approvals and, above all, cash flow make the real schedule shorter or longer."
+    ],
+    [
+     "h2",
+     "The 14 stages in order"
+    ],
+    [
+     "h3",
+     "1. Design brief and concept plans"
+    ],
+    [
+     "p",
+     "Agree the rooms, sizes, style and budget with your architect. The concept plans fix the layout; every change after this point costs more. Check that the plans meet the plot's bylaws: setbacks, covered area and height."
+    ],
+    [
+     "h3",
+     "2. Structural, electrical and plumbing drawings"
+    ],
+    [
+     "p",
+     "The structural engineer designs the foundations, columns, beams and slabs. Electrical and plumbing drawings show every point, pipe and board. Check that the drawings are signed and that the quantities and contract are based on them."
+    ],
+    [
+     "h3",
+     "3. Building plan approval"
+    ],
+    [
+     "p",
+     "Submit the drawings to the development authority or society (for example a DHA, Bahria Town, LDA, KDA or CDA) or, in Saudi Arabia, the municipality through Balady. Most authorities don't allow work to start without it. Keep the approved set on site and build to it."
+    ],
+    [
+     "h3",
+     "4. Mobilisation and excavation"
+    ],
+    [
+     "p",
+     "The plot is cleared and marked out, a water supply, store and labour shelter are set up, and the ground is dug to the foundation level in the drawings. Check the layout against the approved plan before digging."
+    ],
+    [
+     "h3",
+     "5. Foundation, waterproofing and plinth"
+    ],
+    [
+     "p",
+     "Lean concrete, footings and plinth beams are cast; anti-termite treatment and a damp-proof course protect the house from below. Check the steel before every pour and the plinth level before walls start."
+    ],
+    [
+     "h3",
+     "6. Ground-floor columns and roof slab"
+    ],
+    [
+     "p",
+     "Columns are cast, then the formwork and steel for the beams and roof slab, then the pour. Electrical conduits and pipe sleeves go in before the concrete. Use a slab checklist before pouring, and keep the slab wet for at least 7 days after."
+    ],
+    [
+     "h3",
+     "7. First-floor columns and roof slab"
+    ],
+    [
+     "p",
+     "The same cycle for the upper floor. The props under the slab stay until the structural engineer allows them to be removed."
+    ],
+    [
+     "h3",
+     "8. Block masonry, parapet and water tanks"
+    ],
+    [
+     "p",
+     "Walls are built in block or brick, with lintels over doors and windows; the parapet and the underground and overhead water tanks are built. Check that walls are plumb and openings are the right size, and test the tanks for leaks before plaster."
+    ],
+    [
+     "h3",
+     "9. Plaster and grey structure handover"
+    ],
+    [
+     "p",
+     "Inside and outside plaster, and roof insulation and waterproofing. The grey structure is now complete: measure it and settle the grey structure account before finishing starts."
+    ],
+    [
+     "h3",
+     "10. Electrical and plumbing first fix, window frames"
+    ],
+    [
+     "p",
+     "Wiring, boards, water and drain pipes, gas lines, and door and window frames go in before floors and tiles. Pressure-test the water pipes and photograph every pipe and wire run before it is covered."
+    ],
+    [
+     "h3",
+     "11. Flooring and wall tiles"
+    ],
+    [
+     "p",
+     "Floors, bathroom and kitchen tiles, and stone. Check levels and the slope towards drains, use tiles from one batch, and keep a few spare boxes."
+    ],
+    [
+     "h3",
+     "12. Woodwork, kitchen and aluminium"
+    ],
+    [
+     "p",
+     "Doors, wardrobes, kitchen cabinets and aluminium or uPVC windows, alongside the tiling. Measure on site after plaster, not from the drawings."
+    ],
+    [
+     "h3",
+     "13. Paint, sanitary ware and lights"
+    ],
+    [
+     "p",
+     "Putty and paint, then taps, basins, toilets, lights, switches and fans. Check that every point works and nothing leaks under the basins."
+    ],
+    [
+     "h3",
+     "14. Snag list and handover"
+    ],
+    [
+     "p",
+     "Walk through every room with the builder and list every defect. The builder fixes them, then hands over the keys, drawings and warranties. Keep a small retention until the snags are fixed."
+    ],
+    [
+     "h2",
+     "What depends on what"
+    ],
+    [
+     "p",
+     "Some stages overlap and some cannot. Approval can run while the structural drawings are finished, and woodwork can run alongside tiling. But nothing structural should start before the drawings are approved, and finishing should not start until the grey structure is complete and settled."
+    ],
+    [
+     "h2",
+     "How Buildiary uses this schedule"
+    ],
+    [
+     "p",
+     "When you start a project in Buildiary, these 14 stages are added for you and spread between your start and finish dates. Your team records progress against each stage with photos, so you always know where the work stands and what comes next."
+    ]
+   ],
+   "faq": [
+    [
+     "How long does it take to build a house in Pakistan?",
+     "A two-storey family house typically takes about 15 to 20 months from design to handover: around 8 months for the grey structure and 6 to 8 months for finishing. Approvals, cash flow and the size of the house change this."
+    ],
+    [
+     "What is grey structure?",
+     "The grey structure is the frame and shell of the building: foundations, columns, slabs, walls and plaster, without finishes. In Pakistan it is often given to one contractor and paid for separately from the finishing."
+    ],
+    [
+     "What is the difference between grey structure and finishing?",
+     "Grey structure is the shell. Finishing is everything that makes it a home: wiring and plumbing fittings, floors, tiles, woodwork, kitchen, paint and fixtures. Finishing often costs as much as the grey structure, or more, depending on the materials chosen."
+    ]
+   ],
+   "short": "Construction stages"
+  },
+  {
+   "slug": "guides/construction-material-control",
+   "kind": "guide",
+   "seo_title": "Construction Material Control: Stop Loss on Site | Buildiary",
+   "title": "How to stop material going missing on a building site",
+   "excerpt": "Cement, steel, tiles and fittings are a large part of a house's cost. A simple routine (order, receive, store, release, reconcile) keeps them under control.",
+   "eyebrow": "Guide",
+   "lede": "On most house builds, material is a large part of the cost, and it is where money quietly leaks: short deliveries, extra bags used, items that leave the site. You don't need a warehouse system to stop it, just a routine that every delivery and every release follows.",
+   "blocks": [
+    [
+     "h2",
+     "Where material is lost"
+    ],
+    [
+     "ul",
+     [
+      "Short deliveries: 95 bags on a 100-bag delivery note, or steel lighter than billed.",
+      "Wrong quality: a cheaper brand or a thinner bar than ordered.",
+      "No record of use: bags released without anyone noting where they went.",
+      "Waste: mortar mixed and left to set, broken blocks, badly cut tiles.",
+      "Theft: material leaving the site after hours."
+     ]
+    ],
+    [
+     "h2",
+     "The five-step routine"
+    ],
+    [
+     "h3",
+     "1. Order in writing"
+    ],
+    [
+     "p",
+     "Every purchase starts with a written order: item, brand, size, quantity and rate. A delivery that doesn't match an order is questioned at the gate."
+    ],
+    [
+     "h3",
+     "2. Receive at the gate"
+    ],
+    [
+     "p",
+     "Count the bags, count or weigh the steel, and check the brand and size against the order. Photograph the supplier's delivery note and the load, and note who received it."
+    ],
+    [
+     "h3",
+     "3. Keep a proper store"
+    ],
+    [
+     "p",
+     "Keep cement dry and off the floor, in stacks no more than about 10 bags high, and use the oldest bags first. Keep fittings and small items locked. Make one person responsible for the store."
+    ],
+    [
+     "h3",
+     "4. Release to a named person for a named job"
+    ],
+    [
+     "p",
+     "Material leaves the store only to a named mistri or foreman, for a named piece of work: '20 bags to Akram for the first-floor columns'. Returns are recorded the same way."
+    ],
+    [
+     "h3",
+     "5. Reconcile every week"
+    ],
+    [
+     "p",
+     "Compare what was issued with what the work needed. For example, a 1:2:4 concrete mix uses roughly 6 to 7 bags of cement per cubic metre; your engineer can tell you what a pour should need. Count the store by surprise every few weeks."
+    ],
+    [
+     "h2",
+     "What to check on common materials"
+    ],
+    [
+     "table",
+     [
+      "Material",
+      "At delivery",
+      "In the store"
+     ],
+     [
+      [
+       "Cement",
+       "Count the bags; check the brand, grade and packing date",
+       "Dry, on a raised platform, about 10 bags high at most; oldest first"
+      ],
+      [
+       "Steel bars",
+       "Check diameter and grade; count or weigh against the bill",
+       "Off the ground, covered, sorted by size"
+      ],
+      [
+       "Bricks and blocks",
+       "Count by stacks; check the size and broken pieces",
+       "Stacked near the work, away from traffic"
+      ],
+      [
+       "Sand and crush",
+       "Measure the loaded truck (length × width × height) against the volume billed",
+       "In a marked area on hard ground"
+      ],
+      [
+       "Tiles",
+       "Check size, shade and batch on every box",
+       "Boxed, one batch together; keep spare boxes"
+      ],
+      [
+       "Fittings",
+       "Check model and quantity against the order",
+       "Locked, released one by one"
+      ]
+     ]
+    ],
+    [
+     "h2",
+     "Water tankers too"
+    ],
+    [
+     "p",
+     "Where there is no mains water, water is bought by the tanker. Record each tanker's size, time and who received it, and check the tank levels, so you pay only for water that arrived."
+    ],
+    [
+     "h2",
+     "How Buildiary does this"
+    ],
+    [
+     "p",
+     "Buildiary follows this routine on the phone. Goods are received against the purchase order with a photo of the delivery note, every release goes to a named person, stock is live, and low-stock alerts warn you before work stops. You can even find an item by taking its photo."
+    ]
+   ],
+   "faq": [
+    [
+     "How high can cement bags be stacked?",
+     "Keep stacks to about 10 bags high, on a dry raised platform away from the walls, and use the oldest bags first."
+    ],
+    [
+     "How do I check a sand or crush delivery?",
+     "Measure the truck's loaded length, width and height, multiply them, and compare the volume with what the supplier is charging for."
+    ],
+    [
+     "Who should keep the site store?",
+     "One trusted person, usually the store keeper or supervisor. Material should leave the store only through them, to a named person for a named job."
+    ]
+   ],
+   "short": "Material control"
+  },
+  {
+   "slug": "guides/construction-site-diary",
+   "kind": "guide",
+   "seo_title": "Construction Site Diary: What to Record Every Day | Buildiary",
+   "title": "How to keep a construction site diary that settles arguments",
+   "excerpt": "What a daily site diary should record (weather, people, work done, deliveries, instructions and problems) and why it protects owners and builders alike.",
+   "eyebrow": "Guide",
+   "lede": "A site diary is the daily record of what happened on site. Good engineers have always kept one, because when there is a dispute about a delay, a payment or a defect, the diary is the evidence. It takes five minutes a day.",
+   "blocks": [
+    [
+     "h2",
+     "What to record every day"
+    ],
+    [
+     "ul",
+     [
+      "Date, weather and working hours, including rain or heat that stopped work",
+      "Who was on site: mistris and labour by trade, and any visitors",
+      "Work done, by location: 'first-floor slab steel fixed, east side'",
+      "Material received and released",
+      "Instructions given, and by whom, especially changes from the owner or architect",
+      "Inspections and tests, and their result",
+      "Problems: delays, accidents, shortages and defects",
+      "Photos of each of the above"
+     ]
+    ],
+    [
+     "h2",
+     "Why it matters"
+    ],
+    [
+     "ul",
+     [
+      "Payments: claims for work done are backed by a dated record.",
+      "Delays: you can show which days were lost to rain, approvals or late material.",
+      "Quality: years later you can see when something was built and who was there.",
+      "Changes: spoken instructions become written ones."
+     ]
+    ],
+    [
+     "h2",
+     "Tips for a diary people actually keep"
+    ],
+    [
+     "ul",
+     [
+      "Make one person responsible, usually the supervisor.",
+      "Fill it in on site during the day, not from memory at night.",
+      "Prefer photos to long text: one photo with a caption beats a paragraph.",
+      "Let the owner and the builder read the same diary.",
+      "Never change old entries; add a correction instead."
+     ]
+    ],
+    [
+     "h2",
+     "A simple template"
+    ],
+    [
+     "table",
+     [
+      "Field",
+      "Example"
+     ],
+     [
+      [
+       "Date and weather",
+       "12 March · sunny, 34 °C · worked 8:00 to 17:00"
+      ],
+      [
+       "People",
+       "4 mistris, 9 labour, 1 electrician"
+      ],
+      [
+       "Work done",
+       "Ground-floor roof: formwork and steel fixed; checked by the engineer"
+      ],
+      [
+       "Material",
+       "Received 200 bags of cement (delivery note 1452); released 30 bags for the stairs"
+      ],
+      [
+       "Instructions",
+       "Owner: move the kitchen window 300 mm to the left"
+      ],
+      [
+       "Problems",
+       "Slab pour moved to Thursday: crush delivery late"
+      ],
+      [
+       "Photos",
+       "6 photos"
+      ]
+     ]
+    ],
+    [
+     "h2",
+     "How Buildiary does this"
+    ],
+    [
+     "p",
+     "In Buildiary the supervisor writes the day's diary on the phone, with photos. Deliveries, releases, attendance and inspections are recorded alongside it, so the owner sees the whole day in one place, in English, Urdu or Arabic."
+    ]
+   ],
+   "faq": [
+    [
+     "Who should keep the site diary?",
+     "The site supervisor or engineer, every day. The owner and the builder should both be able to read it."
+    ],
+    [
+     "Is a WhatsApp group enough as a site diary?",
+     "It helps, but messages get lost, are not organised by date or place, and can be deleted. A diary keeps the same facts in order, in one place."
+    ]
+   ],
+   "short": "Site diary"
+  },
+  {
+   "slug": "guides/house-construction-budget",
+   "kind": "guide",
+   "seo_title": "How to Budget a House Build and Control Payments | Buildiary",
+   "title": "How to budget your house build and keep payments under control",
+   "excerpt": "Split the budget by phase, keep a contingency, decide finishes early, pay against work done and keep proof of every payment. A practical guide for home owners.",
+   "eyebrow": "Guide",
+   "lede": "Most house builds go over budget in the same places: finishes chosen late, advances never adjusted, and small cash payments nobody added up. A budget by phase and a few payment rules prevent most of it.",
+   "blocks": [
+    [
+     "h2",
+     "Build the budget by phase"
+    ],
+    [
+     "p",
+     "Split the budget the way the work happens, then split each phase into its main items."
+    ],
+    [
+     "table",
+     [
+      "Phase",
+      "Main items"
+     ],
+     [
+      [
+       "Design and approvals",
+       "Architect, structural engineer, approval fees, soil test"
+      ],
+      [
+       "Grey structure",
+       "Excavation, concrete, steel, blocks, plaster, labour, water"
+      ],
+      [
+       "Finishing",
+       "Electrical, plumbing, tiles, stone, woodwork, kitchen, aluminium, paint, fixtures"
+      ],
+      [
+       "Handover",
+       "Snag repairs, cleaning, utility connections"
+      ],
+      [
+       "Contingency",
+       "For the unexpected, commonly about 10% of the total"
+      ]
+     ]
+    ],
+    [
+     "h2",
+     "Decide the finishes early"
+    ],
+    [
+     "p",
+     "Finishing is where budgets slip, because choices are made late and one at a time. Choose the tiles, sanitary ware, kitchen and lights before the grey structure ends, price them, and put them in the budget."
+    ],
+    [
+     "h2",
+     "Rules for paying"
+    ],
+    [
+     "ul",
+     [
+      "Pay for work done and checked, not for time passed.",
+      "Keep advances small, and adjust them against the following bills.",
+      "Keep proof of every payment: a bill, a receipt or a transfer slip.",
+      "Hold back a small retention, often around 5%, until the snag list is cleared.",
+      "Give petty cash in small amounts, against receipts, and top it up weekly.",
+      "Compare what you have paid each supplier with what they delivered."
+     ]
+    ],
+    [
+     "h2",
+     "Contract types you will meet"
+    ],
+    [
+     "table",
+     [
+      "Contract",
+      "How it works",
+      "Watch out for"
+     ],
+     [
+      [
+       "Labour only",
+       "You buy the material; the contractor supplies the labour at a rate per square foot",
+       "Controlling material is your job: track every delivery and release"
+      ],
+      [
+       "Grey structure with material",
+       "The contractor builds the grey structure at a rate per square foot, material included",
+       "Write down the brands, steel grade and concrete mix, and check them"
+      ],
+      [
+       "Turnkey",
+       "One contractor builds and finishes the whole house at an agreed price",
+       "A clear specification for every finish, and payments tied to stages"
+      ]
+     ]
+    ],
+    [
+     "h2",
+     "Watch the cash flow"
+    ],
+    [
+     "p",
+     "Money is needed in waves: large payments for concrete and steel during the grey structure, then for tiles, woodwork and fittings during finishing. A month-by-month cash forecast shows when you need funds, so work doesn't stop while you wait for money."
+    ],
+    [
+     "h2",
+     "How Buildiary does this"
+    ],
+    [
+     "p",
+     "Buildiary keeps the budget by phase, shows what is committed in orders and what has been paid, and forecasts the cash you will need month by month. Every payment carries its proof, and the owner approves petty cash."
+    ]
+   ],
+   "faq": [
+    [
+     "How much contingency should I keep when building a house?",
+     "Many owners keep about 10% of the total budget for the unexpected, and more if the design is not final."
+    ],
+    [
+     "Should I pay my contractor in advance?",
+     "A small mobilisation advance is common. Keep it small and adjust it against the following bills, so payments always follow work done."
+    ],
+    [
+     "What is retention in a construction contract?",
+     "A small part of each payment, often around 5%, held back until the snag list is cleared and the work is handed over."
+    ]
+   ],
+   "short": "Budget and payments"
+  },
+  {
+   "slug": "guides/roof-slab-checklist",
+   "kind": "guide",
+   "seo_title": "Roof Slab Casting Checklist: Before, During, After | Buildiary",
+   "title": "Roof slab casting checklist: what to check before, during and after the pour",
+   "excerpt": "A roof slab can't be fixed after it sets. Check the formwork, steel, cover, services and concrete before you pour, and cure the slab properly afterwards.",
+   "eyebrow": "Guide",
+   "lede": "A roof slab is poured in a day and lasts for decades. Most slab problems, such as cracks, sagging, exposed steel and leaks, come from something that could have been checked before the concrete arrived. Go through this list with your engineer.",
+   "blocks": [
+    [
+     "h2",
+     "Before the pour: formwork"
+    ],
+    [
+     "ul",
+     [
+      "Shuttering level and at the right height; props on firm ground, braced and evenly spaced",
+      "Joints tight, so cement slurry doesn't leak out",
+      "Formwork clean and oiled, with no wood chips, wire or standing water",
+      "Openings for stairs, ducts and skylights in the right place"
+     ]
+    ],
+    [
+     "h2",
+     "Before the pour: steel"
+    ],
+    [
+     "ul",
+     [
+      "Bar sizes and spacing as in the structural drawing",
+      "Laps as long as the drawing specifies, and staggered",
+      "Cover blocks under the bottom bars and at the edges, at the cover in the drawing (often about 20 to 25 mm for slabs)",
+      "Top bars held up on chairs so they are not pressed down",
+      "Steel clean: no mud, oil or loose rust",
+      "Beam and column steel tied in as drawn"
+     ]
+    ],
+    [
+     "h2",
+     "Before the pour: services"
+    ],
+    [
+     "ul",
+     [
+      "Electrical conduits and boxes fixed, joints taped",
+      "Sleeves for plumbing and drainage through the slab",
+      "Fan hooks and anchor points in place",
+      "Everything photographed, because it will soon be covered"
+     ]
+    ],
+    [
+     "h2",
+     "During the pour"
+    ],
+    [
+     "ul",
+     [
+      "The mix as specified (for example 1:2:4, or a ready-mix grade), with no extra water added to make it flow",
+      "Concrete vibrated, especially around the steel and at beam joints",
+      "Poured continuously, without long stops that leave cold joints",
+      "Thickness checked across the slab",
+      "Test cubes taken, if your engineer asks for them"
+     ]
+    ],
+    [
+     "h2",
+     "After the pour: curing"
+    ],
+    [
+     "ul",
+     [
+      "Once the surface has set, keep the slab wet for at least 7 days, longer in hot, dry weather",
+      "Make small mortar ponds and keep them filled, or cover the slab with wet hessian",
+      "No heavy loads or stacked material on the new slab",
+      "Leave the props until your engineer says they can be removed"
+     ]
+    ],
+    [
+     "h2",
+     "How Buildiary does this"
+    ],
+    [
+     "p",
+     "Buildiary's inspections turn a checklist like this into a few taps on site, with a photo for each check. Problems become snags with a person and a due date, and the owner sees the result before the pour goes ahead."
+    ]
+   ],
+   "faq": [
+    [
+     "How long should a roof slab be cured?",
+     "Keep it wet for at least 7 days after it sets, and longer in hot, dry weather. Ponding with small mortar bunds is the usual method on house sites."
+    ],
+    [
+     "When can the props under a slab be removed?",
+     "Only when your structural engineer allows it. It depends on the span, the concrete and the weather; for house slabs it is often around two weeks."
+    ],
+    [
+     "Can water be added to concrete to make it easier to pour?",
+     "No. Extra water weakens the concrete. If the mix is too stiff, ask your engineer; a well-designed mix is workable without it."
+    ]
+   ],
+   "short": "Roof slab checklist"
+  }
+ ]
+}

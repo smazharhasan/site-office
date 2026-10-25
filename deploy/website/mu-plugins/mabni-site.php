@@ -91,7 +91,7 @@ add_action('init', function () {
 function mabni_t($key) {
 	static $T = [
 		'en' => [
-			'features' => 'Features', 'pricing' => 'Pricing', 'about' => 'About', 'contact' => 'Contact', 'trial' => 'Start free trial', 'menu' => 'Menu',
+			'features' => 'Features', 'pricing' => 'Pricing', 'about' => 'About', 'contact' => 'Contact', 'trial' => 'Start free trial', 'menu' => 'Menu', 'guides' => 'Guides', 'owners' => 'For home owners', 'builders' => 'For builders',
 			'tagline' => 'Construction site management for home owners and builders: stores, payments, progress and people, on your phone.',
 			'product' => 'Product', 'company' => 'Company', 'privacy' => 'Privacy policy', 'terms' => 'Terms of service', 'reach' => 'Talk to us',
 			'by' => 'A product of SMH Global Services', 'by_short' => 'A product of', 'maker_line' => 'A product of SMH Global Services (Private) Limited', 'signin' => 'Sign in to your workspace', 'langs' => 'Language',
@@ -101,7 +101,7 @@ function mabni_t($key) {
 			'trial_note' => '7 days free, no card needed. Pay by bank transfer when you are ready.', 'currency' => 'Currency',
 		],
 		'ur' => [
-			'features' => 'خصوصیات', 'pricing' => 'قیمتیں', 'about' => 'ہمارے بارے میں', 'contact' => 'رابطہ', 'trial' => 'مفت آزمائش', 'menu' => 'مینو',
+			'features' => 'خصوصیات', 'pricing' => 'قیمتیں', 'about' => 'ہمارے بارے میں', 'contact' => 'رابطہ', 'trial' => 'مفت آزمائش', 'menu' => 'مینو', 'guides' => 'رہنمائی', 'owners' => 'گھر بنوانے والوں کے لیے', 'builders' => 'بلڈرز کے لیے',
 			'tagline' => 'گھر بنانے والوں اور بلڈرز کے لیے سائٹ مینجمنٹ: اسٹور، ادائیگیاں، کام کی پیش رفت اور لوگ، سب آپ کے فون پر۔',
 			'product' => 'پروڈکٹ', 'company' => 'کمپنی', 'privacy' => 'رازداری کی پالیسی', 'terms' => 'شرائطِ استعمال', 'reach' => 'ہم سے بات کریں',
 			'by' => 'ایس ایم ایچ گلوبل سروسز کی پیشکش', 'by_short' => 'تیار کردہ', 'maker_line' => 'ایس ایم ایچ گلوبل سروسز (پرائیویٹ) لمیٹڈ کی پیشکش', 'signin' => 'اپنے ورک اسپیس میں لاگ اِن کریں', 'langs' => 'زبان',
@@ -111,7 +111,7 @@ function mabni_t($key) {
 			'trial_note' => '7 دن مفت، کارڈ کی ضرورت نہیں۔ جب تیار ہوں تو بینک ٹرانسفر سے ادائیگی کریں۔', 'currency' => 'کرنسی',
 		],
 		'ar' => [
-			'features' => 'المزايا', 'pricing' => 'الأسعار', 'about' => 'من نحن', 'contact' => 'تواصل معنا', 'trial' => 'ابدأ مجاناً', 'menu' => 'القائمة',
+			'features' => 'المزايا', 'pricing' => 'الأسعار', 'about' => 'من نحن', 'contact' => 'تواصل معنا', 'trial' => 'ابدأ مجاناً', 'menu' => 'القائمة', 'guides' => 'الأدلة', 'owners' => 'لمن يبني بيته', 'builders' => 'للمقاولين',
 			'tagline' => 'إدارة مواقع البناء للمالك والمقاول: المخزن والدفعات وتقدّم العمل والعمّال، على جوالك.',
 			'product' => 'المنتج', 'company' => 'الشركة', 'privacy' => 'سياسة الخصوصية', 'terms' => 'شروط الخدمة', 'reach' => 'تواصل معنا',
 			'by' => 'منتج من SMH Global Services', 'by_short' => 'منتج من', 'maker_line' => 'منتج من SMH Global Services (Private) Limited', 'signin' => 'الدخول إلى مساحة عملك', 'langs' => 'اللغة',
@@ -141,8 +141,9 @@ function mabni_lang_links($class = 'mb-langs') {
 
 add_shortcode('mabni_header', function () {
 	$nav = '';
-	foreach (['features', 'pricing', 'about', 'contact'] as $s) {
-		$cur = mabni_current_slug() === $s ? ' aria-current="page"' : '';
+	$here = mabni_current_slug();
+	foreach (['features', 'pricing', 'guides', 'about', 'contact'] as $s) {
+		$cur = ($here === $s || strpos($here, $s . '/') === 0) ? ' aria-current="page"' : '';
 		$nav .= '<a href="' . esc_url(mabni_url($s)) . '"' . $cur . '>' . esc_html(mabni_t($s)) . '</a>';
 	}
 	return '<header class="mb-head"><div class="mb-wrap mb-head-in">'
@@ -170,12 +171,27 @@ add_shortcode('mabni_footer', function () {
 	$wa = MABNI_WHATSAPP ? '<a href="https://wa.me/' . esc_attr(preg_replace('/\D/', '', MABNI_WHATSAPP)) . '" rel="noopener">WhatsApp +' . esc_html(preg_replace('/\D/', '', MABNI_WHATSAPP)) . '</a>' : '';
 	return '<footer class="mb-foot"><div class="mb-wrap mb-foot-in">'
 		. '<div class="mb-foot-brand"><a class="mb-brand" href="' . esc_url(mabni_url('')) . '">' . mabni_logo_svg(32) . '<span>Buildiary</span></a><p>' . esc_html(mabni_t('tagline')) . '</p>' . mabni_lang_links() . '</div>'
-		. '<div><h2>' . esc_html(mabni_t('product')) . '</h2>' . $link('features', 'features') . $link('pricing', 'pricing') . $link('start-trial', 'trial') . '</div>'
+		. '<div><h2>' . esc_html(mabni_t('product')) . '</h2>' . $link('features', 'features') . $link('pricing', 'pricing') . $link('home-owners', 'owners') . $link('builders', 'builders') . $link('start-trial', 'trial') . '</div>'
+		. mabni_footer_guides()
 		. '<div><h2>' . esc_html(mabni_t('company')) . '</h2>' . $link('about', 'about') . $link('contact', 'contact') . $link('privacy', 'privacy') . $link('terms', 'terms') . '</div>'
 		. '<div><h2>' . esc_html(mabni_t('reach')) . '</h2><a href="mailto:' . esc_attr(MABNI_SUPPORT_EMAIL) . '">' . esc_html(MABNI_SUPPORT_EMAIL) . '</a>' . $wa . '<a href="https://www.smhglobal.com.pk" rel="noopener">smhglobal.com.pk</a></div>'
 		. '</div><div class="mb-wrap mb-foot-bottom"><span>© ' . esc_html(date('Y')) . ' SMH Global Services</span>' . mabni_maker('light') . '</div></footer>'
 		. '<script>(function(){var b=document.querySelector(".mb-menu"),n=document.getElementById("mb-nav");if(!b||!n)return;b.addEventListener("click",function(){var o=n.classList.toggle("open");b.setAttribute("aria-expanded",o?"true":"false");});})();</script>';
 });
+
+// the guides in this language, for the footer (their short names are the page titles)
+function mabni_footer_guides() {
+	$lang = mabni_lang();
+	$parent = get_page_by_path(($lang === 'en' ? '' : $lang . '/') . 'guides', OBJECT, 'page');
+	if (!$parent) {
+		return '';
+	}
+	$out = '<div><h2>' . esc_html(mabni_t('guides')) . '</h2>';
+	foreach (get_pages(['parent' => $parent->ID, 'sort_column' => 'menu_order,post_date,ID']) as $g) {
+		$out .= '<a href="' . esc_url(get_permalink($g)) . '">' . esc_html(get_the_title($g)) . '</a>';
+	}
+	return $out . '</div>';
+}
 
 // ---- prices, from the console (cached for an hour), with the last known prices as a fallback
 function mabni_plans() {
@@ -243,23 +259,13 @@ add_shortcode('mabni_prices', function () {
 		. '<script>(function(){document.querySelectorAll(".mb-pricing").forEach(function(w){function show(){w.querySelectorAll(".mb-price").forEach(function(p){p.hidden=!(p.dataset.cur===w.dataset.cur&&p.dataset.per===w.dataset.per);});w.querySelectorAll("button[data-cur]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.cur===w.dataset.cur);});w.querySelectorAll("button[data-per]").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.per===w.dataset.per);});}w.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;if(b.dataset.cur)w.dataset.cur=b.dataset.cur;if(b.dataset.per)w.dataset.per=b.dataset.per;show();});show();});})();</script>';
 });
 
-// ---- search engines: the other languages of this page, and a description
+// ---- icons (the description, the other languages and the rest for search engines are in mabni-seo.php)
 add_action('wp_head', function () {
 	if (mabni_is_admin_request()) {
 		return;
 	}
-	$slug = mabni_current_slug();
-	foreach (MABNI_LANGS as $l) {
-		echo '<link rel="alternate" hreflang="' . esc_attr($l) . '" href="' . esc_url(mabni_url($slug, $l)) . "\" />\n";
-	}
-	echo '<link rel="alternate" hreflang="x-default" href="' . esc_url(mabni_url($slug, 'en')) . "\" />\n";
-	if (is_singular()) {
-		$ex = get_the_excerpt();
-		if ($ex) {
-			echo '<meta name="description" content="' . esc_attr(wp_strip_all_tags($ex)) . "\" />\n";
-		}
-	}
-	echo '<link rel="icon" href="' . esc_url(get_theme_file_uri('assets/mabni-logo.svg')) . "\" type=\"image/svg+xml\" />\n";
+	echo '<link rel="icon" href="' . esc_url(get_theme_file_uri('assets/buildiary-logo.svg')) . "\" type=\"image/svg+xml\" />\n";
+	echo '<link rel="apple-touch-icon" href="' . esc_url(get_theme_file_uri('assets/buildiary-180.png')) . "\" />\n";
 }, 1);
 add_action('init', function () {
 	add_post_type_support('page', 'excerpt');

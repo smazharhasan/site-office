@@ -132,6 +132,10 @@
   "faq_title": "Questions people ask",
   "faq": [
    [
+    "What is Buildiary?",
+    "Buildiary is a construction site management app for people building their own home and for builders running client sites. It records deliveries, the site store, payments, the budget, build progress and the site team on the phone, in English, Urdu and Arabic. It is made by SMH Global Services."
+   ],
+   [
     "Do I need to install anything?",
     "No. Buildiary runs in the phone's browser: open your workspace address and add it to the home screen. An Android app is available for site staff."
    ],
@@ -295,7 +299,19 @@
    "We may update these terms. We will email customers about important changes at least 30 days before they apply.",
    "## Contact",
    "Email info@smhglobal.com.pk."
-  ]
+  ],
+  "home_seo": "Buildiary: Construction Management App for Owners & Builders",
+  "features_seo": "Features: Stores, Payments, Progress & Site Diary | Buildiary",
+  "pricing_seo": "Buildiary Pricing: Owner & Builder Plans, 7 Days Free",
+  "about_seo": "About Buildiary, a product of SMH Global Services",
+  "contact_seo": "Contact Buildiary: Sales, Demo and Support",
+  "privacy_seo": "Privacy Policy | Buildiary",
+  "terms_seo": "Terms of Service | Buildiary",
+  "owners_more": "More for home owners",
+  "builders_more": "More for builders",
+  "guides_eyebrow": "Guides",
+  "guides_title": "Build it right: guides from our team",
+  "guides_all": "All guides"
  },
  "ur": {
   "home_title": "بلڈیاری: گھر بنانے والوں اور بلڈرز کے لیے سائٹ مینجمنٹ",
@@ -430,6 +446,10 @@
   "faq_title": "اکثر پوچھے جانے والے سوالات",
   "faq": [
    [
+    "بلڈیاری کیا ہے؟",
+    "بلڈیاری کنسٹرکشن سائٹ مینجمنٹ کی ایک ایپ ہے، اُن لوگوں کے لیے جو اپنا گھر بنوا رہے ہیں اور اُن بلڈرز کے لیے جو کلائنٹس کی سائٹس چلاتے ہیں۔ یہ فون پر مال کی آمد، سائٹ اسٹور، ادائیگیاں، بجٹ، کام کی پیش رفت اور سائٹ کی ٹیم کا ریکارڈ رکھتی ہے، اردو، انگریزی اور عربی میں۔ یہ ایس ایم ایچ گلوبل سروسز کی پیشکش ہے۔"
+   ],
+   [
     "کیا کچھ انسٹال کرنا پڑے گا؟",
     "نہیں۔ بلڈیاری فون کے براؤزر میں چلتا ہے: اپنے ورک اسپیس کا پتہ کھولیں اور اسے ہوم اسکرین پر شامل کر لیں۔ سائٹ کے عملے کے لیے اینڈرائیڈ ایپ بھی موجود ہے۔"
    ],
@@ -557,7 +577,19 @@
    "- نیا ورک اسپیس 7 دن مفت ہے۔ اس کے بعد پلان چن کر ادائیگی کریں۔\n- پلان کی ادائیگی پیشگی، ماہانہ یا سالانہ، بینک ٹرانسفر سے ہوتی ہے؛ تصدیق کے بعد پلان شروع ہوتا ہے۔\n- مدت ختم ہونے پر چند دن کی مہلت کے بعد ورک اسپیس رک جاتا ہے، ڈیٹا حذف نہیں ہوتا۔\n- آپ کا ڈیٹا آپ کی ملکیت ہے؛ جن لوگوں کی معلومات آپ درج کرتے ہیں ان کی اجازت آپ کی ذمہ داری ہے۔\n- اے آئی کے نتائج غلط بھی ہو سکتے ہیں؛ ان پر بھروسہ کرنے سے پہلے جانچ لیں۔\n- منسوخی کے لیے ای میل کریں؛ 30 دن بعد ورک اسپیس حذف کر دیا جاتا ہے۔",
    "## رابطہ",
    "ای میل: info@smhglobal.com.pk"
-  ]
+  ],
+  "home_seo": "بلڈیاری: گھر کی تعمیر اور سائٹ مینجمنٹ کی ایپ | Buildiary",
+  "features_seo": "خصوصیات: اسٹور، ادائیگیاں، پیش رفت اور سائٹ ڈائری | بلڈیاری",
+  "pricing_seo": "قیمتیں: مالک اور بلڈر پلان، 7 دن مفت | بلڈیاری",
+  "about_seo": "بلڈیاری کے بارے میں، ایس ایم ایچ گلوبل سروسز کی پیشکش",
+  "contact_seo": "بلڈیاری سے رابطہ: سیلز، ڈیمو اور مدد",
+  "privacy_seo": "رازداری کی پالیسی | بلڈیاری",
+  "terms_seo": "شرائطِ استعمال | بلڈیاری",
+  "owners_more": "گھر بنوانے والوں کے لیے مزید",
+  "builders_more": "بلڈرز کے لیے مزید",
+  "guides_eyebrow": "رہنمائی",
+  "guides_title": "صحیح تعمیر: ہماری ٹیم کی رہنمائی",
+  "guides_all": "تمام رہنمائی"
  },
  "ar": {
   "home_title": "بيلدياري: إدارة مواقع البناء للمالك والمقاول",
@@ -692,6 +724,10 @@
   "faq_title": "أسئلة شائعة",
   "faq": [
    [
+    "ما هو بيلدياري؟",
+    "بيلدياري تطبيق لإدارة مواقع البناء، لمن يبني بيته وللمقاولين الذين يديرون مشاريع عملائهم. يسجّل على الجوال التوريدات ومخزن الموقع والدفعات والميزانية وتقدّم العمل وفريق الموقع، بالعربية والإنجليزية والأردية. وهو منتج من SMH Global Services."
+   ],
+   [
     "هل أحتاج إلى تثبيت شيء؟",
     "لا. يعمل بيلدياري من متصفح الجوال: افتح عنوان مساحة عملك وأضفه إلى الشاشة الرئيسية. ويتوفر تطبيق أندرويد لفريق الموقع."
    ],
@@ -819,6 +855,18 @@
    "- مساحة العمل الجديدة مجانية لمدة 7 أيام، ثم تختار باقة وتدفع.\n- تُدفع الباقات مقدّماً، شهرياً أو سنوياً، بالتحويل البنكي، وتبدأ بعد تأكيد الدفع.\n- عند انتهاء المدة وبعد أيام سماح قليلة تتوقف مساحة العمل دون حذف البيانات.\n- بياناتك ملكك، وأنت مسؤول عن الحصول على إذن من تُسجّل بياناتهم.\n- قد تخطئ نتائج الذكاء الاصطناعي، فراجعها قبل الاعتماد عليها.\n- للإلغاء راسلنا بالبريد، وتُحذف مساحة العمل بعد 30 يوماً.",
    "## التواصل",
    "البريد الإلكتروني: info@smhglobal.com.pk"
-  ]
+  ],
+  "home_seo": "بيلدياري: تطبيق إدارة مواقع البناء للمالك والمقاول | Buildiary",
+  "features_seo": "المزايا: المخزن والدفعات وتقدّم العمل ويومية الموقع | بيلدياري",
+  "pricing_seo": "الأسعار: باقة المالك وباقة المقاول، 7 أيام مجاناً | بيلدياري",
+  "about_seo": "عن بيلدياري، منتج من SMH Global Services",
+  "contact_seo": "تواصل مع بيلدياري: المبيعات والعرض التجريبي والدعم",
+  "privacy_seo": "سياسة الخصوصية | بيلدياري",
+  "terms_seo": "شروط الخدمة | بيلدياري",
+  "owners_more": "المزيد لمن يبني بيته",
+  "builders_more": "المزيد للمقاولين",
+  "guides_eyebrow": "الأدلة",
+  "guides_title": "ابنِ بإتقان: أدلة من فريقنا",
+  "guides_all": "كل الأدلة"
  }
 }
