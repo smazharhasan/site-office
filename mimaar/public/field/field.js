@@ -1371,6 +1371,8 @@ VIEWS.receive = async (el, [po]) => {
 };
 
 /* ================================================================== more */
+/** The maker: SMH Global Services (its logo, light or dark to suit the theme). */
+const MAKER = () => `<a class="maker" href="https://www.smhglobal.com.pk" target="_blank" rel="noopener"><span>${esc(t("A product of"))}</span><img class="mk-d" src="/assets/mimaar/images/smh-global.svg" alt="SMH Global Services"><img class="mk-l" src="/assets/mimaar/images/smh-global-light.svg" alt="SMH Global Services"></a>`;
 VIEWS.more = async (el) => {
   setTop(t("More"));
   const c = C(); const b = S.b;
@@ -1388,7 +1390,7 @@ VIEWS.more = async (el) => {
   if (c.owner && S.b.plan) T.push(["Plan & billing", "pay", "@billing", "k6"]);
   if (c.owner && !NATIVE && !S.b.plan) T.push(["Connect a phone", "globe", "connect", "k2"]);
   el.innerHTML = `<button class="mo-me" data-go="settings"><span class="av">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc((b.full_name || "?").charAt(0))}</span><span><b>${esc(b.full_name)}</b><span class="small muted">${esc(b.project_name || "")}</span></span>${icon("chev", "lch")}</button>
-    <div class="qa-grid">${T.map(([l, ic, to, tc]) => `<button class="qa" ${to.startsWith("@") ? `onclick="location.href='/${to.slice(1)}'"` : `data-go="${to}"`}><span class="qa-i" style="--tc:var(--${tc})">${icon(ic)}</span><span>${esc(t(l))}</span></button>`).join("")}</div>`;
+    <div class="qa-grid">${T.map(([l, ic, to, tc]) => `<button class="qa" ${to.startsWith("@") ? `onclick="location.href='/${to.slice(1)}'"` : `data-go="${to}"`}><span class="qa-i" style="--tc:var(--${tc})">${icon(ic)}</span><span>${esc(t(l))}</span></button>`).join("")}</div>${MAKER()}`;
 };
 
 /* ================================================================== projects (a builder's sites) */
@@ -2188,7 +2190,7 @@ function loginScreen() {
     ${BOOT.card_sign_in ? `<button class="btn pri big wide" data-card="1">${icon("card")}${esc(t("Sign in with site card"))}</button><p class="small muted" style="text-align:center;margin:0">${esc(t("Scan your site card, type your PIN and take a photo of your face."))}</p>
       <div class="small muted" style="text-align:center">— ${esc(t("or"))} —</div>` : ""}
     <div class="form"><div class="fld"><label>${esc(t("Email or user name"))}</label><input name="usr" autocomplete="username" autocapitalize="none" class="ltr"></div><div class="fld"><label>${esc(t("Password"))}</label><input name="pwd" type="password" autocomplete="current-password" class="ltr"></div>
-    <div data-err></div><button class="btn ${BOOT.card_sign_in ? "" : "pri"} big wide" data-login="1">${esc(t("Sign in"))}</button></div></div>`;
+    <div data-err></div><button class="btn ${BOOT.card_sign_in ? "" : "pri"} big wide" data-login="1">${esc(t("Sign in"))}</button></div>${MAKER()}</div>`;
   $$("[data-l]").forEach((b) => { b.onclick = () => {
     S.lang = b.dataset.l; try { localStorage.setItem("mimaar.lang", S.lang); } catch (e) { /* */ }
     // the page carries one language's words: switching between Urdu and Arabic reloads them

@@ -498,3 +498,10 @@ html[dir="rtl"] .panel.fold.open>header .lch{transform:rotate(90deg) scaleX(-1)}
 .md p{margin:0 0 6px}.md ul{margin:0 0 8px;padding-inline-start:20px}.md li{margin:2px 0}
 .md h3{font:700 15.5px var(--f-display);margin:10px 0 4px}
 html[lang="ur"] .md{line-height:2}
+
+/* the maker's logo: SMH Global Services */
+.maker{display:flex;flex-direction:column;align-items:center;gap:6px;margin:26px auto 8px;text-decoration:none;color:var(--muted);font-size:12px;letter-spacing:.02em}
+.maker img{height:34px;width:auto;display:block}
+.maker .mk-l{display:none}
+html[data-theme="dark"] .maker .mk-d{display:none}
+html[data-theme="dark"] .maker .mk-l{display:block}

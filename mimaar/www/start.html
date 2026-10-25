@@ -55,7 +55,8 @@ html[lang=ar] .hero h1{font:700 clamp(1.8rem,3.6vw,2.6rem)/1.45 var(--ar)}
 .points svg{width:22px;height:22px;margin-top:3px}
 .dim{display:flex;align-items:center;gap:10px;font:500 .8rem/1 var(--mono);color:var(--amber);letter-spacing:.06em;text-transform:uppercase}
 .dim::before,.dim::after{content:"";height:1px;flex:1;background:var(--amber);opacity:.6}
-.by{font-size:.85rem;color:var(--on-blue-2)}
+.by{display:inline-flex;align-items:center;gap:12px;font-size:.85rem;color:var(--on-blue-2);text-decoration:none}
+.by img{height:34px;width:auto;display:block}
 /* the form side */
 .side{padding-block:32px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;align-items:flex-start;justify-content:center}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;width:100%;max-width:480px;display:grid;gap:18px}
@@ -142,7 +143,7 @@ html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem
         <li><svg viewBox="0 0 24 24" fill="none" stroke="#F2B01E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg><span data-t="p4"></span></li>
       </ul>
     </div>
-    <div class="by" data-t="by"></div>
+    <a class="by" href="https://www.smhglobal.com.pk" target="_blank" rel="noopener"><span data-t="by_short"></span><img src="/assets/mimaar/images/smh-global-light.svg" alt="SMH Global Services"></a>
   </section>
 
   <main class="side">
@@ -231,7 +232,7 @@ const I18N = {
     dim: "Owner · Builder · Site", hero: "Every bag of cement, every payment, every day on site, in one place.",
     sub: "Buildiary keeps the owner and the builder on the same facts: stores, payments, progress photos and people, checked with AI.",
     p1: "Stores and deliveries with photos and site cards", p2: "Payments, budget and petty cash that add up", p3: "Progress you can see, stage by stage", p4: "English, Urdu and Arabic, on any phone",
-    by: "A product of SMH Global Services", title: "Start your free trial", trial_note: "{n} days free. No card needed.",
+    by: "A product of SMH Global Services", by_short: "A product of", title: "Start your free trial", trial_note: "{n} days free. No card needed.",
     q_mode: "What are you building?", owner_t: "My own home", owner_d: "I'm the owner and want to see everything my builder and site staff do.",
     builder_t: "Projects for clients", builder_d: "I'm a builder or contractor running several sites.", per_month: "{p} a month after the trial",
     name: "Your name", phone: "Mobile / WhatsApp", email: "Email", country: "Country", city: "City",
@@ -255,7 +256,7 @@ const I18N = {
     dim: "مالک · بلڈر · سائٹ", hero: "سیمنٹ کی ہر بوری، ہر ادائیگی، سائٹ کا ہر دن — ایک جگہ پر۔",
     sub: "بلڈیاری مالک اور بلڈر کو ایک ہی حقائق پر رکھتا ہے: اسٹور، ادائیگیاں، کام کی تصاویر اور لوگ، اے آئی کی جانچ کے ساتھ۔",
     p1: "اسٹور اور سامان کی وصولی، تصاویر اور سائٹ کارڈ کے ساتھ", p2: "ادائیگیاں، بجٹ اور پیٹی کیش، جن کا حساب پورا ہو", p3: "کام کی پیش رفت، مرحلہ وار، آنکھوں کے سامنے", p4: "انگریزی، اردو اور عربی میں، ہر فون پر",
-    by: "ایس ایم ایچ گلوبل سروسز کی پیشکش", title: "مفت آزمائش شروع کریں", trial_note: "{n} دن مفت۔ کسی کارڈ کی ضرورت نہیں۔",
+    by: "ایس ایم ایچ گلوبل سروسز کی پیشکش", by_short: "تیار کردہ", title: "مفت آزمائش شروع کریں", trial_note: "{n} دن مفت۔ کسی کارڈ کی ضرورت نہیں۔",
     q_mode: "آپ کیا بنا رہے ہیں؟", owner_t: "اپنا گھر", owner_d: "میں مالک ہوں اور بلڈر اور سائٹ کے عملے کا ہر کام دیکھنا چاہتا ہوں۔",
     builder_t: "کلائنٹس کے پروجیکٹ", builder_d: "میں بلڈر یا ٹھیکیدار ہوں اور کئی سائٹس چلاتا ہوں۔", per_month: "آزمائش کے بعد {p} ماہانہ",
     name: "آپ کا نام", phone: "موبائل / واٹس ایپ", email: "ای میل", country: "ملک", city: "شہر",
@@ -279,7 +280,7 @@ const I18N = {
     dim: "المالك · المقاول · الموقع", hero: "كل كيس إسمنت، وكل دفعة، وكل يوم في الموقع، في مكان واحد.",
     sub: "بيلدياري يجمع المالك والمقاول على الحقائق نفسها: المخزن والدفعات وصور التقدّم والعمّال، مع تدقيق بالذكاء الاصطناعي.",
     p1: "المخزن والتوريدات بالصور وبطاقات الموقع", p2: "دفعات وميزانية وعهدة نقدية حساباتها مضبوطة", p3: "تقدّم العمل أمام عينيك، مرحلة بمرحلة", p4: "بالعربية والإنجليزية والأردية، على أي جوال",
-    by: "منتج من SMH Global Services", title: "ابدأ تجربتك المجانية", trial_note: "{n} أيام مجاناً. بدون بطاقة.",
+    by: "منتج من SMH Global Services", by_short: "منتج من", title: "ابدأ تجربتك المجانية", trial_note: "{n} أيام مجاناً. بدون بطاقة.",
     q_mode: "ماذا تبني؟", owner_t: "بيتي الخاص", owner_d: "أنا المالك وأريد أن أرى كل ما يقوم به المقاول وفريق الموقع.",
     builder_t: "مشاريع لعملائي", builder_d: "أنا مقاول أو شركة مقاولات أدير عدة مواقع.", per_month: "{p} شهرياً بعد التجربة",
     name: "اسمك", phone: "الجوال / واتساب", email: "البريد الإلكتروني", country: "الدولة", city: "المدينة",

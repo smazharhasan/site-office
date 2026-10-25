@@ -104,6 +104,8 @@ html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem
 .pill.r{background:color-mix(in srgb,var(--bad) 12%,var(--card));color:var(--bad)}
 .skel{color:var(--muted)}
 .help-line{font-size:.9rem;color:var(--muted)}
+.maker{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.8rem;text-decoration:none}
+.maker img{height:30px;width:auto;display:block}
 .help-line b{color:var(--ink);font-family:var(--mono);direction:ltr;unicode-bidi:embed}
 </style>
 </head>
@@ -162,6 +164,7 @@ html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem
   </section>
 
   <p class="help-line" id="support"></p>
+  <a class="maker" href="https://www.smhglobal.com.pk" target="_blank" rel="noopener"><span data-t="by_short"></span><img src="/assets/mimaar/images/smh-global.svg" alt="SMH Global Services"></a>
   <p class="skel" id="loading" data-t="loading"></p>
 </main>
 
@@ -187,7 +190,7 @@ const I18N = {
     e_amount: "Enter the amount you paid.", e_ref: "Enter the transaction reference or add a photo of the receipt.",
     sent_ok: "Thank you. We will check your payment and email you when your plan is active.",
     hist_t: "Your payments", h_w: "Being checked", h_v: "Confirmed", h_r: "Not confirmed", covers: "covers {a} to {b}",
-    support: "Questions? Email {e} or WhatsApp {w}.", support_e: "Questions? Email {e}.", e_load: "We couldn't load your plan. Please try again shortly.",
+    by_short: "A product of", support: "Questions? Email {e} or WhatsApp {w}.", support_e: "Questions? Email {e}.", e_load: "We couldn't load your plan. Please try again shortly.",
   },
   ur: {
     back: "ایپ پر واپس", signout: "لاگ آؤٹ", loading: "آپ کا پلان لوڈ ہو رہا ہے…",
@@ -208,7 +211,7 @@ const I18N = {
     e_amount: "ادا کی گئی رقم لکھیں۔", e_ref: "ٹرانزیکشن ریفرنس لکھیں یا رسید کی تصویر لگائیں۔",
     sent_ok: "شکریہ۔ ہم آپ کی ادائیگی چیک کر کے پلان فعال ہوتے ہی آپ کو ای میل کریں گے۔",
     hist_t: "آپ کی ادائیگیاں", h_w: "چیک ہو رہی ہے", h_v: "تصدیق شدہ", h_r: "تصدیق نہیں ہوئی", covers: "{a} سے {b} تک",
-    support: "کوئی سوال؟ {e} پر ای میل یا {w} پر واٹس ایپ کریں۔", support_e: "کوئی سوال؟ {e} پر ای میل کریں۔", e_load: "آپ کا پلان لوڈ نہیں ہو سکا۔ تھوڑی دیر بعد دوبارہ کوشش کریں۔",
+    by_short: "تیار کردہ", support: "کوئی سوال؟ {e} پر ای میل یا {w} پر واٹس ایپ کریں۔", support_e: "کوئی سوال؟ {e} پر ای میل کریں۔", e_load: "آپ کا پلان لوڈ نہیں ہو سکا۔ تھوڑی دیر بعد دوبارہ کوشش کریں۔",
   },
   ar: {
     back: "العودة إلى التطبيق", signout: "تسجيل الخروج", loading: "جارٍ تحميل اشتراكك…",
@@ -229,7 +232,7 @@ const I18N = {
     e_amount: "أدخل المبلغ المدفوع.", e_ref: "أدخل رقم العملية أو أرفق صورة الإيصال.",
     sent_ok: "شكراً لك. سنراجع الدفعة ونراسلك عند تفعيل باقتك.",
     hist_t: "دفعاتك", h_w: "قيد المراجعة", h_v: "مؤكدة", h_r: "غير مؤكدة", covers: "من {a} إلى {b}",
-    support: "لديك سؤال؟ راسلنا على {e} أو واتساب {w}.", support_e: "لديك سؤال؟ راسلنا على {e}.", e_load: "تعذّر تحميل اشتراكك. حاول مجدداً بعد قليل.",
+    by_short: "منتج من", support: "لديك سؤال؟ راسلنا على {e} أو واتساب {w}.", support_e: "لديك سؤال؟ راسلنا على {e}.", e_load: "تعذّر تحميل اشتراكك. حاول مجدداً بعد قليل.",
   },
 };
 const L = CFG.lang;

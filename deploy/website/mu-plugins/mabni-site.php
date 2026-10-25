@@ -94,7 +94,7 @@ function mabni_t($key) {
 			'features' => 'Features', 'pricing' => 'Pricing', 'about' => 'About', 'contact' => 'Contact', 'trial' => 'Start free trial', 'menu' => 'Menu',
 			'tagline' => 'Construction site management for home owners and builders: stores, payments, progress and people, on your phone.',
 			'product' => 'Product', 'company' => 'Company', 'privacy' => 'Privacy policy', 'terms' => 'Terms of service', 'reach' => 'Talk to us',
-			'by' => 'A product of SMH Global Services', 'signin' => 'Sign in to your workspace', 'langs' => 'Language',
+			'by' => 'A product of SMH Global Services', 'by_short' => 'A product of', 'maker_line' => 'A product of SMH Global Services (Private) Limited', 'signin' => 'Sign in to your workspace', 'langs' => 'Language',
 			'month' => 'Monthly', 'year' => 'Yearly', 'per_month' => 'a month', 'per_year' => 'a year', 'save' => '2 months free',
 			'projects' => '%d projects', 'project1' => '1 project', 'users' => '%d people sign in', 'storage' => '%d GB for photos and files',
 			'start' => 'Start 7-day free trial', 'owner' => 'Owner', 'builder' => 'Builder', 'popular' => 'For builders',
@@ -104,7 +104,7 @@ function mabni_t($key) {
 			'features' => 'خصوصیات', 'pricing' => 'قیمتیں', 'about' => 'ہمارے بارے میں', 'contact' => 'رابطہ', 'trial' => 'مفت آزمائش', 'menu' => 'مینو',
 			'tagline' => 'گھر بنانے والوں اور بلڈرز کے لیے سائٹ مینجمنٹ: اسٹور، ادائیگیاں، کام کی پیش رفت اور لوگ، سب آپ کے فون پر۔',
 			'product' => 'پروڈکٹ', 'company' => 'کمپنی', 'privacy' => 'رازداری کی پالیسی', 'terms' => 'شرائطِ استعمال', 'reach' => 'ہم سے بات کریں',
-			'by' => 'ایس ایم ایچ گلوبل سروسز کی پیشکش', 'signin' => 'اپنے ورک اسپیس میں لاگ اِن کریں', 'langs' => 'زبان',
+			'by' => 'ایس ایم ایچ گلوبل سروسز کی پیشکش', 'by_short' => 'تیار کردہ', 'maker_line' => 'ایس ایم ایچ گلوبل سروسز (پرائیویٹ) لمیٹڈ کی پیشکش', 'signin' => 'اپنے ورک اسپیس میں لاگ اِن کریں', 'langs' => 'زبان',
 			'month' => 'ماہانہ', 'year' => 'سالانہ', 'per_month' => 'ماہانہ', 'per_year' => 'سالانہ', 'save' => '2 مہینے مفت',
 			'projects' => '%d پروجیکٹ', 'project1' => '1 پروجیکٹ', 'users' => '%d لوگ لاگ اِن کر سکیں', 'storage' => '%d جی بی تصاویر اور فائلوں کے لیے',
 			'start' => '7 دن کی مفت آزمائش شروع کریں', 'owner' => 'مالک', 'builder' => 'بلڈر', 'popular' => 'بلڈرز کے لیے',
@@ -114,7 +114,7 @@ function mabni_t($key) {
 			'features' => 'المزايا', 'pricing' => 'الأسعار', 'about' => 'من نحن', 'contact' => 'تواصل معنا', 'trial' => 'ابدأ مجاناً', 'menu' => 'القائمة',
 			'tagline' => 'إدارة مواقع البناء للمالك والمقاول: المخزن والدفعات وتقدّم العمل والعمّال، على جوالك.',
 			'product' => 'المنتج', 'company' => 'الشركة', 'privacy' => 'سياسة الخصوصية', 'terms' => 'شروط الخدمة', 'reach' => 'تواصل معنا',
-			'by' => 'منتج من SMH Global Services', 'signin' => 'الدخول إلى مساحة عملك', 'langs' => 'اللغة',
+			'by' => 'منتج من SMH Global Services', 'by_short' => 'منتج من', 'maker_line' => 'منتج من SMH Global Services (Private) Limited', 'signin' => 'الدخول إلى مساحة عملك', 'langs' => 'اللغة',
 			'month' => 'شهري', 'year' => 'سنوي', 'per_month' => 'شهرياً', 'per_year' => 'سنوياً', 'save' => 'شهران مجاناً',
 			'projects' => '%d مشاريع', 'project1' => 'مشروع واحد', 'users' => '%d مستخدمين', 'storage' => '%d جيجابايت للصور والملفات',
 			'start' => 'ابدأ تجربة مجانية لمدة 7 أيام', 'owner' => 'المالك', 'builder' => 'المقاول', 'popular' => 'للمقاولين',
@@ -153,6 +153,16 @@ add_shortcode('mabni_header', function () {
 		. '</div></div></header>';
 });
 
+// the maker: SMH Global Services, with its logo (light on dark backgrounds)
+function mabni_maker($tone = 'dark', $label = true) {
+	$img = get_theme_file_uri('assets/' . ($tone === 'light' ? 'smh-global-light.svg' : 'smh-global.svg'));
+	return '<a class="mb-maker mb-maker-' . esc_attr($tone) . '" href="https://www.smhglobal.com.pk" rel="noopener">' . ($label ? '<span>' . esc_html(mabni_t('by_short')) . '</span>' : '')
+		. '<img src="' . esc_url($img) . '" alt="SMH Global Services" width="84" height="36"></a>';
+}
+add_shortcode('mabni_maker', function () {
+	return '<div class="mb-maker-block">' . mabni_maker('dark', false) . '<p>' . esc_html(mabni_t('maker_line')) . ' · <a href="https://www.smhglobal.com.pk" rel="noopener">smhglobal.com.pk</a></p></div>';
+});
+
 add_shortcode('mabni_footer', function () {
 	$link = function ($slug, $key) {
 		return '<a href="' . esc_url(mabni_url($slug)) . '">' . esc_html(mabni_t($key)) . '</a>';
@@ -163,7 +173,7 @@ add_shortcode('mabni_footer', function () {
 		. '<div><h2>' . esc_html(mabni_t('product')) . '</h2>' . $link('features', 'features') . $link('pricing', 'pricing') . $link('start-trial', 'trial') . '</div>'
 		. '<div><h2>' . esc_html(mabni_t('company')) . '</h2>' . $link('about', 'about') . $link('contact', 'contact') . $link('privacy', 'privacy') . $link('terms', 'terms') . '</div>'
 		. '<div><h2>' . esc_html(mabni_t('reach')) . '</h2><a href="mailto:' . esc_attr(MABNI_SUPPORT_EMAIL) . '">' . esc_html(MABNI_SUPPORT_EMAIL) . '</a>' . $wa . '<a href="https://www.smhglobal.com.pk" rel="noopener">smhglobal.com.pk</a></div>'
-		. '</div><div class="mb-wrap mb-foot-bottom"><span>© ' . esc_html(date('Y')) . ' SMH Global Services</span><span>' . esc_html(mabni_t('by')) . '</span></div></footer>'
+		. '</div><div class="mb-wrap mb-foot-bottom"><span>© ' . esc_html(date('Y')) . ' SMH Global Services</span>' . mabni_maker('light') . '</div></footer>'
 		. '<script>(function(){var b=document.querySelector(".mb-menu"),n=document.getElementById("mb-nav");if(!b||!n)return;b.addEventListener("click",function(){var o=n.classList.toggle("open");b.setAttribute("aria-expanded",o?"true":"false");});})();</script>';
 });
 

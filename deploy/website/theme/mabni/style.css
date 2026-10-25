@@ -217,3 +217,11 @@ body:is(.lang-ar, .lang-ur) .mb-foot h2 { font-family: inherit; }
 .mb-foot-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-top: 36px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, .12); font-size: .85rem; }
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* the maker: SMH Global Services */
+.mb-maker { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; font-size: .85rem; }
+.mb-maker img { height: 36px; width: auto; display: block; }
+.mb-maker-block { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; padding: 20px 22px; margin-top: 28px; border: 1px solid var(--mb-line, #d5dbe1); border-radius: 14px; background: #fff; }
+.mb-maker-block .mb-maker img { height: 48px; }
+.mb-maker-block p { margin: 0; color: var(--mb-muted, #5b6875); }
+.mb-foot-bottom { align-items: center; }

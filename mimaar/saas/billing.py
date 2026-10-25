@@ -12,7 +12,9 @@ def _send(t, subject, body):
 	if not t.email:
 		return
 	s = settings()
-	foot = f"<p style='color:#667'>Buildiary · SMH Global Services<br>{escape_html(s.support_email or '')} {escape_html(s.support_whatsapp or '')}</p>"
+	logo = f"https://{s.control_host}/assets/mimaar/images/smh-global.png" if s.control_host else ""
+	foot = (f"<p style='color:#667'>" + (f"<img src='{logo}' alt='SMH Global Services' width='96' height='41' style='display:block;margin:18px 0 8px'>" if logo else "")
+		+ f"Buildiary · a product of SMH Global Services<br>{escape_html(s.support_email or '')} {escape_html(s.support_whatsapp or '')}</p>")
 	try:
 		frappe.sendmail(recipients=[t.email], subject=subject, message=body + foot, delayed=True, reference_doctype="Mabni Tenant", reference_name=t.name)
 	except Exception:

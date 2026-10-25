@@ -175,7 +175,8 @@ def page_pricing(L, w):
 def page_about(L, w):
 	out = pagehead(w["about_eyebrow"], w["about_title"], w["about_lede"])
 	out += group("".join(p(x) for x in w["about_body"]) + h(2, w["values_title"])
-		+ group("".join(box(h(3, v["t"], f"mb-ic mb-ic-{v['ic']}") + p(v["d"]), "mb-card") for v in w["values"]), "mb-cards", wide=False),
+		+ group("".join(box(h(3, v["t"], f"mb-ic mb-ic-{v['ic']}") + p(v["d"]), "mb-card") for v in w["values"]), "mb-cards", wide=False)
+		+ html("[mabni_maker]"),
 		"mb-section", "section", True)
 	return out + cta(L, w)
 
