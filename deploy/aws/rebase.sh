@@ -27,7 +27,8 @@ B bench --site "$NEW_C" set-config host_name "https://$NEW_C"
 B bench --site "$NEW_C" execute mimaar.saas.console.rebase --kwargs "{'base': '$NEW'}" | tee /tmp/rebase.out
 grep -q "^BASE .* -> $NEW" /tmp/rebase.out || { echo "The console did not take the new address: stopping"; exit 1; }
 sed -i "s|^MABNI_BASE=.*|MABNI_BASE=$NEW|; s|^MABNI_CONSOLE=.*|MABNI_CONSOLE=$NEW_C|" .env
-sed -i "s|header_up Host $OLD_C|header_up Host $NEW_C|" /opt/edge/Caddyfile
+# written in place (same file), so the Caddy container's mounted copy changes too
+sed "s|header_up Host $OLD_C|header_up Host $NEW_C|" /opt/edge/Caddyfile > /tmp/Caddyfile.new && cat /tmp/Caddyfile.new > /opt/edge/Caddyfile
 echo "== housekeeping: private addresses stay out of search results; updates clear old versions"
 for f in /opt/edge/sites/zz-mabni.caddy /opt/edge/sites/mimaar.caddy /opt/edge/sites/office.caddy; do
   [ -f "$f" ] && ! grep -q X-Robots-Tag "$f" && sed -i '0,/encode zstd gzip/s//encode zstd gzip\n\theader X-Robots-Tag "noindex, nofollow"/' "$f"
@@ -48,7 +49,7 @@ echo "== the old addresses redirect"
   grep '^MOVED ' /tmp/rebase.out | while read -r _ a b; do printf '%s {\n\tredir https://%s{uri} permanent\n}\n' "$a" "$b"; done
   [ -z "$EXTRA" ] || printf '%s, www.%s {\n\tredir https://%s{uri} permanent\n}\n' "$EXTRA" "$EXTRA" "$NEW"
 } > /opt/edge/sites/old-addresses.caddy
-docker compose -f /opt/edge/compose.yml exec -T caddy caddy reload --config /etc/caddy/Caddyfile
+docker compose -f /opt/edge/compose.yml restart caddy   # picks up the main Caddyfile for certain
 for s in $(./sites.sh); do B bench --site "$s" clear-cache >/dev/null 2>&1 || true; done
 echo "== check (the first visit to each address fetches its certificate)"
 for u in "https://$NEW/" "https://$NEW_C/api/method/ping" "https://$NEW_C/start"; do
