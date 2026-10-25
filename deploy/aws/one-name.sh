@@ -143,7 +143,7 @@ PY
   cd sites
   ALL=$(for d in */; do d=${d%/}; [ -f "$d/site_config.json" ] && echo "$d"; done)
   rm -f */locks/*.lock
-  ../env/bin/python ../apps/buildiary/buildiary/patches/rename_pre.py $ALL 2>&1 | grep -v RuntimeWarning || exit 1
+  /home/frappe/frappe-bench/env/bin/python ../apps/buildiary/buildiary/patches/rename_pre.py $ALL || exit 1
   [ -d "$OLDSITE" ] && [ ! -e "$NEWSITE" ] && mv "$OLDSITE" "$NEWSITE"
   cd ..
   bench --site "$NEWSITE" set-config host_name "https://$NEWSITE"
