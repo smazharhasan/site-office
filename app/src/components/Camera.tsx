@@ -1,4 +1,4 @@
-// Camera screens for the Mimaar ERP app (the field screens run in the WebView and
+// Camera screens of the Buildiary app (the field screens run in the WebView and
 // ask for these through the bridge). Live camera only, no gallery; every photo is
 // taken with a fresh GPS fix, and a fake (mock) location is refused.
 import React, { useRef, useState } from "react";
@@ -7,7 +7,7 @@ import { CameraView, useCameraPermissions, type BarcodeScanningResult } from "ex
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImageManipulator from "expo-image-manipulator";
 import { Button, useColors } from "./ui";
-import { freshFix, type Fix } from "../lib/evidence";
+import { freshFix, type Fix } from "../lib/location";
 
 type Lang = "en" | "ur" | "ar";
 const W: Record<string, string> = {
@@ -26,9 +26,9 @@ const WA: Record<string, string> = {
 };
 export const tr = (lang: Lang, s: string) => (lang === "ur" ? W[s] ?? s : lang === "ar" ? WA[s] ?? s : s);
 
-export interface ErpShot { base64: string; fix: Fix }
+export interface Shot { base64: string; fix: Fix }
 
-export function ErpCamera({ visible, title, facing = "back", lang, onDone, onClose }: { visible: boolean; title: string; facing?: "back" | "front"; lang: Lang; onDone: (s: ErpShot) => void; onClose: () => void }) {
+export function SiteCamera({ visible, title, facing = "back", lang, onDone, onClose }: { visible: boolean; title: string; facing?: "back" | "front"; lang: Lang; onDone: (s: Shot) => void; onClose: () => void }) {
   const ref = useRef<CameraView>(null); const c = useColors();
   const [perm, ask] = useCameraPermissions();
   const [shot, setShot] = useState<{ uri: string; fix: Fix } | null>(null); const [busy, setBusy] = useState(false); const [err, setErr] = useState("");

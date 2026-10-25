@@ -1,13 +1,20 @@
 {
   "expo": {
-    "name": "Mimaar",
-    "slug": "site-office",
-    "scheme": "siteoffice",
-    "version": "2.1.0",
+    "name": "Buildiary",
+    "slug": "buildiary",
+    "scheme": "buildiary",
+    "version": "1.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
+    "icon": "./assets/buildiary-icon.png",
+    "splash": {
+      "image": "./assets/buildiary-splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1E3A5F"
+    },
     "android": {
-      "package": "pk.siteoffice.app",
+      "package": "app.buildiary",
+      "versionCode": 10100,
       "permissions": [
         "CAMERA",
         "ACCESS_FINE_LOCATION",
@@ -18,10 +25,18 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      "versionCode": 20100,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive.png",
-        "backgroundColor": "#0f6f5c"
+        "foregroundImage": "./assets/buildiary-adaptive.png",
+        "backgroundColor": "#1E3A5F"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "app.buildiary",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "The camera takes photos of materials, bills, site cards and progress on site.",
+        "NSLocationWhenInUseUsageDescription": "Your location is stamped on site photos and attendance to show they were taken on site.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "plugins": [
@@ -29,34 +44,26 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "The camera is used to photograph workers, materials and bills on site. Photos are taken live; the gallery is never used.",
+          "cameraPermission": "The camera takes photos of materials, bills, site cards and progress on site. Photos are taken live; the gallery is never used.",
           "recordAudioAndroid": false
         }
       ],
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Your location is stamped on every site photo to prove it was taken on site."
+          "locationWhenInUsePermission": "Your location is stamped on site photos and attendance to show they were taken on site."
         }
       ]
     ],
     "experiments": {
-      "typedRoutes": false,
-      "baseUrl": "/site-office/field"
+      "typedRoutes": false
     },
     "extra": {
-      "supabaseUrl": "https://bctdsetigzdamxjduxgb.supabase.co",
-      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjdGRzZXRpZ3pkYW14amR1eGdiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MDA4ODksImV4cCI6MjEwNzk3Njg4OX0.Rn6AuNwHpVnMdYxJKO06qstvTCOBE-JKh1Dk1Sf01Yg"
+      "baseDomain": "buildiary.app"
     },
     "web": {
       "bundler": "metro",
       "output": "single"
-    },
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#0f6f5c"
     }
   }
 }

@@ -1,10 +1,6 @@
-# Builds the Android apps (Buildiary, Mimaar, Mimaar ERP) and the old Mimaar web app on every change.
-#  - APK:  attached to the "latest" release (and one release per app version)
-#  - Web:  the old Mimaar web app as a small image in the private AWS image store (ECR), which the
-#          server serves at https://office.<base>/site-office/ (it checks every 15 minutes).
-#          GitHub signs in to AWS with no stored password: the role mabni-github-office only trusts
-#          this repository's main branch and may only upload to the "mabni-office" store.
-name: Build apps
+# Builds the Buildiary Android app on every change and attaches the APK to the "latest" release
+# (and to one release per version, buildiary-v<version>). The version is in the VERSION file.
+name: Build the Buildiary app
 on:
   push: { branches: [main] }
   workflow_dispatch:
@@ -13,137 +9,41 @@ concurrency: { group: build, cancel-in-progress: true }
 
 jobs:
   android:
-    # Two apps from one code base: "Mimaar" (the current app) and "Mimaar ERP" (opens the ERPNext site).
-    strategy:
-      matrix:
-        include:
-          - { variant: classic, apk: Mimaar, verfile: VERSION }
-          - { variant: erp, apk: Mimaar-ERP, verfile: ERP_VERSION }
-          - { variant: mabni, apk: Buildiary, verfile: MABNI_VERSION }
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: app } }
-    env: { APP_VARIANT: "${{ matrix.variant }}" }
     steps:
       - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
       - name: Read the version
-        run: echo "VER=$(cat ../${{ matrix.verfile }})" >> $GITHUB_ENV
+        run: echo "VER=$(cat ../VERSION)" >> $GITHUB_ENV
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: npm, cache-dependency-path: app/package-lock.json }
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: 17 }
       - run: npm ci
+      - run: npx tsc --noEmit
       - run: npx expo prebuild --platform android --no-install
-      - name: Use the project's fixed signing key (so updates install over the old app)
+      - name: Use the project's fixed signing key (so updates install over the installed app)
         env: { KEYSTORE_B64: "${{ secrets.ANDROID_KEYSTORE_B64 }}" }
         run: |
           if [ -n "$KEYSTORE_B64" ]; then echo "$KEYSTORE_B64" | base64 -d > android/app/debug.keystore
-          else cp signing/site-office.keystore android/app/debug.keystore; fi
+          else cp signing/buildiary.keystore android/app/debug.keystore; fi
       - name: Build release APK
         run: cd android && ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
-      - run: mkdir -p ../out && cp android/app/build/outputs/apk/release/app-release.apk ../out/${{ matrix.apk }}.apk && cp ../out/${{ matrix.apk }}.apk ../out/${{ matrix.apk }}-${{ env.VER }}.apk
-      - uses: actions/upload-artifact@v4
-        with: { name: "${{ matrix.variant }}", path: out/ }
-
-  release:
-    needs: android
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
-      - uses: actions/download-artifact@v4
-        with: { path: out, merge-multiple: true, pattern: "{classic,erp,mabni}" }
-      - name: Read the versions
-        run: |
-          echo "VER=$(cat VERSION)" >> $GITHUB_ENV
-          echo "ERPVER=$(cat ERP_VERSION)" >> $GITHUB_ENV
-          echo "MABNIVER=$(cat MABNI_VERSION)" >> $GITHUB_ENV
-      - name: Mark the first release (1.0.0) in the history
-        env: { GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
-        run: |
-          gh release view v1.0.0 >/dev/null 2>&1 || gh release create v1.0.0 --target "$(git rev-parse 313ea63)" --title "Mimaar 1.0.0" --notes "First release, before the Mimaar name (Villa 31 Site Office)." || true
+      - run: mkdir -p ../out && cp android/app/build/outputs/apk/release/app-release.apk ../out/Buildiary.apk && cp ../out/Buildiary.apk ../out/Buildiary-${{ env.VER }}.apk
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
-          name: Mimaar (latest)
+          name: Buildiary (latest)
           body: |
-            Install on the Android phone (the apps sit side by side):
-            - **Buildiary.apk**: Buildiary, version ${{ env.MABNIVER }}; asks for your workspace name the first time (e.g. alnoor).
-            - **Mimaar.apk**: the current Mimaar app, version ${{ env.VER }}.
-            - **Mimaar-ERP.apk**: Mimaar ERP (ERPNext), version ${{ env.ERPVER }}; asks for your site address the first time.
+            **Buildiary.apk**: the Buildiary Android app, version ${{ env.VER }}. Install it on the phone; the first
+            time it asks for your workspace name (e.g. alnoor for alnoor.buildiary.app).
             Built from ${{ github.sha }}.
-          files: |
-            out/Mimaar.apk
-            out/Mimaar-ERP.apk
-            out/Buildiary.apk
+          files: out/Buildiary.apk
           make_latest: true
       - uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ env.VER }}
-          name: Mimaar ${{ env.VER }}
-          body: "Mimaar ${{ env.VER }}. Built from ${{ github.sha }}."
-          files: out/Mimaar-${{ env.VER }}.apk
+          tag_name: buildiary-v${{ env.VER }}
+          name: Buildiary ${{ env.VER }}
+          body: "Buildiary (Android) ${{ env.VER }}: opens your Buildiary workspace. Built from ${{ github.sha }}."
+          files: out/Buildiary-${{ env.VER }}.apk
           make_latest: false
-      - uses: softprops/action-gh-release@v2
-        with:
-          tag_name: erp-v${{ env.ERPVER }}
-          name: Mimaar ERP ${{ env.ERPVER }}
-          body: "Mimaar ERP (Android) ${{ env.ERPVER }}: opens your Mimaar ERP site. Built from ${{ github.sha }}."
-          files: out/Mimaar-ERP-${{ env.ERPVER }}.apk
-          make_latest: false
-      - uses: softprops/action-gh-release@v2
-        with:
-          tag_name: buildiary-v${{ env.MABNIVER }}
-          name: Buildiary ${{ env.MABNIVER }}
-          body: "Buildiary (Android) ${{ env.MABNIVER }}: opens your Buildiary workspace. Built from ${{ github.sha }}."
-          files: out/Buildiary-${{ env.MABNIVER }}.apk
-          make_latest: false
-
-  web:
-    runs-on: ubuntu-latest
-    permissions: { contents: read, id-token: write }
-    env:
-      IMAGE: 640538430239.dkr.ecr.ap-south-1.amazonaws.com/mabni-office
-      DOCKER_BUILD_RECORD_UPLOAD: "false"
-      AWS_ROLE: arn:aws:iam::640538430239:role/mabni-github-office
-    defaults: { run: { working-directory: app } }
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: npm, cache-dependency-path: app/package-lock.json }
-      - run: npm ci
-      - name: Full Site Office at the root, field app under /field
-        run: |
-          mkdir -p web-dist && cp -r ../web/. web-dist/
-          npx expo export --platform web --output-dir web-dist/field
-          cp web-dist/field/index.html web-dist/404.html && touch web-dist/.nojekyll
-          V=$(cat ../VERSION); sed -i "s/__APP_VERSION__/$V/g" web-dist/index.html web-dist/shim.js
-      - name: A small web server image with the app under /site-office/
-        run: |
-          mkdir -p ../office/srv && cp -r web-dist ../office/srv/site-office
-          cat > ../office/Caddyfile <<'CADDY'
-          :80 {
-          	root * /srv
-          	encode gzip
-          	@root path /
-          	redir @root /site-office/
-          	header /site-office/field/_expo/* Cache-Control "public, max-age=31536000, immutable"
-          	try_files {path} {path}/index.html /site-office/404.html
-          	file_server
-          }
-          CADDY
-          sed -i 's/^          //' ../office/Caddyfile
-          printf 'FROM caddy:2-alpine\nCOPY Caddyfile /etc/caddy/Caddyfile\nCOPY srv /srv\n' > ../office/Dockerfile
-      - uses: aws-actions/configure-aws-credentials@v4
-        with: { role-to-assume: "${{ env.AWS_ROLE }}", aws-region: ap-south-1 }
-      - uses: aws-actions/amazon-ecr-login@v2
-      - uses: docker/setup-buildx-action@v3
-      - uses: docker/build-push-action@v6
-        with:
-          context: office
-          provenance: false
-          push: true
-          labels: org.opencontainers.image.revision=${{ github.sha }}
-          tags: |
-            ${{ env.IMAGE }}:latest
-            ${{ env.IMAGE }}:${{ github.sha }}
