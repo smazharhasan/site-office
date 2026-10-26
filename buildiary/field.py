@@ -52,6 +52,17 @@ def _psql(alias=""):
 	return sql(alias)
 
 
+SYM = {"PKR": "Rs", "INR": "₹", "USD": "$", "GBP": "£", "EUR": "€"}
+
+
+def money_text(v):
+	"""An amount in the company's money for messages: Rs 6,500 · SAR 1,250 · €980."""
+	cur = frappe.db.get_value("Company", _company(), "default_currency") or "PKR"
+	sym = SYM.get(cur, cur)
+	n = f"{flt(v):,.0f}"
+	return f"{sym}{n}" if len(sym) == 1 else f"{sym} {n}"
+
+
 def _parse(v):
 	if isinstance(v, str):
 		try:
@@ -113,6 +124,7 @@ def boot():
 		"caps": caps(),
 		"company": _company(),
 		"currency": frappe.db.get_value("Company", _company(), "default_currency") or "PKR",
+		"country": frappe.db.get_value("Company", _company(), "country") or "",
 		"project": project,
 		"project_name": frappe.db.get_value("Project", project, "project_name") if project else "",
 		"store": _store(),
@@ -126,6 +138,7 @@ def boot():
 		"ui": _ui(),
 		"person": _me(),
 		"app": _app_links(),
+		"debris": cint(s.get("debris_enabled")),
 	}
 
 
@@ -242,8 +255,9 @@ def dashboard():
 		for t in frappe.get_list("Task", filters={"project": project, "status": ["not in", ["Completed", "Cancelled"]], "exp_end_date": ["<", today]} if project else {"name": ""}, fields=["name", "subject", "progress"], limit=8, order_by="exp_end_date asc"):
 			add("warn", _("Running late: {0} ({1}% done)").format(t.subject, round(flt(t.progress))), ["task", t.name])
 	if c["people"]:
+		pk = (frappe.db.get_value("Company", _company(), "country") or "Pakistan") == "Pakistan"
 		for w in frappe.get_list("Site Worker", filters={"status": "Active"}, fields=["name", "full_name", "cnic_expiry", "entry_card_expiry", "police_verification"], limit=500):
-			bad = [x for x, d in ((_("CNIC"), w.cnic_expiry), (_("entry card"), w.entry_card_expiry)) if d and getdate(d) < getdate(today)]
+			bad = [x for x, d in ((_("CNIC") if pk else _("ID card"), w.cnic_expiry), (_("entry card"), w.entry_card_expiry)) if d and getdate(d) < getdate(today)]
 			if bad:
 				add("bad", _("{0}: {1} expired").format(w.full_name, ", ".join(bad)), ["worker", w.name])
 	return {"kpi": k, "acts": acts}
@@ -450,7 +464,7 @@ def read_challan(po, file_url):
 	doc.check_permission("read")
 	lines = [f"{i}: {r.item_name or r.item_code} ({r.uom}), ordered {flt(r.qty)}, already received {flt(r.received_qty)}" for i, r in enumerate(doc.items)]
 	d = ai.ask(
-		f"This is a supplier's delivery note, challan or bill for goods delivered to a house under construction in Pakistan. {ai.URDU} "
+		f"This is a supplier's delivery note, challan or bill for goods delivered to a house under construction {ai.where()}. {ai.URDU} "
 		f"It should be against purchase order {doc.name} from {doc.supplier_name}. The lines we expect are:\n" + "\n".join(lines) +
 		f"\nRead every line on the document and give lineIndex = the number of the matching expected line (or null). Reply with only JSON of this shape:\n{ai.DELIVERY_SHAPE}",
 		file_url,

@@ -208,8 +208,10 @@ def pe_validate(doc, method=None):
 	if skip(doc) or doc.payment_type != "Pay" or doc.party_type != "Supplier" or not on("pay_only_due"):
 		return
 	if flt(doc.unallocated_amount) > 0.5:
+		from buildiary.field import money_text
+
 		frappe.throw(
-			_("Rs {0} of this payment is not set against any invoice. Suppliers are paid only against invoices that are due, or as an advance against a purchase order.").format(frappe.utils.fmt_money(doc.unallocated_amount)),
+			_("{0} of this payment is not set against any invoice. Suppliers are paid only against invoices that are due, or as an advance against a purchase order.").format(money_text(doc.unallocated_amount)),
 			title=_("Pay only what is due"),
 		)
 	for r in doc.references:

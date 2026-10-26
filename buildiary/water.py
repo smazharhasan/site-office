@@ -14,7 +14,7 @@ import frappe
 from frappe import _
 from frappe.utils import add_days, cint, flt, get_first_day, getdate, nowdate, nowtime
 
-from buildiary.field import _company, _hhmm, _need, _only, _parse, _photo_ok, _project, _psql, _settings, caps
+from buildiary.field import _company, _hhmm, _need, _only, _parse, _photo_ok, _project, _psql, _settings, caps, money_text
 
 ITEM = "WATER"
 REJECTED = "Brackish (rejected)"
@@ -253,8 +253,8 @@ def tanker_save(data, check=None):
 		if not h:
 			frappe.throw(_("Your sign-in isn't linked to a person on site, so you can't pay from petty cash. Ask the owner."))
 		if flt(d.cost) > petty._in_hand(h) + 0.5:
-			frappe.throw(_("{0} has only Rs {1} of petty cash in hand.").format(frappe.db.get_value("Site Worker", h, "full_name"),
-				frappe.format(max(petty._in_hand(h), 0), {"fieldtype": "Float", "precision": 0})), title=_("Not enough cash"))
+			frappe.throw(_("{0} has only {1} of petty cash in hand.").format(frappe.db.get_value("Site Worker", h, "full_name"),
+				money_text(max(petty._in_hand(h), 0))), title=_("Not enough cash"))
 	idc = frappe.get_doc("Identity Check", check) if check else None
 	doc = frappe.get_doc({
 		"doctype": "Water Tanker", "date": nowdate(), "time": d.time or nowtime(), "vehicle_no": d.vehicle_no.strip().upper(), "supplier_text": d.supplier_text,
@@ -321,9 +321,9 @@ def _verdict(v):
 
 def _tanker_prompt(d):
 	return (
-		"Verify a water tanker delivery at a house construction site in Pakistan. "
+		f"Verify a water tanker delivery at a house construction site {__import__('buildiary.ai', fromlist=['where']).where()}. "
 		f"Recorded: tanker {d.get('vehicle_no') or '?'}, {flt(d.get('gallons'))} gallons, {d.get('water_type') or ''}, TDS {d.get('tds_ppm') or 'not recorded'} ppm, "
-		f"emptied into {d.get('emptied_into') or '?'}, bill no. {d.get('bill_no') or '?'}, cost Rs {flt(d.get('cost')) or '?'}. "
+		f"emptied into {d.get('emptied_into') or '?'}, bill no. {d.get('bill_no') or '?'}, cost {flt(d.get('cost')) or '?'} {__import__('buildiary.ai', fromlist=['money_name']).money_name()}. "
 		"The images are: the tanker with its number plate; if present, a TDS meter or water sample; and the tanker's bill or slip. "
 		f"Water above about {_tds_limit()} ppm TDS is unsuitable for concrete and curing. "
 		'Reply with only JSON: {"verdict": "verified"|"check"|"mismatch", "summary": "one or two short sentences", "plateRead": string, '

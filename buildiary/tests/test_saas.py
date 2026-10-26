@@ -310,3 +310,59 @@ class TestSaas(IntegrationTestCase):
 		finally:
 			open(path, "w").write(before)
 			mail._reload_conf()
+
+	def test_trial_data_choice(self):
+		from unittest.mock import patch
+
+		from buildiary.saas import api, demo, provision
+
+		t = self._tenant(trial_data="Sample data")
+		self.assertEqual(common.conf_block(t)["trial_data"], "Sample data")
+		self.assertTrue(provision.fresh_start_due(t))  # sample data is always cleared at the subscription
+		own = self._tenant(country="Pakistan", lang="ur")
+		self.assertEqual(own.trial_data, "Own data")
+		self.assertFalse(provision.fresh_start_due(own))  # own data is kept unless they choose a fresh start
+		key = frappe.generate_hash(length=20)
+		own.tenant_key = key
+		own.save()
+		with patch("buildiary.saas.common.push"):
+			self.assertEqual(api.trial_choice(own.name, key, "Start fresh")["at_subscription"], "Start fresh")
+		own.reload()
+		self.assertTrue(provision.fresh_start_due(own))
+		with self.assertRaises(frappe.ValidationError):
+			api.trial_choice(own.name, key, "Something else")
+		with self.assertRaises(frappe.ValidationError):  # only sample data is cleared on the spot
+			api.fresh_start(own.name, key)
+		with self.assertRaises(frappe.PermissionError):
+			api.trial_choice(own.name, "wrong-key", "Keep my data")
+
+		# the payment that starts the subscription queues the fresh start, and the receipt says so
+		sent, cap = self._capture()
+		with cap, patch("buildiary.saas.provision.queue_reset") as q:
+			frappe.get_doc({"doctype": "Buildiary Payment", "tenant": own.name, "plan": "Owner", "billing_period": "Monthly", "periods": 1, "currency": "PKR",
+				"amount": 4200, "status": "Verified", "method": "Cash", "paid_on": nowdate()}).insert()
+		self.assertTrue(q.called)
+		self.assertTrue(any("نئے سرے سے" in html for _to, _s, html, _kw in sent))
+
+		# the sample follows the country
+		self.assertEqual((demo.variant("Pakistan"), demo.variant("Qatar"), demo.variant("Germany")), ("pk", "gulf", "intl"))
+		km, kw = demo.factors("SAR", "gulf")
+		self.assertGreater(kw, km)
+		d = demo.data(km, "gulf", kw)
+		units = {i["code"]: i["unit"] for i in d["items"]}
+		self.assertEqual((units["SND-RAVI"], units["TIL-6060"]), ("m3", "m2"))
+		self.assertIn("Green Skip Services", [s["name"] for s in d["suppliers"]])
+		self.assertEqual(demo.data(1, "pk")["project"]["name"], "Al Noor Residence")
+
+	def test_people_kept_on_fresh_start(self):
+		email = "fresh-start-test@example.com"
+		if not frappe.db.exists("User", email):
+			frappe.get_doc({"doctype": "User", "email": email, "first_name": "Fresh", "send_welcome_email": 0}).insert()
+		from frappe.utils.password import check_password, update_password
+
+		update_password(email, "Fresh#Start1")
+		h = frappe.db.sql("select `password` from `__Auth` where doctype='User' and name=%s and fieldname='password'", email)[0][0]
+		update_password(email, "Something#Else2")
+		tenant._people_back([{"name": email, "email": email, "first_name": "Fresh", "enabled": 1, "roles": ["Stock User"], "hash": h}])
+		self.assertEqual(check_password(email, "Fresh#Start1"), email)
+		self.assertIn("Stock User", frappe.get_roles(email))

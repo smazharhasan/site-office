@@ -7,7 +7,7 @@
  "module": "Buildiary",
  "name": "Buildiary Settings",
  "owner": "Administrator",
- "modified": "2026-10-25 21:00:00.000000",
+ "modified": "2026-10-26 17:00:00.000000",
  "modified_by": "Administrator",
  "fields": [
   {
@@ -183,6 +183,37 @@
    "default": "1"
   },
   {
+   "fieldname": "debris_section",
+   "fieldtype": "Section Break",
+   "label": "Debris removal (skips)"
+  },
+  {
+   "fieldname": "debris_enabled",
+   "fieldtype": "Check",
+   "label": "Track debris removal",
+   "default": "0",
+   "description": "Skips on site, how full they are, regular collection, and a message to the skip company to come. On by default in the Gulf; anyone can turn it on."
+  },
+  {
+   "fieldname": "debris_supplier",
+   "fieldtype": "Link",
+   "label": "Usual skip company",
+   "options": "Supplier",
+   "depends_on": "debris_enabled"
+  },
+  {
+   "fieldname": "col_debris",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "debris_email_supplier",
+   "fieldtype": "Check",
+   "label": "Also email the skip company when a collection is asked for",
+   "default": "1",
+   "depends_on": "debris_enabled",
+   "description": "Needs the company's email in the supplier's contact. WhatsApp is sent from the phone of the person asking."
+  },
+  {
    "fieldname": "share_section",
    "fieldtype": "Section Break",
    "label": "Sharing"
@@ -247,6 +278,11 @@
   "petty_cash_account",
   "petty_needs_budget",
   "petty_bill_required",
+  "debris_section",
+  "debris_enabled",
+  "debris_supplier",
+  "col_debris",
+  "debris_email_supplier",
   "share_section",
   "share_link_days",
   "country_code",

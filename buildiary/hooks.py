@@ -80,7 +80,7 @@ doc_events = {
 
 # Buildiary Cloud: the console keeps the pool of ready workspaces, checks plans every day
 scheduler_events = {
-	"daily": ["buildiary.saas.billing.daily"],
+	"daily": ["buildiary.saas.billing.daily", "buildiary.debris.daily"],
 	"cron": {"*/10 * * * *": ["buildiary.saas.provision.tick"]},
 }
 get_website_user_home_page = "buildiary.saas.tenant.home_page"

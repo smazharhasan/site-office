@@ -126,7 +126,7 @@ function buildiary_t($key) {
 			'region' => 'Language and currency', 'cur_note' => 'Screenshots and prices follow the currency you pick.',
 			'cur_pkr' => 'Pakistani rupee', 'cur_sar' => 'Saudi riyal', 'cur_aed' => 'UAE dirham', 'cur_qar' => 'Qatari riyal', 'cur_usd' => 'US dollar',
 			'signin_btn' => 'Sign in', 'ws_label' => 'Your workspace address', 'ws_go' => 'Continue', 'ws_help' => 'It is in the welcome email we sent when you started.',
-			'ws_bad' => 'Use letters, numbers and dashes only.', 'ws_new' => 'New to Buildiary?', 'pay_note' => 'Pay by bank transfer in Pakistan, the UAE or Saudi Arabia.', 'close' => 'Close', 'feedback' => 'Feedback and requests',
+			'ws_bad' => 'Use letters, numbers and dashes only.', 'ws_new' => 'New to Buildiary?', 'pay_note' => 'Pay by bank transfer: our accounts in Pakistan and the UAE, and our Saudi account from any other country.', 'close' => 'Close', 'feedback' => 'Feedback and requests',
 		],
 		'ur' => [
 			'features' => 'خصوصیات', 'pricing' => 'قیمتیں', 'about' => 'ہمارے بارے میں', 'contact' => 'رابطہ', 'trial' => 'مفت آزمائش', 'menu' => 'مینو', 'guides' => 'رہنمائی', 'owners' => 'گھر بنوانے والوں کے لیے', 'builders' => 'بلڈرز کے لیے',
@@ -152,7 +152,7 @@ function buildiary_t($key) {
 			'region' => 'زبان اور کرنسی', 'cur_note' => 'اسکرین شاٹس اور قیمتیں آپ کی چنی ہوئی کرنسی میں دکھائی جاتی ہیں۔',
 			'cur_pkr' => 'پاکستانی روپیہ', 'cur_sar' => 'سعودی ریال', 'cur_aed' => 'اماراتی درہم', 'cur_qar' => 'قطری ریال', 'cur_usd' => 'امریکی ڈالر',
 			'signin_btn' => 'لاگ اِن', 'ws_label' => 'آپ کے ورک اسپیس کا پتا', 'ws_go' => 'آگے بڑھیں', 'ws_help' => 'یہ اس خوش آمدیدی ای میل میں ہے جو آغاز پر بھیجی گئی تھی۔',
-			'ws_bad' => 'صرف انگریزی حروف، اعداد اور ڈیش استعمال کریں۔', 'ws_new' => 'بلڈائری پر نئے ہیں؟', 'pay_note' => 'پاکستان، متحدہ عرب امارات یا سعودی عرب میں بینک ٹرانسفر سے ادائیگی۔', 'close' => 'بند کریں', 'feedback' => 'رائے اور درخواستیں',
+			'ws_bad' => 'صرف انگریزی حروف، اعداد اور ڈیش استعمال کریں۔', 'ws_new' => 'بلڈائری پر نئے ہیں؟', 'pay_note' => 'بینک ٹرانسفر سے ادائیگی: پاکستان اور متحدہ عرب امارات میں ہمارے اکاؤنٹس، اور کسی بھی دوسرے ملک سے ہمارا سعودی اکاؤنٹ۔', 'close' => 'بند کریں', 'feedback' => 'رائے اور درخواستیں',
 		],
 		'ar' => [
 			'features' => 'المزايا', 'pricing' => 'الأسعار', 'about' => 'من نحن', 'contact' => 'تواصل معنا', 'trial' => 'ابدأ مجاناً', 'menu' => 'القائمة', 'guides' => 'الأدلة', 'owners' => 'لمن يبني بيته', 'builders' => 'للمقاولين',
@@ -178,7 +178,7 @@ function buildiary_t($key) {
 			'region' => 'اللغة والعملة', 'cur_note' => 'تظهر الصور والأسعار بالعملة التي تختارها.',
 			'cur_pkr' => 'روبية باكستانية', 'cur_sar' => 'ريال سعودي', 'cur_aed' => 'درهم إماراتي', 'cur_qar' => 'ريال قطري', 'cur_usd' => 'دولار أمريكي',
 			'signin_btn' => 'تسجيل الدخول', 'ws_label' => 'عنوان مساحة عملك', 'ws_go' => 'متابعة', 'ws_help' => 'تجده في رسالة الترحيب التي أرسلناها عند البدء.',
-			'ws_bad' => 'استخدم الحروف الإنجليزية والأرقام والشرطة فقط.', 'ws_new' => 'جديد على بلدائري؟', 'pay_note' => 'ادفع بالتحويل البنكي في باكستان أو الإمارات أو السعودية.', 'close' => 'إغلاق', 'feedback' => 'ملاحظات وطلبات',
+			'ws_bad' => 'استخدم الحروف الإنجليزية والأرقام والشرطة فقط.', 'ws_new' => 'جديد على بلدائري؟', 'pay_note' => 'ادفع بالتحويل البنكي: حساباتنا في باكستان والإمارات، وحسابنا السعودي من أي بلد آخر.', 'close' => 'إغلاق', 'feedback' => 'ملاحظات وطلبات',
 		],
 	];
 	return buildiary_trial_fill($T[buildiary_lang()][$key] ?? $T['en'][$key] ?? $key);

@@ -108,6 +108,13 @@ html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem
 .maker img{height:30px;width:auto;display:block}
 .help-line b{color:var(--ink);font-family:var(--mono);direction:ltr;unicode-bidi:embed}
 .logo .bd-name{height:20px;width:auto;flex:none;display:block}
+.choice{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.opt{border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:4px;cursor:pointer;background:var(--field);position:relative}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt:has(input:checked){border-color:var(--amber);background:color-mix(in srgb,var(--amber) 8%,var(--card))}
+.opt:has(input:focus-visible){outline:2px solid var(--amber);outline-offset:2px}
+.opt b{font:700 1rem/1.3 var(--display)} html[lang=ur] .opt b{font:600 1rem/1.9 var(--ur)} html[lang=ar] .opt b{font:700 1rem/1.5 var(--ar)}
+.opt span{font-size:.9rem;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -140,6 +147,11 @@ html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem
     <h2 data-t="how_t"></h2>
     <p class="lede" id="how-d"></p>
     <div class="banks" id="banks"></div>
+  </section>
+
+  <section class="card" id="sec-data" hidden>
+    <h2 data-t="data_t"></h2>
+    <div id="data-body" style="display:grid;gap:12px"></div>
   </section>
 
   <section class="card" id="sec-form" hidden>
@@ -191,6 +203,13 @@ const I18N = {
     e_amount: "Enter the amount you paid.", e_ref: "Enter the transaction reference or add a photo of the receipt.",
     sent_ok: "Thank you. We will check your payment and email you when your plan is active.",
     hist_t: "Your payments", h_w: "Being checked", h_v: "Confirmed", h_r: "Not confirmed", covers: "covers {a} to {b}",
+    data_t: "Your trial data", data_sample: "You are exploring sample data: a sample house with suppliers, stock, payments and photos. It is cleared when your subscription starts, and your own project is set up in its place. Your sign-in and password stay the same.",
+    data_clear: "Clear the sample data now and start my own project", data_confirm: "Type your workspace name “{ws}” to confirm. Everything in the workspace is replaced with a fresh start; it takes a few minutes.",
+    data_go: "Start fresh now", data_own: "What happens to what you entered during the trial when your subscription starts?",
+    keep_t: "Keep everything", keep_d: "Your projects, people, stock and payments carry on as they are.", fresh_t: "Start fresh",
+    fresh_d: "The trial entries are cleared and your company is set up again. Sign-ins and passwords stay the same.", saved: "Saved.",
+    fresh_running: "Your workspace is being started fresh. It takes a few minutes; then sign in again with the same email and password.",
+    fresh_failed: "The fresh start didn't finish. We have been told and will sort it out; your workspace is as it was.", e_confirm: "Type the workspace name exactly.",
     by_short: "A product of", support: "Questions? Email {e} or WhatsApp {w}.", support_e: "Questions? Email {e}.", e_load: "We couldn't load your plan. Please try again shortly.",
   },
   ur: {
@@ -212,6 +231,13 @@ const I18N = {
     e_amount: "ادا کی گئی رقم لکھیں۔", e_ref: "ٹرانزیکشن ریفرنس لکھیں یا رسید کی تصویر لگائیں۔",
     sent_ok: "شکریہ۔ ہم آپ کی ادائیگی چیک کر کے پلان فعال ہوتے ہی آپ کو ای میل کریں گے۔",
     hist_t: "آپ کی ادائیگیاں", h_w: "چیک ہو رہی ہے", h_v: "تصدیق شدہ", h_r: "تصدیق نہیں ہوئی", covers: "{a} سے {b} تک",
+    data_t: "آپ کا آزمائشی ڈیٹا", data_sample: "آپ نمونے کا ڈیٹا دیکھ رہے ہیں: ایک نمونے کا گھر جس میں سپلائرز، اسٹاک، ادائیگیاں اور تصاویر ہیں۔ سبسکرپشن شروع ہونے پر یہ صاف ہو جائے گا اور اس کی جگہ آپ کا اپنا پروجیکٹ تیار ہو گا۔ آپ کا لاگ اِن اور پاس ورڈ وہی رہیں گے۔",
+    data_clear: "نمونے کا ڈیٹا ابھی صاف کریں اور اپنا پروجیکٹ شروع کریں", data_confirm: "تصدیق کے لیے اپنے ورک اسپیس کا نام “{ws}” لکھیں۔ ورک اسپیس میں سب کچھ نئے سرے سے شروع ہو گا؛ اس میں چند منٹ لگتے ہیں۔",
+    data_go: "ابھی نئے سرے سے شروع کریں", data_own: "سبسکرپشن شروع ہونے پر آزمائش کے دوران درج کیے گئے ڈیٹا کا کیا ہو؟",
+    keep_t: "سب کچھ رکھیں", keep_d: "آپ کے پروجیکٹ، لوگ، اسٹاک اور ادائیگیاں جیسے ہیں ویسے ہی چلتے رہیں گے۔", fresh_t: "نئے سرے سے شروع کریں",
+    fresh_d: "آزمائشی اندراجات صاف ہو جائیں گے اور آپ کی کمپنی دوبارہ تیار ہو گی۔ لاگ اِن اور پاس ورڈ وہی رہیں گے۔", saved: "محفوظ ہو گیا۔",
+    fresh_running: "آپ کا ورک اسپیس نئے سرے سے تیار ہو رہا ہے۔ اس میں چند منٹ لگتے ہیں؛ پھر اسی ای میل اور پاس ورڈ سے دوبارہ لاگ اِن کریں۔",
+    fresh_failed: "نئے سرے سے شروع کرنے کا کام مکمل نہیں ہوا۔ ہمیں اطلاع مل گئی ہے اور ہم اسے ٹھیک کر دیں گے؛ آپ کا ورک اسپیس پہلے جیسا ہے۔", e_confirm: "ورک اسپیس کا نام بالکل درست لکھیں۔",
     by_short: "تیار کردہ", support: "کوئی سوال؟ {e} پر ای میل یا {w} پر واٹس ایپ کریں۔", support_e: "کوئی سوال؟ {e} پر ای میل کریں۔", e_load: "آپ کا پلان لوڈ نہیں ہو سکا۔ تھوڑی دیر بعد دوبارہ کوشش کریں۔",
   },
   ar: {
@@ -233,6 +259,13 @@ const I18N = {
     e_amount: "أدخل المبلغ المدفوع.", e_ref: "أدخل رقم العملية أو أرفق صورة الإيصال.",
     sent_ok: "شكراً لك. سنراجع الدفعة ونراسلك عند تفعيل باقتك.",
     hist_t: "دفعاتك", h_w: "قيد المراجعة", h_v: "مؤكدة", h_r: "غير مؤكدة", covers: "من {a} إلى {b}",
+    data_t: "بيانات التجربة", data_sample: "أنت تستكشف بيانات نموذجية: بيت نموذجي فيه موردون ومخزون ودفعات وصور. تُمسح عند بدء اشتراكك ويُجهَّز مشروعك الخاص مكانها، ويبقى تسجيل دخولك وكلمة مرورك كما هما.",
+    data_clear: "امسح البيانات النموذجية الآن وابدأ مشروعي", data_confirm: "للتأكيد اكتب اسم مساحة العمل “{ws}”. سيبدأ كل شيء في مساحة العمل من جديد، ويستغرق ذلك بضع دقائق.",
+    data_go: "ابدأ من جديد الآن", data_own: "ماذا يحدث لما أدخلته خلال التجربة عند بدء الاشتراك؟",
+    keep_t: "الاحتفاظ بكل شيء", keep_d: "تستمر مشاريعك وفريقك ومخزونك ودفعاتك كما هي.", fresh_t: "البدء من جديد",
+    fresh_d: "تُمسح إدخالات التجربة ويُعاد إعداد شركتك، وتبقى أسماء الدخول وكلمات المرور كما هي.", saved: "تم الحفظ.",
+    fresh_running: "يجري تجهيز مساحة عملك من جديد. يستغرق ذلك بضع دقائق، ثم سجّل الدخول مجدداً بالبريد وكلمة المرور نفسيهما.",
+    fresh_failed: "لم يكتمل البدء من جديد. أُبلغ فريقنا وسيعالج الأمر، ومساحة عملك كما كانت.", e_confirm: "اكتب اسم مساحة العمل كما هو تماماً.",
     by_short: "منتج من", support: "لديك سؤال؟ راسلنا على {e} أو واتساب {w}.", support_e: "لديك سؤال؟ راسلنا على {e}.", e_load: "تعذّر تحميل اشتراكك. حاول مجدداً بعد قليل.",
   },
 };
@@ -355,6 +388,35 @@ async function api(method, data) {
   if (!r.ok) throw new Error(msgOf(j) || t("e_load"));
   return j.message;
 }
+function dataCard() {
+  const box = $("data-body"), st = (ACC.state || {}).status, paid = !!ACC.paid_until;
+  const sec = $("sec-data");
+  if (ACC.data_reset === "Waiting" || ACC.data_reset === "Running") { sec.hidden = false; box.innerHTML = `<div class="msg ok">${esc(t("fresh_running"))}</div>`; return; }
+  if (ACC.data_reset === "Failed") { sec.hidden = false; box.innerHTML = `<div class="msg bad">${esc(t("fresh_failed"))}</div>`; return; }
+  if (paid || st === "Active" || ACC.data_reset === "Done") { sec.hidden = true; return; }
+  sec.hidden = false;
+  if (ACC.trial_data === "Sample data") {
+    box.innerHTML = `<p class="lede">${esc(t("data_sample"))}</p><button class="btn ghost" type="button" id="d-clear">${esc(t("data_clear"))}</button>
+      <div id="d-confirm" hidden style="display:grid;gap:10px"><label class="f"><span>${esc(t("data_confirm", { ws: ACC.tenant }))}</span><input id="d-ws" dir="ltr" autocomplete="off" autocapitalize="none"></label>
+      <button class="btn" type="button" id="d-go">${esc(t("data_go"))}</button><div id="d-msg" class="msg" hidden></div></div>`;
+    $("d-clear").onclick = () => { $("d-confirm").hidden = false; $("d-ws").focus(); };
+    $("d-go").onclick = async () => {
+      const m = $("d-msg");
+      if ($("d-ws").value.trim().toLowerCase() !== String(ACC.tenant).toLowerCase()) { m.className = "msg bad"; m.textContent = t("e_confirm"); m.hidden = false; return; }
+      $("d-go").disabled = true;
+      try { await api("buildiary.saas.tenant.fresh_start", { confirm: $("d-ws").value.trim().toLowerCase() }); ACC.data_reset = "Waiting"; dataCard(); }
+      catch (e) { m.className = "msg bad"; m.textContent = e.message; m.hidden = false; $("d-go").disabled = false; }
+    };
+    return;
+  }
+  const cur = ACC.at_subscription === "Start fresh" ? "fresh" : "keep";
+  box.innerHTML = `<p class="lede">${esc(t("data_own"))}</p><div class="choice">${["keep", "fresh"].map((k) => `<label class="opt"><input type="radio" name="atsub" value="${k}" ${k === cur ? "checked" : ""}><b>${esc(t(k + "_t"))}</b><span>${esc(t(k + "_d"))}</span></label>`).join("")}</div><div id="d-msg" class="msg" hidden></div>`;
+  box.querySelectorAll("input[name=atsub]").forEach((r) => r.addEventListener("change", async () => {
+    const m = $("d-msg");
+    try { const x = await api("buildiary.saas.tenant.trial_choice", { choice: r.value === "fresh" ? "Start fresh" : "Keep my data" }); ACC.at_subscription = x.at_subscription; m.className = "msg ok"; m.textContent = t("saved"); m.hidden = false; }
+    catch (e) { m.className = "msg bad"; m.textContent = e.message; m.hidden = false; }
+  }));
+}
 function say(cls, text) { const m = $("pay-msg"); m.className = "msg " + cls; m.textContent = text; m.hidden = !text; }
 
 $("pay").addEventListener("submit", async (ev) => {
@@ -382,7 +444,7 @@ async function load() {
     PLAN = PLAN || ACC.plan || (ACC.plans[0] && ACC.plans[0].name);
     ["sec-plan", "sec-banks", "sec-form"].forEach((x) => ($(x).hidden = false));
     $("paid_on").value = $("paid_on").value || CFG.today;
-    plans(); banks(); history();
+    plans(); banks(); history(); dataCard();
     const sp = ACC.support || {};
     $("support").textContent = sp.email && sp.whatsapp ? t("support", { e: sp.email, w: "+" + sp.whatsapp }) : sp.email ? t("support_e", { e: sp.email }) : "";
     $("loading").hidden = true;

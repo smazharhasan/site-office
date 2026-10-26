@@ -177,13 +177,16 @@ def _provision(t, host):
 	os.makedirs(os.path.dirname(payload), exist_ok=True)
 	with open(os.open(payload, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600), "w", encoding="utf-8") as f:
 		json.dump({"company_name": t.company_name, "contact_name": t.contact_name, "email": t.email, "phone": t.phone, "country": t.country,
-			"language": t.language, "mode": t.mode, "password": t.get_password("first_password", raise_exception=False) or frappe.generate_hash(length=16)}, f)
+			"language": t.language, "mode": t.mode, "password": t.get_password("first_password", raise_exception=False) or frappe.generate_hash(length=16),
+			"sample": t.trial_data == "Sample data"}, f)
 	_log(t, "Setting up the company and the owner's sign-in")
 	code, out = _bench(["--site", host, "execute", "buildiary.saas.tenant.setup", "--kwargs", json.dumps({"payload": payload})], timeout=1800)
 	if os.path.exists(payload):
 		os.remove(payload)
 	if code != 0 or "BUILDIARY SETUP OK" not in out:
 		raise Exception("Set-up did not finish:\n" + out[-2500:])
+	if t.trial_data == "Sample data":
+		_sample(t, host)
 	t.reload()
 	t.status = "Trial"
 	t.signed_up_on = t.signed_up_on or now_datetime()
@@ -198,3 +201,120 @@ def _provision(t, host):
 	from buildiary.saas import billing
 
 	billing.welcome(t)
+
+
+# ---------------------------------------------------------------- sample data, and a fresh start
+def _sample(t, host):
+	"""The sample project for the customer's country (a minute or two). If it fails, the trial goes on with their own data."""
+	_log(t, "Adding the sample project")
+	code, out = _bench(["--site", host, "execute", "buildiary.saas.demo.make_cli", "--kwargs", json.dumps({"country": t.country, "lang": t.language or "en"})], timeout=1800)
+	if code != 0 or "SAMPLE PROJECT READY" not in out:
+		_log(t, "The sample project could not be added; the trial starts empty:\n" + out[-1500:])
+		t.db_set("trial_data", "Own data")
+		frappe.db.commit()
+		code, out = _bench(["--site", host, "execute", "buildiary.saas.tenant.first_project"], timeout=600)
+
+
+def fresh_start_due(t):
+	"""At the paid subscription: sample data is always cleared; the customer's own data only if they chose a fresh start."""
+	return (t.trial_data == "Sample data" or t.at_subscription == "Start fresh") and t.data_reset not in ("Waiting", "Running", "Done")
+
+
+def queue_reset(t, why=""):
+	t.db_set({"data_reset": "Waiting"})
+	_log(t, f"Fresh start asked for{(': ' + why) if why else ''}")
+	frappe.db.commit()
+	frappe.enqueue("buildiary.saas.provision.reset", queue="long", timeout=3600, tenant=t.name, job_id=f"buildiary-reset-{t.name}", deduplicate=True, enqueue_after_commit=True)
+
+
+def reset(tenant):
+	"""A fresh start: the workspace is replaced by a new one at the same address, with the same company, the same
+	people and their passwords. The old one is archived on the server (a full backup), not deleted."""
+	if not is_control():
+		return
+	t = frappe.get_doc("Buildiary Tenant", tenant)
+	if not t.site_host or t.data_reset != "Waiting":
+		return
+	with _Lock("provision"):
+		t.reload()
+		if t.data_reset != "Waiting":
+			return
+		t.db_set("data_reset", "Running")
+		frappe.db.commit()
+		try:
+			_reset(t, t.site_host)
+		except Exception:
+			frappe.db.rollback()
+			t.reload()
+			_log(t, "Fresh start failed:\n" + frappe.get_traceback()[-3000:])
+			t.db_set("data_reset", "Failed")
+			frappe.db.commit()
+			from buildiary.saas.common import notify_admins
+
+			notify_admins(f"Buildiary: fresh start failed for {t.company_name}", f"The workspace {t.site_host} could not be started fresh. It is unchanged unless the log says the old one was archived. Open the customer in the console.")
+			return
+	frappe.enqueue("buildiary.saas.provision.fill_pool", queue="long", timeout=3600, job_id="buildiary-fill-pool", deduplicate=True)
+
+
+def _reset(t, host):
+	if not os.path.isdir(site_dir(host)):
+		raise Exception(f"No workspace at {host}")
+	# 1. the people and their passwords, from the old workspace
+	people_file = os.path.join(site_dir(host), "private", "buildiary-people.json")
+	code, out = _bench(["--site", host, "execute", "buildiary.saas.tenant.export_people", "--kwargs", json.dumps({"path": people_file})], timeout=600)
+	if code != 0 or "PEOPLE OK" not in out:
+		raise Exception("Could not read the people:\n" + out[-1500:])
+	with open(people_file, encoding="utf-8") as f:
+		people = json.load(f)
+	os.remove(people_file)
+	_log(t, f"Kept {len(people)} sign-in(s)")
+	# 2. a new workspace, set up while it still has its pool name
+	pool = pool_sites()
+	new = pool[0] if pool else make_pool_site()
+	if not new:
+		raise Exception("Could not create the site")
+	try:
+		os.remove(os.path.join(site_dir(new), READY))
+	except OSError:
+		pass
+	update_site_config(new, "host_name", f"https://{host}")
+	key = frappe.generate_hash(length=40)
+	update_site_config(new, "buildiary_key", key)
+	payload = os.path.join(site_dir(new), "private", "buildiary-setup.json")
+	os.makedirs(os.path.dirname(payload), exist_ok=True)
+	with open(os.open(payload, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600), "w", encoding="utf-8") as f:
+		json.dump({"company_name": t.company_name, "contact_name": t.contact_name, "email": t.email, "phone": t.phone, "country": t.country,
+			"language": t.language, "mode": t.mode, "password": frappe.generate_hash(length=16), "people": people}, f)
+	_log(t, f"Setting up the new workspace ({new})")
+	code, out = _bench(["--site", new, "execute", "buildiary.saas.tenant.setup", "--kwargs", json.dumps({"payload": payload})], timeout=1800)
+	if os.path.exists(payload):
+		os.remove(payload)
+	if code != 0 or "BUILDIARY SETUP OK" not in out:
+		_drop(new)
+		raise Exception("Set-up of the new workspace did not finish:\n" + out[-2500:])
+	# 3. the old workspace is archived (backed up and moved aside), the new one takes its address
+	_archive(host)
+	os.rename(site_dir(new), site_dir(host))
+	t.reload()
+	t.tenant_key = key
+	t.pool_site = new
+	t.trial_data = "Own data"
+	t.at_subscription = "Keep my data"
+	t.data_reset = "Done"
+	t.reset_on = now_datetime()
+	t.save(ignore_permissions=True)
+	update_site_config(host, "buildiary", conf_block(t))
+	_log(t, f"Fresh start ready: https://{host}")
+	frappe.db.commit()
+
+
+def _archive(site):
+	"""bench drop-site with its backup: the database and files are saved, and the folder moves to sites/.archived."""
+	pw = _db_root_password()
+	if not pw:
+		raise Exception("No database root password (DB_ROOT_PASSWORD)")
+	keep = os.path.join(sites_path(), ".archived")  # on the sites volume, so it outlives a new server image
+	os.makedirs(keep, exist_ok=True)
+	code, out = _bench(["drop-site", site, "--db-root-username", "root", "--db-root-password", pw, "--force", "--archived-sites-path", keep], timeout=1800)
+	if code != 0 or os.path.isdir(site_dir(site)):
+		raise Exception("Could not archive the old workspace:\n" + out.replace(pw, "***")[-1500:])

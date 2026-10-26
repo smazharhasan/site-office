@@ -17,7 +17,7 @@ import frappe
 from frappe import _
 from frappe.utils import cint, flt, get_first_day, getdate, now_datetime, nowdate
 
-from buildiary.field import _company, _only, _parse, _photo_ok, _project, _psql, _roles, _settings, caps
+from buildiary.field import _company, _only, _parse, _photo_ok, _project, _psql, _roles, _settings, caps, money_text
 
 TYPES = ("Expense", "Cash given", "Cash returned")
 METHODS = ("Cash in hand", "Bank transfer", "Cheque", "JazzCash / Easypaisa", "Raast")
@@ -251,8 +251,8 @@ def entry_save(data, check=None):
 		doc.update({"category": d.category, "expense_account": acc, "bill_no": d.bill_no, "bill_photo": d.bill_photo if _photo_ok(d.bill_photo) else (idc.live_photo if idc else None)})
 		have = _in_hand(holder)
 		if amt > have + 0.5:
-			frappe.throw(_("{0} has only Rs {1} of petty cash in hand. The owner gives more cash first.").format(frappe.db.get_value("Site Worker", holder, "full_name"),
-				frappe.format(max(have, 0), {"fieldtype": "Float", "precision": 0})), title=_("Not enough cash"))
+			frappe.throw(_("{0} has only {1} of petty cash in hand. The owner gives more cash first.").format(frappe.db.get_value("Site Worker", holder, "full_name"),
+				money_text(max(have, 0))), title=_("Not enough cash"))
 	else:
 		if typ == "Cash given" and cint(s.card_for_petty_cash) and needs_card("card_for_petty_cash") and not idc:
 			frappe.throw(_("Scan the site card of the person receiving the cash and take their photo."), title=_("Site card"))
@@ -265,8 +265,8 @@ def entry_save(data, check=None):
 			"proof_1": d.proof_1 if _photo_ok(d.proof_1) else (idc.live_photo if idc else None), "proof_2": d.proof_2 if _photo_ok(d.proof_2) else None,
 			"proof_3": d.proof_3 if _photo_ok(d.proof_3) else None})
 		if typ == "Cash returned" and amt > _in_hand(holder) + 0.5:
-			frappe.throw(_("{0} has only Rs {1} of petty cash in hand.").format(frappe.db.get_value("Site Worker", holder, "full_name"),
-				frappe.format(max(_in_hand(holder), 0), {"fieldtype": "Float", "precision": 0})))
+			frappe.throw(_("{0} has only {1} of petty cash in hand.").format(frappe.db.get_value("Site Worker", holder, "full_name"),
+				money_text(max(_in_hand(holder), 0))))
 	doc.identity_check = idc.name if idc else None
 	doc.status = "Waiting for owner"
 	doc.insert(ignore_permissions=True)

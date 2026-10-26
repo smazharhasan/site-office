@@ -1381,3 +1381,169 @@ Type the number,اكتب الرقم
 "Type the workspace name {0} and tap Open. Sign in with your email and password, or with your site card.",اكتب اسم مساحة العمل {0} واضغط فتح، ثم سجّل الدخول ببريدك وكلمة المرور أو ببطاقة الموقع.
 Waiting for the phone…,بانتظار الهاتف…
 iPhone and iPad,آيفون وآيباد
+Add a skip,إضافة حاوية
+Add the skip first.,أضف الحاوية أولاً.
+"Add the skip when the company puts it on site: its number, size and how often it is collected. Without a skip, record each truck or trolley trip with “Debris collected”.",أضف الحاوية عندما تضعها الشركة في الموقع: رقمها وحجمها وكل كم يوم تُنقل. وإن لم تكن هناك حاوية، فسجّل كل نقلة شاحنة من «تم نقل المخلفات».
+After,بعد
+After: the site or the new skip,بعد: الموقع أو الحاوية الجديدة
+Ask for a collection,طلب نقل
+Ask now,اطلب الآن
+Ask the company,اطلب من الشركة
+Ask to collect,طلب النقل
+Asked on,تاريخ الطلب
+Asked {0},طُلب في {0}
+Before,قبل
+Before: the full skip,قبل: الحاوية الممتلئة
+Cancel the request,إلغاء الطلب
+Checked by,تحقق منه
+Checked {0},فُحصت في {0}
+Choose how full it is.,اختر مقدار الامتلاء.
+Collected,تم النقل
+"Collected every {0} days, next {1}",يُنقل كل {0} أيام، والمرة القادمة {1}
+Collected when you ask,يُنقل عند الطلب
+Collected: {0},تم النقل: {0}
+Collection asked,طُلب النقل
+Collections,عمليات النقل
+Collections this month,النقلات هذا الشهر
+Cost,التكلفة
+Debris collected,تم نقل المخلفات
+Debris removal,نقل المخلفات
+"Each collection is kept here with the vehicle, the slip or dumping ticket, photos and the cost.",تُحفظ هنا كل عملية نقل مع المركبة وإيصال المكب والصور والتكلفة.
+"Emailed to the company. Send it on WhatsApp too, so they see it at once.",أُرسل بالبريد إلى الشركة. أرسله على واتساب أيضاً ليروه فوراً.
+Every 2 days,كل يومين
+How full,مقدار الامتلاء
+How full is the skip?,ما مقدار امتلاء الحاوية؟
+How full?,كم امتلأت؟
+"Keep track of the skips (dump boxes) on site: how full they are, when the skip company should come, and every collection with photos and the slip. Buildiary writes the message to the company and opens WhatsApp with it.",تابع حاويات المخلفات في الموقع: مقدار امتلائها، ومتى تأتي الشركة، وكل عملية نقل بالصور والإيصال. يكتب بلدائري الرسالة إلى الشركة ويفتحها في واتساب.
+Leave empty to use the skip's company.,اتركه فارغاً لاستخدام شركة الحاوية.
+Leave empty when the company bills monthly.,اتركه فارغاً إذا كانت الشركة تصدر فاتورة شهرية.
+Loads / trips,عدد النقلات
+No collections yet,لا توجد نقلات بعد
+No skips on site,لا توجد حاويات في الموقع
+Not checked yet,لم تُفحص بعد
+"On the day, the company is emailed and the dashboard shows the WhatsApp button.",في اليوم المحدد تُرسل رسالة بريد إلى الشركة ويظهر زر واتساب في لوحة المتابعة.
+Only when asked,عند الطلب فقط
+Permit valid until,التصريح ساري حتى
+Regular collection,النقل الدوري
+Road permit no.,رقم تصريح الطريق
+Road permit {0} ends on {1},تصريح الطريق {0} ينتهي في {1}
+Send on WhatsApp,أرسل عبر واتساب
+Send the message,أرسل الرسالة
+Size (m³),الحجم (م³)
+Skip,الحاوية
+Skip company,شركة الحاويات
+Skip company / contractor,شركة الحاويات / المقاول
+Skip no. (painted on it),رقم الحاوية (المكتوب عليها)
+Skip {0},حاوية {0}
+Skips on site,الحاويات في الموقع
+Slip / dumping ticket,إيصال المكب
+Slip / dumping ticket no.,رقم إيصال المكب
+Slip {0},إيصال {0}
+"Take a photo after the collection (the site, or the new skip).",التقط صورة بعد النقل (للموقع أو للحاوية الجديدة).
+Tell the company on WhatsApp too if they already know.,إن كانت الشركة على علم بالطلب، فأبلغها على واتساب أيضاً.
+The company has no mobile number in Buildiary: choose the chat in WhatsApp.,لا يوجد رقم جوال لهذه الشركة في بلدائري: اختر المحادثة في واتساب.
+The full skip / the debris,الحاوية الممتلئة / المخلفات
+The owner can turn this on.,يستطيع المالك تفعيل ذلك.
+"The skip company gets the message on WhatsApp from the phone of the person asking, and by email when its contact has one.",تصل الرسالة إلى شركة الحاويات عبر واتساب من هاتف صاحب الطلب، وبالبريد إن كان لها بريد.
+The skip from above,الحاوية من الأعلى
+The skip is {0}. Ask the company to collect it now?,الحاوية {0}. هل تطلب من الشركة نقلها الآن؟
+The skips and collections stay saved; the screens are hidden until you turn it on again.,تبقى الحاويات وعمليات النقل محفوظة، وتختفي الشاشات حتى تعيد التفعيل.
+This company has no email in Buildiary: send it on WhatsApp.,لا يوجد بريد لهذه الشركة في بلدائري: أرسلها عبر واتساب.
+Turn off debris removal,إيقاف نقل المخلفات
+Turn on debris removal,تفعيل نقل المخلفات
+Twice a week,مرتين في الأسبوع
+Waiting for the company,بانتظار الشركة
+Weekly,أسبوعياً
+What,ماذا
+What do you need?,ماذا تحتاج؟
+What happened?,ماذا حدث؟
+Where on site,المكان في الموقع
+Why,السبب
+"asked, not collected yet",طُلبت ولم تُنقل بعد
+"e.g. In front of the plot, street side",مثلاً أمام القطعة، جهة الشارع
+e.g. Please come before 10 am; the gate is on the back street.,مثلاً يرجى الحضور قبل العاشرة صباحاً؛ البوابة في الشارع الخلفي.
+none full,لا توجد ممتلئة
+nothing waiting,لا شيء بالانتظار
+on site {0} days,في الموقع منذ {0} يوم
+told by {0},أُبلغت عبر {0}
+{0} collections this month,عدد النقلات هذا الشهر: {0}
+{0} full or nearly full,{0} ممتلئة أو شبه ممتلئة
+{0} full · {1} collection asked,{0} ممتلئة · طُلب نقل {1}
+{0} loads,{0} نقلات
+★ marks companies whose work area is Waste removal. A new company is added in Suppliers.,★ تعني شركات نقل المخلفات. تُضاف الشركة الجديدة من الموردين.
+A collection for this skip is already asked for ({0}). Mark it collected when the company comes.,طُلب نقل هذه الحاوية من قبل ({0}). سجّل النقل عندما تأتي الشركة.
+Choose the skip company or the debris contractor.,اختر شركة الحاويات أو مقاول المخلفات.
+Choose the skip company.,اختر شركة الحاويات.
+Choose the skip.,اختر الحاوية.
+Collection asked for on {0} has not come yet: {1},طُلب النقل في {0} ولم يأتِ أحد بعد: {1}
+Debris collection: {0},نقل مخلفات: {0}
+Enter the skip's number (painted on it).,اكتب رقم الحاوية (المكتوب عليها).
+"Hello {0},",مرحباً {0}،
+"Hello,",مرحباً،
+Only a collection that is still waiting can be cancelled.,لا يُلغى إلا الطلب الذي ما زال بالانتظار.
+Only the owner changes this.,لا يغيّر هذا إلا المالك.
+Please bring a new skip.,يرجى إحضار حاوية جديدة.
+Please exchange the full skip no. {0} for an empty one.,يرجى استبدال الحاوية الممتلئة رقم {0} بحاوية فارغة.
+Please send a truck to take away the debris.,يرجى إرسال شاحنة لنقل المخلفات.
+Please take away skip no. {0}; we don't need it any more.,يرجى سحب الحاوية رقم {0}؛ لم نعد نحتاج إليها.
+Road permit for skip {0} ends on {1},تصريح الطريق للحاوية {0} ينتهي في {1}
+Site: {0},الموقع: {0}
+Skip {0} is already on site.,الحاوية {0} موجودة في الموقع بالفعل.
+Skip {0} is {1}: ask the company to collect it,الحاوية {0} {1}: اطلب من الشركة نقلها
+Thank you. {0},شكراً. {0}
+"Thank you. {0}, {1}",شكراً. {0}، {1}
+The skip is at: {0},مكان الحاوية: {0}
+This collection is already marked done.,سُجّل هذا النقل من قبل.
+This is the regular collection.,هذا هو النقل الدوري.
+On site,في الموقع
+Collection requested,طُلب النقل
+Removed,أُزيلت
+Empty,فارغة
+Half full,نصف ممتلئة
+Nearly full,شبه ممتلئة
+Full,ممتلئة
+Exchange (full for empty),تبديل (ممتلئة بفارغة)
+Take away,سحب الحاوية
+Truck / trolley trip,نقلة شاحنة
+New skip delivered,توصيل حاوية جديدة
+Requested,مطلوب
+Scheduled,دوري
+Site clean-up,تنظيف الموقع
+Waste removal,نقل المخلفات
+Skip full: ask to collect,الحاوية ممتلئة: طلب النقل
+Track debris removal,تتبع نقل المخلفات
+Debris,المخلفات
+WhatsApp,واتساب
+Amount ({0}),المبلغ ({0})
+Amount to add to this budget line ({0}). It is saved as a budget in the ERP.,المبلغ المضاف إلى بند الميزانية هذا ({0}). يُحفظ كميزانية في النظام.
+Cost ({0}),التكلفة ({0})
+Daily wage ({0}),الأجر اليومي ({0})
+Entry card expiry,انتهاء بطاقة الدخول
+"Sample data: everything here is an example house. It is cleared when your subscription starts, or whenever you choose.",بيانات نموذجية: كل ما هنا لبيت نموذجي، ويُمسح عند بدء اشتراكك أو متى شئت.
+"Search name, phone, ID or card",ابحث بالاسم أو الجوال أو الهوية أو البطاقة
+Society / site entry card,بطاقة دخول المجمع / الموقع
+Society / site entry card no.,رقم بطاقة دخول المجمع / الموقع
+Start my own project,ابدأ مشروعي
+Your workspace is being started fresh. It takes a few minutes; then sign in again.,يجري تجهيز مساحة عملك من جديد. يستغرق ذلك بضع دقائق، ثم سجّل الدخول مجدداً.
+{0} back,ظهر {0}
+{0} expiry,انتهاء {0}
+{0} front,وجه {0}
+Check petty cash: {0} by {1} ({2}),راجع العهدة: {0} من {1} ({2})
+{0} has only {1} of petty cash in hand.,لدى {0} عهدة نقدية قدرها {1} فقط.
+{0} has only {1} of petty cash in hand. The owner gives more cash first.,لدى {0} عهدة نقدية قدرها {1} فقط. يسلّمه المالك نقداً إضافياً أولاً.
+"{0} of this payment is not set against any invoice. Suppliers are paid only against invoices that are due, or as an advance against a purchase order.",مبلغ {0} من هذه الدفعة غير مربوط بأي فاتورة. يُدفع للمورّدين مقابل الفواتير المستحقة فقط، أو كدفعة مقدّمة على أمر شراء.
+"Enter the full phone number, with the area or mobile code.",أدخل رقم الهاتف كاملاً مع رمز المنطقة أو الجوال.
+Enter the full ID card number.,أدخل رقم الهوية كاملاً.
+ID card,الهوية
+This ID card is already registered for {0} ({1}).,هذه الهوية مسجّلة من قبل باسم {0} ({1}).
+Choose what happens to your trial data.,اختر ما يحدث لبيانات التجربة.
+"Only the sample data is cleared from here. Your own data is kept, or cleared when your subscription starts if you choose.",لا تُمسح من هنا إلا البيانات النموذجية. بياناتك الخاصة تبقى، أو تُمسح عند بدء الاشتراك إن اخترت ذلك.
+Type the workspace name exactly.,اكتب اسم مساحة العمل كما هو تماماً.
+The cost can't be below zero.,لا يمكن أن تكون التكلفة أقل من صفر.
+Choose the skip or the supplier.,اختر الحاوية أو المورّد.
+Iqama / national ID,الإقامة / الهوية الوطنية
+Emirates ID,الهوية الإماراتية
+QID,البطاقة الشخصية القطرية
+Civil ID,البطاقة المدنية
+CPR,البطاقة السكانية
+Resident card,بطاقة المقيم

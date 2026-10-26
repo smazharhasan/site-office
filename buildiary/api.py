@@ -7,7 +7,7 @@ import frappe
 from frappe import _
 from frappe.utils import add_days, cint, flt, get_url, getdate, nowdate
 
-WORK_AREAS = ["Materials", "Grey structure", "Finishing", "Design", "Testing & verification", "Services"]
+WORK_AREAS = ["Materials", "Grey structure", "Finishing", "Design", "Testing & verification", "Services", "Waste removal"]
 
 
 # ---------------------------------------------------------------- suppliers
@@ -18,8 +18,10 @@ def register_supplier(name, phone=None, contact=None, email=None, address=None, 
 	if not name:
 		frappe.throw(_("Enter the supplier's name."))
 	digits = re.sub(r"\D", "", phone or "")
-	if phone and len(digits) < 10:
-		frappe.throw(_("Enter a full phone number like 0300-1234567."))
+	if phone and len(digits) < 7:
+		frappe.throw(_("Enter the full phone number, with the area or mobile code."))
+	co = frappe.db.get_single_value("Global Defaults", "default_company")
+	country = (frappe.db.get_value("Company", co, "country") if co else None) or frappe.db.get_single_value("System Settings", "country") or "Pakistan"
 	existing = frappe.db.get_value("Supplier", {"supplier_name": name})
 	if existing:
 		return existing
@@ -31,7 +33,7 @@ def register_supplier(name, phone=None, contact=None, email=None, address=None, 
 			"supplier_name": name,
 			"supplier_group": group,
 			"supplier_type": "Company",
-			"country": "Pakistan",
+			"country": country,
 			"tax_id": ntn or None,
 			"buildiary_work_area": work_area,
 			"buildiary_payment_terms": payment_terms,
@@ -48,7 +50,9 @@ def register_supplier(name, phone=None, contact=None, email=None, address=None, 
 		c.insert()
 		sup.db_set({"mobile_no": phone, "email_id": email, "supplier_primary_contact": c.name})
 	if address:
-		frappe.get_doc({"doctype": "Address", "address_title": name, "address_type": "Billing", "address_line1": address[:140], "city": "Karachi", "country": "Pakistan", "links": [{"link_doctype": "Supplier", "link_name": sup.name}]}).insert()
+		parts = [x.strip() for x in address.split(",") if x.strip()]
+		city = parts[-1][:60] if len(parts) > 1 else country
+		frappe.get_doc({"doctype": "Address", "address_title": name, "address_type": "Billing", "address_line1": address[:140], "city": city, "country": country, "links": [{"link_doctype": "Supplier", "link_name": sup.name}]}).insert()
 	return sup.name
 
 

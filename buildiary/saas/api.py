@@ -54,7 +54,35 @@ def account(tenant=None, key=None):
 		"status": tenant_state(t), "trial_ends": t.trial_ends, "paid_until": t.paid_until,
 		"plans": plans(t.country), "banks": banks, "payments": pays,
 		"support": {"email": s.support_email, "whatsapp": s.support_whatsapp}, "terms_url": s.terms_url,
+		"trial_data": t.trial_data or "Own data", "at_subscription": t.at_subscription or "Keep my data", "data_reset": t.data_reset or "",
 	}
+
+
+@frappe.whitelist(allow_guest=True, methods=["POST"])
+def trial_choice(tenant=None, key=None, choice=None):
+	"""The owner's choice for their own trial data when the subscription starts: keep it, or start fresh."""
+	t = _tenant(tenant, key)
+	if choice not in ("Keep my data", "Start fresh"):
+		frappe.throw(_("Choose what happens to your trial data."))
+	t.db_set("at_subscription", choice)
+	from buildiary.saas.common import push
+
+	push(t)
+	return {"at_subscription": choice}
+
+
+@frappe.whitelist(allow_guest=True, methods=["POST"])
+def fresh_start(tenant=None, key=None):
+	"""The owner clears the sample data now and starts their own project (the workspace is set up afresh)."""
+	t = _tenant(tenant, key)
+	if t.trial_data != "Sample data":
+		frappe.throw(_("Only the sample data is cleared from here. Your own data is kept, or cleared when your subscription starts if you choose."))
+	if t.data_reset in ("Waiting", "Running"):
+		return {"data_reset": t.data_reset}
+	from buildiary.saas.provision import queue_reset
+
+	queue_reset(t, "the owner cleared the sample data")
+	return {"data_reset": "Waiting"}
 
 
 @frappe.whitelist(allow_guest=True, methods=["POST"])

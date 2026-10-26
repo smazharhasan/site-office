@@ -17,12 +17,20 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 const icon = (n, cls = "") => `<svg class="i ${cls}"><use href="#i-${n}"/></svg>`;
 const RTL = () => S.lang === "ur" || S.lang === "ar";
 const LOCALE = () => (S.lang === "ur" ? "ur-PK" : S.lang === "ar" ? "ar-SA-u-nu-latn-ca-gregory" : "en-GB");
-function t(s, ...a) { let x = (S.lang !== "en" && S.lang === window.BUILDIARY_TR_LANG && UR[s]) || s; a.forEach((v, i) => { x = x.split(`{${i}}`).join(v); }); return x; }
+/** Words from Pakistan's sites that read better elsewhere in plain English. */
+const EN_ALIAS = { Mistri: "Skilled worker" };
+function t(s, ...a) { let x = (S.lang !== "en" && S.lang === window.BUILDIARY_TR_LANG && UR[s]) || (S.lang === "en" && EN_ALIAS[s] && S.b && S.b.country && S.b.country !== "Pakistan" ? EN_ALIAS[s] : s); a.forEach((v, i) => { x = x.split(`{${i}}`).join(v); }); return x; }
 const num = (n) => (+n || 0).toLocaleString("en-US", { maximumFractionDigits: 2 });
 /** Money in the company's currency: lakh and crore for rupees, thousands and millions elsewhere. */
 const CUR = () => (S.b && S.b.currency) || "PKR";
 const SOUTH_ASIA = () => ["PKR", "INR"].includes(CUR());
 const CUR_SYM = { PKR: "Rs", INR: "₹", USD: "$", GBP: "£", EUR: "€" };
+/** The money sign for labels: "Amount (Rs)", "Amount (SAR)", "Amount (€)". */
+const CURL = () => CUR_SYM[CUR()] || CUR();
+/** The national ID people carry, by the company's country (CNIC in Pakistan, Iqama in Saudi Arabia ...). */
+/** Pakistan's site rules (police verification of workers) apply there only. */
+const PK = () => !(S.b && S.b.country) || S.b.country === "Pakistan";
+const IDL = () => ({ Pakistan: "CNIC", "Saudi Arabia": "Iqama / national ID", "United Arab Emirates": "Emirates ID", Qatar: "QID", Kuwait: "Civil ID", Bahrain: "CPR", Oman: "Resident card" }[(S.b && S.b.country) || ""] || "ID card");
 function money(n, short) {
   n = +n || 0; const a = Math.abs(n); const sym = CUR_SYM[CUR()] || CUR();
   if (SOUTH_ASIA()) {
@@ -527,6 +535,7 @@ const GLOBAL = {
     const c = C(); const A = [];
     if (c.store) A.push(["Receive goods", "truck", "store/receive", "k2"], ["Release to work", "box", "release", "k3"], ["Return to store", "store", "return", "k7"]);
     if (STORE()) A.push(["Water tanker", "drop", "tanker", "k7"], ["Tank level", "tank", "tanklevel", "k2"]);
+    if (DEBRIS()) A.push(["Skip full: ask to collect", "skip", "debrisask", "k4"], ["Debris collected", "truck", "debrisdone", "k6"]);
     if (c.people) A.push(["Attendance by site card", "card", "attcard", "k1"]);
     if (PETTY()) A.push(["Petty cash expense", "pay", "pettyexp", "k3"], ["Pay by site card", "cash", "paycard", "k8"]);
     if (c.site) A.push(["Site diary", "log", "diary", "k7"], ["Report a snag", "alert", "snag", "k4"], ["Progress photo", "cam", "build/schedule", "k5"]);
@@ -540,6 +549,8 @@ const GLOBAL = {
       if (to === "attcard") return attendanceByCard();
       if (to === "tanker") return tankerSheet();
       if (to === "tanklevel") return readingSheet();
+      if (to === "debrisask") return debrisAsk();
+      if (to === "debrisdone") return debrisDone();
       if (to === "pettyexp") return busy(api("buildiary.petty.overview")).then((d) => { S.petty = d; if (d.no_person) { toast(t("Your sign-in isn't linked to a person on site, so you can't hold petty cash. Ask the owner."), "bad"); return; } expenseSheet(d); }).catch((e) => toast(e.message, "bad"));
       if (to === "paycard") return payByCard();
       if (to === "diary") return diarySheet();
@@ -577,6 +588,13 @@ function appBanner() {
   try { if (localStorage.getItem("buildiary.appHint") === "no") return ""; } catch (e) { /* */ }
   return `<div class="banner info plan-line" data-apphint><span>${esc(t("Get the Buildiary app for this phone: the camera, GPS and site card scanner work best in it."))}</span><span class="row" style="gap:6px"><button class="btn sm pri" data-go="app">${esc(t("Get the app"))}</button><button class="btn sm" data-act="apphint" aria-label="${esc(t("Not now"))}">${icon("x")}</button></span></div>`;
 }
+/** Buildiary Cloud: a trial with sample data says so on the home screen. */
+function sampleBanner() {
+  const p = S.b.plan;
+  if (!p || p.trial_data !== "Sample data" || p.paid_until) return "";
+  if (p.data_reset === "Waiting" || p.data_reset === "Running") return `<div class="banner info plan-line"><span>${esc(t("Your workspace is being started fresh. It takes a few minutes; then sign in again."))}</span></div>`;
+  return `<div class="banner warn plan-line"><span>${esc(t("Sample data: everything here is an example house. It is cleared when your subscription starts, or whenever you choose."))}</span>${C().owner ? `<a class="btn sm" href="/billing">${esc(t("Start my own project"))}</a>` : ""}</div>`;
+}
 /** Buildiary Cloud: the trial or plan line on the home screen (only on a Buildiary workspace). */
 function planBanner() {
   const p = S.b.plan;
@@ -597,6 +615,7 @@ VIEWS.dash = async (el) => {
   if (T.budget) tiles.push(tile(t("Budget"), money(T.budget.budget, 1), t("{0} committed", money(T.budget.committed, 1)), "money/budget", "k2"));
   if (T.stock) tiles.push(tile(t("Stock alerts"), String(T.stock.low + T.stock.out), T.stock.low + T.stock.out ? t("{0} low · {1} out", T.stock.low, T.stock.out) : t("all above re-order level"), "store/items", T.stock.low + T.stock.out ? "k4" : "k3"));
   if (T.water) tiles.push(tile(t("Water today"), t("{0} gal", num(T.water.gallons)), t("{0} tankers · {1} gal this week", T.water.tankers, num(T.water.week)), "store/water", "k7"));
+  if (T.debris) tiles.push(tile(t("Skips on site"), String(T.debris.skips), T.debris.full ? t("{0} full · {1} collection asked", T.debris.full, T.debris.asked) : t("{0} collections this month", T.debris.month), "debris", T.debris.full ? "k4" : "k6"));
   if (T.ncr) tiles.push(tile(t("Open NCRs"), String(T.ncr.open), t("{0} inspections waiting", T.ncr.waiting), "build/inspect", T.ncr.open ? "k4" : "k1"));
   if (T.onsite) tiles.push(tile(t("On site now"), String(T.onsite.now), t("{0} came and left · {1} registered", T.onsite.left, T.onsite.registered), "att", "k7"));
   if (T.snags) tiles.push(tile(t("Open snags"), String(T.snags.open), t("{0} overdue", T.snags.overdue), "build/snags", T.snags.overdue ? "k4" : "k6"));
@@ -615,7 +634,7 @@ VIEWS.dash = async (el) => {
   Object.assign(S.acts, { go_petty: () => go("money/petty"), tanker: () => tankerSheet(), go_receive: () => go("store/receive"), go_att: () => go("att"), go_bills: () => go("money/bills"), go_build: () => go("build/progress"), go_ask: () => go("ask"),
     attcard: () => attendanceByCard(), ret: () => storeByCard("return"), release: () => (S.b.rules.card_for_store ? storeByCard("issue") : releaseSheet()), diary: () => diarySheet(), snag: () => snagNewSheet(), scanquote: () => scanQuote() });
   const G = {}; d.acts.forEach((a) => { (G[a.g] = G[a.g] || []).push(a); });
-  const GI = { Buying: "cart", Stores: "box", Money: "pay", Quality: "alert", Build: "house", People: "users", Water: "drop", Other: "alert" };
+  const GI = { Buying: "cart", Stores: "box", Money: "pay", Quality: "alert", Build: "house", People: "users", Water: "drop", Debris: "skip", Other: "alert" };
   const att = d.acts.length ? Object.entries(G).map(([g, rows]) => `<div class="agrp"><div class="ag-h">${icon(GI[g] || "alert")}<b>${esc(t(g))}</b><span class="cnt">${rows.length}</span></div><div class="lst">${rows.slice(0, 6).map((a) => lrow({ act: "open", data: a.go.join("|"), title: a.t, dot: a.k })).join("")}${rows.length > 6 ? `<div class="more-rest" hidden>${rows.slice(6).map((a) => lrow({ act: "open", data: a.go.join("|"), title: a.t, dot: a.k })).join("")}</div>` : ""}</div>${rows.length > 6 ? `<button class="btn sm showall" data-showall="1">${esc(t("Show all ({0})", rows.length))}</button>` : ""}</div>`).join("") : empty(t("All clear"), t("Nothing is waiting for you right now."));
   const P = d.panels; const parts = [];
   if (P.paid && P.paid.length) {
@@ -645,14 +664,14 @@ VIEWS.dash = async (el) => {
       <div class="legend"><span><i class="u"></i>${esc(t("Releases from the store"))}</span></div></div>`));
   }
   S.acts.apphint = () => { try { localStorage.setItem("buildiary.appHint", "no"); } catch (e) { /* */ } const x = $("[data-apphint]"); if (x) x.remove(); };
-  el.innerHTML = `${planBanner()}${appBanner()}<div class="hero"><span class="muted small">${esc(fdate(b.today))}</span><b>${esc(t("Hello, {0}", (b.full_name || "").split(" ")[0]))}</b><span class="small muted">${esc(b.project_name || "")}</span></div>
+  el.innerHTML = `${planBanner()}${sampleBanner()}${appBanner()}<div class="hero"><span class="muted small">${esc(fdate(b.today))}</span><b>${esc(t("Hello, {0}", (b.full_name || "").split(" ")[0]))}</b><span class="small muted">${esc(b.project_name || "")}</span></div>
     ${tiles.length ? `<div class="ctiles">${tiles.join("")}</div>` : ""}
     ${A.length ? panel(t("Quick actions"), `<div class="body"><div class="qa-grid">${A.slice(0, 12).join("")}</div></div>`) : ""}
     ${panel(t("Needs your attention"), `<div class="body stack" style="gap:6px">${att}</div>`, d.acts.length ? `<span class="cnt">${d.acts.length}</span>` : "")}
     ${parts.join("")}`;
   S.acts.open = (v) => {
     const [kind, name] = v.split("|");
-    const map = { quote: `quote/${name}`, order: `order/${name}`, receive: `receive/${name}`, bill: "money/bills", billnew: "money/bills", snag: "build/snags", task: "build/progress", stage: "build/progress", worker: name ? `worker/${name}` : "people", water: "store/water", item: `item/${encodeURIComponent(name)}`, petty: "money/petty" };
+    const map = { quote: `quote/${name}`, order: `order/${name}`, receive: `receive/${name}`, bill: "money/bills", billnew: "money/bills", snag: "build/snags", task: "build/progress", stage: "build/progress", worker: name ? `worker/${name}` : "people", water: "store/water", debris: "debris", item: `item/${encodeURIComponent(name)}`, petty: "money/petty" };
     if (kind === "petty" && name) { S.petty = S.petty || { full: !!T.petty }; return pcSheet(name); }
     go(map[kind] || "dash");
   };
@@ -1121,7 +1140,7 @@ function tankerForm(box, d) {
     ${fld(t("Water"), chips("water_type", ["Sweet (construction & curing)", "Drinking", REJ], "Sweet (construction & curing)"))}
     ${fld(t("TDS reading (ppm)"), inp("tds_ppm", "", "number"), { hint: t("Above {0} ppm is not fit for concrete or curing.", num(d.tds_limit)) })}
     <div data-f="emptied_into">${fld(t("Emptied into"), sel("emptied_into", tanks, first, false))}</div>
-    ${fld(t("Cost (Rs)"), inp("cost", "", "number"), { hint: money_ ? "" : t("Fill in when you pay it from petty cash.") })}
+    ${fld(t("Cost ({0})", CURL()), inp("cost", "", "number"), { hint: money_ ? "" : t("Fill in when you pay it from petty cash.") })}
     <label class="checkrow"><input type="checkbox" name="paid_from_petty_cash"><span>${esc(t("Paid in cash from petty cash"))}</span></label>
     ${fld(t("Photos"), `<div class="shots">${shot("tanker_photo", t("Tanker with number plate"), "", { req: true })}${shot("bill_scan", t("Tanker bill / slip"), "", { req: true })}${shot("tds_photo", t("TDS meter or water sample"))}</div>`, { req: true })}
     ${fld(t("Tanker bill / slip no."), inp("bill_no"))}
@@ -1237,7 +1256,7 @@ function tankerDetail(r) {
   const sh = sheet(`${r.vehicle_no} · ${t("{0} gal", num(r.gallons))}`, `<div class="stack">
       <div class="pfigs">${photoFig(r.tanker_photo, t("Tanker with number plate"))}${photoFig(r.tds_photo, t("TDS meter or water sample"))}${photoFig(r.bill_scan, t("Tanker bill / slip"))}</div>
       <div class="kvs">${kv(t("Date"), `${fdate(r.date)} ${r.time || ""}`)}${kv(t("Water"), t(r.water_type))}${kv(t("TDS reading (ppm)"), r.tds_ppm || "—")}${kv(t("Emptied into"), r.emptied_into ? t(r.emptied_into) : "")}
-        ${kv(t("Water supplier / hydrant"), r.supplier_text)}${kv(t("Received by"), r.received_by_name)}${kv(t("Tanker bill / slip no."), r.bill_no)}${r.cost != null && r.cost ? kv(t("Cost (Rs)"), money(r.cost)) : ""}</div>
+        ${kv(t("Water supplier / hydrant"), r.supplier_text)}${kv(t("Received by"), r.received_by_name)}${kv(t("Tanker bill / slip no."), r.bill_no)}${r.cost != null && r.cost ? kv(t("Cost ({0})", CURL()), money(r.cost)) : ""}</div>
       ${badWater(r) ? `<div class="banner bad">${esc(r.water_type === REJ ? t("Rejected at the gate (brackish water).") : t("TDS above {0} ppm: not fit for concrete or curing.", num(S.water.tds_limit)))}</div>` : ""}
       <div data-ai>${aiBox(r.ai_verdict, r.ai_summary)}</div>
       ${S.b.ai ? `<button class="btn" data-re="1">${icon("sparkle")}${esc(t("Check again with AI"))}</button>` : ""}</div>`, { full: true });
@@ -1299,7 +1318,7 @@ function budgetNote(box, d) {
 function expenseSheet(d) {
   const sh = sheet(t("Petty cash expense"), `<div class="form">
       ${holderSel(d, t("Paid from cash held by"))}
-      ${fld(t("Amount (Rs)"), inp("amount", "", "number"), { req: true })}
+      ${fld(t("Amount ({0})", CURL()), inp("amount", "", "number"), { req: true })}
       ${fld(t("Spent on"), catSel(d, false), { req: true })}<div data-bud></div>
       ${fld(t("Paid to / shop"), inp("paid_to"), { req: true })}
       ${fld(t("Bill / receipt no."), inp("bill_no"))}
@@ -1320,7 +1339,7 @@ async function payByCard(d) {
   d = d || (await busy(api("buildiary.petty.overview")));
   const r = await cardFlow({ title: t("Pay from petty cash by site card"), action: "Petty cash", step3: { label: "Payment", ok: t("Pay"),
     render(box) {
-      box.innerHTML = `<div class="form">${holderSel(d, t("Paid from cash held by"))}${fld(t("Amount (Rs)"), inp("amount", "", "number"), { req: true })}
+      box.innerHTML = `<div class="form">${holderSel(d, t("Paid from cash held by"))}${fld(t("Amount ({0})", CURL()), inp("amount", "", "number"), { req: true })}
         ${fld(t("Spent on"), catSel(d, true), { req: true })}<div data-bud></div>${fld(t("What it was for"), area("notes", "", `placeholder="${esc(t("e.g. wage advance for this week"))}"`))}</div>`;
       wireForm(box); box.querySelector("[name=category]").addEventListener("change", () => budgetNote(box, d)); budgetNote(box, d);
     },
@@ -1334,7 +1353,7 @@ async function payByCard(d) {
 }
 function cashForm(d, giving, withHolder) {
   return `<div class="form">${withHolder ? holderSel(d, giving ? t("Supervisor (cash holder)") : t("Returned by (cash holder)")) : ""}
-    ${fld(t("Amount (Rs)"), inp("amount", "", "number"), { req: true })}
+    ${fld(t("Amount ({0})", CURL()), inp("amount", "", "number"), { req: true })}
     ${fld(giving ? t("Given by") : t("Returned by"), chips("method", METHODS, "Cash in hand"))}
     ${fld(t("Transfer / cheque / receipt no."), inp("reference"))}
     ${fld(t("Handed over in front of (witness)"), inp("witness"))}
@@ -1389,7 +1408,7 @@ async function pcSheet(name) {
   };
 }
 async function budgetSheet(cat) {
-  const v = await ask(t("Budget for {0}", t(cat)), t("Amount to add to this budget line (Rs). It is saved as a budget in the ERP."), "", { type: "number", ok: t("Add budget") });
+  const v = await ask(t("Budget for {0}", t(cat)), t("Amount to add to this budget line ({0}). It is saved as a budget in the ERP.", CURL()), "", { type: "number", ok: t("Add budget") });
   if (!v) return;
   try { await busy(api("buildiary.petty.budget_add", { category: cat, amount: v })); toast(t("Budget added"), "good"); render(); } catch (e) { toast(e.message, "bad"); }
 }
@@ -1477,6 +1496,187 @@ VIEWS.receive = async (el, [po]) => {
   };
 };
 
+/* ================================================================== debris removal (skips) */
+const dkv = (l, v) => (v || v === 0 ? `<div class="kv"><span>${esc(l)}</span><b>${esc(v)}</b></div>` : "");
+const DEBRIS = () => !!(S.b && S.b.debris) && STORE();
+const FILL_PCT = { Empty: 5, "Half full": 50, "Nearly full": 80, Full: 100 };
+const FILL_K = { Empty: "good", "Half full": "info", "Nearly full": "warn", Full: "bad" };
+const supOpts = (d) => d.suppliers.map((s) => [s.name, s.waste ? `${s.title} ★` : s.title]);
+VIEWS.debris = async (el) => {
+  setTop(t("Debris removal"), true); setTab("more");
+  const d = await api("buildiary.debris.overview");
+  S.debris = d;
+  if (!d.enabled) {
+    el.innerHTML = panel(t("Debris removal"), `<div class="body stack"><p style="margin:0">${esc(t("Keep track of the skips (dump boxes) on site: how full they are, when the skip company should come, and every collection with photos and the slip. Buildiary writes the message to the company and opens WhatsApp with it."))}</p>
+      ${d.owner ? `<button class="btn pri big" data-act="dbon">${icon("check")}${esc(t("Turn on debris removal"))}</button>` : `<p class="small muted" style="margin:0">${esc(t("The owner can turn this on."))}</p>`}</div>`);
+    S.acts.dbon = async () => { try { await busy(api("buildiary.debris.turn_on", { on: 1 })); S.b.debris = 1; render(); } catch (e) { toast(e.message, "bad"); } };
+    return;
+  }
+  const full = d.skips.filter((k) => k.fill === "Full" || k.fill === "Nearly full").length;
+  const tiles = [tile(t("Skips on site"), String(d.skips.length), full ? t("{0} full or nearly full", full) : t("none full"), "", full ? "k4" : "k6"),
+    tile(t("Waiting for the company"), String(d.open.length), d.open.length ? t("asked, not collected yet") : t("nothing waiting"), "", d.open.length ? "k3" : "k1"),
+    tile(t("Collections this month"), String(d.month.trips), d.month.cost != null && d.month.cost ? money(d.month.cost, 1) : "", "", "k2")];
+  const card = (k) => {
+    const open = d.open.find((r) => r.container === k.name);
+    const meta = [k.supplier_name, k.size_m3 ? `${num(k.size_m3)} m³` : "", k.location, k.days != null ? t("on site {0} days", k.days) : ""].filter(Boolean).join(" · ");
+    return `<article class="pcard skip">
+      <div class="pc-h"><span class="pc-t"><b class="ltr">${esc(t("Skip {0}", k.container_no))}</b><span class="small muted">${esc(meta)}</span></span>${open ? pill(t("Collection asked"), "warn") : pill(t(k.fill || "Empty"), FILL_K[k.fill] || "")}</div>
+      <div class="skipfill" role="img" aria-label="${esc(t(k.fill || "Empty"))}"><i class="${FILL_K[k.fill] || ""}" style="width:${FILL_PCT[k.fill] || 5}%"></i></div>
+      <div class="small muted">${esc([k.fill_on ? t("Checked {0}", fdate(k.fill_on)) : t("Not checked yet"), +k.every_days ? t("Collected every {0} days, next {1}", k.every_days, fdate(k.next_collection)) : t("Collected when you ask")].join(" · "))}</div>
+      ${k.permit_left != null && k.permit_left <= 3 ? `<div class="banner ${k.permit_left < 0 ? "bad" : "warn"}">${esc(t("Road permit {0} ends on {1}", k.permit_no || "", fdate(k.permit_expires)))}</div>` : ""}
+      ${k.fill_photo ? `<img src="${esc(k.fill_photo)}" alt="" class="zoomable skipimg">` : ""}
+      <div class="sc-acts">${open ? `<button class="btn sm pri" data-act="dbdone" data-v="${esc(open.name)}">${icon("check")}${esc(t("Collected"))}</button><button class="btn sm good" data-act="dbwa" data-v="${esc(open.name)}">${icon("chat")}WhatsApp</button>`
+        : `<button class="btn sm pri" data-act="dbask" data-v="${esc(k.name)}">${icon("truck")}${esc(t("Ask to collect"))}</button>`}
+        <button class="btn sm" data-act="dbfill" data-v="${esc(k.name)}">${icon("cam")}${esc(t("How full?"))}</button><button class="btn sm" data-act="dbskip" data-v="${esc(k.name)}">${icon("pencil")}${esc(t("Edit"))}</button></div></article>`;
+  };
+  const openRow = (r) => lrow({ act: "dbopen", data: r.name, ic: "truck", title: [r.container_no ? t("Skip {0}", r.container_no) : "", t(r.kind)].filter(Boolean).join(" · "),
+    sub: esc([t("Asked {0}", fdate(r.requested_on || r.date)), r.supplier_name, r.notified ? t("told by {0}", r.notified.split(", ").map((x) => t(x)).join(", ")) : ""].filter(Boolean).join(" · ")), end: pill(t(r.reason || ""), r.reason === "Scheduled" ? "info" : "warn") });
+  const doneRow = (r) => lrow({ act: "dbshow", data: r.name, img: r.photo_done || r.photo_full, ic: r.photo_done || r.photo_full ? null : "truck",
+    title: [fdate(r.done_on || r.date), r.container_no ? t("Skip {0}", r.container_no) : t(r.kind)].filter(Boolean).join(" · "),
+    sub: esc([r.supplier_name, r.vehicle_no, +r.loads > 1 ? t("{0} loads", r.loads) : "", r.slip_no ? t("Slip {0}", r.slip_no) : ""].filter(Boolean).join(" · ")), end: r.cost ? `<b>${money(r.cost, 1)}</b>` : "" });
+  el.innerHTML = `<div class="ctiles">${tiles.join("")}</div>
+    <div class="row" style="flex-wrap:wrap"><button class="btn pri big" data-act="dbask">${icon("truck")}${esc(t("Ask for a collection"))}</button><button class="btn big" data-act="dbdone">${icon("check")}${esc(t("Debris collected"))}</button></div>
+    ${panel(t("Skips on site"), d.skips.length ? `<div class="stack">${d.skips.map(card).join("")}</div>` : empty(t("No skips on site"), t("Add the skip when the company puts it on site: its number, size and how often it is collected. Without a skip, record each truck or trolley trip with “Debris collected”.")),
+      `<button class="btn sm" data-act="dbskip">${icon("plus")}${esc(t("Add a skip"))}</button>`)}
+    ${d.open.length ? panel(t("Waiting for the company"), `<div class="lst">${d.open.map(openRow).join("")}</div>`, `<span class="cnt">${d.open.length}</span>`) : ""}
+    ${panel(t("Collections"), d.done.length ? moreList(d.done, doneRow, 8) : empty(t("No collections yet"), t("Each collection is kept here with the vehicle, the slip or dumping ticket, photos and the cost.")))}
+    ${d.owner ? `<p class="small muted" style="margin:4px 2px">${esc(t("The skip company gets the message on WhatsApp from the phone of the person asking, and by email when its contact has one."))} <button class="linkbtn" style="display:inline;padding:0" data-act="dboff">${esc(t("Turn off debris removal"))}</button></p>` : ""}`;
+  Object.assign(S.acts, {
+    dbask: (v) => debrisAsk(d, v),
+    dbdone: (v) => debrisDone(d, v),
+    dbfill: (v) => debrisFill(d, v),
+    dbskip: (v) => debrisSkip(d, v),
+    dbwa: async (v) => { try { const r = await busy(api("buildiary.debris.resend", { name: v })); openOut(r.whatsapp); } catch (e) { toast(e.message, "bad"); } },
+    dbopen: (v) => debrisOpen(d, d.open.find((r) => r.name === v)),
+    dbshow: (v) => debrisShow(d.done.find((r) => r.name === v)),
+    dboff: async () => { if (await confirmBox(t("Turn off debris removal"), t("The skips and collections stay saved; the screens are hidden until you turn it on again."), t("Turn off"), "bad")) { await busy(api("buildiary.debris.turn_on", { on: 0 })); S.b.debris = 0; go("more"); } },
+  });
+};
+async function debrisData(d) { return d || S.debris || (S.debris = await busy(api("buildiary.debris.overview"))); }
+function debrisRefresh() { S.debris = null; if (location.hash.includes("debris") || location.hash === "" || location.hash.includes("dash")) render(); }
+/** A skip placed on site, or its details. */
+async function debrisSkip(d, name) {
+  d = await debrisData(d);
+  const k = d.skips.find((x) => x.name === name) || {};
+  const sh = sheet(name ? t("Skip {0}", k.container_no) : t("Add a skip"), `<div class="form">
+    ${fld(t("Skip no. (painted on it)"), inp("container_no", k.container_no || "", "text", 'autocapitalize="characters"'), { req: true })}
+    ${fld(t("Skip company"), sel("supplier", supOpts(d), k.supplier || d.default_supplier || ""), { req: true, hint: t("★ marks companies whose work area is Waste removal. A new company is added in Suppliers.") })}
+    ${fld(t("Size (m³)"), `${chips("szc", [["6", "6"], ["10", "10"], ["14", "14"], ["20", "20"], ["30", "30"]], k.size_m3 ? String(+k.size_m3) : "")}<input name="size_m3" type="number" inputmode="decimal" step="any" value="${esc(k.size_m3 || "")}" style="margin-top:8px" placeholder="${esc(t("or type the size"))}">`)}
+    ${fld(t("Where on site"), inp("location", k.location || "", "text", `placeholder="${esc(t("e.g. In front of the plot, street side"))}"`))}
+    ${fld(t("Regular collection"), `${chips("evc", [["0", t("Only when asked")], ["2", t("Every 2 days")], ["3", t("Twice a week")], ["7", t("Weekly")]], String(+k.every_days || 0))}<input name="every_days" type="number" inputmode="numeric" value="${esc(String(+k.every_days || 0))}" style="margin-top:8px">`,
+      { hint: t("On the day, the company is emailed and the dashboard shows the WhatsApp button.") })}
+    <div class="two">${fld(t("Road permit no."), inp("permit_no", k.permit_no || ""))}${fld(t("Permit valid until"), inp("permit_expires", k.permit_expires || "", "date"))}</div>
+    ${fld(t("Notes"), area("notes", k.notes || ""))}</div>`,
+    { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(t("Save"))}</button>` });
+  const box = sh.querySelector(".form"); wireForm(box);
+  box.addEventListener("chip", (e) => { const g = e.target.closest("[data-chips]"); if (!g) return; if (g.dataset.chips === "szc") box.querySelector("[name=size_m3]").value = e.detail; if (g.dataset.chips === "evc") box.querySelector("[name=every_days]").value = e.detail; });
+  sh.querySelector("[data-save]").onclick = async () => {
+    const v = vals(box); if (!need(box, ["container_no", "supplier"])) return;
+    v.name = name || ""; delete v.szc; delete v.evc;
+    const r = await run(sh, () => api("buildiary.debris.skip_save", { data: v }), t("Saved"));
+    if (r) { closeSheet(sh); debrisRefresh(); }
+  };
+}
+/** How full a skip is, with a photo. */
+async function debrisFill(d, name) {
+  d = await debrisData(d);
+  const skips = d.skips.filter((k) => k.status !== "Removed");
+  if (!skips.length) { toast(t("Add the skip first."), "bad"); return debrisSkip(d); }
+  const k = skips.find((x) => x.name === name) || skips[0];
+  const sh = sheet(t("How full is the skip?"), `<div class="form">
+    ${skips.length > 1 ? fld(t("Skip"), sel("container", skips.map((x) => [x.name, t("Skip {0}", x.container_no)]), k.name, false)) : `<input type="hidden" name="container" value="${esc(k.name)}"><p style="margin:0"><b class="ltr">${esc(t("Skip {0}", k.container_no))}</b></p>`}
+    ${fld(t("How full"), chips("fill", d.fills.map((f) => [f, t(f)]), k.fill || ""), { req: true })}
+    ${fld(t("Photo"), `<div class="shots">${shot("photo", t("The skip from above"), "", { wide: true })}</div>`)}</div>`,
+    { footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(t("Save"))}</button>` });
+  const box = sh.querySelector(".form"); wireForm(box);
+  sh.querySelector("[data-save]").onclick = async () => {
+    const v = vals(box); if (!v.fill) { toast(t("Choose how full it is."), "bad"); return; }
+    const r = await run(sh, () => api("buildiary.debris.fill_save", { container: v.container, fill: v.fill, photo: v.photo || null }), t("Saved"));
+    if (!r) return;
+    closeSheet(sh);
+    if (r.suggest && (await confirmBox(t("Ask to collect"), t("The skip is {0}. Ask the company to collect it now?", t(v.fill).toLowerCase()), t("Ask now")))) { S.debris = null; return debrisAsk(null, v.container, v.photo); }
+    debrisRefresh();
+  };
+}
+/** Ask the skip company (or the debris contractor) to come: WhatsApp from this phone, and email. */
+async function debrisAsk(d, name, photo) {
+  d = await debrisData(d);
+  const free = d.skips.filter((k) => !d.open.some((r) => r.container === k.name));
+  const k = free.find((x) => x.name === name) || (name ? null : free[0]) || null;
+  const kinds = free.length ? d.kinds : d.kinds.filter((x) => x === "Truck / trolley trip" || x === "New skip delivered");
+  const kind0 = free.length ? (k && (k.fill === "Full" || k.fill === "Nearly full") ? kinds[0] : kinds[0]) : "Truck / trolley trip";
+  const sh = sheet(t("Ask for a collection"), `<div class="form">
+    ${fld(t("What do you need?"), chips("kind", kinds.map((x) => [x, t(x)]), kind0), { req: true })}
+    <div data-f="skip" ${kind0 === "Truck / trolley trip" || kind0 === "New skip delivered" ? "hidden" : ""}>${fld(t("Skip"), sel("container", free.map((x) => [x.name, `${t("Skip {0}", x.container_no)} · ${t(x.fill || "Empty")}`]), k ? k.name : "", false))}</div>
+    <div data-f="sup" ${kind0 === "Truck / trolley trip" || kind0 === "New skip delivered" ? "" : "hidden"}>${fld(t("Skip company / contractor"), sel("supplier", supOpts(d), d.default_supplier || ""))}</div>
+    ${fld(t("Why"), chips("reason", ["Full", "Scheduled", "Site clean-up", "Other"].map((x) => [x, t(x)]), "Full"))}
+    ${fld(t("Photo"), `<div class="shots">${shot("photo_full", t("The full skip / the debris"), photo || "")}</div>`)}
+    ${fld(t("Notes"), area("notes", "", `placeholder="${esc(t("e.g. Please come before 10 am; the gate is on the back street."))}"`))}<input type="hidden" name="location"></div>`,
+    { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${icon("chat")}${esc(t("Ask the company"))}</button>` });
+  const box = sh.querySelector(".form"); wireForm(box);
+  box.addEventListener("chip", (e) => { const g = e.target.closest("[data-chips]"); if (!g || g.dataset.chips !== "kind") return; const noSkip = e.detail === "Truck / trolley trip" || e.detail === "New skip delivered"; box.querySelector('[data-f="skip"]').hidden = noSkip; box.querySelector('[data-f="sup"]').hidden = !noSkip; });
+  sh.querySelector("[data-save]").onclick = async () => {
+    const v = vals(box); const noSkip = v.kind === "Truck / trolley trip" || v.kind === "New skip delivered";
+    if (noSkip) v.container = ""; else v.supplier = "";
+    const r = await run(sh, () => api("buildiary.debris.request", { data: v }));
+    if (!r) return;
+    closeSheet(sh);
+    debrisSent(r);
+    debrisRefresh();
+  };
+}
+/** The message is ready: send it on WhatsApp from this phone. */
+function debrisSent(r) {
+  const sh = sheet(t("Send the message"), `<div class="stack">
+    <div class="banner ${r.emailed ? "good" : "info"}">${esc(r.emailed ? t("Emailed to the company. Send it on WhatsApp too, so they see it at once.") : t("This company has no email in Buildiary: send it on WhatsApp."))}</div>
+    <pre class="msgbox">${esc(r.message)}</pre>
+    ${r.has_phone ? "" : `<p class="small muted" style="margin:0">${esc(t("The company has no mobile number in Buildiary: choose the chat in WhatsApp."))}</p>`}
+    <button class="btn good big wide" data-wa="1">${icon("chat")}${esc(t("Send on WhatsApp"))}</button><button class="btn wide" data-cp="1">${icon("file")}${esc(t("Copy the message"))}</button></div>`);
+  sh.querySelector("[data-wa]").onclick = () => openOut(r.whatsapp);
+  sh.querySelector("[data-cp]").onclick = async () => { try { await navigator.clipboard.writeText(r.message); toast(t("Copied"), "good"); } catch (e) { toast(r.message); } };
+}
+/** The company came (or a trolley took a load): photos, vehicle, slip, cost. */
+async function debrisDone(d, name) {
+  d = await debrisData(d);
+  const r = d.open.find((x) => x.name === name);
+  const money_ = d.money || d.owner;
+  const sh = sheet(r ? t("Collected: {0}", r.container_no ? t("Skip {0}", r.container_no) : t(r.kind)) : t("Debris collected"), `<div class="form">
+    ${r ? "" : `${fld(t("What happened?"), chips("kind", d.kinds.map((x) => [x, t(x)]), d.skips.length ? d.kinds[0] : "Truck / trolley trip"), { req: true })}
+      <div data-f="skip" ${d.skips.length ? "" : "hidden"}>${fld(t("Skip"), sel("container", d.skips.map((x) => [x.name, t("Skip {0}", x.container_no)]), d.skips[0] ? d.skips[0].name : "", true))}</div>
+      ${fld(t("Skip company / contractor"), sel("supplier", supOpts(d), d.default_supplier || ""), { hint: t("Leave empty to use the skip's company.") })}`}
+    <div class="two">${fld(t("Vehicle no."), inp("vehicle_no", "", "text", 'autocapitalize="characters"'))}${fld(t("Loads / trips"), inp("loads", "1", "number", 'inputmode="numeric"'))}</div>
+    ${fld(t("Slip / dumping ticket no."), inp("slip_no"))}
+    ${money_ ? fld(t("Cost"), inp("cost", "", "number"), { hint: t("Leave empty when the company bills monthly.") }) : ""}
+    ${fld(t("Photos"), `<div class="shots">${shot("photo_done", t("After: the site or the new skip"), "", { req: true })}${shot("slip_scan", t("Slip / dumping ticket"))}${r && r.photo_full ? "" : shot("photo_full", t("Before: the full skip"))}</div>`, { req: true })}
+    ${fld(t("Notes"), area("notes"))}<input type="hidden" name="location"></div>`,
+    { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(t("Save"))}</button>` });
+  const box = sh.querySelector(".form"); wireForm(box);
+  box.addEventListener("chip", (e) => { const g = e.target.closest("[data-chips]"); if (!g || g.dataset.chips !== "kind") return; const f = box.querySelector('[data-f="skip"]'); if (f) f.hidden = e.detail === "Truck / trolley trip" || !d.skips.length; });
+  sh.querySelector("[data-save]").onclick = async () => {
+    const v = vals(box);
+    if (!v.photo_done) { toast(t("Take a photo after the collection (the site, or the new skip)."), "bad"); return; }
+    if (r) v.name = r.name;
+    else if (v.kind === "Truck / trolley trip") v.container = v.container || "";
+    const x = await run(sh, () => api("buildiary.debris.done", { data: v }), t("Saved"));
+    if (x) { closeSheet(sh); debrisRefresh(); }
+  };
+}
+function debrisOpen(d, r) {
+  if (!r) return;
+  const sh = sheet(r.container_no ? t("Skip {0}", r.container_no) : t(r.kind), `<div class="stack"><div class="kvs">${dkv(t("What"), t(r.kind))}${dkv(t("Asked on"), fdate(r.requested_on || r.date))}${dkv(t("Skip company / contractor"), r.supplier_name)}${dkv(t("Why"), t(r.reason || ""))}</div>
+    ${r.photo_full ? `<div class="pfigs">${photoFig(r.photo_full, t("Before"))}</div>` : ""}</div>`,
+    { footer: `<button class="btn bad" data-cx="1">${esc(t("Cancel the request"))}</button><button class="btn good" data-wa="1">${icon("chat")}WhatsApp</button><button class="btn pri" data-ok="1">${esc(t("Collected"))}</button>` });
+  sh.querySelector("[data-ok]").onclick = () => { closeSheet(sh); debrisDone(d, r.name); };
+  sh.querySelector("[data-wa]").onclick = async () => { try { const x = await busy(api("buildiary.debris.resend", { name: r.name })); openOut(x.whatsapp); } catch (e) { toast(e.message, "bad"); } };
+  sh.querySelector("[data-cx]").onclick = async () => { if (await confirmBox(t("Cancel the request"), t("Tell the company on WhatsApp too if they already know."), t("Cancel the request"), "bad")) { try { await busy(api("buildiary.debris.cancel", { name: r.name })); closeSheet(sh); debrisRefresh(); } catch (e) { toast(e.message, "bad"); } } };
+}
+function debrisShow(r) {
+  if (!r) return;
+  sheet(fdate(r.done_on || r.date), `<div class="stack"><div class="pfigs">${photoFig(r.photo_full, t("Before"))}${photoFig(r.photo_done, t("After"))}${photoFig(r.slip_scan, t("Slip / dumping ticket"))}</div>
+    <div class="kvs">${dkv(t("What"), t(r.kind))}${r.container_no ? dkv(t("Skip"), r.container_no) : ""}${dkv(t("Skip company / contractor"), r.supplier_name)}${dkv(t("Vehicle no."), r.vehicle_no)}${dkv(t("Loads / trips"), r.loads)}${dkv(t("Slip / dumping ticket no."), r.slip_no)}
+      ${r.cost ? dkv(t("Cost"), money(r.cost)) : ""}${dkv(t("Checked by"), r.received_by_name)}${r.notes ? dkv(t("Notes"), r.notes) : ""}</div></div>`);
+}
+
 /* ================================================================== more */
 /** The maker: SMH Global Services (its logo, light or dark to suit the theme). */
 const MAKER = () => `<a class="maker" href="https://www.smhglobal.com.pk" target="_blank" rel="noopener"><span>${esc(t("A product of"))}</span><img class="mk-d" src="/assets/buildiary/images/smh-global.svg" alt="SMH Global Services"><img class="mk-l" src="/assets/buildiary/images/smh-global-light.svg" alt="SMH Global Services"></a>`;
@@ -1490,6 +1690,7 @@ VIEWS.more = async (el) => {
   if (c.money) T.push(["Money", "pay", "money/bills", "k8"], ["Budget", "budget", "money/budget", "k3"]);
   if (c.site) T.push(["Snags", "alert", "build/snags", "k4"], ["Site diary", "log", "build/diary", "k7"]);
   if (STORE()) T.push(["Stock", "box", "store/items", "k3"], ["Water", "drop", "store/water", "k7"]);
+  if (DEBRIS() || c.owner) T.push(["Debris removal", "skip", "debris", "k4"]);
   if (PETTY()) T.push(["Petty cash", "cash", "money/petty", "k1"]);
   if (S.b.ai) T.push(["Ask the project", "sparkle", "ask", "k5"]);
   if (c.owner || PROJECTS().length > 1) T.push(["Projects", "house", "projects", "k2"]);
@@ -1753,7 +1954,7 @@ VIEWS.people = async (el) => {
   setTop(t("People and access"), true); setTab("more");
   const f0 = (location.hash.split("?")[1] || "all");
   el.innerHTML = `<div class="row" style="align-items:center;flex-wrap:nowrap"><div data-sum style="flex:1;display:flex;gap:6px;flex-wrap:wrap"></div><button class="btn pri" data-act="new" style="flex:none">${icon("plus")}${esc(t("Person"))}</button></div>
-    <div class="row"><div class="fld search" style="flex:1;margin:0">${icon("search")}<input name="q" placeholder="${esc(t("Search name, phone, CNIC or card"))}" autocomplete="off"></div>${sel("f", PEOPLE_FILTERS, f0, false)}</div>
+    <div class="row"><div class="fld search" style="flex:1;margin:0">${icon("search")}<input name="q" placeholder="${esc(t("Search name, phone, ID or card"))}" autocomplete="off"></div>${sel("f", PEOPLE_FILTERS, f0, false)}</div>
     <div data-list><div class="spin"></div></div>`;
   const list = el.querySelector("[data-list]"), q = el.querySelector("[name=q]"), fsel = el.querySelector("[name=f]");
   let rows = []; let tm = null;
@@ -1764,9 +1965,9 @@ VIEWS.people = async (el) => {
     list.innerHTML = panel(t("People"), show.length ? `<div class="lst">${show.map((w) => {
       const exp = [w.cnic_expiry, w.entry_card_expiry].some((x) => x && x < now);
       const badge = w.status !== "Active" ? pill(ST(w.status), "bad") : exp ? pill(t("Expired card"), "bad") : w.police_verification === "Verified" ? pill(ST("Active"), "good")
-        : w.entry_card_no ? pill(t("Society card on record"), "info") : pill(t("Police verification pending"), "warn");
+        : w.entry_card_no ? pill(t("Society card on record"), "info") : PK() ? pill(t("Police verification pending"), "warn") : pill(ST("Active"), "good");
       return lrow({ go: `person/${w.name}`, img: w.photo, ic: w.photo ? "" : "users", title: w.full_name + (w.on_site ? " ●" : ""),
-        sub: esc([t(w.worker_type || ""), t(w.trade || ""), w.cnic || w.phone || "", w.entry_card_no ? `BTK ${w.entry_card_no}` : ""].filter(Boolean).join(" · ")), end: badge });
+        sub: esc([t(w.worker_type || ""), t(w.trade || ""), w.cnic || w.phone || "", w.entry_card_no ? `${t("Entry card")} ${w.entry_card_no}` : ""].filter(Boolean).join(" · ")), end: badge });
     }).join("")}</div>` : empty(t("Nobody here"), t("Register each worker to print their site card.")), `<span class="cnt">${show.length}</span>`);
   };
   const load = async () => {
@@ -1794,10 +1995,10 @@ VIEWS.person = async (el, [name]) => {
     ${warn.length ? `<div class="banner warn">${warn.map(esc).join("<br>")}</div>` : ""}
     <div class="pgrid">
     ${panel(t("Details"), `<div class="body kv">${kv(t("Father's name"), [w.father_name, w.father_name_ur].filter(Boolean).join(" · "))}${kv(t("Group / team"), w.gang)}${kv(t("Works for"), w.contractor_name || w.contractor)}
-      ${kv(t("Mobile"), w.phone, 1)}${kv(t("CNIC"), w.cnic && (w.cnic + (w.cnic_expiry ? ` (${fdate(w.cnic_expiry)})` : "")), 1)}${kv(t("BTK registration card"), w.entry_card_no && (w.entry_card_no + (w.entry_card_expiry ? ` (${fdate(w.entry_card_expiry)})` : "")), 1)}
-      ${kv(t("Police verification"), t(w.police_verification || "Not done"))}${kv(t("Joined on"), fdate(w.joined_on))}${c.money ? kv(t("Daily wage"), w.daily_wage ? money(w.daily_wage) : "") : ""}
+      ${kv(t("Mobile"), w.phone, 1)}${kv(t(IDL()), w.cnic && (w.cnic + (w.cnic_expiry ? ` (${fdate(w.cnic_expiry)})` : "")), 1)}${kv(t("Society / site entry card"), w.entry_card_no && (w.entry_card_no + (w.entry_card_expiry ? ` (${fdate(w.entry_card_expiry)})` : "")), 1)}
+      ${PK() || w.police_verification === "Verified" ? kv(t("Police verification"), t(w.police_verification || "Not done")) : ""}${kv(t("Joined on"), fdate(w.joined_on))}${c.money ? kv(t("Daily wage"), w.daily_wage ? money(w.daily_wage) : "") : ""}
       ${kv(t("Emergency contact"), w.emergency_contact)}${kv(t("Address"), [w.address, w.address_ur].filter(Boolean).join(" · "))}${kv(t("Notes"), w.notes)}</div>`)}
-    ${panel(t("Documents"), `<div class="body docs">${doc("photo", t("Photo"))}${doc("cnic_front", t("CNIC front"))}${doc("cnic_back", t("CNIC back"))}${doc("entry_card_photo", t("BTK registration card"))}${doc("police_document", t("Police verification letter"))}</div>`)}
+    ${panel(t("Documents"), `<div class="body docs">${doc("photo", t("Photo"))}${doc("cnic_front", t("{0} front", t(IDL())))}${doc("cnic_back", t("{0} back", t(IDL())))}${doc("entry_card_photo", t("Society / site entry card"))}${doc("police_document", t("Police verification letter"))}</div>`)}
     ${c.owner ? panel(t("Access to Buildiary"), `<div class="body form">${fld(t("Signs in as"), chips("app_access", [["No sign-in", t("No sign-in")], ["Site supervisor", t("Site supervisor")], ["Owner's supervisor", t("Owner's supervisor")], ["Partner (builder or consultant)", t("Partner (builder or consultant)")], ["Accountant", t("Accountant")], ["Owner", t("Owner")]], w.app_access || "No sign-in"))}
       <label class="row" style="gap:10px"><input type="checkbox" name="store_keeper" ${w.store_keeper ? "checked" : ""} style="width:22px;height:22px"><span>${esc(t("Also store keeper (receives, issues and returns material)"))}</span></label>
       <button class="btn wide" data-act="access">${icon("check")}${esc(t("Save access"))}</button></div>`) : ""}
@@ -1832,17 +2033,17 @@ function personSheet(w = {}) {
   const trades = ["Mason", "Steel fixer", "Carpenter", "Shuttering", "Electrician", "Plumber", "Painter", "Tile and marble", "Welder", "Helper", "Other"];
   const c = C();
   const sh = sheet(w.name ? t("Edit person") : t("New person"), `<div class="form">
-    <div class="shots">${shot("photo", t("Face photo"), w.photo || "", { facing: "front" })}${shot("cnic_front", t("CNIC front"), w.cnic_front || "")}${shot("cnic_back", t("CNIC back"), w.cnic_back || "")}${shot("entry_card_photo", t("BTK registration card"), w.entry_card_photo || "")}</div>
+    <div class="shots">${shot("photo", t("Face photo"), w.photo || "", { facing: "front" })}${shot("cnic_front", t("{0} front", t(IDL())), w.cnic_front || "")}${shot("cnic_back", t("{0} back", t(IDL())), w.cnic_back || "")}${shot("entry_card_photo", t("Society / site entry card"), w.entry_card_photo || "")}</div>
     <div class="two">${fld(t("Name"), inp("full_name", w.full_name || ""), { req: true })}${fld(t("Name in Urdu (printed on the site card)"), inp("full_name_ur", w.full_name_ur || "", "text", 'dir="rtl"'))}</div>
     <div class="two">${fld(t("Father's name"), inp("father_name", w.father_name || ""))}${fld(t("Father's name in Urdu"), inp("father_name_ur", w.father_name_ur || "", "text", 'dir="rtl"'))}</div>
     <div class="two">${fld(t("Type"), sel("worker_type", types, w.worker_type || "Labour", false), { req: true })}${fld(t("Trade"), sel("trade", trades, w.trade || ""))}</div>
     <div class="two">${fld(t("Group / team"), inp("gang", w.gang || ""))}${fld(t("Works for"), `<button type="button" class="btn wide" data-sup="1">${esc(w.contractor_name || w.contractor || t("Choose (optional)"))}</button><input type="hidden" name="contractor" value="${esc(w.contractor || "")}">`)}</div>
     <div class="two">${fld(t("Mobile"), inp("phone", w.phone || "", "tel"))}${fld(t("Joined on"), inp("joined_on", w.joined_on || today(), "date"))}</div>
-    <div class="two">${fld(t("CNIC"), inp("cnic", w.cnic || "", "text", 'inputmode="numeric" placeholder="42101-1234567-1"'))}${fld(t("CNIC expiry"), inp("cnic_expiry", w.cnic_expiry || "", "date"))}</div>
-    <div class="two">${fld(t("BTK registration card no."), inp("entry_card_no", w.entry_card_no || ""))}${fld(t("BTK card expiry"), inp("entry_card_expiry", w.entry_card_expiry || "", "date"))}</div>
-    ${fld(t("Police verification"), chips("police_verification", ["Not done", "Applied", "Verified"], w.police_verification || "Not done"))}
+    <div class="two">${fld(t(IDL()), inp("cnic", w.cnic || "", "text", S.b.country === "Pakistan" ? 'inputmode="numeric" placeholder="42101-1234567-1"' : ""))}${fld(t("{0} expiry", t(IDL())), inp("cnic_expiry", w.cnic_expiry || "", "date"))}</div>
+    <div class="two">${fld(t("Society / site entry card no."), inp("entry_card_no", w.entry_card_no || ""))}${fld(t("Entry card expiry"), inp("entry_card_expiry", w.entry_card_expiry || "", "date"))}</div>
+    ${PK() ? fld(t("Police verification"), chips("police_verification", ["Not done", "Applied", "Verified"], w.police_verification || "Not done")) : ""}
     ${w.name ? fld(t("Status"), chips("status", ["Active", "Left the site", "Blocked"], w.status || "Active")) : ""}
-    ${c.money ? fld(t("Daily wage (Rs)"), inp("daily_wage", w.daily_wage || "", "number")) : ""}
+    ${c.money ? fld(t("Daily wage ({0})", CURL()), inp("daily_wage", w.daily_wage || "", "number")) : ""}
     ${fld(t("Emergency contact"), inp("emergency_contact", w.emergency_contact || ""))}
     <div class="two">${fld(t("Address"), area("address", w.address || ""))}${fld(t("Address in Urdu"), area("address_ur", w.address_ur || "", 'dir="rtl"'))}</div>
     ${fld(t("Notes"), area("notes", w.notes || ""))}
@@ -2061,7 +2262,7 @@ VIEWS.bills = async (el) => {
 function paySheet({ doctype, name, supplier_name, amount, title }) {
   const sh = sheet(title, `<div class="form">
     <div class="kv"><span>${esc(t("Supplier"))}</span><b>${esc(supplier_name)}</b><span>${esc(t("Against"))}</span><b>${esc(name)}</b><span>${esc(t("At most"))}</span><b>${money(amount)}</b></div>
-    ${fld(t("Amount (Rs)"), inp("amount", Math.round(amount * 100) / 100, "number"), { req: true })}
+    ${fld(t("Amount ({0})", CURL()), inp("amount", Math.round(amount * 100) / 100, "number"), { req: true })}
     ${fld(t("Paid by"), chips("mode", [["Cash", t("Cash")], ["Bank", t("Bank transfer")], ["Cheque", t("Cheque")]], "Cash"))}
     <div data-ref hidden class="two">${fld(t("Transaction / cheque no."), inp("reference_no"), { req: true })}${fld(t("Date"), inp("reference_date", today(), "date"))}</div>
     ${fld(t("Proof of payment"), `<div class="shots">${shot("proof", t("Transfer screenshot, cheque or receipt"), "", { wide: true, gallery: true })}${shot("proof_2", t("Supplier's receipt (optional)"), "", { gallery: true })}</div>`, { req: !!S.b.rules.require_payment_proof, name: "proof" })}
@@ -2137,7 +2338,7 @@ async function budgetLineSheet(acc, d) {
 }
 function addBudgetLine(d) {
   const sh = sheet(t("New budget line"), `<div class="form">${fld(t("Budget line"), inp("name", "", "text", `placeholder="${esc(t("e.g. Solar panels"))}"`), { req: true })}
-      ${fld(t("Category"), sel("category", d.categories, "Finishing materials", false))}${fld(t("Amount (Rs)"), inp("amount", "", "number"), { req: true })}
+      ${fld(t("Category"), sel("category", d.categories, "Finishing materials", false))}${fld(t("Amount ({0})", CURL()), inp("amount", "", "number"), { req: true })}
       <p class="small muted" style="margin:0">${esc(t("It is saved in the ERP as an expense account with its budget for the project."))}</p></div>`,
     { footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-save="1">${esc(t("Save"))}</button>` });
   sh.querySelector("[data-save]").onclick = async () => {
@@ -2284,7 +2485,7 @@ VIEWS.settings = async (el) => {
   const b = S.b, c = C(), me = b.person, l = look();
   const role = c.owner ? t("Owner") : c.accountant ? t("Accountant") : c.buy || c.people ? t("Site supervisor") : c.store ? t("Store keeper") : t("Site staff");
   const urAll = el.dataset.urAll === "1";
-  el.innerHTML = `<button class="mo-me" ${me ? `data-go="person/${esc(me.name)}"` : ""}><span class="av">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc((b.full_name || "?").charAt(0))}</span><span><b>${esc(b.full_name)}</b><span class="small muted">${esc(role)}${me && me.entry_card_no ? " · BTK " + esc(me.entry_card_no) : ""}</span></span>${me ? icon("chev", "lch") : ""}</button>
+  el.innerHTML = `<button class="mo-me" ${me ? `data-go="person/${esc(me.name)}"` : ""}><span class="av">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc((b.full_name || "?").charAt(0))}</span><span><b>${esc(b.full_name)}</b><span class="small muted">${esc(role)}${me && me.entry_card_no ? " · " + esc(t("Entry card")) + " " + esc(me.entry_card_no) : ""}</span></span>${me ? icon("chev", "lch") : ""}</button>
     ${panel(t("Language"), `<div class="body"><div class="seg"><button data-lang="en" aria-pressed="${S.lang === "en"}">English</button><button data-lang="ur" aria-pressed="${S.lang === "ur"}">اردو</button><button data-lang="ar" aria-pressed="${S.lang === "ar"}">العربية</button></div></div>`)}
     ${panel(t("Theme"), `<div class="body stack"><div class="skins">${SKINS.map(([k, n, d, sw]) => `<button data-skin="${k}" aria-pressed="${l.skin === k}"><span class="sw">${sw.map((x) => `<i style="background:${x}"></i>`).join("")}</span><b>${esc(t(n))}</b><span class="small muted">${esc(t(d))}</span></button>`).join("")}</div>
       <div class="seg">${MODES.map(([k, n]) => `<button data-mode="${k}" aria-pressed="${l.mode === k}">${esc(t(n))}</button>`).join("")}</div></div>`)}

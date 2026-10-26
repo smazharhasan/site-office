@@ -5,7 +5,7 @@ import frappe
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 from frappe.custom.doctype.property_setter.property_setter import make_property_setter
 
-WORK_AREAS = "Materials\nGrey structure\nFinishing\nDesign\nTesting & verification\nServices"
+WORK_AREAS = "Materials\nGrey structure\nFinishing\nDesign\nTesting & verification\nServices\nWaste removal"
 
 
 def F(fieldname, fieldtype, label, insert_after, **kw):
@@ -194,7 +194,7 @@ def apply_settings():
 		for g in ("Construction Materials", "Finishing Materials", "Services and Labour", "Tools and Equipment", "Site Consumables"):
 			if not frappe.db.exists("Item Group", g):
 				frappe.get_doc({"doctype": "Item Group", "item_group_name": g, "parent_item_group": root, "is_group": 0}).insert(ignore_permissions=True)
-	for g in ("Materials", "Grey structure", "Finishing", "Design", "Testing & verification", "Services"):
+	for g in ("Materials", "Grey structure", "Finishing", "Design", "Testing & verification", "Services", "Waste removal"):
 		if not frappe.db.exists("Supplier Group", g):
 			root = frappe.db.get_value("Supplier Group", {"is_group": 1}, "name") or "All Supplier Groups"
 			frappe.get_doc({"doctype": "Supplier Group", "supplier_group_name": g, "parent_supplier_group": root}).insert(ignore_permissions=True)
@@ -217,6 +217,13 @@ def settings_defaults():
 	for df in frappe.get_meta("Buildiary Settings").fields:
 		if df.fieldtype in ("Check", "Int", "Data", "Select") and df.default and df.fieldname not in have:
 			frappe.db.set_single_value("Buildiary Settings", df.fieldname, df.default)
+	if "debris_enabled" not in have:
+		# skips for debris are the usual way in the Gulf: on there, ready to turn on everywhere else
+		from buildiary.debris import default_on
+
+		co = frappe.db.get_single_value("Global Defaults", "default_company")
+		country = frappe.db.get_value("Company", co, "country") if co else None
+		frappe.db.set_single_value("Buildiary Settings", "debris_enabled", 1 if default_on(country) else 0)
 
 
 def role_profiles():

@@ -7,7 +7,7 @@
  "module": "Buildiary Cloud",
  "name": "Buildiary Tenant",
  "owner": "Administrator",
- "modified": "2026-10-26 14:00:00.000000",
+ "modified": "2026-10-26 18:00:00.000000",
  "modified_by": "Administrator",
  "fields": [
   {
@@ -145,6 +145,44 @@
    "label": "Billing",
    "options": "Monthly\nYearly",
    "default": "Monthly"
+  },
+  {
+   "fieldname": "data_section",
+   "fieldtype": "Section Break",
+   "label": "Trial data"
+  },
+  {
+   "fieldname": "trial_data",
+   "fieldtype": "Select",
+   "label": "Trial data",
+   "options": "Own data\nSample data",
+   "default": "Own data",
+   "description": "Sample data: a sample project from the customer's country, cleared when the subscription starts."
+  },
+  {
+   "fieldname": "at_subscription",
+   "fieldtype": "Select",
+   "label": "At subscription",
+   "options": "Keep my data\nStart fresh",
+   "default": "Keep my data",
+   "description": "The customer's choice for their own trial data. Sample data is always cleared."
+  },
+  {
+   "fieldname": "col_data",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "data_reset",
+   "fieldtype": "Select",
+   "label": "Fresh start",
+   "options": "\nWaiting\nRunning\nDone\nFailed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reset_on",
+   "fieldtype": "Datetime",
+   "label": "Fresh start on",
+   "read_only": 1
   },
   {
    "fieldname": "dates_section",
@@ -354,6 +392,12 @@
   "mode",
   "plan",
   "billing_period",
+  "data_section",
+  "trial_data",
+  "at_subscription",
+  "col_data",
+  "data_reset",
+  "reset_on",
   "dates_section",
   "signed_up_on",
   "trial_ends",

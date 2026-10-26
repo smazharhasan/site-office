@@ -34,6 +34,7 @@ def state(m=None):
 		return None
 	today = getdate(nowdate())
 	out = {"tenant": m.get("tenant"), "plan": m.get("plan"), "mode": m.get("mode") or "owner", "internal": bool(m.get("internal")),
+		"trial_data": m.get("trial_data") or "Own data", "data_reset": m.get("data_reset") or "",
 		"trial_ends": m.get("trial_ends"), "paid_until": m.get("paid_until"), "status": "Active", "days_left": None, "blocked": False}
 	if m.get("internal"):
 		return out
@@ -206,16 +207,18 @@ def setup(payload):
 		if frappe.db.exists("Language", code):
 			frappe.db.set_value("Language", code, "enabled", 1)
 	frappe.db.set_single_value("System Settings", "language", lang)
-	# the first project and the site store
+	# a fresh start: everyone who could sign in before, with their own passwords
+	if d.people:
+		_people_back(d.people)
+	# the first project and the site store (with sample data, the sample project comes next instead)
 	co = frappe.db.get_single_value("Global Defaults", "default_company")
-	pname = d.project_name or d.company_name
-	project = frappe.db.get_value("Project", {"project_name": pname}, "name")
-	if not project:
-		project = frappe.get_doc({"doctype": "Project", "project_name": pname, "company": co, "status": "Open", "expected_start_date": nowdate(), "is_active": "Yes"}).insert(ignore_permissions=True).name
+	project = None if d.sample else _first_project(d.project_name or d.company_name)
 	store = frappe.db.get_value("Warehouse", {"company": co, "warehouse_name": "Stores", "is_group": 0}, "name")
-	vals = {"default_project": project, "site_warehouse": store, "country_code": ci["dial"] or "92"}
+	from buildiary.debris import default_on
+
+	vals = {"default_project": project, "site_warehouse": store, "country_code": ci["dial"] or "92", "debris_enabled": 1 if default_on(d.country) else 0}
 	for k, v in vals.items():
-		if v:
+		if v or k == "debris_enabled":
 			frappe.db.set_single_value("Buildiary Settings", k, v)
 	from buildiary.setup import apply_settings
 
@@ -223,13 +226,83 @@ def setup(payload):
 	# the project's store, and the usual stages of building (changed later in Project > Tasks)
 	from buildiary.projects import standard_schedule
 
-	if store and frappe.db.has_column("Project", "buildiary_store"):
+	if project and store and frappe.db.has_column("Project", "buildiary_store"):
 		frappe.db.set_value("Project", project, "buildiary_store", store, update_modified=False)
-	standard_schedule(project, lang=lang)
+	if project:
+		standard_schedule(project, lang=lang)
 	frappe.db.commit()
 	frappe.clear_cache()
 	print("BUILDIARY SETUP OK", d.company_name)
 	return "ok"
+
+
+def _first_project(pname):
+	co = frappe.db.get_single_value("Global Defaults", "default_company")
+	project = frappe.db.get_value("Project", {"project_name": pname}, "name")
+	if not project:
+		project = frappe.get_doc({"doctype": "Project", "project_name": pname, "company": co, "status": "Open", "expected_start_date": nowdate(), "is_active": "Yes"}).insert(ignore_permissions=True).name
+	return project
+
+
+def first_project():
+	"""bench --site <workspace> execute buildiary.saas.tenant.first_project (when the sample project could not be added)."""
+	from buildiary.projects import standard_schedule
+
+	frappe.flags.buildiary_setup = True
+	co = frappe.db.get_single_value("Global Defaults", "default_company")
+	project = _first_project(co)
+	frappe.db.set_single_value("Buildiary Settings", "default_project", project)
+	store = frappe.db.get_single_value("Buildiary Settings", "site_warehouse")
+	if store and frappe.db.has_column("Project", "buildiary_store"):
+		frappe.db.set_value("Project", project, "buildiary_store", store, update_modified=False)
+	standard_schedule(project, lang=frappe.db.get_single_value("System Settings", "language") or "en")
+	frappe.db.commit()
+	print("FIRST PROJECT OK")
+
+
+def export_people(path):
+	"""bench --site <workspace> execute buildiary.saas.tenant.export_people: everyone who signs in, with their roles and
+	password hashes, for a fresh start (the console reads the file and deletes it)."""
+	rows = []
+	for u in frappe.get_all("User", filters={"user_type": "System User", "name": ["not in", ["Administrator", "Guest"]]},
+			fields=["name", "email", "first_name", "last_name", "enabled", "language", "mobile_no", "role_profile_name", "time_zone", "username"]):
+		u.roles = frappe.get_all("Has Role", filters={"parent": u.name, "parenttype": "User"}, pluck="role")
+		h = frappe.db.sql("select `password` from `__Auth` where doctype='User' and name=%s and fieldname='password' and encrypted=0", u.name)
+		u.hash = h[0][0] if h else None
+		rows.append(u)
+	with open(os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600), "w", encoding="utf-8") as f:
+		json.dump(rows, f, default=str)
+	print("PEOPLE OK", len(rows))
+
+
+def _people_back(people):
+	"""After a fresh start: the same sign-ins, roles and passwords (no welcome emails)."""
+	for p in people:
+		email = p.get("name")
+		if not email or email in ("Administrator", "Guest"):
+			continue
+		if frappe.db.exists("User", email):
+			u = frappe.get_doc("User", email)
+		else:
+			u = frappe.get_doc({"doctype": "User", "email": p.get("email") or email, "first_name": p.get("first_name") or email, "last_name": p.get("last_name"),
+				"send_welcome_email": 0, "user_type": "System User"})
+			u.flags.no_welcome_mail = True
+			u.insert(ignore_permissions=True)
+		u.enabled = p.get("enabled", 1)
+		u.language = p.get("language") or u.language
+		u.mobile_no = p.get("mobile_no") or u.mobile_no
+		u.time_zone = p.get("time_zone") or u.time_zone
+		if p.get("role_profile_name") and frappe.db.exists("Role Profile", p["role_profile_name"]):
+			u.role_profile_name = p["role_profile_name"]
+		have = {r.role for r in u.roles}
+		for r in p.get("roles") or []:
+			if r not in have and frappe.db.exists("Role", r) and r not in ("All", "Guest", "Desk User"):
+				u.append("roles", {"role": r})
+		u.flags.ignore_permissions = True
+		u.save()
+		if p.get("hash"):
+			frappe.db.sql("""insert into `__Auth` (doctype, name, fieldname, `password`, encrypted) values ('User', %s, 'password', %s, 0)
+				on duplicate key update `password` = values(`password`), encrypted = 0""", (u.name, p["hash"]))
 
 
 # ---------------------------------------------------------------- the console asks
@@ -298,3 +371,20 @@ def pay(data):
 		frappe.throw(_("The photo is too large. Send a smaller one (under 5 MB)."))
 	d.submitted_by = f"{frappe.utils.get_fullname(frappe.session.user)} <{frappe.session.user}>"
 	return _console("buildiary.saas.api.payment_submit", {"data": d})
+
+
+@frappe.whitelist(methods=["POST"])
+def trial_choice(choice):
+	"""The owner: keep the trial data, or start fresh, when the subscription starts."""
+	_owner()
+	return _console("buildiary.saas.api.trial_choice", {"choice": choice})
+
+
+@frappe.whitelist(methods=["POST"])
+def fresh_start(confirm=None):
+	"""The owner clears the sample data now (typing the workspace name to confirm)."""
+	_owner()
+	if (confirm or "").strip().lower() != str(buildiary().get("tenant") or "").lower():
+		frappe.throw(_("Type the workspace name exactly."))
+	return _console("buildiary.saas.api.fresh_start", {})
+

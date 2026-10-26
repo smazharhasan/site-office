@@ -1403,7 +1403,7 @@ From Warehouse,گودام سے
 From inspection,معائنے سے
 From version,ورژن سے
 Frozen,منجمد
-Full,پورا
+Full,بھرا ہوا
 Full Name,پورا نام
 Full Page,پورا صفحہ
 Full Width,پوری چوڑائی
@@ -3008,7 +3008,7 @@ Schedule Send,شیڈول پر بھیجیں
 Schedule Send At,بھیجنے کا وقت
 Schedule email,ای میل شیڈول کریں
 Schedule task,شیڈول کا کام
-Scheduled,طے شدہ
+Scheduled,مقررہ باری
 Scheduled Job Type,شیڈول کام کی قسم
 Scheduler,شیڈولر
 Scheduler Status,شیڈولر کی صورتحال
@@ -5436,3 +5436,161 @@ Type the number,نمبر لکھیں
 "Type the workspace name {0} and tap Open. Sign in with your email and password, or with your site card.",ورک اسپیس کا نام {0} لکھیں اور Open دبائیں۔ اپنی ای میل اور پاس ورڈ، یا سائٹ کارڈ سے لاگ اِن کریں۔
 Waiting for the phone…,فون کا انتظار ہے…
 iPhone and iPad,آئی فون اور آئی پیڈ
+Add a skip,کنٹینر شامل کریں
+Add the skip first.,پہلے کنٹینر شامل کریں۔
+"Add the skip when the company puts it on site: its number, size and how often it is collected. Without a skip, record each truck or trolley trip with “Debris collected”.",جب کمپنی سائٹ پر کنٹینر رکھے تو اسے شامل کریں: اس کا نمبر، سائز اور کتنے دن بعد اٹھایا جائے۔ کنٹینر کے بغیر ہر ٹرک یا ٹرالی کا چکر «ملبہ اٹھا لیا گیا» سے درج کریں۔
+After: the site or the new skip,بعد میں: سائٹ یا نیا کنٹینر
+Ask for a collection,ملبہ اٹھوانے کا کہیں
+Ask now,ابھی کہیں
+Ask the company,کمپنی سے کہیں
+Ask to collect,اٹھوانے کا کہیں
+Asked on,کب کہا
+Asked {0},{0} کو کہا
+Before: the full skip,پہلے: بھرا ہوا کنٹینر
+Cancel the request,درخواست منسوخ کریں
+Checked by,چیک کرنے والا
+Checked {0},{0} کو دیکھا
+Choose how full it is.,بتائیں کتنا بھرا ہے۔
+Collected,اٹھا لیا گیا
+"Collected every {0} days, next {1}",ہر {0} دن بعد اٹھایا جاتا ہے، اگلی بار {1}
+Collected when you ask,کہنے پر اٹھایا جاتا ہے
+Collected: {0},اٹھا لیا گیا: {0}
+Collection asked,اٹھوانے کا کہا گیا
+Collections,ملبہ اٹھوانے کا ریکارڈ
+Collections this month,اس مہینے ملبہ اٹھوایا
+Cost,لاگت
+Debris collected,ملبہ اٹھا لیا گیا
+Debris removal,ملبہ اٹھوانا
+"Each collection is kept here with the vehicle, the slip or dumping ticket, photos and the cost.",ہر بار ملبہ اٹھوانے کا ریکارڈ یہاں گاڑی، پرچی یا ڈمپنگ ٹکٹ، تصاویر اور لاگت کے ساتھ رہتا ہے۔
+"Emailed to the company. Send it on WhatsApp too, so they see it at once.",کمپنی کو ای میل کر دیا گیا۔ واٹس ایپ پر بھی بھیج دیں تاکہ وہ فوراً دیکھ لیں۔
+Every 2 days,ہر 2 دن بعد
+How full,کتنا بھرا ہے
+How full is the skip?,کنٹینر کتنا بھرا ہے؟
+How full?,کتنا بھرا؟
+"Keep track of the skips (dump boxes) on site: how full they are, when the skip company should come, and every collection with photos and the slip. Buildiary writes the message to the company and opens WhatsApp with it.",سائٹ پر ملبے کے کنٹینرز کا حساب رکھیں: کتنے بھرے ہیں، کمپنی کب آئے، اور ہر بار اٹھوانے کا ریکارڈ تصاویر اور پرچی کے ساتھ۔ بلڈائری کمپنی کے لیے پیغام لکھ کر واٹس ایپ میں کھول دیتا ہے۔
+Leave empty to use the skip's company.,خالی چھوڑیں تو کنٹینر والی کمپنی لی جائے گی۔
+Leave empty when the company bills monthly.,اگر کمپنی ماہانہ بل دیتی ہے تو خالی چھوڑ دیں۔
+Loads / trips,چکر
+No collections yet,ابھی کوئی ریکارڈ نہیں
+No skips on site,سائٹ پر کوئی کنٹینر نہیں
+Not checked yet,ابھی دیکھا نہیں گیا
+"On the day, the company is emailed and the dashboard shows the WhatsApp button.",مقررہ دن کمپنی کو ای میل چلی جائے گی اور ڈیش بورڈ پر واٹس ایپ کا بٹن آ جائے گا۔
+Only when asked,صرف کہنے پر
+Permit valid until,اجازت نامہ کب تک
+Regular collection,باقاعدہ اٹھوانا
+Road permit no.,سڑک کا اجازت نامہ نمبر
+Road permit {0} ends on {1},سڑک کا اجازت نامہ {0} {1} کو ختم ہو رہا ہے
+Send on WhatsApp,واٹس ایپ پر بھیجیں
+Send the message,پیغام بھیجیں
+Size (m³),سائز (مکعب میٹر)
+Skip company,کنٹینر کمپنی
+Skip company / contractor,کنٹینر کمپنی / ٹھیکیدار
+Skip no. (painted on it),کنٹینر نمبر (جو اس پر لکھا ہے)
+Skip {0},کنٹینر {0}
+Skips on site,سائٹ پر کنٹینر
+Slip / dumping ticket,پرچی / ڈمپنگ ٹکٹ
+Slip / dumping ticket no.,پرچی / ڈمپنگ ٹکٹ نمبر
+Slip {0},پرچی {0}
+"Take a photo after the collection (the site, or the new skip).",ملبہ اٹھانے کے بعد تصویر لیں (سائٹ کی یا نئے کنٹینر کی)۔
+Tell the company on WhatsApp too if they already know.,اگر کمپنی کو پہلے ہی بتا دیا تھا تو واٹس ایپ پر بھی اطلاع دے دیں۔
+The company has no mobile number in Buildiary: choose the chat in WhatsApp.,بلڈائری میں اس کمپنی کا موبائل نمبر نہیں: واٹس ایپ میں چیٹ خود منتخب کریں۔
+The full skip / the debris,بھرا ہوا کنٹینر / ملبہ
+The owner can turn this on.,مالک اسے آن کر سکتا ہے۔
+"The skip company gets the message on WhatsApp from the phone of the person asking, and by email when its contact has one.",کنٹینر کمپنی کو پیغام کہنے والے کے فون سے واٹس ایپ پر جاتا ہے، اور اگر کمپنی کی ای میل ہو تو ای میل پر بھی۔
+The skip from above,کنٹینر اوپر سے
+The skip is {0}. Ask the company to collect it now?,کنٹینر {0} ہے۔ کیا ابھی کمپنی سے اٹھوانے کا کہیں؟
+The skips and collections stay saved; the screens are hidden until you turn it on again.,کنٹینر اور ریکارڈ محفوظ رہیں گے؛ دوبارہ آن کرنے تک یہ اسکرینیں چھپی رہیں گی۔
+This company has no email in Buildiary: send it on WhatsApp.,بلڈائری میں اس کمپنی کی ای میل نہیں: واٹس ایپ پر بھیجیں۔
+Turn off debris removal,ملبہ اٹھوانا بند کریں
+Turn on debris removal,ملبہ اٹھوانا آن کریں
+Twice a week,ہفتے میں دو بار
+Waiting for the company,کمپنی کا انتظار
+What,کیا
+What do you need?,کیا چاہیے؟
+What happened?,کیا ہوا؟
+Where on site,سائٹ پر کہاں
+Why,کیوں
+"asked, not collected yet",کہا گیا، ابھی اٹھایا نہیں
+"e.g. In front of the plot, street side",مثلاً پلاٹ کے سامنے، گلی کی طرف
+e.g. Please come before 10 am; the gate is on the back street.,مثلاً صبح 10 بجے سے پہلے آئیں؛ گیٹ پچھلی گلی میں ہے۔
+none full,کوئی بھرا نہیں
+nothing waiting,کچھ باقی نہیں
+on site {0} days,سائٹ پر {0} دن سے
+told by {0},{0} سے بتایا
+{0} collections this month,اس مہینے {0} بار اٹھوایا
+{0} full or nearly full,{0} بھرے یا تقریباً بھرے
+{0} full · {1} collection asked,{0} بھرے · {1} کا کہا گیا
+{0} loads,{0} چکر
+★ marks companies whose work area is Waste removal. A new company is added in Suppliers.,★ ان کمپنیوں پر ہے جن کا کام ملبہ اٹھانا ہے۔ نئی کمپنی سپلائرز میں شامل کریں۔
+A collection for this skip is already asked for ({0}). Mark it collected when the company comes.,اس کنٹینر کو اٹھوانے کا پہلے ہی کہا جا چکا ہے ({0})۔ کمپنی آئے تو اسے اٹھا لیا گیا درج کریں۔
+Choose the skip company or the debris contractor.,کنٹینر کمپنی یا ملبے کا ٹھیکیدار منتخب کریں۔
+Choose the skip company.,کنٹینر کمپنی منتخب کریں۔
+Choose the skip.,کنٹینر منتخب کریں۔
+Collection asked for on {0} has not come yet: {1},{0} کو اٹھوانے کا کہا تھا، ابھی کوئی نہیں آیا: {1}
+Debris collection: {0},ملبہ اٹھوانا: {0}
+Enter the skip's number (painted on it).,کنٹینر کا نمبر لکھیں (جو اس پر لکھا ہے)۔
+"Hello {0},",السلام علیکم {0}،
+"Hello,",السلام علیکم،
+Only a collection that is still waiting can be cancelled.,صرف وہی درخواست منسوخ ہو سکتی ہے جو ابھی باقی ہو۔
+Only the owner changes this.,اسے صرف مالک بدل سکتا ہے۔
+Please bring a new skip.,براہِ کرم ایک نیا کنٹینر لے آئیں۔
+Please exchange the full skip no. {0} for an empty one.,براہِ کرم بھرا ہوا کنٹینر نمبر {0} لے جائیں اور خالی رکھ جائیں۔
+Please send a truck to take away the debris.,براہِ کرم ملبہ اٹھانے کے لیے ٹرک/ٹرالی بھیج دیں۔
+Please take away skip no. {0}; we don't need it any more.,براہِ کرم کنٹینر نمبر {0} لے جائیں؛ اب اس کی ضرورت نہیں۔
+Road permit for skip {0} ends on {1},کنٹینر {0} کا سڑک کا اجازت نامہ {1} کو ختم ہو رہا ہے
+Site: {0},سائٹ: {0}
+Skip {0} is already on site.,کنٹینر {0} پہلے سے سائٹ پر ہے۔
+Skip {0} is {1}: ask the company to collect it,کنٹینر {0} {1} ہے: کمپنی سے اٹھوانے کا کہیں
+Thank you. {0},شکریہ۔ {0}
+"Thank you. {0}, {1}",شکریہ۔ {0}، {1}
+The skip is at: {0},کنٹینر یہاں ہے: {0}
+This collection is already marked done.,یہ پہلے ہی اٹھا لیا گیا درج ہے۔
+This is the regular collection.,یہ باقاعدہ اٹھوانے کی باری ہے۔
+On site,سائٹ پر
+Collection requested,اٹھوانے کا کہا گیا
+Removed,ہٹا دیا گیا
+Empty,خالی
+Half full,آدھا بھرا
+Nearly full,تقریباً بھرا
+Exchange (full for empty),تبدیلی (بھرا لے جائیں، خالی رکھیں)
+Take away,لے جائیں
+Truck / trolley trip,ٹرک / ٹرالی کا چکر
+New skip delivered,نیا کنٹینر آیا
+Requested,کہا گیا
+Site clean-up,سائٹ کی صفائی
+Waste removal,ملبہ اٹھانا
+Skip full: ask to collect,کنٹینر بھر گیا: اٹھوانے کا کہیں
+Track debris removal,ملبہ اٹھوانے کا ریکارڈ رکھیں
+Debris,ملبہ
+Amount ({0}),رقم ({0})
+Amount to add to this budget line ({0}). It is saved as a budget in the ERP.,اس بجٹ لائن میں شامل کرنے کی رقم ({0})۔ یہ ERP میں بجٹ کے طور پر محفوظ ہو گی۔
+Cost ({0}),قیمت ({0})
+Daily wage ({0}),دیہاڑی ({0})
+"Sample data: everything here is an example house. It is cleared when your subscription starts, or whenever you choose.",نمونے کا ڈیٹا: یہاں سب کچھ ایک مثالی گھر کا ہے۔ یہ سبسکرپشن شروع ہونے پر، یا جب آپ چاہیں، صاف ہو جائے گا۔
+"Search name, phone, ID or card",نام، فون، شناختی کارڈ یا کارڈ نمبر تلاش کریں
+Society / site entry card,سوسائٹی / سائٹ داخلہ کارڈ
+Society / site entry card no.,سوسائٹی / سائٹ داخلہ کارڈ نمبر
+Start my own project,اپنا پروجیکٹ شروع کریں
+Your workspace is being started fresh. It takes a few minutes; then sign in again.,آپ کا ورک اسپیس نئے سرے سے تیار ہو رہا ہے۔ اس میں چند منٹ لگتے ہیں؛ پھر دوبارہ لاگ اِن کریں۔
+{0} back,{0} (پیچھے)
+{0} expiry,{0} کی میعاد
+{0} front,{0} (سامنے)
+Check petty cash: {0} by {1} ({2}),پیٹی کیش جانچیں: {0}، {1} ({2})
+{0} has only {1} of petty cash in hand.,{0} کے پاس صرف {1} پیٹی کیش ہے۔
+{0} has only {1} of petty cash in hand. The owner gives more cash first.,{0} کے پاس صرف {1} پیٹی کیش ہے۔ پہلے مالک مزید نقد دے۔
+"{0} of this payment is not set against any invoice. Suppliers are paid only against invoices that are due, or as an advance against a purchase order.",اس ادائیگی کے {0} کسی انوائس کے مقابل نہیں۔ سپلائرز کو صرف واجب انوائسز کے مقابل، یا پرچیز آرڈر پر ایڈوانس کے طور پر ادائیگی ہوتی ہے۔
+"Enter the full phone number, with the area or mobile code.",پورا فون نمبر، ایریا یا موبائل کوڈ کے ساتھ لکھیں۔
+Enter the full ID card number.,پورا شناختی کارڈ نمبر لکھیں۔
+ID card,شناختی کارڈ
+This ID card is already registered for {0} ({1}).,یہ شناختی کارڈ پہلے سے {0} ({1}) کے نام درج ہے۔
+Choose what happens to your trial data.,منتخب کریں کہ آزمائشی ڈیٹا کا کیا ہو۔
+"Only the sample data is cleared from here. Your own data is kept, or cleared when your subscription starts if you choose.",یہاں سے صرف نمونے کا ڈیٹا صاف ہوتا ہے۔ آپ کا اپنا ڈیٹا رہتا ہے، یا اگر آپ چاہیں تو سبسکرپشن شروع ہونے پر صاف ہوتا ہے۔
+Type the workspace name exactly.,ورک اسپیس کا نام بالکل درست لکھیں۔
+The cost can't be below zero.,لاگت صفر سے کم نہیں ہو سکتی۔
+Choose the skip or the supplier.,کنٹینر یا سپلائر منتخب کریں۔
+Iqama / national ID,اقامہ / قومی شناختی کارڈ
+Emirates ID,ایمریٹس آئی ڈی
+QID,قطر آئی ڈی
+Civil ID,سول آئی ڈی
+CPR,سی پی آر کارڈ
+Resident card,ریذیڈنٹ کارڈ

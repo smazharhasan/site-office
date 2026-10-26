@@ -14,6 +14,11 @@ frappe.ui.form.on("Buildiary Tenant", {
 		}
 		frm.add_custom_button(__("Check usage and status now"), () =>
 			frm.call("check_now").then(() => frm.reload_doc()), __("Plan"));
+		if (frm.doc.site_host && ["Trial", "Active", "Payment due", "Suspended"].includes(frm.doc.status) && !["Waiting", "Running"].includes(frm.doc.data_reset)) {
+			frm.add_custom_button(__("Start fresh (clear the trial data)"), () =>
+				frappe.confirm(__("The workspace {0} is set up again with the same company, people and passwords. Everything else is cleared; the old one is kept as a backup on the server. Go ahead?", [frm.doc.site_host]),
+					() => frm.call("fresh_start").then(() => { frappe.show_alert({ message: __("Fresh start queued. It takes a few minutes."), indicator: "green" }); frm.reload_doc(); })), __("Plan"));
+		}
 		if (frm.doc.status === "Failed") {
 			frm.add_custom_button(__("Retry set-up"), () => frm.call("retry_setup").then(() => frm.reload_doc())).addClass("btn-primary");
 		}

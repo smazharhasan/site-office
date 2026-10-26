@@ -29,7 +29,22 @@ INVOICE_SHAPE = """{"supplierName": string, "invoiceNo": string, "date": "YYYY-M
  "lines": [{"item": string, "qty": number, "unit": string, "rate": number, "amount": number, "lineIndex": number | null}],
  "subtotal": number, "taxAmount": number, "otherCharges": number, "grandTotal": number, "notes": string}"""
 
-URDU = "It may be printed or handwritten, in English or Urdu (Urdu digits too), or a screenshot of a WhatsApp, SMS or e-mail message. Read handwriting and Urdu carefully."
+URDU = "It may be printed or handwritten, in English, Urdu or Arabic (Urdu and Arabic digits too), or another language, or a screenshot of a WhatsApp, SMS or e-mail message. Read handwriting carefully."
+
+
+def where():
+	"""'in Saudi Arabia' — the company's country, for the AI's prompts."""
+	co = frappe.db.get_single_value("Global Defaults", "default_company")
+	country = (frappe.db.get_value("Company", co, "country") if co else None) or frappe.db.get_single_value("System Settings", "country")
+	return f"in {country}" if country else ""
+
+
+def money_name():
+	"""The company's currency for the AI's prompts ('Saudi riyals (SAR)')."""
+	co = frappe.db.get_single_value("Global Defaults", "default_company")
+	cur = (frappe.db.get_value("Company", co, "default_currency") if co else None) or "PKR"
+	return {"PKR": "Pakistani rupees", "SAR": "Saudi riyals", "AED": "UAE dirhams", "QAR": "Qatari riyals", "OMR": "Omani rials", "KWD": "Kuwaiti dinars",
+		"BHD": "Bahraini dinars", "INR": "Indian rupees", "USD": "US dollars", "EUR": "euros", "GBP": "pounds sterling"}.get(cur, cur) + f" ({cur})"
 
 
 def cloud_ai():
@@ -148,7 +163,7 @@ def _call(prompt, files, max_tokens=8192):
 		frappe.throw(_("The AI couldn't read this document. Try a clearer photo."), title=_("AI error"))
 
 
-FACE_PROMPT = """Image 1 is the registered photo of a person working on a house construction site in Pakistan.
+FACE_PROMPT = """Image 1 is the registered photo of a person working on a construction site.
 Image 2 was taken just now with a phone camera, to identify the same person before an entry (signing in, attendance, taking material from the store, receiving goods or cash).
 Decide whether image 2 shows the same person as image 1. Ignore differences in clothes, cap, beard trim, lighting, dust and camera quality.
 Image 2 should show a real person in front of the camera: if it looks like a photo of a printed photo or of a phone or computer screen, say so.
@@ -220,8 +235,8 @@ def read_quotation(file_url):
 	items = _items()
 	cat = "; ".join(f"{i.item_name} ({i.stock_uom})" for i in items[:400])
 	d = ask(
-		f"This is a supplier's quotation or proposal for a house under construction in Pakistan. {URDU} "
-		f"Extract the supplier and every line exactly as written. Amounts are Pakistani rupees as plain numbers; give rates per unit. "
+		f"This is a supplier's quotation or proposal for a house under construction {where()}. {URDU} "
+		f"Extract the supplier and every line exactly as written. Amounts are {money_name()} as plain numbers; give rates per unit. "
 		f"Name each item as the closest match from this catalogue when one fits, otherwise as written: {cat}\n"
 		f"Leave a field empty when it is not on the document. Reply with only JSON of this shape:\n{QUOTE_SHAPE}",
 		file_url,
@@ -263,7 +278,7 @@ def read_delivery(file_url, doctype, name):
 	doc, lines = _po_lines(doctype, name)
 	po = ", ".join(sorted({r.purchase_order for r in doc.items if r.get("purchase_order")}))
 	d = ask(
-		f"This is a supplier's delivery note, challan or bill for goods delivered to a house under construction in Pakistan. {URDU} "
+		f"This is a supplier's delivery note, challan or bill for goods delivered to a house under construction {where()}. {URDU} "
 		f"It should be against purchase order {po} from {doc.supplier_name}. The lines we expect are:\n" + "\n".join(lines) +
 		f"\nRead every line on the document and give lineIndex = the number of the matching expected line (or null). Reply with only JSON of this shape:\n{DELIVERY_SHAPE}",
 		file_url,
@@ -275,9 +290,9 @@ def read_delivery(file_url, doctype, name):
 def read_invoice(file_url, doctype, name):
 	doc, lines = _po_lines(doctype, name)
 	d = ask(
-		f"This is a supplier's invoice or bill for a house under construction in Pakistan. {URDU} "
+		f"This is a supplier's invoice or bill for a house under construction {where()}. {URDU} "
 		f"It is from {doc.supplier_name}. The lines we expect (from the goods received) are:\n" + "\n".join(lines) +
-		f"\nRead every line and give lineIndex = the number of the matching expected line (or null). Amounts in Pakistani rupees as plain numbers. Reply with only JSON of this shape:\n{INVOICE_SHAPE}",
+		f"\nRead every line and give lineIndex = the number of the matching expected line (or null). Amounts in {money_name()} as plain numbers. Reply with only JSON of this shape:\n{INVOICE_SHAPE}",
 		file_url,
 	)
 	return _with_index(d, doc)

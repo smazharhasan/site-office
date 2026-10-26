@@ -194,6 +194,13 @@ html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem
           <label class="mode"><input type="radio" name="mode" value="Builder" id="m-builder"><b data-t="builder_t"></b><span data-t="builder_d"></span><span class="price num" id="price-Builder"></span></label>
         </div>
       </div>
+      <div class="f">
+        <label data-t="q_start"></label>
+        <div class="modes">
+          <label class="mode"><input type="radio" name="start" value="Own data" id="st-own" checked><b data-t="own_t"></b><span data-t="own_d"></span></label>
+          <label class="mode"><input type="radio" name="start" value="Sample data" id="st-sample"><b data-t="sample_t"></b><span data-t="sample_d"></span></label>
+        </div>
+      </div>
       <div class="row">
         <div class="f"><label for="contact_name" data-t="name"></label><input type="text" id="contact_name" autocomplete="name" required maxlength="120"></div>
         <div class="f"><label for="email" data-t="email"></label><input type="email" id="email" autocomplete="email" required maxlength="140" dir="ltr"></div>
@@ -279,6 +286,8 @@ const I18N = {
     p1: "Stores and deliveries with photos and site cards", p2: "Payments, budget and petty cash that add up", p3: "Progress you can see, stage by stage", p4: "English, Urdu and Arabic, on any phone",
     how: "How it works", h1: "Start your trial", h1d: "Choose owner or builder and name your workspace. Ready in about a minute.", h2: "Add your team", h2d: "Each person gets a site card and signs in on their own phone.", h3: "Run the site from your phone", h3d: "Deliveries, payments and progress, recorded where they happen.",
     by: "A product of SMH Global Services", by_short: "A product of", title: "Start your free trial", trial_note: "{n} days free. No card needed.",
+    q_start: "How do you want to start?", own_t: "With my own project", own_d: "Start empty and enter your own site. When you subscribe, keep it or start fresh.",
+    sample_t: "With sample data first", sample_d: "Explore a ready sample house from your country. It is cleared when you subscribe.",
     q_mode: "What are you building?", owner_t: "My own home", owner_d: "I'm the owner and want to see everything my builder and site staff do.",
     builder_t: "Projects for clients", builder_d: "I'm a builder or contractor running several sites.", per_month: "{p} a month after the trial",
     name: "Your name", phone: "Mobile / WhatsApp", email: "Email", country: "Country", city: "City",
@@ -306,6 +315,8 @@ const I18N = {
     p1: "اسٹور اور سامان کی وصولی، تصاویر اور سائٹ کارڈ کے ساتھ", p2: "ادائیگیاں، بجٹ اور پیٹی کیش، جن کا حساب پورا ہو", p3: "کام کی پیش رفت، مرحلہ وار، آنکھوں کے سامنے", p4: "انگریزی، اردو اور عربی میں، ہر فون پر",
     how: "یہ کیسے کام کرتا ہے", h1: "مفت آزمائش شروع کریں", h1d: "مالک یا بلڈر چنیں اور ورک اسپیس کا نام رکھیں۔ تقریباً ایک منٹ میں تیار۔", h2: "اپنی ٹیم شامل کریں", h2d: "ہر شخص کو سائٹ کارڈ ملتا ہے اور وہ اپنے فون پر لاگ اِن کرتا ہے۔", h3: "سائٹ اپنے فون سے چلائیں", h3d: "مال کی آمد، ادائیگیاں اور کام کی پیش رفت، وہیں درج جہاں ہوں۔",
     by: "ایس ایم ایچ گلوبل سروسز کی پیشکش", by_short: "تیار کردہ", title: "مفت آزمائش شروع کریں", trial_note: "{n} دن مفت۔ کسی کارڈ کی ضرورت نہیں۔",
+    q_start: "آپ کیسے شروع کرنا چاہتے ہیں؟", own_t: "اپنے پروجیکٹ سے", own_d: "خالی سے شروع کریں اور اپنی سائٹ درج کریں۔ سبسکرائب کرتے وقت چاہیں تو رکھیں یا نئے سرے سے شروع کریں۔",
+    sample_t: "پہلے نمونے کے ڈیٹا کے ساتھ", sample_d: "اپنے ملک کا تیار نمونے کا گھر دیکھیں۔ سبسکرائب کرنے پر یہ صاف ہو جائے گا۔",
     q_mode: "آپ کیا بنا رہے ہیں؟", owner_t: "اپنا گھر", owner_d: "میں مالک ہوں اور بلڈر اور سائٹ کے عملے کا ہر کام دیکھنا چاہتا ہوں۔",
     builder_t: "کلائنٹس کے پروجیکٹ", builder_d: "میں بلڈر یا ٹھیکیدار ہوں اور کئی سائٹس چلاتا ہوں۔", per_month: "آزمائش کے بعد {p} ماہانہ",
     name: "آپ کا نام", phone: "موبائل / واٹس ایپ", email: "ای میل", country: "ملک", city: "شہر",
@@ -333,6 +344,8 @@ const I18N = {
     p1: "المخزن والتوريدات بالصور وبطاقات الموقع", p2: "دفعات وميزانية وعهدة نقدية حساباتها مضبوطة", p3: "تقدّم العمل أمام عينيك، مرحلة بمرحلة", p4: "بالعربية والإنجليزية والأردية، على أي جوال",
     how: "كيف يعمل", h1: "ابدأ تجربتك", h1d: "اختر المالك أو المقاول وسمِّ مساحة عملك. جاهزة في نحو دقيقة.", h2: "أضف فريقك", h2d: "يحصل كل شخص على بطاقة موقع ويدخل من جواله.", h3: "أدِر الموقع من جوالك", h3d: "التوريدات والدفعات وتقدّم العمل، تُسجَّل حيث تحدث.",
     by: "منتج من SMH Global Services", by_short: "منتج من", title: "ابدأ تجربتك المجانية", trial_note: "{n} أيام مجاناً. بدون بطاقة.",
+    q_start: "كيف تريد أن تبدأ؟", own_t: "بمشروعي الخاص", own_d: "ابدأ فارغاً وأدخل موقعك، وعند الاشتراك احتفظ به أو ابدأ من جديد.",
+    sample_t: "ببيانات نموذجية أولاً", sample_d: "استكشف بيتاً نموذجياً جاهزاً من بلدك، ويُمسح عند الاشتراك.",
     q_mode: "ماذا تبني؟", owner_t: "بيتي الخاص", owner_d: "أنا المالك وأريد أن أرى كل ما يقوم به المقاول وفريق الموقع.",
     builder_t: "مشاريع لعملائي", builder_d: "أنا مقاول أو شركة مقاولات أدير عدة مواقع.", per_month: "{p} شهرياً بعد التجربة",
     name: "اسمك", phone: "الجوال / واتساب", email: "البريد الإلكتروني", country: "الدولة", city: "المدينة",
@@ -558,7 +571,7 @@ $("s-form").addEventListener("submit", async (ev) => {
   ev.preventDefault();
   fail("s-err", "");
   const d = {
-    mode: $("m-builder").checked ? "Builder" : "Owner", contact_name: $("contact_name").value.trim(), phone: $("phone").value.trim(), email: $("email").value.trim(),
+    mode: $("m-builder").checked ? "Builder" : "Owner", start_with: $("st-sample").checked ? "Sample data" : "Own data", contact_name: $("contact_name").value.trim(), phone: $("phone").value.trim(), email: $("email").value.trim(),
     country: COUNTRY, city: $("city").value.trim(), company_name: $("company_name").value.trim(), subdomain: $("subdomain").value.trim(),
     password: $("password").value, agree: $("agree").checked ? 1 : 0, language: LANG, website: $("website").value,
   };

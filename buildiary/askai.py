@@ -86,7 +86,7 @@ def ask(question):
 	lang = "Urdu (simple, everyday words; numbers in English digits)" if (frappe.local.lang == "ur" or frappe.db.get_value("User", frappe.session.user, "language") == "ur") else "English"
 	who = "the owner" if c["owner"] else "the project accountant" if money else "a site supervisor or store keeper"
 	prompt = (
-		f"You help run a house construction project in Pakistan. You are answering {who}. Use ONLY the project's live records below "
+		f"You help run a house construction project {__import__('buildiary.ai', fromlist=['where']).where()}. You are answering {who}. Use ONLY the project's live records below "
 		f"(from its ERP, as of {data['today']}); if they don't show something, say so plainly instead of guessing. "
 		"Be short and practical: a direct answer first, then a few bullet points with the numbers (units, dates; money in Rs, large amounts in lac). "
 		"For a report, use short headed sections. "

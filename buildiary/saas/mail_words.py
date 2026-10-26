@@ -142,6 +142,7 @@ W = {
 		"kinds": {"Feedback": "Feedback", "Feature request": "Feature request", "Problem": "Something isn't working", "Question": "Question"},
 		# test
 		"test_subject": "Buildiary test email",
+		"ok_fresh": "Your workspace is starting fresh, as planned: the trial data (and any sample data) is cleared and your company is set up again at the same address. It takes a few minutes. You and your team sign in with the same email and password.",
 		"pw_subject": "Choose a new password for Buildiary",
 		"pw_title": "Choose a new password",
 		"pw_intro": "Someone asked to reset the password for {email} on the Buildiary workspace {host}. If it was you, choose a new password with the button below.",
@@ -276,6 +277,7 @@ W = {
 		"thanks_copy": "آپ کا پیغام",
 		"kinds": {"Feedback": "رائے", "Feature request": "نئی سہولت کی درخواست", "Problem": "کچھ کام نہیں کر رہا", "Question": "سوال"},
 		"test_subject": "بلڈائری ٹیسٹ ای میل",
+		"ok_fresh": "طے شدہ طریقے کے مطابق آپ کا ورک اسپیس نئے سرے سے شروع ہو رہا ہے: آزمائشی ڈیٹا (اور نمونے کا ڈیٹا) صاف کیا جا رہا ہے اور آپ کی کمپنی اسی پتے پر دوبارہ تیار کی جا رہی ہے۔ اس میں چند منٹ لگیں گے۔ آپ اور آپ کی ٹیم اسی ای میل اور پاس ورڈ سے لاگ اِن کریں گے۔",
 		"pw_subject": "بلڈائری کے لیے نیا پاس ورڈ منتخب کریں",
 		"pw_title": "نیا پاس ورڈ منتخب کریں",
 		"pw_intro": "بلڈائری ورک اسپیس {host} پر {email} کا پاس ورڈ بدلنے کی درخواست کی گئی ہے۔ اگر یہ آپ تھے تو نیچے دیے گئے بٹن سے نیا پاس ورڈ منتخب کریں۔",
@@ -410,6 +412,7 @@ W = {
 		"thanks_copy": "رسالتك",
 		"kinds": {"Feedback": "ملاحظات", "Feature request": "طلب ميزة", "Problem": "شيء لا يعمل", "Question": "سؤال"},
 		"test_subject": "رسالة اختبار من بلدائري",
+		"ok_fresh": "كما هو مقرر، تبدأ مساحة عملكم من جديد: تُمسح بيانات التجربة (والبيانات النموذجية إن وُجدت) ويُعاد إعداد شركتكم على العنوان نفسه. يستغرق ذلك بضع دقائق، وتسجّلون الدخول أنتم وفريقكم بالبريد وكلمة المرور نفسيهما.",
 		"pw_subject": "اختر كلمة مرور جديدة لبلدائري",
 		"pw_title": "اختر كلمة مرور جديدة",
 		"pw_intro": "طُلب تغيير كلمة المرور للبريد {email} على مساحة عمل بلدائري {host}. إن كان الطلب منك، فاختر كلمة مرور جديدة من الزر أدناه.",

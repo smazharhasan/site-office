@@ -43,9 +43,13 @@ def apply_payment(p):
 	frappe.msgprint(_("{0}'s {1} licence is active until {2}. The customer has been emailed.").format(
 		frappe.bold(t.company_name), plan.name, frappe.bold(frappe.format(end, "Date"))), title=_("Licence activated"), indicator="green")
 	from buildiary.saas import mail
+	from buildiary.saas.provision import fresh_start_due, queue_reset
 
+	fresh = fresh_start_due(t)
+	if fresh:
+		queue_reset(t, "the paid subscription started")
 	p.reload()
-	mail.payment_confirmed(t, p)
+	mail.payment_confirmed(t, p, fresh=fresh)
 
 
 def reject_payment(p):

@@ -6,7 +6,7 @@ import frappe
 from frappe import _
 from frappe.utils import add_days, cint, flt, getdate, nowdate
 
-from buildiary.field import _company, _only, _project, _psql, _store, caps, dashboard as old_dashboard
+from buildiary.field import _company, _only, _project, _psql, _store, caps, dashboard as old_dashboard, money_text
 
 
 def _sql1(q, a=None):
@@ -40,6 +40,11 @@ def overview():
 		w = frappe.db.sql(f"""select count(*), sum(gallons) from `tabWater Tanker` where docstatus = 1 and date = %s and water_type != 'Brackish (rejected)'{pq}""", today)[0]
 		wk = _sql1(f"""select sum(gallons) from `tabWater Tanker` where docstatus = 1 and date >= %s and water_type != 'Brackish (rejected)'{pq}""", add_days(today, -6))
 		tiles["water"] = {"tankers": cint(w[0]), "gallons": flt(w[1]), "week": wk}
+		from buildiary import debris
+
+		dt = debris.tile()
+		if dt:
+			tiles["debris"] = dt
 	if c["site"]:
 		ncr = frappe.db.sql(f"""select count(distinct i.name) from `tabSite Inspection` i join `tabSite Inspection Action` a on a.parent = i.name
 			left join `tabSite Snag` s on s.name = a.snag where i.docstatus = 1 and i.result = 'Fail' and (s.name is null or s.status != 'Closed'){_psql('i')}""")[0][0]
@@ -79,11 +84,12 @@ def overview():
 			acts.append({"k": "warn", "t": _("Read today's water level: {0}").format(", ".join(_(m) for m in missing)), "go": ["water", ""], "g": "Water"})
 		for t in frappe.get_all("Water Tanker", filters=_only({"docstatus": 1, "date": [">=", add_days(today, -2)], "ai_verdict": "Mismatch"}), fields=["name", "vehicle_no"]):
 			acts.append({"k": "bad", "t": _("AI found a mismatch on water tanker {0}").format(t.vehicle_no), "go": ["water", t.name], "g": "Water"})
+		acts.extend(debris.attention(today))
 		for code in out[:5] if tiles.get("stock") else []:
 			acts.append({"k": "warn", "t": _("Out of stock: {0}").format(frappe.db.get_value("Item", code, "item_name")), "go": ["item", code], "g": "Stores"})
 	if petty.approver():
 		for e in frappe.get_all("Petty Cash Entry", filters={"docstatus": 0, "status": "Waiting for owner"}, fields=["name", "holder_name", "amount", "category"], order_by="date asc", limit=10):
-			acts.append({"k": "warn", "t": _("Check petty cash: Rs {0} by {1} ({2})").format(frappe.format(e.amount, {"fieldtype": "Float", "precision": 0}), e.holder_name, _(e.category or "")),
+			acts.append({"k": "warn", "t": _("Check petty cash: {0} by {1} ({2})").format(money_text(e.amount), e.holder_name, _(e.category or "")),
 				"go": ["petty", e.name], "g": "Money"})
 	if c["site"]:
 		from buildiary import build

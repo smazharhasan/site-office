@@ -7,7 +7,7 @@
  "module": "Buildiary",
  "name": "Site Worker",
  "owner": "Administrator",
- "modified": "2026-10-25 21:00:00.000000",
+ "modified": "2026-10-26 18:30:00.000000",
  "modified_by": "Administrator",
  "fields": [
   {
@@ -107,24 +107,24 @@
   {
    "fieldname": "cnic",
    "fieldtype": "Data",
-   "label": "CNIC",
+   "label": "ID card no. (CNIC, Iqama, Emirates ID ...)",
    "in_global_search": 1,
    "description": "13 digits, e.g. 42101-1234567-1"
   },
   {
    "fieldname": "cnic_expiry",
    "fieldtype": "Date",
-   "label": "CNIC expiry"
+   "label": "ID card expiry"
   },
   {
    "fieldname": "cnic_front",
    "fieldtype": "Attach Image",
-   "label": "CNIC front"
+   "label": "ID card front"
   },
   {
    "fieldname": "cnic_back",
    "fieldtype": "Attach Image",
-   "label": "CNIC back"
+   "label": "ID card back"
   },
   {
    "fieldname": "col2",
@@ -133,7 +133,7 @@
   {
    "fieldname": "entry_card_no",
    "fieldtype": "Data",
-   "label": "Society entry card no. (e.g. Bahria Town)"
+   "label": "Society / site entry card no."
   },
   {
    "fieldname": "entry_card_expiry",
@@ -143,7 +143,7 @@
   {
    "fieldname": "entry_card_photo",
    "fieldtype": "Attach Image",
-   "label": "Society entry card photo"
+   "label": "Society / site entry card photo"
   },
   {
    "fieldname": "police_verification",

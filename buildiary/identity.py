@@ -370,4 +370,7 @@ def on_worker_update(doc, method=None):
 
 
 def check_expiry(doc):
-	return [x for x, d in ((_("CNIC"), doc.cnic_expiry), (_("entry card"), doc.entry_card_expiry)) if d and getdate(d) < getdate(today())]
+	from buildiary.buildiary.doctype.site_worker.site_worker import _country
+
+	idl = _("CNIC") if _country() == "Pakistan" else _("ID card")
+	return [x for x, d in ((idl, doc.cnic_expiry), (_("entry card"), doc.entry_card_expiry)) if d and getdate(d) < getdate(today())]

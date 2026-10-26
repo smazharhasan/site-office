@@ -149,6 +149,7 @@ def start(data=None):
 		"doctype": "Buildiary Tenant", "subdomain": sub, "company_name": d.company_name.strip()[:120], "contact_name": d.contact_name.strip()[:120], "email": email,
 		"phone": phone[:40], "country": d.country, "city": (d.city or "").strip()[:80], "language": d.language if d.language in ("en", "ur", "ar") else "en",
 		"mode": mode, "plan": plan, "billing_period": "Monthly", "status": "Verifying email" if verify else "Waiting", "signed_up_on": now_datetime(),
+		"trial_data": "Sample data" if d.start_with == "Sample data" else "Own data",
 		"signup_ip": (frappe.local.request_ip or "")[:60], "signup_token": frappe.generate_hash(length=32), "first_password": d.password,
 	}).insert(ignore_permissions=True)
 	frappe.db.commit()

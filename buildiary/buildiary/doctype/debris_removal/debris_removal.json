@@ -1,0 +1,311 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-26 17:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Buildiary",
+ "name": "Debris Removal",
+ "owner": "Administrator",
+ "modified": "2026-10-26 17:00:00.000000",
+ "modified_by": "Administrator",
+ "links": [],
+ "states": [],
+ "row_format": "Dynamic",
+ "track_changes": 1,
+ "autoname": "DBR-.YY.-.#####",
+ "title_field": "kind",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "description": "Each time debris goes off site: asked for, collected, with photos and the slip.",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1
+  },
+  {
+   "role": "Projects Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Site Supervisor",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Stock Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Stock User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Projects User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Accounts Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  }
+ ],
+ "fields": [
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "reqd": 1,
+   "default": "Today",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "kind",
+   "fieldtype": "Select",
+   "label": "What",
+   "options": "Exchange (full for empty)\nTake away\nTruck / trolley trip\nNew skip delivered",
+   "default": "Exchange (full for empty)",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Requested\nDone\nCancelled",
+   "default": "Requested",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "container",
+   "fieldtype": "Link",
+   "label": "Skip",
+   "options": "Debris Container"
+  },
+  {
+   "fieldname": "container_no",
+   "fieldtype": "Data",
+   "label": "Skip no.",
+   "fetch_from": "container.container_no",
+   "read_only": 1
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Skip company / contractor",
+   "options": "Supplier",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Select",
+   "label": "Why",
+   "options": "Full\nScheduled\nSite clean-up\nOther",
+   "default": "Full"
+  },
+  {
+   "fieldname": "requested_on",
+   "fieldtype": "Datetime",
+   "label": "Asked on",
+   "read_only": 1
+  },
+  {
+   "fieldname": "requested_by",
+   "fieldtype": "Link",
+   "label": "Asked by",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notified",
+   "fieldtype": "Data",
+   "label": "Supplier told by",
+   "read_only": 1
+  },
+  {
+   "fieldname": "message",
+   "fieldtype": "Small Text",
+   "label": "Message to the supplier",
+   "read_only": 1
+  },
+  {
+   "fieldname": "done_section",
+   "fieldtype": "Section Break",
+   "label": "Collection"
+  },
+  {
+   "fieldname": "done_on",
+   "fieldtype": "Datetime",
+   "label": "Collected on"
+  },
+  {
+   "fieldname": "vehicle_no",
+   "fieldtype": "Data",
+   "label": "Vehicle no."
+  },
+  {
+   "fieldname": "loads",
+   "fieldtype": "Int",
+   "label": "Loads / trips",
+   "default": "1"
+  },
+  {
+   "fieldname": "col2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "slip_no",
+   "fieldtype": "Data",
+   "label": "Slip / dumping ticket no."
+  },
+  {
+   "fieldname": "cost",
+   "fieldtype": "Currency",
+   "label": "Cost"
+  },
+  {
+   "fieldname": "received_by_name",
+   "fieldtype": "Data",
+   "label": "Checked by"
+  },
+  {
+   "fieldname": "photos_section",
+   "fieldtype": "Section Break",
+   "label": "Photos"
+  },
+  {
+   "fieldname": "photo_full",
+   "fieldtype": "Attach Image",
+   "label": "Before: the full skip / the debris"
+  },
+  {
+   "fieldname": "photo_done",
+   "fieldtype": "Attach Image",
+   "label": "After: the site or the new skip"
+  },
+  {
+   "fieldname": "slip_scan",
+   "fieldtype": "Attach Image",
+   "label": "Slip / dumping ticket"
+  },
+  {
+   "fieldname": "more_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location (GPS)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "field_order": [
+  "date",
+  "kind",
+  "status",
+  "container",
+  "container_no",
+  "supplier",
+  "col1",
+  "reason",
+  "requested_on",
+  "requested_by",
+  "notified",
+  "message",
+  "done_section",
+  "done_on",
+  "vehicle_no",
+  "loads",
+  "col2",
+  "slip_no",
+  "cost",
+  "received_by_name",
+  "photos_section",
+  "photo_full",
+  "photo_done",
+  "slip_scan",
+  "more_section",
+  "location",
+  "project",
+  "notes"
+ ],
+ "show_title_field_in_link": 0,
+ "search_fields": "supplier,container_no"
+}

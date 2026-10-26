@@ -1,10 +1,12 @@
-"""A sample project (fictional names and figures) for the website's screenshots and for
-anyone who wants to see Buildiary with data in it:
+"""A sample project (fictional names and figures) for a trial with sample data, the website's screenshots,
+and anyone who wants to see Buildiary with data in it:
 
-    bench --site <workspace> execute buildiary.saas.demo.make
+    bench --site <workspace> execute buildiary.saas.demo.make --kwargs "{'country': 'Saudi Arabia', 'lang': 'ar'}"
 
-Amounts follow the company's currency (rupees; riyals and dirhams at about 1/75; dollars at 1/280). Safe to run once
-on a fresh workspace; it does nothing if the sample project is already there."""
+It follows the company's country: a Pakistani house in rupees, feet and local names; a Gulf villa in riyals or
+dirhams, metres and Gulf names (with a skip for debris); or an international house in metres for everyone else.
+Amounts follow the company's currency. Safe to run once on a fresh workspace; it does nothing if a sample
+project is already there."""
 
 import random
 
@@ -14,18 +16,52 @@ from frappe.utils import add_days, flt, getdate, nowdate, nowtime
 from buildiary.migration import old_app
 
 PROJECT = "Al Noor Residence"
+PROJECTS = {"pk": ("Al Noor Residence", "Plot 12, Street 4, Sample Town"), "gulf": ("Al Noor Villa", "Villa 12, Street 4, Sample District"),
+	"intl": ("Maple Grove House", "12 Sample Street, Sample Town")}
 RULES = ("po_needs_final_quotation", "require_dn_scan", "require_receiver_photo", "require_bill_scan", "require_payment_proof", "pay_only_due",
 	"require_attendance_photo", "card_for_store", "card_for_receiving", "card_for_petty_cash", "petty_bill_required", "petty_needs_budget")
 
-
-# rupees to the company's money, roughly (the sample project's figures are written in rupees)
+SOUTH_ASIA = ("Pakistan", "India", "Bangladesh", "Sri Lanka", "Nepal", "Afghanistan")
+GULF = ("Saudi Arabia", "United Arab Emirates", "Qatar", "Kuwait", "Bahrain", "Oman")
+# about how many of each money make one US dollar (the sample's figures are written in rupees at about 280 to the dollar)
+USD_RATE = {"PKR": 280, "INR": 84, "BDT": 120, "LKR": 300, "NPR": 135, "AFN": 70, "SAR": 3.75, "AED": 3.67, "QAR": 3.64, "OMR": 0.385, "KWD": 0.307,
+	"BHD": 0.376, "USD": 1, "EUR": 0.92, "GBP": 0.79, "CAD": 1.37, "AUD": 1.52, "NZD": 1.65, "CHF": 0.88, "SEK": 10.6, "NOK": 10.8, "DKK": 6.9,
+	"PLN": 4.0, "TRY": 34, "EGP": 48, "JOD": 0.71, "IQD": 1310, "MAD": 10, "TND": 3.1, "DZD": 134, "ZAR": 18.5, "NGN": 1500, "KES": 129, "GHS": 15.5,
+	"TZS": 2700, "UGX": 3700, "ETB": 120, "MYR": 4.7, "SGD": 1.35, "IDR": 15800, "PHP": 58, "THB": 36, "VND": 25000, "CNY": 7.2, "JPY": 150, "KRW": 1380,
+	"HKD": 7.8, "BRL": 5.6, "MXN": 19.5, "ARS": 950, "CLP": 950, "COP": 4100, "PEN": 3.7, "ILS": 3.7, "RUB": 92, "UAH": 41, "KZT": 480, "UZS": 12700}
+RICH = ("USD", "EUR", "GBP", "CAD", "AUD", "NZD", "CHF", "SEK", "NOK", "DKK", "SGD", "JPY", "KRW", "HKD", "ILS")
+# rupees to the company's money, roughly (kept for older calls)
 SCALE = {"PKR": 1.0, "INR": 1.0, "SAR": 1 / 75.0, "AED": 1 / 76.0, "QAR": 1 / 77.0, "USD": 1 / 280.0}
+# feet to metres for the sample's sand, crush, tiles and marble outside South Asia
+METRIC = {"SND-RAVI": ("m3", 0.0283168), "CRS-34": ("m3", 0.0283168), "TIL-6060": ("m2", 0.092903), "MRB-WHT": ("m2", 0.092903)}
+
+
+def variant(country=None):
+	country = country or frappe.db.get_value("Company", frappe.db.get_single_value("Global Defaults", "default_company"), "country")
+	return "pk" if country in SOUTH_ASIA else "gulf" if country in GULF else "intl"
+
+
+def factors(cur, v):
+	"""(materials, wages): rupee figures to this money, and to prices and wages there."""
+	k = USD_RATE.get(cur, 1) / 280.0
+	if v == "pk":
+		return k, k
+	if v == "gulf":
+		return k * 1.15, k * 2.5
+	return (k * 1.8, k * 10) if cur in RICH else (k * 1.3, k * 1.6)
 
 
 def _k():
 	co = frappe.db.get_single_value("Global Defaults", "default_company")
 	cur = frappe.db.get_value("Company", co, "default_currency")
 	return SCALE.get(cur, 1 / 75.0), co
+
+
+def _qty(code, q, v):
+	"""A quantity in the sample's units (feet) for this variant."""
+	if v != "pk" and code in METRIC:
+		return round(q * METRIC[code][1], 1)
+	return q
 
 
 def _r(v, k, step=1):
@@ -40,8 +76,53 @@ def _d(days):
 	return str(add_days(nowdate(), days))
 
 
-def data(k):
-	"""The sample project in the old app's file format (what migration.old_app reads)."""
+NAMES = {
+	"pk": {
+		"items": {},
+		"suppliers": [("Madina Cement Traders", "Materials", "Bilal Ahmed"), ("Faisal Steel Store", "Materials", "Faisal Iqbal"), ("Al Noor Block Factory", "Materials", "Hamid Raza"),
+			("Riverside Sand & Crush", "Materials", "Asif Khan"), ("Ravi Electric Co.", "Materials", "Usman Tariq"), ("City Pipes & Fittings", "Materials", "Kamran Ali"),
+			("Star Builders", "Grey structure", "Ahmed Saeed"), ("Gulberg Tiles & Marble", "Finishing", "Nadeem Akhtar")],
+		"phone": "0300-55{i:05d}",
+	},
+	"gulf": {
+		"items": {"BLK-6": "Concrete block 20 cm (hollow)", "BLK-4": "Concrete block 15 cm", "SND-RAVI": "Washed sand", "CRS-34": "Aggregate 20 mm", "MRB-WHT": "White marble",
+			"CND-1": "PVC conduit 25 mm", "PIPE-4": "uPVC drain pipe 110 mm"},
+		"suppliers": [("Al Waha Cement Trading", "Materials", "Khalid Al Otaibi"), ("Gulf Rebar Trading", "Materials", "Rashid Khan"), ("Desert Block Factory", "Materials", "Majed Al Zahrani"),
+			("Al Rimal Sand & Aggregates", "Materials", "Omar Farooq"), ("Noor Electrical Trading", "Materials", "Sami Haddad"), ("Al Madina Pipes & Fittings", "Materials", "Anwar Hussain"),
+			("Al Bina Contracting", "Grey structure", "Yousef Al Qahtani"), ("Marmar Tiles & Marble", "Finishing", "Tariq Aziz"), ("Green Skip Services", "Waste removal", "Faisal Al Harbi")],
+		"phone": "050-55{i:05d}",
+	},
+	"intl": {
+		"items": {"BLK-6": "Concrete block 200 mm", "BLK-4": "Concrete block 150 mm", "SND-RAVI": "Washed sand", "CRS-34": "Aggregate 20 mm", "MRB-WHT": "White marble",
+			"CND-1": "PVC conduit 25 mm", "PIPE-4": "PVC drain pipe 110 mm", "STL-12": "Rebar 12 mm", "STL-16": "Rebar 16 mm", "STL-10": "Rebar 10 mm"},
+		"suppliers": [("Riverside Cement Supply", "Materials", "Daniel Moore"), ("Metro Steel & Rebar", "Materials", "Maria Lopez"), ("Northfield Block Works", "Materials", "Samuel Okafor"),
+			("Granite Ridge Aggregates", "Materials", "Priya Nair"), ("Brightline Electrical", "Materials", "James Chen"), ("City Pipes & Fittings", "Materials", "Ahmed Hassan"),
+			("Summit Builders", "Grey structure", "Lucas Silva"), ("Stone & Tile Gallery", "Finishing", "Anna Kowalski"), ("Clearway Waste Services", "Waste removal", "Tom Baker")],
+		"phone": "020-55{i:05d}",
+	},
+}
+SUPPLIER_ITEMS = [["CEM-OPC", "WPF-CHEM"], ["STL-10", "STL-12", "STL-16", "BND-WIRE"], ["BLK-6", "BLK-4"], ["SND-RAVI", "CRS-34"], ["CND-1"], ["PIPE-4", "PPR-25"], [], ["TIL-6060", "MRB-WHT"], []]
+WORKERS = {
+	"pk": [("Rafiq Ahmed", "Mistri", "Mason"), ("Shahid Mehmood", "Mistri", "Steel fixer"), ("Imran Ali", "Mistri", "Shuttering"), ("Nasir Hussain", "Group head", "Mason"),
+		("Arif Khan", "Labour", ""), ("Zahid Iqbal", "Labour", ""), ("Sajid Ali", "Labour", ""), ("Waqas Ahmed", "Labour", ""), ("Fahad Hussain", "Labour", ""),
+		("Bilal Akram", "Labour", ""), ("Tariq Mehmood", "Labour", ""), ("Junaid Khan", "Labour", ""), ("Kashif Ali", "Mistri", "Electrician"), ("Asad Raza", "Supervisor", "")],
+	"gulf": [("Rafiq Ahmed", "Mistri", "Mason"), ("Shahid Mehmood", "Mistri", "Steel fixer"), ("Ramesh Kumar", "Mistri", "Shuttering"), ("Nasir Hussain", "Group head", "Mason"),
+		("Arif Khan", "Labour", ""), ("Biju Thomas", "Labour", ""), ("Sajid Ali", "Labour", ""), ("Abdul Karim", "Labour", ""), ("Mohammed Rafi", "Labour", ""),
+		("Suresh Babu", "Labour", ""), ("Tariq Mehmood", "Labour", ""), ("Junaid Khan", "Labour", ""), ("Kashif Ali", "Mistri", "Electrician"), ("Mahmoud Saleh", "Supervisor", "")],
+	"intl": [("Carlos Mendes", "Mistri", "Mason"), ("John Mwangi", "Mistri", "Steel fixer"), ("Piotr Nowak", "Mistri", "Shuttering"), ("David Okoro", "Group head", "Mason"),
+		("Ali Yilmaz", "Labour", ""), ("Samuel Adeyemi", "Labour", ""), ("Ravi Patel", "Labour", ""), ("Mark Wilson", "Labour", ""), ("Juan Perez", "Labour", ""),
+		("Thomas Brown", "Labour", ""), ("Kevin Otieno", "Labour", ""), ("Luis Garcia", "Labour", ""), ("Ivan Petrov", "Mistri", "Electrician"), ("Sarah Collins", "Supervisor", "")],
+}
+ISSUED_TO = {"pk": ["Ustad Rafiq (mason)", "Shahid (steel fixer)", "Imran (shuttering)"], "gulf": ["Rafiq (mason)", "Shahid (steel fixer)", "Ramesh (shuttering)"],
+	"intl": ["Carlos (mason)", "John (steel fixer)", "Piotr (shuttering)"]}
+LABOUR_LINES = ("bud-01", "bud-02", "bud-03", "bud-04", "bud-05", "bud-14")
+
+
+def data(k, v="pk", kw=None):
+	"""The sample project in the old app's file format (what migration.old_app reads). k: rupees to the company's
+	money for materials; kw: for labour and services."""
+	kw = k if kw is None else kw
+	N = NAMES[v]
 	items = [
 		("CEM-OPC", "Cement (OPC, 50 kg bag)", "bag", "Cement", 1450), ("STL-12", "Steel bar 12 mm (Grade 60)", "kg", "Steel", 265), ("STL-16", "Steel bar 16 mm (Grade 60)", "kg", "Steel", 262),
 		("STL-10", "Steel bar 10 mm (Grade 60)", "kg", "Steel", 268), ("BLK-6", "Concrete block 6 in", "nos", "Blocks", 88), ("BLK-4", "Concrete block 4 in", "nos", "Blocks", 70),
@@ -51,6 +132,13 @@ def data(k):
 		("TIL-6060", "Porcelain floor tile 60x60", "sft", "Tiles & marble", 310), ("MRB-WHT", "White marble (Ziarat)", "sft", "Tiles & marble", 650), ("PNT-EMU", "Emulsion paint (white)", "litre", "Paint", 1100),
 		("PUTTY", "Wall putty", "bag", "Paint", 1350), ("GLV", "Work gloves", "pair", "Safety (PPE)", 250), ("HLMT", "Safety helmet", "nos", "Safety (PPE)", 900),
 	]
+	out_items = []
+	for c, n, u, cat, rate in items:
+		n = N["items"].get(c, n)
+		if v != "pk" and c in METRIC:
+			u, f = METRIC[c]
+			rate = rate / f
+		out_items.append((c, n, u, cat, rate))
 	cat_budget = {"Cement": "bud-06", "Steel": "bud-07", "Blocks": "bud-08", "Sand & crush": "bud-09", "Binding & fixing": "bud-07", "Shuttering & formwork": "bud-05",
 		"Admixtures & chemicals": "bud-06", "Electrical conduits": "bud-10", "Plumbing (grey)": "bud-11", "Tiles & marble": "bud-12", "Paint": "bud-13", "Safety (PPE)": "bud-15"}
 	kind = {"Tiles & marble": "Finishing materials", "Paint": "Finishing materials", "Safety (PPE)": "Safety (PPE)"}
@@ -71,29 +159,42 @@ def data(k):
 		("F2", "Flooring and wall tiles", "Finishing", 195, 270, ["F1"]), ("F3", "Woodwork, kitchen and aluminium", "Finishing", 230, 310, ["F1"]),
 		("F4", "Paint, sanitary ware and lights", "Finishing", 300, 360, ["F2"]), ("H1", "Snag list and handover", "Handover", 360, 380, ["F4", "F3"]),
 	]
-	sups = [
-		("Madina Cement Traders", "Materials", "Bilal Ahmed", ["CEM-OPC", "WPF-CHEM"]), ("Faisal Steel Store", "Materials", "Faisal Iqbal", ["STL-10", "STL-12", "STL-16", "BND-WIRE"]),
-		("Al Noor Block Factory", "Materials", "Hamid Raza", ["BLK-6", "BLK-4"]), ("Riverside Sand & Crush", "Materials", "Asif Khan", ["SND-RAVI", "CRS-34"]),
-		("Ravi Electric Co.", "Materials", "Usman Tariq", ["CND-1"]), ("City Pipes & Fittings", "Materials", "Kamran Ali", ["PIPE-4", "PPR-25"]),
-		("Star Builders", "Grey structure", "Ahmed Saeed", []), ("Gulberg Tiles & Marble", "Finishing", "Nadeem Akhtar", ["TIL-6060", "MRB-WHT"]),
-	]
+	name, address = PROJECTS[v]
 	return {
-		"project": {"name": PROJECT, "address": "Plot 12, Street 4, Sample Town", "start": _d(-170), "end": _d(380)},
-		"units": {"nos": "Nos", "bag": "Bag", "kg": "Kg", "cft": "Cubic Foot", "sft": "Square Foot", "litre": "Litre", "pair": "Pair"},
-		"items": [{"code": c, "name": n, "unit": u, "category": cat, "kind": kind.get(cat, "Grey materials"), "phase": "Grey", "spec": n, "rate": _r(rate, k)} for c, n, u, cat, rate in items],
+		"project": {"name": name, "address": address, "start": _d(-170), "end": _d(380)},
+		"units": {"nos": "Nos", "bag": "Bag", "kg": "Kg", "cft": "Cubic Foot", "sft": "Square Foot", "litre": "Litre", "pair": "Pair", "m3": "Cubic Meter", "m2": "Square Meter"},
+		"items": [{"code": c, "name": n, "unit": u, "category": cat, "kind": kind.get(cat, "Grey materials"), "phase": "Grey", "spec": n, "rate": _r(rate, k)} for c, n, u, cat, rate in out_items],
 		"category_budget": cat_budget,
-		"budget": [{"id": i, "name": n, "category": c, "amount": _r(a, k)} for i, n, c, a in budget],
+		"budget": [{"id": i, "name": n, "category": c, "amount": _r(a, kw if i in LABOUR_LINES else k)} for i, n, c, a in budget],
 		"milestones": [{"code": c, "name": n, "phase": ph, "start": _d(a), "end": _d(b), "after": aft, "ur": ""} for c, n, ph, a, b, aft in ms],
-		"suppliers": [{"name": n, "work": w, "contact": c, "phone": f"0300-55{i:05d}", "items": it} for i, (n, w, c, it) in enumerate(sups)],
+		"suppliers": [{"name": n, "work": w, "contact": c, "phone": N["phone"].format(i=i), "items": SUPPLIER_ITEMS[i] if i < len(SUPPLIER_ITEMS) else []}
+			for i, (n, w, c) in enumerate(N["suppliers"])],
 		"payment_plan": [],
 	}
 
 
-def make():
-	k, co = _k()
-	if frappe.db.exists("Project", {"project_name": PROJECT}):
+_V = {"v": "pk", "name": PROJECT}
+
+
+def make_cli(country=None, lang=None):
+	"""For the console's set-up: the sample, with the real error printed if it fails (bench execute hides it)."""
+	try:
+		make(country=country, lang=lang)
+	except Exception:
+		frappe.db.rollback()
+		print(frappe.get_traceback())
+		print("SAMPLE FAILED")
+
+
+def make(country=None, lang=None):
+	co = frappe.db.get_single_value("Global Defaults", "default_company")
+	cur = frappe.db.get_value("Company", co, "default_currency")
+	v = variant(country)
+	km, kw = factors(cur, v)
+	if any(frappe.db.exists("Project", {"project_name": n}) for n, _a in PROJECTS.values()):
 		print("The sample project is already here.")
 		return
+	_V.update(v=v, name=PROJECTS[v][0])
 	random.seed(31)
 	s = frappe.get_single("Buildiary Settings")
 	keep = {f: s.get(f) for f in RULES}
@@ -104,21 +205,26 @@ def make():
 	frappe.clear_document_cache("Buildiary Settings", "Buildiary Settings")
 	try:
 		_fiscal_years(co)
-		d = data(k)
-		old_app.run(company=co, data=d)
+		old_app.run(company=co, data=data(km, v, kw))
 		from buildiary.setup import apply_settings
 
 		apply_settings()
+		wh = frappe.db.get_single_value("Buildiary Settings", "site_warehouse")
+		if wh and frappe.db.has_column("Project", "buildiary_store"):
+			frappe.db.set_value("Project", _project(), "buildiary_store", wh, update_modified=False)
 		_progress()
-		_buying(co, k)
-		_people(co, k)
-		_water_and_cash(co, k)
+		_buying(co, km)
+		_people(co, kw)
+		_water_and_cash(co, km)
 		_quality()
+		_debris(km)
 		frappe.db.commit()
+		if lang == "ar":
+			localize_ar()
 		print("SAMPLE PROJECT READY")
 	finally:
-		for f, v in keep.items():
-			frappe.db.set_single_value("Buildiary Settings", f, v)
+		for f, val in keep.items():
+			frappe.db.set_single_value("Buildiary Settings", f, val)
 		frappe.clear_document_cache("Buildiary Settings", "Buildiary Settings")
 		frappe.db.commit()
 
@@ -139,7 +245,11 @@ def _fiscal_years(co):
 
 
 def _project():
-	return frappe.db.get_value("Project", {"project_name": PROJECT})
+	return frappe.db.get_value("Project", {"project_name": _V.get("name") or PROJECT})
+
+
+def _sup_name(i):
+	return NAMES[_V["v"]]["suppliers"][i][0]
 
 
 def _progress():
@@ -171,14 +281,16 @@ def _buying(co, k):
 
 	wh, project = _wh(), _project()
 	sup = {n: frappe.db.get_value("Supplier", {"supplier_name": n}) for n in frappe.get_all("Supplier", pluck="supplier_name")}
+	v = _V["v"]
 	orders = [
-		("Madina Cement Traders", [("CEM-OPC", 1800)], 1.0, "paid", -70),
-		("Faisal Steel Store", [("STL-12", 9000), ("STL-16", 7000), ("STL-10", 3500), ("BND-WIRE", 250)], 0.85, "part", -60),
-		("Al Noor Block Factory", [("BLK-6", 12000), ("BLK-4", 5000)], 0.6, "billed", -30),
-		("Riverside Sand & Crush", [("SND-RAVI", 6000), ("CRS-34", 5000)], 1.0, "paid", -55),
-		("Ravi Electric Co.", [("CND-1", 400)], 1.0, "billed", -20),
-		("City Pipes & Fittings", [("PIPE-4", 60), ("PPR-25", 150)], 0.0, "ordered", -8),
+		(_sup_name(0), [("CEM-OPC", 1800)], 1.0, "paid", -70),
+		(_sup_name(1), [("STL-12", 9000), ("STL-16", 7000), ("STL-10", 3500), ("BND-WIRE", 250)], 0.85, "part", -60),
+		(_sup_name(2), [("BLK-6", 12000), ("BLK-4", 5000)], 0.6, "billed", -30),
+		(_sup_name(3), [("SND-RAVI", 6000), ("CRS-34", 5000)], 1.0, "paid", -55),
+		(_sup_name(4), [("CND-1", 400)], 1.0, "billed", -20),
+		(_sup_name(5), [("PIPE-4", 60), ("PPR-25", 150)], 0.0, "ordered", -8),
 	]
+	orders = [(n, [(c, _qty(c, q, v)) for c, q in lines], r, st, d) for n, lines, r, st, d in orders]
 	for name, lines, received, state, days in orders:
 		s = sup.get(name)
 		if not s:
@@ -207,9 +319,9 @@ def _buying(co, k):
 		pr.set_posting_time = 1
 		pr.supplier_delivery_note = f"DN-{random.randint(1000, 9999)}"
 		pr.buildiary_received_by = "Store keeper"
-		pr.buildiary_vehicle = f"LES-{random.randint(1000, 9999)}"
+		pr.buildiary_vehicle = f"{'LES' if v == 'pk' else 'TRK'}-{random.randint(1000, 9999)}"
 		for it in pr.items:
-			it.qty = it.received_qty = round(it.qty * received)
+			it.qty = it.received_qty = round(it.qty * received, 1) if it.item_code in METRIC and v != "pk" else round(it.qty * received)
 			it.project = project
 		pr.insert(ignore_permissions=True)
 		pr.submit()
@@ -233,9 +345,11 @@ def _buying(co, k):
 				pe.insert(ignore_permissions=True)
 				pe.submit()
 	# material released to work over the last two weeks
-	people = ["Ustad Rafiq (mason)", "Shahid (steel fixer)", "Imran (shuttering)", "Ustad Rafiq (mason)", "Shahid (steel fixer)"]
+	who = ISSUED_TO[v]
+	people = [who[0], who[1], who[2], who[0], who[1]]
 	issues = [("CEM-OPC", 40, "Ground-floor columns"), ("STL-12", 900, "Roof slab steel"), ("BLK-6", 1500, "Boundary wall"), ("CEM-OPC", 55, "Roof slab"),
 		("STL-16", 700, "Columns C1–C8"), ("SND-RAVI", 400, "Plaster mix"), ("CRS-34", 600, "Roof slab"), ("BND-WIRE", 30, "Roof slab steel"), ("CEM-OPC", 35, "Plinth beam")]
+	issues = [(c, _qty(c, q, v), area) for c, q, area in issues]
 	for n, (item, qty, area) in enumerate(issues):
 		have = flt(frappe.db.get_value("Bin", {"item_code": item, "warehouse": wh}, "actual_qty"))
 		if have < qty:
@@ -253,14 +367,14 @@ def _buying(co, k):
 
 
 def _people(co, k):
-	contractor = frappe.db.get_value("Supplier", {"supplier_name": "Star Builders"})
-	crew = [("Rafiq Ahmed", "Mistri", "Mason"), ("Shahid Mehmood", "Mistri", "Steel fixer"), ("Imran Ali", "Mistri", "Shuttering"), ("Nasir Hussain", "Group head", "Mason"),
-		("Arif Khan", "Labour", ""), ("Zahid Iqbal", "Labour", ""), ("Sajid Ali", "Labour", ""), ("Waqas Ahmed", "Labour", ""), ("Fahad Hussain", "Labour", ""),
-		("Bilal Akram", "Labour", ""), ("Tariq Mehmood", "Labour", ""), ("Junaid Khan", "Labour", ""), ("Kashif Ali", "Mistri", "Electrician"), ("Asad Raza", "Supervisor", "")]
+	v = _V["v"]
+	contractor = frappe.db.get_value("Supplier", {"supplier_name": _sup_name(6)})
+	crew = WORKERS[v]
+	phone = {"pk": "0301-77{n:05d}", "gulf": "055-77{n:05d}", "intl": "021-77{n:05d}"}[v]
 	workers = []
 	for n, (name, wtype, trade) in enumerate(crew):
 		w = frappe.get_doc({"doctype": "Site Worker", "full_name": name, "worker_type": wtype, "trade": trade, "contractor": contractor if wtype != "Supervisor" else None,
-			"status": "Active", "daily_wage": _r({"Mistri": 3000, "Group head": 3500, "Labour": 1800, "Supervisor": 4000}[wtype], k), "phone": f"0301-77{n:05d}",
+			"status": "Active", "daily_wage": _r({"Mistri": 3000, "Group head": 3500, "Labour": 1800, "Supervisor": 4000}[wtype], k), "phone": phone.format(n=n),
 			"joined_on": _d(-90 + n), "app_access": "Site supervisor" if wtype == "Supervisor" else "No sign-in"})
 		w.flags.ignore_permissions = True
 		w.insert()
@@ -271,7 +385,7 @@ def _people(co, k):
 	att.insert(ignore_permissions=True)
 	frappe.get_doc({"doctype": "Site Diary", "date": nowdate(), "project": _project(), "weather": "Sunny", "workers": 12,
 		"work_done": "Ground-floor roof slab: steel fixing on grid A–C finished and checked. Shuttering for the staircase started.",
-		"materials_used": "Cement 55 bags, crush 600 cft, binding wire 30 kg", "issues": "Ready-mix truck booked for Thursday morning.",
+		"materials_used": "Cement 55 bags, crush 600 cft, binding wire 30 kg" if v == "pk" else "Cement 55 bags, aggregate 17 m³, binding wire 30 kg", "issues": "Ready-mix truck booked for Thursday morning.",
 		"visitors": "Structural engineer checked the slab steel"}).insert(ignore_permissions=True)
 	return workers
 
@@ -280,7 +394,7 @@ def _water_and_cash(co, k):
 	sup = frappe.db.get_value("Site Worker", {"worker_type": "Supervisor"})
 	tanks = frappe.get_all("Water Tank", filters={"is_active": 1, "capacity_gallons": [">", 0]}, fields=["name"], order_by="sort_order")
 	for n, (days, gal, tds) in enumerate(((-6, 3000, 640), (-4, 3000, 700), (-2, 5000, 610), (-1, 1000, 1450), (0, 3000, 655))):
-		t = frappe.get_doc({"doctype": "Water Tanker", "date": _d(days), "time": "09:30:00", "vehicle_no": f"TLD-{4210 + n}", "supplier_text": "Sample Hydrant",
+		t = frappe.get_doc({"doctype": "Water Tanker", "date": _d(days), "time": "09:30:00", "vehicle_no": f"{'TLD' if _V['v'] == 'pk' else 'WT'}-{4210 + n}", "supplier_text": "Sample Hydrant",
 			"gallons": gal, "water_type": "Brackish (rejected)" if tds > 1000 else "Sweet (construction & curing)", "tds_ppm": tds, "cost": _r(gal * 1.2, k),
 			"emptied_into": tanks[0].name if tanks and tds <= 1000 else None, "project": _project()})
 		t.insert(ignore_permissions=True)
@@ -296,8 +410,10 @@ def _water_and_cash(co, k):
 	given.insert(ignore_permissions=True)
 	given.submit()
 	cats = {c.category_name: c for c in frappe.get_all("Petty Cash Category", fields=["name", "category_name", "expense_account"])}
-	for days, cat, amt, to, status in ((-8, "Canteen & food", 6500, "Hotel near site", "Approved"), (-6, "Transport & fuel", 4200, "Loader rickshaw", "Approved"),
-		(-3, "Small tools & hardware", 7800, "Hardware store", "Approved"), (-1, "Labour advance", 10000, "Nasir Hussain", "Waiting for owner"), (0, "Canteen & food", 3100, "Tea stall", "Waiting for owner")):
+	head = WORKERS[_V["v"]][3][0]
+	near = ("Hotel near site", "Loader rickshaw") if _V["v"] == "pk" else ("Site canteen", "Pickup truck hire")
+	for days, cat, amt, to, status in ((-8, "Canteen & food", 6500, near[0], "Approved"), (-6, "Transport & fuel", 4200, near[1], "Approved"),
+		(-3, "Small tools & hardware", 7800, "Hardware store", "Approved"), (-1, "Labour advance", 10000, head, "Waiting for owner"), (0, "Canteen & food", 3100, "Tea stall", "Waiting for owner")):
 		c = cats.get(cat)
 		if not c:
 			continue
@@ -310,7 +426,7 @@ def _water_and_cash(co, k):
 
 def _quality():
 	project = _project()
-	steel = frappe.db.get_value("Supplier", {"supplier_name": "Star Builders"})
+	steel = frappe.db.get_value("Supplier", {"supplier_name": _sup_name(6)})
 	ins = frappe.get_doc({"doctype": "Site Inspection", "date": _d(-2), "project": project, "inspection_type": "Steel before concrete", "location": "Ground-floor roof slab",
 		"supplier": steel, "inspector": "Structural engineer", "result": "Pass with remarks",
 		"checks": [{"check": "Bar sizes and spacing as per drawing", "result": "OK"}, {"check": "Cover blocks in place", "result": "OK"}, {"check": "Laps and anchorage", "result": "OK"}],
@@ -319,12 +435,32 @@ def _quality():
 	ins.submit()
 	for desc, loc, status, days in (("Honeycombing on column C4 face", "Ground floor, grid C4", "Open", 3), ("Plinth beam level off by 10 mm at the gate side", "Plinth, east side", "In progress", -2),
 		("Waterproofing membrane torn near the drain", "Basement wall", "Open", 5)):
-		frappe.get_doc({"doctype": "Site Snag", "description": desc, "location": loc, "project": project, "status": status, "supplier": steel, "responsible_person": "Nasir Hussain",
+		frappe.get_doc({"doctype": "Site Snag", "description": desc, "location": loc, "project": project, "status": status, "supplier": steel, "responsible_person": WORKERS[_V["v"]][3][0],
 			"target_date": _d(days)}).insert(ignore_permissions=True)
+
+
+def _debris(k):
+	"""Where debris goes in skips (on by default in the Gulf): a skip on site and its collections."""
+	if not frappe.db.get_single_value("Buildiary Settings", "debris_enabled") or len(NAMES[_V["v"]]["suppliers"]) < 9:
+		return
+	from frappe.utils import now_datetime
+
+	sup = frappe.db.get_value("Supplier", {"supplier_name": _sup_name(8)})
+	if not sup:
+		return
+	frappe.db.set_single_value("Buildiary Settings", "debris_supplier", sup)
+	k1 = frappe.get_doc({"doctype": "Debris Container", "container_no": "SK-2231", "supplier": sup, "size_m3": 10, "placed_on": _d(-20), "location": "By the gate, street side",
+		"status": "On site", "fill": "Nearly full", "fill_on": now_datetime(), "every_days": 3, "next_collection": _d(1), "permit_no": "RP-55120", "permit_expires": _d(40),
+		"project": _project()}).insert(ignore_permissions=True)
+	for days, slip, cost in ((-9, "DT-80412", 16000), (-6, "DT-80577", 16000), (-3, "DT-80733", 16000)):
+		frappe.get_doc({"doctype": "Debris Removal", "date": _d(days), "kind": "Exchange (full for empty)", "status": "Done", "container": k1.name, "supplier": sup,
+			"reason": "Scheduled", "requested_on": f"{_d(days)} 08:00:00", "requested_by": "Administrator", "notified": "Email", "done_on": f"{_d(days)} 11:30:00",
+			"vehicle_no": f"SKP-{4400 + days * -1}", "loads": 1, "slip_no": slip, "cost": _r(cost, k), "received_by_name": WORKERS[_V["v"]][13][0], "project": _project()}).insert(ignore_permissions=True)
 
 
 AR = {
 	"project": "مسكن النور",
+	"projects": {"Al Noor Residence": "مسكن النور", "Al Noor Villa": "فيلا النور", "Maple Grove House": "بيت مابل غروف"},
 	"tasks": {"D1": "ملخص التصميم والمخططات الأولية", "D2": "المخططات الإنشائية والكهروميكانيكية", "A1": "اعتماد رخصة البناء", "G1": "التجهيز والحفر",
 		"G2": "الأساسات والعزل والميدة", "G3": "أعمدة وسقف الدور الأرضي", "G4": "أعمدة وسقف الدور الأول", "G5": "البلوك والدروة وخزانات الماء",
 		"G6": "اللياسة وتسليم العظم", "F1": "التأسيس الكهروميكانيكي وحلوق النوافذ", "F2": "الأرضيات وبلاط الجدران", "F3": "النجارة والمطبخ والألمنيوم",
@@ -335,17 +471,23 @@ AR = {
 		"PNT-EMU": "دهان بلاستيك أبيض", "PUTTY": "معجون جدران", "GLV": "قفازات عمل", "HLMT": "خوذة سلامة"},
 	"suppliers": {"Madina Cement Traders": "مؤسسة المدينة للإسمنت", "Faisal Steel Store": "معرض فيصل للحديد", "Al Noor Block Factory": "مصنع النور للبلوك",
 		"Riverside Sand & Crush": "مؤسسة الوادي للرمل والبحص", "Ravi Electric Co.": "شركة الراوي للكهرباء", "City Pipes & Fittings": "المدينة للمواسير والتمديدات",
-		"Star Builders": "مؤسسة النجم للمقاولات", "Gulberg Tiles & Marble": "معرض الخليج للبلاط والرخام"},
+		"Star Builders": "مؤسسة النجم للمقاولات", "Gulberg Tiles & Marble": "معرض الخليج للبلاط والرخام",
+		"Al Waha Cement Trading": "مؤسسة الواحة لتجارة الإسمنت", "Gulf Rebar Trading": "الخليج لتجارة حديد التسليح", "Desert Block Factory": "مصنع الصحراء للبلوك",
+		"Al Rimal Sand & Aggregates": "الرمال للرمل والبحص", "Noor Electrical Trading": "النور للتجارة الكهربائية", "Al Madina Pipes & Fittings": "المدينة للمواسير والتمديدات",
+		"Al Bina Contracting": "البناء للمقاولات", "Marmar Tiles & Marble": "مرمر للبلاط والرخام", "Green Skip Services": "الخضراء لخدمات الحاويات"},
 	"workers": {"Rafiq Ahmed": "رفيق أحمد", "Shahid Mehmood": "شاهد محمود", "Imran Ali": "عمران علي", "Nasir Hussain": "ناصر حسين", "Arif Khan": "عارف خان", "Zahid Iqbal": "زاهد إقبال",
 		"Sajid Ali": "ساجد علي", "Waqas Ahmed": "وقاص أحمد", "Fahad Hussain": "فهد حسين", "Bilal Akram": "بلال أكرم", "Tariq Mehmood": "طارق محمود", "Junaid Khan": "جنيد خان",
-		"Kashif Ali": "كاشف علي", "Asad Raza": "أسعد رضا"},
+		"Kashif Ali": "كاشف علي", "Asad Raza": "أسعد رضا", "Ramesh Kumar": "راميش كومار", "Biju Thomas": "بيجو توماس", "Abdul Karim": "عبد الكريم",
+		"Mohammed Rafi": "محمد رفيع", "Suresh Babu": "سوريش بابو", "Mahmoud Saleh": "محمود صالح"},
 }
 
 
 def localize_ar():
 	"""Arabic names for the sample project (for the Arabic screenshots)."""
-	p = _project()
-	frappe.db.set_value("Project", p, "project_name", AR["project"], update_modified=False)
+	p = _project() or frappe.db.get_value("Project", {"project_name": ["in", list(AR["projects"])]})
+	if not p:
+		return
+	frappe.db.set_value("Project", p, "project_name", AR["projects"].get(frappe.db.get_value("Project", p, "project_name"), AR["project"]), update_modified=False)
 	for t in frappe.get_all("Task", filters={"project": p}, fields=["name", "subject"]):
 		code = t.subject.split(" ")[0]
 		if code in AR["tasks"]:
@@ -367,7 +509,8 @@ def localize_ar():
 			frappe.db.set_value("Site Worker", w, "full_name", new, update_modified=False)
 			frappe.db.sql("update `tabSite Attendance Row` set worker_name=%s where worker=%s", (new, w))
 			frappe.db.sql("update `tabPetty Cash Entry` set holder_name=%s where holder=%s", (new, w))
-	for old, new in (("Ustad Rafiq (mason)", "الأسطى رفيق (بنّاء)"), ("Shahid (steel fixer)", "شاهد (حدّاد)"), ("Imran (shuttering)", "عمران (نجّار شدّة)")):
+	for old, new in (("Ustad Rafiq (mason)", "الأسطى رفيق (بنّاء)"), ("Shahid (steel fixer)", "شاهد (حدّاد)"), ("Imran (shuttering)", "عمران (نجّار شدّة)"),
+			("Rafiq (mason)", "رفيق (بنّاء)"), ("Ramesh (shuttering)", "راميش (نجّار شدّة)")):
 		frappe.db.sql("update `tabStock Entry` set buildiary_issued_to=%s where buildiary_issued_to=%s", (new, old))
 	frappe.db.commit()
 	frappe.clear_cache()

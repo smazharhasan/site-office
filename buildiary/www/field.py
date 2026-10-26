@@ -22,6 +22,8 @@ EXTRA = (
 	"Design", "Approvals", "Grey structure", "Finishing", "Handover", "Design & approvals", "Service charges", "Grey labour", "Grey materials", "Finishing labour",
 	"Finishing materials", "Contingency", "Site running costs", "Buying", "Stores", "Money", "Quality", "Build", "People", "Water", "Reported", "Photo", "Materials",
 	"Store issue", "Store return", "Receiving goods", "Petty cash", "Attendance", "Sign in",
+	"Empty", "Half full", "Nearly full", "Full", "Exchange (full for empty)", "Take away", "Truck / trolley trip", "New skip delivered",
+	"Scheduled", "Site clean-up", "Waste removal", "Email", "WhatsApp", "Requested", "On site", "Collection requested", "Removed", "Debris",
 )
 
 

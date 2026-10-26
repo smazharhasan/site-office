@@ -223,7 +223,7 @@ def compare(task, before, after):
 		if not r:
 			frappe.throw(_("Choose two photos of this stage."))
 		dates[p] = r[0][0]
-	prompt = (f"Two photos of the same stage of a house under construction in Pakistan: \"{t.subject}\". "
+	prompt = (f"Two photos of the same stage of a house under construction {__import__('buildiary.ai', fromlist=['where']).where()}: \"{t.subject}\". "
 		f"Photo 1 was taken on {dates[before]}, photo 2 on {dates[after]}. Describe in two or three short sentences what work was done between them, "
 		"and estimate how complete this stage looks in photo 2. Point out anything that looks wrong or unsafe. "
 		'Reply with only JSON: {"summary": string, "progress_estimate_pct": number, "concerns": [string]}')

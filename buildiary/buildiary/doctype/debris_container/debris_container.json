@@ -1,0 +1,260 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-10-26 17:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "module": "Buildiary",
+ "name": "Debris Container",
+ "owner": "Administrator",
+ "modified": "2026-10-26 17:00:00.000000",
+ "modified_by": "Administrator",
+ "links": [],
+ "states": [],
+ "row_format": "Dynamic",
+ "track_changes": 1,
+ "autoname": "SKP-.#####",
+ "title_field": "container_no",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "description": "A skip or container for debris on site, from a skip company.",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1
+  },
+  {
+   "role": "Projects Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Site Supervisor",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Stock Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Stock User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Projects User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0
+  },
+  {
+   "role": "Accounts Manager",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Accounts User",
+   "read": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  }
+ ],
+ "fields": [
+  {
+   "fieldname": "container_no",
+   "fieldtype": "Data",
+   "label": "Skip no.",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "The number painted on the skip (the skip company's number)."
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "label": "Skip company",
+   "options": "Supplier",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "size_m3",
+   "fieldtype": "Float",
+   "label": "Size (m³)",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "placed_on",
+   "fieldtype": "Date",
+   "label": "Placed on",
+   "default": "Today"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Where on site",
+   "description": "e.g. In front of the plot, on the street side."
+  },
+  {
+   "fieldname": "col1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "On site\nCollection requested\nRemoved",
+   "default": "On site",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "fill",
+   "fieldtype": "Select",
+   "label": "How full",
+   "options": "Empty\nHalf full\nNearly full\nFull",
+   "default": "Empty",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "fill_on",
+   "fieldtype": "Datetime",
+   "label": "Checked on",
+   "read_only": 1
+  },
+  {
+   "fieldname": "fill_photo",
+   "fieldtype": "Attach Image",
+   "label": "Latest photo"
+  },
+  {
+   "fieldname": "schedule_section",
+   "fieldtype": "Section Break",
+   "label": "Regular collection"
+  },
+  {
+   "fieldname": "every_days",
+   "fieldtype": "Int",
+   "label": "Collect every (days)",
+   "default": "0",
+   "description": "0: only when you ask. For example 3 for twice a week, 7 for weekly."
+  },
+  {
+   "fieldname": "next_collection",
+   "fieldtype": "Date",
+   "label": "Next collection",
+   "read_only": 1
+  },
+  {
+   "fieldname": "col2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "permit_no",
+   "fieldtype": "Data",
+   "label": "Road permit no.",
+   "description": "If the skip stands on a public road and the city needs a permit."
+  },
+  {
+   "fieldname": "permit_expires",
+   "fieldtype": "Date",
+   "label": "Permit valid until"
+  },
+  {
+   "fieldname": "removed_on",
+   "fieldtype": "Date",
+   "label": "Removed on",
+   "read_only": 1
+  },
+  {
+   "fieldname": "more_section",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "project",
+   "fieldtype": "Link",
+   "label": "Project",
+   "options": "Project",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "field_order": [
+  "container_no",
+  "supplier",
+  "size_m3",
+  "placed_on",
+  "location",
+  "col1",
+  "status",
+  "fill",
+  "fill_on",
+  "fill_photo",
+  "schedule_section",
+  "every_days",
+  "next_collection",
+  "col2",
+  "permit_no",
+  "permit_expires",
+  "removed_on",
+  "more_section",
+  "project",
+  "notes"
+ ],
+ "show_title_field_in_link": 1,
+ "search_fields": "container_no,supplier"
+}

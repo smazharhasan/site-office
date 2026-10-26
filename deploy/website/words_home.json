@@ -1,6 +1,6 @@
 {
  "en": {
-  "hero_eyebrow": "Construction management for Pakistan and the Gulf",
+  "hero_eyebrow": "Construction management for any site, in any country",
   "hero_title": "Your construction site, on your phone.",
   "hero_lede": "Deliveries, stores, payments, progress and people, each recorded on site with a photo, a name and a time. The owner and the builder see the same facts, every day.",
   "hero_points": [
@@ -168,14 +168,14 @@
   ],
   "cur_eyebrow": "Your money, your language",
   "cur_title": "See it in your currency",
-  "cur_lede": "Buildiary counts in Pakistani rupees, Saudi riyals, UAE dirhams, Qatari riyals or US dollars, and speaks English, Urdu and Arabic.",
+  "cur_lede": "Buildiary counts in your own currency, from Pakistani rupees and Gulf riyals and dirhams to dollars, euros and pounds, and speaks English, Urdu and Arabic.",
   "cur_label": "Show amounts in",
   "steps_link": "Start your free trial",
   "band_title": "Build with the facts in your pocket",
   "band_lede": "{trial} days free. No card. Your workspace is ready in about a minute."
  },
  "ur": {
-  "hero_eyebrow": "پاکستان اور خلیجی ممالک کے لیے کنسٹرکشن مینجمنٹ",
+  "hero_eyebrow": "کسی بھی ملک میں، ہر سائٹ کے لیے کنسٹرکشن مینجمنٹ",
   "hero_title": "آپ کی تعمیراتی سائٹ، آپ کے فون پر۔",
   "hero_lede": "سامان کی آمد، اسٹور، ادائیگیاں، کام کی پیش رفت اور لوگ، ہر چیز سائٹ پر ہی تصویر، نام اور وقت کے ساتھ درج ہوتی ہے۔ مالک اور بلڈر روز ایک ہی حقائق دیکھتے ہیں۔",
   "hero_points": [
@@ -343,14 +343,14 @@
   ],
   "cur_eyebrow": "آپ کی کرنسی، آپ کی زبان",
   "cur_title": "اپنی کرنسی میں دیکھیں",
-  "cur_lede": "بلڈائری پاکستانی روپے، سعودی ریال، اماراتی درہم، قطری ریال یا امریکی ڈالر میں حساب رکھتا ہے، اور انگریزی، اردو اور عربی بولتا ہے۔",
+  "cur_lede": "بلڈائری آپ کی اپنی کرنسی میں حساب رکھتا ہے، پاکستانی روپے اور خلیجی ریال و درہم سے لے کر ڈالر، یورو اور پاؤنڈ تک، اور انگریزی، اردو اور عربی بولتا ہے۔",
   "cur_label": "رقم اس کرنسی میں",
   "steps_link": "مفت آزمائش شروع کریں",
   "band_title": "حقائق آپ کی جیب میں، تعمیر آپ کی نظر میں",
   "band_lede": "{trial} دن مفت۔ کارڈ کی ضرورت نہیں۔ آپ کا ورک اسپیس تقریباً ایک منٹ میں تیار۔"
  },
  "ar": {
-  "hero_eyebrow": "إدارة البناء لباكستان ودول الخليج",
+  "hero_eyebrow": "إدارة البناء لأي موقع، في أي بلد",
   "hero_title": "موقع البناء الخاص بك، على جوالك.",
   "hero_lede": "التوريدات والمخزن والدفعات وتقدّم العمل والعمّال، كلّها تُسجَّل في الموقع بصورة واسم ووقت. المالك والمقاول يريان الحقائق نفسها كل يوم.",
   "hero_points": [
@@ -518,7 +518,7 @@
   ],
   "cur_eyebrow": "عملتك ولغتك",
   "cur_title": "شاهده بعملتك",
-  "cur_lede": "يحسب بلدائري بالروبية الباكستانية أو الريال السعودي أو الدرهم الإماراتي أو الريال القطري أو الدولار الأمريكي، ويتحدث العربية والإنجليزية والأردية.",
+  "cur_lede": "يحسب بلدائري بعملتك أنت، من الروبية الباكستانية وريالات الخليج ودراهمه إلى الدولار واليورو والجنيه، ويتحدث العربية والإنجليزية والأردية.",
   "cur_label": "عرض المبالغ بـ",
   "steps_link": "ابدأ تجربتك المجانية",
   "band_title": "ابنِ والحقائق في جيبك",

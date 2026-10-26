@@ -263,6 +263,9 @@ def conf_block(t):
 		"console": s.control_host,
 		"support_email": s.support_email,
 		"support_whatsapp": s.support_whatsapp,
+		"trial_data": t.get("trial_data") or "Own data",
+		"at_subscription": t.get("at_subscription") or "Keep my data",
+		"data_reset": t.get("data_reset") or "",
 	}
 
 

@@ -48,3 +48,18 @@ class BuildiaryTenant(Document):
 
 		check_tenant(self, reminders=False)
 		return self.status
+
+	@frappe.whitelist()
+	def fresh_start(self):
+		"""Clear the trial data now: the workspace is set up afresh (people and passwords kept, the old one archived)."""
+		frappe.only_for(("System Manager", "Buildiary Admin"))
+		if not self.site_host or self.status not in ("Trial", "Active", "Payment due", "Suspended"):
+			frappe.throw(_("This customer has no workspace to start fresh."))
+		if self.data_reset in ("Waiting", "Running"):
+			frappe.throw(_("A fresh start is already under way."))
+		from buildiary.saas.provision import queue_reset
+
+		self.db_set("data_reset", "")
+		queue_reset(self, f"by {frappe.session.user}")
+		return "queued"
+

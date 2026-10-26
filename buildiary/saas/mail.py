@@ -268,18 +268,37 @@ def _sender(name=None):
 	return f'"{name}" <{addr}>'
 
 
-def deliver(to, subject, html, sender_name=None, now=False, ref=None):
-	"""Queues (or sends now) one email; False when it could not be."""
+def deliver(to, subject, html, sender_name=None, now=False, ref=None, soon=False):
+	"""Queues (or sends now) one email; False when it could not be. soon: queued, then sent by a
+	background job straight away (a mail server problem can't then break the person's request)."""
 	if not to:
 		return False
 	try:
-		frappe.sendmail(recipients=[to], sender=_sender(sender_name), subject=subject, message=html, raw_html=True, add_css=False,
+		q = frappe.sendmail(recipients=[to], sender=_sender(sender_name), subject=subject, message=html, raw_html=True, add_css=False,
 			add_unsubscribe_link=0, delayed=not now, now=now, reply_to=(_s().get("mail_from") or None),
 			reference_doctype=ref.doctype if ref else None, reference_name=ref.name if ref else None)
+		if soon and not now:
+			send_soon(q)
 		return True
 	except Exception:
 		frappe.log_error(f"Buildiary: could not send the email '{subject}' to {to}")
 		return False
+
+
+def send_soon(q):
+	"""A queued email goes out within seconds (a background job) instead of at the next scheduler run."""
+	name = getattr(q, "name", None) if q else None
+	if name and not frappe.in_test:
+		frappe.enqueue("buildiary.saas.mail.send_queued", name=name, queue="short", enqueue_after_commit=True)
+
+
+def send_queued(name):
+	"""The background job: one queued email, sent now (a failure stays in the queue for the scheduler to retry)."""
+	from frappe.email.doctype.email_queue.email_queue import EmailQueue
+
+	q = EmailQueue.find(name)
+	if q and q.status == "Not Sent":
+		q.send()
 
 
 # ---------------------------------------------------------------- payment details
@@ -442,12 +461,14 @@ def payment_received(t, pay):
 	return deliver(t.email, w(lang, "ack_subject"), layout(lang, w(lang, "ack_title"), b, to=t.email), ref=t)
 
 
-def payment_confirmed(t, pay):
+def payment_confirmed(t, pay, fresh=False):
 	lang = lang_of(t)
 	start = "right" if lang != "en" else "left"
 	u = urls(t, lang)
 	b = _greeting(t, lang) + p(w(lang, "ok_intro", plan=esc(plan_label(pay.plan, lang)), company=esc(t.company_name), date=date_text(t.paid_until, lang)), lang)
 	b += rows(_payment_rows(pay, lang, with_dates=True), lang, start) + p(w(lang, "ok_keep"), lang, MUTED, 14)
+	if fresh:
+		b += box(p(w(lang, "ok_fresh"), lang, size=15))
 	b += button(u["ws"], w(lang, "open_ws"), lang) + p(w(lang, "w_feedback_text"), lang, MUTED, 14)
 	b += p(f'<a href="{u["feedback"]}" style="color:#284B78">{w(lang, "feedback_btn")}</a>', lang, size=15) + _sign_team(lang)
 	return deliver(t.email, w(lang, "ok_subject"), layout(lang, w(lang, "ok_title"), b, to=t.email), ref=t)
@@ -488,7 +509,7 @@ def password_reset(user, link, lang="en", minutes=20, host=None):
 	b += button(link, w(lang, "pw_button"), lang)
 	b += p(w(lang, "pw_expires", minutes=minutes), lang, MUTED, 14) + p(w(lang, "pw_ignore"), lang, MUTED, 14)
 	html = layout(lang, w(lang, "pw_title"), b, preheader=w(lang, "pw_title"), to=user.email or user.name, why="foot_why_pw")
-	return deliver(user.email or user.name, w(lang, "pw_subject"), html, now=True) or deliver(user.email or user.name, w(lang, "pw_subject"), html)
+	return deliver(user.email or user.name, w(lang, "pw_subject"), html, soon=True)
 
 
 # ---------------------------------------------------------------- follow-ups (from the daily check)

@@ -525,3 +525,8 @@ html[data-theme=dark] .brandname{color:#fff}
 .linkbtn{all:unset;cursor:pointer;color:var(--accent);font-weight:600;font-size:14px;text-align:center;padding:8px;display:block;margin:2px auto 0;border-radius:8px}
 .linkbtn:hover{text-decoration:underline}
 .linkbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.skipfill{height:10px;border-radius:6px;background:var(--sunk);overflow:hidden;margin:10px 0 6px}
+.skipfill i{display:block;height:100%;border-radius:6px;background:var(--k1)}
+.skipfill i.info{background:var(--k2)}.skipfill i.warn{background:var(--k3)}.skipfill i.bad{background:var(--k4)}
+.skipimg{width:100%;max-height:180px;object-fit:cover;border-radius:12px;margin-top:8px;cursor:zoom-in}
+.msgbox{white-space:pre-wrap;font:inherit;font-size:14px;background:var(--sunk);padding:12px 14px;border-radius:12px;margin:0;overflow-wrap:anywhere}
