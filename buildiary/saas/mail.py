@@ -92,6 +92,23 @@ def ltr(text):
 	return f'<span dir="ltr" style="unicode-bidi:isolate">{text}</span>'
 
 
+def whatsapp(number):
+	"""The support WhatsApp number written the international way, linked to a chat."""
+	import re
+
+	digits = re.sub(r"\D", "", str(number or ""))
+	if not digits:
+		return ""
+	shown = "+" + digits
+	try:
+		import phonenumbers
+
+		shown = phonenumbers.format_number(phonenumbers.parse("+" + digits), phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+	except Exception:
+		pass
+	return ltr(f'<a href="https://wa.me/{digits}" style="color:{MUTED}">{esc(shown)}</a>')
+
+
 def period_text(periods, billing_period, lang):
 	n = max(1, cint(periods) or 1)
 	if billing_period == "Yearly":
@@ -201,7 +218,7 @@ def layout(lang, title, body, preheader="", to=""):
 	logo = f'{u["console"]}/assets/buildiary/images/email-logo.png' if u["console"] else ""
 	ents = "".join(
 		f'<div style="margin:2px 0">{esc(e.get(lang) or e["en"])} &middot; {esc(e["place"].get(lang) or e["place"]["en"])}</div>' for e in ENTITIES.values())
-	wa = w(lang, "foot_wa", n=ltr(esc(s.support_whatsapp))) if s.support_whatsapp else ""
+	wa = w(lang, "foot_wa", n=whatsapp(s.support_whatsapp)) if s.support_whatsapp else ""
 	links = " &nbsp;&middot;&nbsp; ".join(
 		f'<a href="{url}" style="color:{MUTED};text-decoration:underline">{w(lang, k)}</a>'
 		for k, url in (("l_site", u["site"]), ("l_feedback", u["feedback"]), ("l_privacy", u["privacy"]), ("l_terms", u["terms"])) if url)
