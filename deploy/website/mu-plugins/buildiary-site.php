@@ -79,6 +79,15 @@ add_filter('body_class', function ($c) {
 	return $c;
 });
 
+// ---- /android: the latest Android app (the address in our emails)
+add_action('init', function () {
+	$path = trim((string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
+	if ($path === 'android') {
+		wp_redirect('https://github.com/smazharhasan/site-office/releases/latest/download/Buildiary.apk', 302);
+		exit;
+	}
+});
+
 // ---- "Start free trial" goes to the console's sign-up page in the same language
 add_action('init', function () {
 	$path = trim((string) parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
@@ -117,7 +126,7 @@ function buildiary_t($key) {
 			'region' => 'Language and currency', 'cur_note' => 'Screenshots and prices follow the currency you pick.',
 			'cur_pkr' => 'Pakistani rupee', 'cur_sar' => 'Saudi riyal', 'cur_aed' => 'UAE dirham', 'cur_qar' => 'Qatari riyal', 'cur_usd' => 'US dollar',
 			'signin_btn' => 'Sign in', 'ws_label' => 'Your workspace address', 'ws_go' => 'Continue', 'ws_help' => 'It is in the welcome email we sent when you started.',
-			'ws_bad' => 'Use letters, numbers and dashes only.', 'ws_new' => 'New to Buildiary?', 'pay_note' => 'Pay by bank transfer in Pakistan, the UAE or Saudi Arabia.', 'close' => 'Close',
+			'ws_bad' => 'Use letters, numbers and dashes only.', 'ws_new' => 'New to Buildiary?', 'pay_note' => 'Pay by bank transfer in Pakistan, the UAE or Saudi Arabia.', 'close' => 'Close', 'feedback' => 'Feedback and requests',
 		],
 		'ur' => [
 			'features' => 'خصوصیات', 'pricing' => 'قیمتیں', 'about' => 'ہمارے بارے میں', 'contact' => 'رابطہ', 'trial' => 'مفت آزمائش', 'menu' => 'مینو', 'guides' => 'رہنمائی', 'owners' => 'گھر بنوانے والوں کے لیے', 'builders' => 'بلڈرز کے لیے',
@@ -143,7 +152,7 @@ function buildiary_t($key) {
 			'region' => 'زبان اور کرنسی', 'cur_note' => 'اسکرین شاٹس اور قیمتیں آپ کی چنی ہوئی کرنسی میں دکھائی جاتی ہیں۔',
 			'cur_pkr' => 'پاکستانی روپیہ', 'cur_sar' => 'سعودی ریال', 'cur_aed' => 'اماراتی درہم', 'cur_qar' => 'قطری ریال', 'cur_usd' => 'امریکی ڈالر',
 			'signin_btn' => 'لاگ اِن', 'ws_label' => 'آپ کے ورک اسپیس کا پتا', 'ws_go' => 'آگے بڑھیں', 'ws_help' => 'یہ اس خوش آمدیدی ای میل میں ہے جو آغاز پر بھیجی گئی تھی۔',
-			'ws_bad' => 'صرف انگریزی حروف، اعداد اور ڈیش استعمال کریں۔', 'ws_new' => 'بلڈائری پر نئے ہیں؟', 'pay_note' => 'پاکستان، متحدہ عرب امارات یا سعودی عرب میں بینک ٹرانسفر سے ادائیگی۔', 'close' => 'بند کریں',
+			'ws_bad' => 'صرف انگریزی حروف، اعداد اور ڈیش استعمال کریں۔', 'ws_new' => 'بلڈائری پر نئے ہیں؟', 'pay_note' => 'پاکستان، متحدہ عرب امارات یا سعودی عرب میں بینک ٹرانسفر سے ادائیگی۔', 'close' => 'بند کریں', 'feedback' => 'رائے اور درخواستیں',
 		],
 		'ar' => [
 			'features' => 'المزايا', 'pricing' => 'الأسعار', 'about' => 'من نحن', 'contact' => 'تواصل معنا', 'trial' => 'ابدأ مجاناً', 'menu' => 'القائمة', 'guides' => 'الأدلة', 'owners' => 'لمن يبني بيته', 'builders' => 'للمقاولين',
@@ -169,7 +178,7 @@ function buildiary_t($key) {
 			'region' => 'اللغة والعملة', 'cur_note' => 'تظهر الصور والأسعار بالعملة التي تختارها.',
 			'cur_pkr' => 'روبية باكستانية', 'cur_sar' => 'ريال سعودي', 'cur_aed' => 'درهم إماراتي', 'cur_qar' => 'ريال قطري', 'cur_usd' => 'دولار أمريكي',
 			'signin_btn' => 'تسجيل الدخول', 'ws_label' => 'عنوان مساحة عملك', 'ws_go' => 'متابعة', 'ws_help' => 'تجده في رسالة الترحيب التي أرسلناها عند البدء.',
-			'ws_bad' => 'استخدم الحروف الإنجليزية والأرقام والشرطة فقط.', 'ws_new' => 'جديد على بلدائري؟', 'pay_note' => 'ادفع بالتحويل البنكي في باكستان أو الإمارات أو السعودية.', 'close' => 'إغلاق',
+			'ws_bad' => 'استخدم الحروف الإنجليزية والأرقام والشرطة فقط.', 'ws_new' => 'جديد على بلدائري؟', 'pay_note' => 'ادفع بالتحويل البنكي في باكستان أو الإمارات أو السعودية.', 'close' => 'إغلاق', 'feedback' => 'ملاحظات وطلبات',
 		],
 	];
 	return buildiary_trial_fill($T[buildiary_lang()][$key] ?? $T['en'][$key] ?? $key);
@@ -383,7 +392,7 @@ add_shortcode('buildiary_footer', function () {
 		. '<div><h2>' . esc_html(buildiary_t('product')) . '</h2>' . $product . $link(buildiary_url('pricing'), buildiary_t('pricing')) . '</div>'
 		. '<div><h2>' . esc_html(buildiary_t('solutions')) . '</h2>' . $link(buildiary_url('home-owners'), buildiary_t('s_owners')) . $link(buildiary_url('home-owners'), buildiary_t('s_abroad')) . $link(buildiary_url('builders'), buildiary_t('s_builders')) . $link($feat . '#people', buildiary_t('s_team')) . '</div>'
 		. ($guides ? '<div><h2>' . esc_html(buildiary_t('guides')) . '</h2>' . $guides . $link(buildiary_url('guides'), buildiary_t('all_guides')) . '</div>' : '')
-		. '<div><h2>' . esc_html(buildiary_t('company')) . '</h2>' . $link(buildiary_url('about'), buildiary_t('about')) . $link(buildiary_url('contact'), buildiary_t('contact')) . $link(buildiary_url('privacy'), buildiary_t('privacy')) . $link(buildiary_url('terms'), buildiary_t('terms')) . '</div>'
+		. '<div><h2>' . esc_html(buildiary_t('company')) . '</h2>' . $link(buildiary_url('about'), buildiary_t('about')) . $link(buildiary_url('contact'), buildiary_t('contact')) . $link('https://' . BUILDIARY_CONSOLE . '/feedback?lang=' . buildiary_lang(), buildiary_t('feedback')) . $link(buildiary_url('privacy'), buildiary_t('privacy')) . $link(buildiary_url('terms'), buildiary_t('terms')) . '</div>'
 		. '<div><h2>' . esc_html(buildiary_t('reach')) . '</h2><a href="mailto:' . esc_attr(BUILDIARY_SUPPORT_EMAIL) . '">' . esc_html(BUILDIARY_SUPPORT_EMAIL) . '</a>' . $wa . '<a href="https://www.smhglobal.com.pk" rel="noopener">smhglobal.com.pk</a>'
 		. '<p class="mb-foot-pay"><span class="mb-foot-flags">' . $flags . '</span>' . esc_html(buildiary_t('pay_note')) . '</p></div>'
 		. '</div><div class="mb-wrap mb-foot-bottom"><span>© ' . esc_html(date('Y')) . ' SMH Global Services</span>' . buildiary_lang_links() . buildiary_maker('light') . '</div></footer>';

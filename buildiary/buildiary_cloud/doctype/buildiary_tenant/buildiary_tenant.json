@@ -7,7 +7,7 @@
  "module": "Buildiary Cloud",
  "name": "Buildiary Tenant",
  "owner": "Administrator",
- "modified": "2026-10-25 21:00:00.000000",
+ "modified": "2026-10-26 14:00:00.000000",
  "modified_by": "Administrator",
  "fields": [
   {
@@ -186,6 +186,13 @@
    "read_only": 1
   },
   {
+   "fieldname": "emails_sent",
+   "fieldtype": "Small Text",
+   "label": "Emails sent",
+   "read_only": 1,
+   "description": "Follow-up emails already sent to this customer (each is sent once)."
+  },
+  {
    "fieldname": "usage_section",
    "fieldtype": "Section Break",
    "label": "Usage",
@@ -354,6 +361,7 @@
   "col3",
   "suspended_on",
   "last_reminder",
+  "emails_sent",
   "usage_section",
   "users",
   "projects",

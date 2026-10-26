@@ -136,9 +136,46 @@ def bank_region(country):
 
 
 def bank_accounts(country):
-	"""The accounts a customer from this country pays into (Pakistan, the UAE, or the Saudi ones for everyone else)."""
+	"""The accounts a customer from this country pays into (Pakistan, the UAE, or the Saudi ones for everyone else).
+	Where the region has accounts in several currencies, the one in the customer's own money comes first (Saudi
+	customers see the SAR account); others see the USD account first."""
 	region = bank_region(country)
-	return [b for b in settings().bank_accounts if b.is_active and b.country == region]
+	accounts = [b for b in settings().bank_accounts if b.is_active and b.country == region]
+	mine = currency_for(country)
+	same = [b for b in accounts if b.currency == mine]
+	if same:
+		return same
+	return sorted(accounts, key=lambda b: (b.currency != "USD", b.idx or 0))
+
+
+CURRENCY_COUNTRY = {cur: country for country, cur in COUNTRY_CURRENCY.items()}
+
+
+def price_in(plan, period, currency):
+	"""What a plan costs in one currency (for a bank account in that currency)."""
+	p = plan if isinstance(plan, dict) else frappe.db.get_value("Buildiary Plan", plan, ["*"], as_dict=True)
+	if not p:
+		return 0
+	if currency == "USD" or currency not in CURRENCY_COUNTRY:
+		return flt(p.get("price_year_usd" if period in ("Yearly", "year") else "price_month_usd"))
+	return flt(plan_price(p, period, CURRENCY_COUNTRY[currency])["amount"])
+
+
+# SMH Global Services' company in each region, as written in each language
+ENTITIES = {
+	"Pakistan": {"en": "SMH Global Services (Private) Limited", "ur": "ایس ایم ایچ گلوبل سروسز (پرائیویٹ) لمیٹڈ",
+		"ar": "إس إم إتش جلوبال سيرفيسز (برايفت) ليمتد", "place": {"en": "Karachi, Pakistan", "ur": "کراچی، پاکستان", "ar": "كراتشي، باكستان"}},
+	"United Arab Emirates": {"en": "SMH Global Services L.L.C-FZ", "ur": "ایس ایم ایچ گلوبل سروسز ایل ایل سی - ایف زیڈ",
+		"ar": "اس ام اتش جلوبال سيرفيسز ش.ذ.م.م - منطقة حرة", "place": {"en": "Dubai, United Arab Emirates", "ur": "دبئی، متحدہ عرب امارات", "ar": "دبي، الإمارات العربية المتحدة"}},
+	BANK_OTHERS: {"en": "SMH Global Services Company", "ur": "ایس ایم ایچ گلوبل سروسز کمپنی",
+		"ar": "شركة إس إم إتش جلوبال سيرفيسز", "place": {"en": "Kingdom of Saudi Arabia", "ur": "سعودی عرب", "ar": "المملكة العربية السعودية"}},
+}
+
+
+def entity(country, lang="en"):
+	"""The SMH Global Services company a customer in this country deals with and pays."""
+	e = ENTITIES[bank_region(country)]
+	return e.get(lang) or e["en"]
 
 
 def plans(country=None, active_only=True):

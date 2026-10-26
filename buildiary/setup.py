@@ -122,9 +122,30 @@ def after_migrate():
 	enable_urdu()
 	role_profiles()
 	settings_defaults()
+	cloud_email()
 	if frappe.is_setup_complete():
 		apply_settings()
 	frappe.clear_cache()
+
+
+def cloud_email():
+	"""On the console: new email settings start with their defaults, and the outgoing mail settings
+	are written for every site (common_site_config)."""
+	from buildiary.saas.common import is_control
+
+	if not is_control() or not frappe.db.exists("DocType", "Buildiary Cloud Settings"):
+		return
+	have = set(frappe.db.sql_list("select field from tabSingles where doctype='Buildiary Cloud Settings'"))
+	for df in frappe.get_meta("Buildiary Cloud Settings").fields:
+		if (df.fieldname.startswith("mail_") or df.fieldname.startswith("letter_")) and df.default and df.fieldname not in have:
+			frappe.db.set_single_value("Buildiary Cloud Settings", df.fieldname, df.default)
+	try:
+		from buildiary.saas import mail
+
+		frappe.clear_document_cache("Buildiary Cloud Settings", "Buildiary Cloud Settings")
+		mail.apply_config(frappe.get_single("Buildiary Cloud Settings"))
+	except Exception:
+		frappe.log_error("Buildiary: could not write the outgoing email settings")
 
 
 def brand():

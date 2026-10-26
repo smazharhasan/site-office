@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1E3A5F">
+<title>Feedback · Buildiary</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/buildiary/images/buildiary-logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Kufi+Arabic:wght@400;600;700&family=Noto+Nastaliq+Urdu:wght@400;600&display=swap">
+<script>window.frappe = window.frappe || {};</script>
+<!-- csrf_token -->
+<style>
+/* One card on a light page: what it is about, an optional rating, the message, who is writing */
+:root{
+  --blue:#1E3A5F; --navy:#0F2238; --blue-2:#284B78; --amber:#F2B01E; --ink:#14202B; --muted:#5B6875; --bg:#F2F5F8; --card:#FFFFFF; --line:#DCE2E8; --field:#F7F9FA;
+  --ok:#1C7148; --bad:#B3402A; --on-blue:#E9F0F8; --on-blue-2:#B9CBE0;
+  --display:"Poppins","Segoe UI",Arial,sans-serif; --body:"IBM Plex Sans","Segoe UI",Roboto,Arial,sans-serif;
+  --ur:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq",serif; --ar:"Noto Kufi Arabic","Geeza Pro",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root{--ink:#E6EBF0; --muted:#9EABB8; --bg:#0F151C; --card:#17202A; --line:#2B3744; --field:#121A22; --ok:#5FD198; --bad:#F08A72; color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--body);min-height:100vh}
+[dir=rtl] body{font-family:var(--ar)}
+html[lang=ur] body{font-family:var(--ur);line-height:2.05}
+.top{background:var(--navy);color:var(--on-blue);position:relative;overflow:hidden;padding:20px max(16px,env(safe-area-inset-left,0px)) 96px}
+.top::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.14;background-image:linear-gradient(var(--on-blue-2) 1px,transparent 1px),linear-gradient(90deg,var(--on-blue-2) 1px,transparent 1px);background-size:28px 28px}
+.top>*{position:relative}
+.bar{max-width:640px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
+.logo svg:first-child{width:38px;height:38px}
+.logo .bd-name{height:24px;width:auto}
+.langs{display:flex;gap:4px;background:rgba(255,255,255,.08);border-radius:999px;padding:4px}
+.langs button{border:0;background:transparent;color:var(--on-blue);font:500 .85rem/1 var(--body);padding:8px 12px;border-radius:999px;cursor:pointer}
+.langs button[aria-pressed=true]{background:#fff;color:var(--blue)}
+.langs button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.langs .ur{font-family:var(--ur)} .langs .ar{font-family:var(--ar)}
+.head{max-width:640px;margin:34px auto 0}
+.head h1{font:800 clamp(1.7rem,4.4vw,2.4rem)/1.12 var(--display);margin:0 0 10px;color:#fff;letter-spacing:-.02em}
+html[lang=ur] .head h1{font:600 clamp(1.6rem,4vw,2.1rem)/1.9 var(--ur);letter-spacing:0}
+html[lang=ar] .head h1{font:700 clamp(1.6rem,4vw,2.1rem)/1.45 var(--ar);letter-spacing:0}
+.head p{margin:0;color:var(--on-blue-2);max-width:56ch}
+main{position:relative;z-index:1;max-width:640px;margin:-64px auto 48px;padding:0 max(16px,env(safe-area-inset-left,0px))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;display:grid;gap:18px;box-shadow:0 18px 50px rgba(15,34,56,.12)}
+.f{display:grid;gap:8px;min-width:0;align-content:start}
+.f>label,.f>.lab{font-weight:600;font-size:.95rem}
+.help{font-size:.84rem;color:var(--muted);font-weight:400}
+.kinds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.kind{position:relative;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;background:var(--field);display:flex;align-items:center;gap:10px;font-weight:600;font-size:.95rem}
+.kind input{position:absolute;opacity:0;pointer-events:none}
+.kind svg{width:22px;height:22px;flex:none;color:var(--blue-2)}
+@media (prefers-color-scheme: dark){.kind svg{color:var(--amber)}}
+.kind:has(input:checked){border-color:var(--amber);background:color-mix(in srgb,var(--amber) 10%,var(--card))}
+.kind:has(input:focus-visible){outline:2px solid var(--amber);outline-offset:2px}
+.stars{display:flex;gap:6px;direction:ltr;justify-content:flex-start}
+[dir=rtl] .stars{justify-content:flex-end}
+.stars button{border:0;background:transparent;padding:2px;cursor:pointer;color:var(--line);line-height:0}
+.stars button svg{width:34px;height:34px}
+.stars button.on{color:var(--amber)}
+.stars button:focus-visible{outline:2px solid var(--blue-2);outline-offset:2px;border-radius:6px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.row{grid-template-columns:1fr}.kinds{grid-template-columns:1fr}}
+input[type=text],input[type=email],textarea{width:100%;font:inherit;font-size:16px;line-height:1.5;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;min-height:46px}
+textarea{min-height:150px;resize:vertical}
+html[lang=ur] textarea{line-height:2}
+input:focus,textarea:focus{outline:none;border-color:var(--blue-2);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue-2) 22%,transparent)}
+.ltr{direction:ltr;text-align:left}
+[dir=rtl] .ltr{text-align:right}
+.btn{appearance:none;border:0;border-radius:999px;background:var(--amber);color:#1B1405;font:700 1.02rem/1 var(--display);padding:16px 18px;cursor:pointer;min-height:52px;width:100%}
+html[lang=ur] .btn{font:600 1rem/1.6 var(--ur)} html[lang=ar] .btn{font:700 1rem/1.4 var(--ar)}
+.btn:hover{filter:brightness(1.05)} .btn:focus-visible{outline:3px solid var(--blue-2);outline-offset:2px}
+.btn[disabled]{opacity:.6;cursor:wait}
+.btn.ghost{background:transparent;color:var(--blue-2);border:1.5px solid var(--line)}
+.err{background:color-mix(in srgb,var(--bad) 10%,var(--card));color:var(--bad);border-radius:10px;padding:10px 12px;font-size:.92rem}
+.hp{position:absolute;top:0;inset-inline-start:0;width:1px;height:1px;overflow:hidden;opacity:0;clip-path:inset(50%);pointer-events:none}
+.done{text-align:center;display:grid;gap:12px;justify-items:center;padding:12px 0}
+.done .tick{width:64px;height:64px;border-radius:50%;background:color-mix(in srgb,var(--ok) 14%,var(--card));color:var(--ok);display:grid;place-items:center}
+.done h2{font:800 1.5rem/1.2 var(--display);margin:0}
+html[lang=ur] .done h2{font:600 1.4rem/1.9 var(--ur)} html[lang=ar] .done h2{font:700 1.4rem/1.5 var(--ar)}
+.done p{margin:0;color:var(--muted)}
+.foot{text-align:center;font-size:.85rem;color:var(--muted);margin-top:18px}
+.foot a{color:inherit}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <a class="logo" id="home" href="https://buildiary.app" aria-label="Buildiary"><svg viewBox="0 0 120 120" aria-hidden="true"><rect width="120" height="120" rx="26" fill="#FFFFFF" fill-opacity=".12"/><path d="M96 .08A26 26 0 0 1 106 2.93V117.07A26 26 0 0 1 96 119.92Z" fill="#F2B01E"/><path d="M41.687999999999995 48.313Q45.574 48.313 48.735 50.343Q51.895999999999994 52.373000000000005 53.723 56.143Q55.55 59.913000000000004 55.55 64.959Q55.55 70.00500000000001 53.723 73.804Q51.895999999999994 77.60300000000001 48.735 79.63300000000001Q45.574 81.66300000000001 41.687999999999995 81.66300000000001Q38.382 81.66300000000001 35.946 80.358Q33.51 79.05300000000001 32.175999999999995 76.733V81.257H20.807999999999996V38.337H32.175999999999995V53.243Q33.51 50.923 35.946 49.618Q38.382 48.313 41.687999999999995 48.313ZM38.092 58.23100000000001Q35.598 58.23100000000001 33.887 60.02900000000001Q32.175999999999995 61.827000000000005 32.175999999999995 64.959Q32.175999999999995 68.149 33.887 69.947Q35.598 71.745 38.092 71.745Q40.586 71.745 42.297 69.918Q44.007999999999996 68.09100000000001 44.007999999999996 64.959Q44.007999999999996 61.769000000000005 42.297 60.00000000000001Q40.586 58.23100000000001 38.092 58.23100000000001Z M70.312 48.313Q73.444 48.313 75.90899999999999 49.618Q78.374 50.923 79.766 53.185V38.337H91.19200000000001V81.257H79.766V76.733Q78.432 78.995 75.99600000000001 80.32900000000001Q73.56 81.66300000000001 70.254 81.66300000000001Q66.368 81.66300000000001 63.206999999999994 79.63300000000001Q60.046 77.60300000000001 58.219 73.804Q56.392 70.00500000000001 56.392 64.959Q56.392 59.913000000000004 58.219 56.143Q60.046 52.373000000000005 63.236000000000004 50.343Q66.426 48.313 70.312 48.313ZM73.908 58.23100000000001Q71.356 58.23100000000001 69.674 60.00000000000001Q67.992 61.769000000000005 67.992 64.959Q67.992 68.09100000000001 69.674 69.918Q71.356 71.745 73.908 71.745Q76.402 71.745 78.113 69.947Q79.824 68.149 79.824 64.959Q79.824 61.827000000000005 78.113 60.02900000000001Q76.402 58.23100000000001 73.908 58.23100000000001Z" fill="#FFFFFF"/></svg> <svg class="bd-name" viewBox="0 0 451.4 106.6" role="img" aria-label="buildiary"><path d="M34.3 23.500000000000007Q41.2 23.500000000000007 46.8 27.000000000000007Q52.4 30.500000000000007 55.650000000000006 37.00000000000001Q58.900000000000006 43.50000000000001 58.900000000000006 52.10000000000001Q58.900000000000006 60.7 55.650000000000006 67.25Q52.4 73.80000000000001 46.8 77.35000000000001Q41.2 80.9 34.3 80.9Q28.400000000000002 80.9 24.0 78.55000000000001Q19.6 76.2 17.1 72.30000000000001V80.10000000000001H0.0V6.1000000000000085H17.1V32.2Q19.500000000000004 28.300000000000004 24.000000000000004 25.900000000000006Q28.500000000000004 23.500000000000007 34.3 23.500000000000007ZM29.2 38.400000000000006Q24.1 38.400000000000006 20.550000000000004 42.10000000000001Q17.000000000000004 45.800000000000004 17.000000000000004 52.2Q17.000000000000004 58.60000000000001 20.550000000000004 62.300000000000004Q24.1 66.0 29.2 66.0Q34.3 66.0 37.9 62.25Q41.5 58.50000000000001 41.5 52.10000000000001Q41.5 45.70000000000001 37.95 42.05000000000001Q34.4 38.400000000000006 29.2 38.400000000000006Z M122.0 24.300000000000004V80.10000000000001H104.9V72.50000000000001Q102.30000000000001 76.2 97.85000000000001 78.45Q93.4 80.7 88.0 80.7Q81.60000000000001 80.7 76.70000000000002 77.85000000000001Q71.80000000000001 75.00000000000001 69.10000000000001 69.60000000000001Q66.4 64.2 66.4 56.900000000000006V24.300000000000004H83.4V54.60000000000001Q83.4 60.2 86.30000000000001 63.300000000000004Q89.2 66.4 94.1 66.4Q99.10000000000001 66.4 102.0 63.300000000000004Q104.9 60.2 104.9 54.60000000000001V24.300000000000004Z M131.70000000000002 9.300000000000011Q131.70000000000002 5.300000000000011 134.55 2.6500000000000057Q137.4 0.0 141.9 0.0Q146.3 0.0 149.15 2.6500000000000057Q152.0 5.300000000000011 152.0 9.300000000000011Q152.0 13.200000000000003 149.15 15.850000000000005Q146.3 18.500000000000007 141.9 18.500000000000007Q137.4 18.500000000000007 134.55 15.850000000000005Q131.70000000000002 13.200000000000003 131.70000000000002 9.300000000000011ZM150.4 24.300000000000004V80.10000000000001H133.3V24.300000000000004Z M178.90000000000003 6.1000000000000085V80.10000000000001H161.8V6.1000000000000085Z M211.50000000000003 23.500000000000007Q217.00000000000003 23.500000000000007 221.55 25.800000000000008Q226.10000000000002 28.10000000000001 228.70000000000002 32.00000000000001V6.1000000000000085H245.8V80.10000000000001H228.70000000000002V72.10000000000001Q226.3 76.10000000000001 221.85000000000002 78.5Q217.40000000000003 80.9 211.50000000000003 80.9Q204.60000000000002 80.9 199.00000000000003 77.35000000000001Q193.40000000000003 73.80000000000001 190.15000000000003 67.25Q186.90000000000003 60.7 186.90000000000003 52.10000000000001Q186.90000000000003 43.50000000000001 190.15000000000003 37.00000000000001Q193.40000000000003 30.500000000000007 199.00000000000003 27.000000000000007Q204.60000000000002 23.500000000000007 211.50000000000003 23.500000000000007ZM216.50000000000003 38.400000000000006Q211.40000000000003 38.400000000000006 207.85000000000002 42.05000000000001Q204.3 45.70000000000001 204.3 52.10000000000001Q204.3 58.50000000000001 207.85000000000002 62.25Q211.40000000000003 66.0 216.50000000000003 66.0Q221.60000000000002 66.0 225.15000000000003 62.300000000000004Q228.70000000000002 58.60000000000001 228.70000000000002 52.2Q228.70000000000002 45.800000000000004 225.15000000000003 42.10000000000001Q221.60000000000002 38.400000000000006 216.50000000000003 38.400000000000006Z M255.60000000000002 9.300000000000011Q255.60000000000002 5.300000000000011 258.45000000000005 2.6500000000000057Q261.3 0.0 265.8 0.0Q270.20000000000005 0.0 273.05000000000007 2.6500000000000057Q275.90000000000003 5.300000000000011 275.90000000000003 9.300000000000011Q275.90000000000003 13.200000000000003 273.05000000000007 15.850000000000005Q270.20000000000005 18.500000000000007 265.8 18.500000000000007Q261.3 18.500000000000007 258.45000000000005 15.850000000000005Q255.60000000000002 13.200000000000003 255.60000000000002 9.300000000000011ZM274.3 24.300000000000004V80.10000000000001H257.20000000000005V24.300000000000004Z M306.9 23.500000000000007Q312.8 23.500000000000007 317.25 25.900000000000006Q321.7 28.300000000000004 324.1 32.2V24.300000000000004H341.2V80.10000000000001H324.1V72.2Q321.6 76.10000000000001 317.15 78.5Q312.7 80.9 306.8 80.9Q300.0 80.9 294.4 77.35000000000001Q288.8 73.80000000000001 285.55 67.25Q282.3 60.7 282.3 52.10000000000001Q282.3 43.50000000000001 285.55 37.00000000000001Q288.8 30.500000000000007 294.4 27.000000000000007Q300.0 23.500000000000007 306.9 23.500000000000007ZM311.9 38.400000000000006Q306.8 38.400000000000006 303.25 42.05000000000001Q299.7 45.70000000000001 299.7 52.10000000000001Q299.7 58.50000000000001 303.25 62.25Q306.8 66.0 311.9 66.0Q317.0 66.0 320.55 62.300000000000004Q324.1 58.60000000000001 324.1 52.2Q324.1 45.800000000000004 320.55 42.10000000000001Q317.0 38.400000000000006 311.9 38.400000000000006Z M387.2 23.700000000000003V41.800000000000004H382.5Q376.09999999999997 41.800000000000004 372.9 44.550000000000004Q369.7 47.300000000000004 369.7 54.2V80.10000000000001H352.59999999999997V24.300000000000004H369.7V33.60000000000001Q372.7 29.000000000000007 377.2 26.350000000000005Q381.7 23.700000000000003 387.2 23.700000000000003Z M451.4 24.300000000000004 416.4 106.60000000000001H398.0L410.8 78.2L388.09999999999997 24.300000000000004H407.2L420.09999999999997 59.2L432.9 24.300000000000004Z" fill="currentColor"/></svg></a>
+    <div class="langs" role="group" aria-label="Language">
+      <button type="button" data-lang="en">English</button>
+      <button type="button" data-lang="ur" class="ur">اردو</button>
+      <button type="button" data-lang="ar" class="ar">العربية</button>
+    </div>
+  </div>
+  <div class="head"><h1 data-t="title"></h1><p data-t="lede"></p></div>
+</header>
+<main>
+  <form class="card" id="form" novalidate>
+    <div class="f" role="radiogroup" aria-labelledby="k-lab">
+      <span class="lab" id="k-lab" data-t="k_label"></span>
+      <div class="kinds">
+        <label class="kind"><input type="radio" name="kind" value="Feedback" checked><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg><span data-t="k_Feedback"></span></label>
+        <label class="kind"><input type="radio" name="kind" value="Feature request"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg><span data-t="k_Feature request"></span></label>
+        <label class="kind"><input type="radio" name="kind" value="Problem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg><span data-t="k_Problem"></span></label>
+        <label class="kind"><input type="radio" name="kind" value="Question"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 015 0c0 1.7-2.5 2-2.5 4M12 17v.5"/></svg><span data-t="k_Question"></span></label>
+      </div>
+    </div>
+    <div class="f" id="rate-f">
+      <span class="lab" id="r-lab"><span data-t="rating"></span> <span class="help" data-t="optional"></span></span>
+      <div class="stars" role="radiogroup" aria-labelledby="r-lab" id="stars"></div>
+    </div>
+    <div class="f">
+      <label for="message" data-t="message"></label>
+      <textarea id="message" name="message" maxlength="5000" required></textarea>
+    </div>
+    <div class="row">
+      <div class="f"><label for="name" data-t="name"></label><input type="text" id="name" name="name" autocomplete="name" maxlength="120"></div>
+      <div class="f"><label for="email" data-t="email"></label><input type="email" id="email" name="email" class="ltr" autocomplete="email" required maxlength="140"><span class="help" data-t="email_help"></span></div>
+    </div>
+    <div class="f"><label for="workspace"><span data-t="ws"></span></label><input type="text" id="workspace" name="workspace" class="ltr" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="40"><span class="help" data-t="ws_help"></span></div>
+    <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+    <div class="err" id="err" role="alert" hidden></div>
+    <button class="btn" type="submit" id="send" data-t="send"></button>
+  </form>
+  <section class="card done" id="done" hidden aria-live="polite">
+    <div class="tick"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"/></svg></div>
+    <h2 data-t="thanks_t"></h2>
+    <p data-t="thanks_d"></p>
+    <button class="btn ghost" type="button" id="again" data-t="again"></button>
+  </section>
+  <p class="foot"><a id="back" href="https://buildiary.app" data-t="back"></a></p>
+</main>
+<script>
+const CFG = {{ cfg }};
+const I18N = {
+  en: {
+    title: "Tell us what you think", lede: "Feedback, a feature you need, something that isn't working, or a question: it all reaches our team, and we read every message.",
+    k_label: "What is it about?", "k_Feedback": "Feedback", "k_Feature request": "A feature I need", "k_Problem": "Something isn't working", "k_Question": "A question",
+    rating: "How happy are you with Buildiary?", optional: "(optional)", star: "{n} of 5",
+    message: "Your message", ph_Feedback: "What works well, and what could be better?", "ph_Feature request": "What would you like Buildiary to do? How would it help on your site?",
+    ph_Problem: "What happened, and what did you expect? On which page or screen?", ph_Question: "Ask us anything.",
+    name: "Your name", email: "Email", email_help: "We reply to this address.", ws: "Workspace (optional)", ws_help: "For example my-house",
+    send: "Send", sending: "Sending…", thanks_t: "Thank you!", thanks_d: "Your message has reached our team. We have sent a copy to your email.", again: "Send another", back: "Back to buildiary.app",
+    e_msg: "Please write a few words.", e_email: "Enter a valid email address.", e_net: "We couldn't reach the server. Check the internet connection and try again.", e_many: "Too many tries. Please wait a little and try again.",
+  },
+  ur: {
+    title: "ہمیں اپنی رائے بتائیں", lede: "رائے، کسی نئی سہولت کی ضرورت، کچھ کام نہ کر رہا ہو یا کوئی سوال: سب ہماری ٹیم تک پہنچتا ہے، اور ہم ہر پیغام پڑھتے ہیں۔",
+    k_label: "کس بارے میں ہے؟", "k_Feedback": "رائے", "k_Feature request": "مجھے ایک نئی سہولت چاہیے", "k_Problem": "کچھ کام نہیں کر رہا", "k_Question": "ایک سوال",
+    rating: "آپ بلڈائری سے کتنے مطمئن ہیں؟", optional: "(اختیاری)", star: "5 میں سے {n}",
+    message: "آپ کا پیغام", ph_Feedback: "کیا اچھا ہے اور کیا بہتر ہو سکتا ہے؟", "ph_Feature request": "آپ بلڈائری سے کیا کروانا چاہتے ہیں؟ اس سے سائٹ پر کیا فائدہ ہوگا؟",
+    ph_Problem: "کیا ہوا اور آپ کیا توقع کر رہے تھے؟ کون سا صفحہ یا اسکرین؟", ph_Question: "ہم سے کچھ بھی پوچھیں۔",
+    name: "آپ کا نام", email: "ای میل", email_help: "ہم اسی پتے پر جواب دیں گے۔", ws: "ورک اسپیس (اختیاری)", ws_help: "مثلاً my-house",
+    send: "بھیجیں", sending: "بھیجا جا رہا ہے…", thanks_t: "شکریہ!", thanks_d: "آپ کا پیغام ہماری ٹیم تک پہنچ گیا ہے۔ اس کی ایک کاپی آپ کی ای میل پر بھیج دی گئی ہے۔", again: "ایک اور پیغام بھیجیں", back: "buildiary.app پر واپس",
+    e_msg: "براہِ کرم چند الفاظ لکھیں۔", e_email: "درست ای میل درج کریں۔", e_net: "سرور تک رسائی نہیں ہو سکی۔ انٹرنیٹ چیک کر کے دوبارہ کوشش کریں۔", e_many: "بہت زیادہ کوششیں۔ تھوڑی دیر بعد دوبارہ کوشش کریں۔",
+  },
+  ar: {
+    title: "أخبرنا برأيك", lede: "ملاحظات، أو ميزة تحتاجها، أو شيء لا يعمل، أو سؤال: كل ذلك يصل إلى فريقنا، ونحن نقرأ كل رسالة.",
+    k_label: "بخصوص ماذا؟", "k_Feedback": "ملاحظات", "k_Feature request": "ميزة أحتاجها", "k_Problem": "شيء لا يعمل", "k_Question": "سؤال",
+    rating: "ما مدى رضاك عن بلدائري؟", optional: "(اختياري)", star: "{n} من 5",
+    message: "رسالتك", ph_Feedback: "ما الذي يعمل جيداً، وما الذي يمكن تحسينه؟", "ph_Feature request": "ماذا تريد أن يفعل بلدائري؟ وكيف سيساعدك في الموقع؟",
+    ph_Problem: "ماذا حدث وماذا كنت تتوقع؟ في أي صفحة أو شاشة؟", ph_Question: "اسألنا عن أي شيء.",
+    name: "اسمك", email: "البريد الإلكتروني", email_help: "سنرد على هذا العنوان.", ws: "مساحة العمل (اختياري)", ws_help: "مثلاً my-house",
+    send: "إرسال", sending: "جارٍ الإرسال…", thanks_t: "شكراً لك!", thanks_d: "وصلت رسالتك إلى فريقنا، وأرسلنا نسخة منها إلى بريدك.", again: "أرسل رسالة أخرى", back: "العودة إلى buildiary.app",
+    e_msg: "يُرجى كتابة بضع كلمات.", e_email: "أدخل بريداً إلكترونياً صحيحاً.", e_net: "تعذّر الوصول إلى الخادم. تحقق من الاتصال وحاول مجدداً.", e_many: "محاولات كثيرة. انتظر قليلاً ثم حاول مجدداً.",
+  },
+};
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+let LANG = ["en", "ur", "ar"].includes(CFG.lang) ? CFG.lang : (store.get("buildiary_lang") || ((navigator.language || "").startsWith("ar") ? "ar" : (navigator.language || "").startsWith("ur") ? "ur" : "en"));
+const t = (k, v) => { let s = (I18N[LANG] && I18N[LANG][k]) || I18N.en[k] || k; if (v) for (const x in v) s = s.replace("{" + x + "}", v[x]); return s; };
+const $ = (s) => document.querySelector(s);
+const form = $("#form");
+let rating = 0;
+
+function paint() {
+  document.documentElement.lang = LANG;
+  document.documentElement.dir = LANG === "en" ? "ltr" : "rtl";
+  document.querySelectorAll("[data-t]").forEach((el) => { el.textContent = t(el.dataset.t); });
+  document.querySelectorAll(".langs button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.lang === LANG ? "true" : "false"));
+  const k = form.kind.value;
+  $("#message").placeholder = t("ph_" + k);
+  $("#rate-f").hidden = k !== "Feedback";
+  const site = (CFG.website || "https://buildiary.app").replace(/\/$/, "");
+  const path = LANG === "en" ? "/" : "/" + LANG + "/";
+  $("#home").href = site + path; $("#back").href = site + path;
+  stars();
+}
+function stars() {
+  const box = $("#stars");
+  box.innerHTML = "";
+  for (let n = 1; n <= 5; n++) {
+    const b = document.createElement("button");
+    b.type = "button"; b.setAttribute("role", "radio"); b.setAttribute("aria-checked", n === rating ? "true" : "false");
+    b.setAttribute("aria-label", t("star", { n })); b.className = n <= rating ? "on" : "";
+    b.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 17l-5.8 3.3 1.4-6.4-4.9-4.4 6.5-.7z"/></svg>';
+    b.addEventListener("click", () => { rating = rating === n ? 0 : n; stars(); });
+    box.appendChild(b);
+  }
+}
+document.querySelectorAll(".langs button").forEach((b) => b.addEventListener("click", () => { LANG = b.dataset.lang; store.set("buildiary_lang", LANG); paint(); }));
+form.addEventListener("change", (e) => { if (e.target.name === "kind") paint(); });
+
+function msgOf(j, status) {
+  if (status === 429) return t("e_many");
+  try { if (j && j._server_messages) return JSON.parse(j._server_messages).map((x) => { try { return JSON.parse(x).message; } catch (e) { return x; } }).join(" ").replace(/<[^>]+>/g, ""); } catch (e) {}
+  if (j && j.exception) return String(j.exception).replace(/^[\w.]+:\s*/, "");
+  return "";
+}
+async function api(method, data) {
+  let r;
+  try {
+    r = await fetch("/api/method/" + method, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json", "X-Frappe-CSRF-Token": (window.frappe && frappe.csrf_token) || "" }, body: JSON.stringify(data || {}) });
+  } catch (e) { throw new Error(t("e_net")); }
+  let j = {};
+  try { j = await r.json(); } catch (e) {}
+  if (!r.ok) throw new Error(msgOf(j, r.status) || t("e_net"));
+  return j.message;
+}
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const err = $("#err"); err.hidden = true;
+  const d = { kind: form.kind.value, rating, message: $("#message").value.trim(), name: $("#name").value.trim(), email: $("#email").value.trim(),
+    workspace: $("#workspace").value.trim().toLowerCase().replace(/^https?:\/\//, "").split(".")[0], website: form.querySelector("[name=website]").value, language: LANG };
+  if (d.message.length < 3) { err.textContent = t("e_msg"); err.hidden = false; $("#message").focus(); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) { err.textContent = t("e_email"); err.hidden = false; $("#email").focus(); return; }
+  const btn = $("#send"); btn.disabled = true; btn.textContent = t("sending");
+  try {
+    await api("buildiary.saas.feedback.submit", { data: JSON.stringify(d) });
+    store.set("buildiary_fb_who", JSON.stringify({ name: d.name, email: d.email, workspace: d.workspace }));
+    form.hidden = true; $("#done").hidden = false; $("#done").focus && $("#done").scrollIntoView({ block: "center" });
+  } catch (x) { err.textContent = x.message; err.hidden = false; }
+  btn.disabled = false; btn.textContent = t("send");
+});
+$("#again").addEventListener("click", () => { $("#message").value = ""; rating = 0; form.hidden = false; $("#done").hidden = true; paint(); $("#message").focus(); });
+
+// filled in from the email's link, or from the last message sent from this browser
+(function prefill() {
+  let who = {};
+  try { who = JSON.parse(store.get("buildiary_fb_who") || "{}"); } catch (e) {}
+  $("#name").value = CFG.n || who.name || "";
+  $("#email").value = CFG.e || who.email || "";
+  $("#workspace").value = CFG.w || who.workspace || "";
+  if (CFG.kind) { const r = form.querySelector(`input[name=kind][value="${CFG.kind}"]`); if (r) r.checked = true; }
+})();
+paint();
+</script>
+</body>
+</html>

@@ -4,30 +4,16 @@ and reads each workspace's usage."""
 
 import frappe
 from frappe import _
-from frappe.utils import add_days, add_months, date_diff, escape_html, get_datetime, getdate, now_datetime, nowdate
+from frappe.utils import add_days, add_months, escape_html, get_datetime, getdate, now_datetime, nowdate
 
-from buildiary.saas.common import call_site, is_control, notify_admins, push, settings, tenant_state
-
-
-def _send(t, subject, body):
-	if not t.email:
-		return
-	s = settings()
-	logo = f"https://{s.control_host}/assets/buildiary/images/smh-global.png" if s.control_host else ""
-	foot = (f"<p style='color:#667'>" + (f"<img src='{logo}' alt='SMH Global Services' width='96' height='41' style='display:block;margin:18px 0 8px'>" if logo else "")
-		+ f"Buildiary · a product of SMH Global Services<br>{escape_html(s.support_email or '')} {escape_html(s.support_whatsapp or '')}</p>")
-	try:
-		frappe.sendmail(recipients=[t.email], subject=subject, message=body + foot, delayed=True, reference_doctype="Buildiary Tenant", reference_name=t.name)
-	except Exception:
-		frappe.log_error(f"Buildiary: could not queue the email '{subject}'")
+from buildiary.saas.common import call_site, is_control, notify_admins, push, tenant_state
 
 
 def welcome(t):
+	from buildiary.saas import mail
+
+	mail.welcome(t)
 	url = f"https://{t.site_host}"
-	_send(t, "Your Buildiary workspace is ready", f"""<p>Assalam-o-Alaikum {escape_html(t.contact_name)},</p>
-<p>Your workspace <b>{escape_html(t.company_name)}</b> is ready at <a href="{url}">{url}</a>.</p>
-<p>Sign in with <b>{escape_html(t.email)}</b> and the password you chose. Your free trial runs until <b>{frappe.format(t.trial_ends, 'Date')}</b>.</p>
-<p>On your phone, open the address in the browser and choose <i>Add to Home Screen</i>, or install the Buildiary app and type <b>{escape_html(t.subdomain)}</b>.</p>""")
 	notify_admins(f"Buildiary: new customer {t.company_name}", f"{escape_html(t.contact_name)} ({escape_html(t.email)}, {escape_html(t.phone or '')}, {escape_html(t.country or '')}) started a {t.mode} trial at {url}.")
 
 
@@ -56,17 +42,18 @@ def apply_payment(p):
 	t.save(ignore_permissions=True)
 	frappe.msgprint(_("{0}'s {1} licence is active until {2}. The customer has been emailed.").format(
 		frappe.bold(t.company_name), plan.name, frappe.bold(frappe.format(end, "Date"))), title=_("Licence activated"), indicator="green")
-	_send(t, "Payment received – thank you", f"""<p>Dear {escape_html(t.contact_name)},</p>
-<p>We have received your payment of <b>{escape_html(p.currency)} {frappe.format(p.amount, 'Float')}</b> (reference {escape_html(p.reference or p.name)}).</p>
-<p>Your <b>{escape_html(plan.name)}</b> plan is active until <b>{frappe.format(end, 'Date')}</b>.</p>""")
+	from buildiary.saas import mail
+
+	p.reload()
+	mail.payment_confirmed(t, p)
 
 
 def reject_payment(p):
 	t = frappe.get_doc("Buildiary Tenant", p.tenant)
 	p.db_set({"checked_by": frappe.session.user, "checked_on": now_datetime()})
-	_send(t, "We couldn't confirm your payment", f"""<p>Dear {escape_html(t.contact_name)},</p>
-<p>We couldn't confirm the payment you reported ({escape_html(p.currency)} {frappe.format(p.amount, 'Float')}, reference {escape_html(p.reference or '-')}).</p>
-<p>{escape_html(p.reject_reason or '')}</p><p>Please check and send it again from Plan &amp; billing in your workspace, or reply to this email.</p>""")
+	from buildiary.saas import mail
+
+	mail.payment_rejected(t, p)
 
 
 # ---------------------------------------------------------------- every day
@@ -108,22 +95,13 @@ def check_tenant(t, reminders=True):
 
 
 def _remind(t):
-	end = t.paid_until or t.trial_ends
-	if not end:
-		return
-	left = date_diff(end, nowdate())
-	key = None
-	what = "trial" if not t.paid_until else "plan"
-	url = f"https://{t.site_host}/billing"
-	if t.status in ("Trial", "Active") and left in (7, 2) and (what == "plan" or left == 2):
-		key, subject, body = f"{end}:{left}", f"Your Buildiary {what} ends in {left} days", f"<p>Your {what} for <b>{escape_html(t.company_name)}</b> ends on <b>{frappe.format(end, 'Date')}</b>. Choose a plan and pay by bank transfer in <a href='{url}'>Plan &amp; billing</a> so your team can keep working.</p>"
-	elif t.status == "Payment due":
-		key, subject, body = f"{end}:due", f"Your Buildiary {what} has ended", f"<p>Your {what} for <b>{escape_html(t.company_name)}</b> ended on <b>{frappe.format(end, 'Date')}</b>. Your workspace stays open for a few more days. Pay in <a href='{url}'>Plan &amp; billing</a> to keep it running.</p>"
-	elif t.status == "Suspended":
-		key, subject, body = f"{end}:stop", "Your Buildiary workspace is paused", f"<p>The workspace for <b>{escape_html(t.company_name)}</b> is paused because the {what} ended. Your data is safe. Sign in and open <a href='{url}'>Plan &amp; billing</a> to pay and open it again.</p>"
-	if key and t.last_reminder != key:
-		_send(t, subject, body)
-		t.db_set("last_reminder", key, update_modified=False)
+	"""The follow-up email due today, if any (mail.follow_up keeps track of what was sent)."""
+	from buildiary.saas import mail
+
+	try:
+		mail.follow_up(t)
+	except Exception:
+		frappe.log_error(f"Buildiary: follow-up email failed for {t.name}")
 
 
 def refresh_usage(t):

@@ -7,7 +7,7 @@
  "module": "Buildiary Cloud",
  "name": "Buildiary Cloud Settings",
  "owner": "Administrator",
- "modified": "2026-10-26 01:00:00.000000",
+ "modified": "2026-10-26 14:00:00.000000",
  "modified_by": "Administrator",
  "fields": [
   {
@@ -57,6 +57,79 @@
    "description": "One email per line"
   },
   {
+   "fieldname": "email_section",
+   "fieldtype": "Section Break",
+   "label": "Outgoing email",
+   "description": "Every email from Buildiary goes out through here: sign-up codes, the welcome letter, trial and payment emails, and the workspaces' own emails (password resets, invitations). With Google Workspace, let this server send through Google's SMTP relay (Google Admin → Apps → Google Workspace → Gmail → Routing → SMTP relay service), then press Email → Send test email."
+  },
+  {
+   "fieldname": "mail_enabled",
+   "fieldtype": "Check",
+   "label": "Send emails",
+   "default": "1"
+  },
+  {
+   "fieldname": "mail_from",
+   "fieldtype": "Data",
+   "options": "Email",
+   "label": "Send from",
+   "default": "buildiary@smhglobal.com.pk",
+   "description": "Customers see this address, and their replies (with payment receipts) come back to it."
+  },
+  {
+   "fieldname": "mail_sender_name",
+   "fieldtype": "Data",
+   "label": "Sender name",
+   "default": "Buildiary"
+  },
+  {
+   "fieldname": "letter_name",
+   "fieldtype": "Data",
+   "label": "Welcome letter signed by",
+   "default": "Syed Mazhar Hasan"
+  },
+  {
+   "fieldname": "letter_title",
+   "fieldtype": "Data",
+   "label": "Their title",
+   "default": "Managing Director"
+  },
+  {
+   "fieldname": "col_e",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mail_server",
+   "fieldtype": "Data",
+   "label": "Mail server",
+   "default": "smtp-relay.gmail.com",
+   "description": "smtp-relay.gmail.com (Google's relay, no password), or smtp.gmail.com with a sign-in email and an app password."
+  },
+  {
+   "fieldname": "mail_port",
+   "fieldtype": "Int",
+   "label": "Port",
+   "default": "587"
+  },
+  {
+   "fieldname": "mail_use_tls",
+   "fieldtype": "Check",
+   "label": "Encrypted connection (TLS)",
+   "default": "1"
+  },
+  {
+   "fieldname": "mail_login",
+   "fieldtype": "Data",
+   "label": "Sign-in email (only with an app password)",
+   "description": "Leave empty when Google's relay accepts mail from this server's address."
+  },
+  {
+   "fieldname": "mail_password",
+   "fieldtype": "Password",
+   "label": "App password",
+   "depends_on": "mail_login"
+  },
+  {
    "fieldname": "trial_section",
    "fieldtype": "Section Break",
    "label": "Sign-ups and trial"
@@ -72,7 +145,7 @@
    "fieldtype": "Check",
    "label": "New customers confirm their email with a code",
    "default": "0",
-   "description": "Switch on once outgoing email works (Email Account)."
+   "description": "Switch on once outgoing email works (Send test email)."
   },
   {
    "fieldname": "trial_days",
@@ -249,6 +322,18 @@
   "support_email",
   "support_whatsapp",
   "admin_emails",
+  "email_section",
+  "mail_enabled",
+  "mail_from",
+  "mail_sender_name",
+  "letter_name",
+  "letter_title",
+  "col_e",
+  "mail_server",
+  "mail_port",
+  "mail_use_tls",
+  "mail_login",
+  "mail_password",
   "trial_section",
   "signups_open",
   "require_email_verification",

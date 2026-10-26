@@ -29,9 +29,18 @@ def _name_problem(sub):
 		return _("Use 3 to 30 letters, numbers or dashes, starting with a letter.")
 	if sub in _reserved() or sub.startswith("pool-") or "--" in sub:
 		return _("This name is reserved. Try another.")
-	if frappe.db.exists("Buildiary Tenant", sub) or os.path.isdir(site_dir(host_for(sub))):
+	if (frappe.db.exists("Buildiary Tenant", sub) and not _abandoned(sub)) or os.path.isdir(site_dir(host_for(sub))):
 		return _("This name is taken. Try another.")
 	return None
+
+
+def _abandoned(name):
+	"""A sign-up that never confirmed its email (its code expired): its name is free again."""
+	t = frappe.db.get_value("Buildiary Tenant", name, ["status", "verify_expires", "creation"], as_dict=True)
+	if not t or t.status != "Verifying email":
+		return False
+	since = get_datetime(t.verify_expires or add_to_date(t.creation, minutes=30))
+	return since < now_datetime()
 
 
 def suggest(company):
@@ -87,12 +96,15 @@ def _hash(code):
 
 
 def _send_code(t):
+	"""Emails the 6-digit code; False when it could not be sent."""
 	import secrets
+
+	from buildiary.saas import mail
 
 	code = f"{secrets.randbelow(1000000):06d}"
 	t.db_set({"verify_code": _hash(code), "verify_expires": add_to_date(now_datetime(), minutes=30), "verify_tries": 0})
-	frappe.sendmail(recipients=[t.email], subject=f"{code} is your Buildiary code",
-		message=f"<p>Your code to start Buildiary is</p><p style='font-size:28px;font-weight:700;letter-spacing:4px'>{code}</p><p>It works for 30 minutes.</p>", now=True)
+	frappe.db.commit()
+	return mail.send_code(t, code)
 
 
 @frappe.whitelist(allow_guest=True, methods=["POST"])
@@ -131,6 +143,8 @@ def start(data=None):
 		frappe.throw(_("This email already has a workspace at {0}. Sign in there, or contact us for another one.").format(have.site_host or have.name))
 	plan = frappe.db.get_value("Buildiary Plan", {"mode": mode, "is_active": 1}, "name", order_by="sort_order asc")
 	verify = bool(s.require_email_verification)
+	if _abandoned(sub):
+		frappe.delete_doc("Buildiary Tenant", sub, ignore_permissions=True, force=True)
 	t = frappe.get_doc({
 		"doctype": "Buildiary Tenant", "subdomain": sub, "company_name": d.company_name.strip()[:120], "contact_name": d.contact_name.strip()[:120], "email": email,
 		"phone": phone[:40], "country": d.country, "city": (d.city or "").strip()[:80], "language": d.language if d.language in ("en", "ur", "ar") else "en",
@@ -138,9 +152,11 @@ def start(data=None):
 		"signup_ip": (frappe.local.request_ip or "")[:60], "signup_token": frappe.generate_hash(length=32), "first_password": d.password,
 	}).insert(ignore_permissions=True)
 	frappe.db.commit()
-	if verify:
-		_send_code(t)
-	else:
+	if verify and not _send_code(t):
+		# the code could not be emailed (mail not working): don't lose the customer, set up the workspace anyway
+		verify = False
+		t.db_set("notes", ((t.notes or "") + "\nThe email code could not be sent; the email address was not confirmed.").strip())
+	if not verify:
 		_queue(t)
 	return {"token": t.signup_token, "verify": verify, "email": email, "host": host_for(sub)}
 
@@ -181,8 +197,8 @@ def verify(token=None, code=None):
 def resend(token=None):
 	_need_control()
 	t = _by_token(token)
-	if t.status == "Verifying email":
-		_send_code(t)
+	if t.status == "Verifying email" and not _send_code(t):
+		frappe.throw(_("We couldn't send the email just now. Please try again in a few minutes."))
 	return {"ok": True}
 
 

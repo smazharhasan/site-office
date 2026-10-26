@@ -143,3 +143,170 @@ class TestSaas(IntegrationTestCase):
 			signup.start({"contact_name": "A", "email": "a@example.com", "company_name": "X", "subdomain": "goodname", "password": "short1", "country": "Pakistan", "mode": "Owner", "agree": 1})
 		self.assertEqual(tenant._abbr("Al Noor Builders"), "ANB")
 		self.assertEqual(tenant._abbr("خان ہاؤس"), "CO")
+
+	# ---------------------------------------------------------------- emails
+	def _tenant(self, country="Saudi Arabia", lang="ar", **kw):
+		sub = "m" + frappe.generate_hash(length=8).lower()
+		d = {"doctype": "Buildiary Tenant", "subdomain": sub, "company_name": "Villa {{ x }} & Co", "contact_name": "Sara <b>", "email": f"{sub}@example.com",
+			"country": country, "language": lang, "mode": "Owner", "plan": "Owner", "status": "Trial", "trial_ends": add_days(nowdate(), 14),
+			"signed_up_on": nowdate()}
+		d.update(kw)
+		return frappe.get_doc(d).insert()
+
+	def _capture(self):
+		from unittest.mock import patch
+
+		from buildiary.saas import mail
+
+		sent = []
+		return sent, patch.object(mail, "deliver", side_effect=lambda to, subject, html, **kw: sent.append((to, subject, html, kw)) or True)
+
+	def test_bank_preference(self):
+		s = frappe.get_single("Buildiary Cloud Settings")
+		keep = [r.as_dict() for r in s.bank_accounts]
+		s.bank_accounts = []
+		for region, cur in (("Pakistan", "PKR"), ("United Arab Emirates", "AED"), (common.BANK_OTHERS, "SAR"), (common.BANK_OTHERS, "USD")):
+			s.append("bank_accounts", {"country": region, "currency": cur, "bank_name": f"{cur} Bank", "account_title": "SMH", "iban": "X1", "is_active": 1})
+		s.save()
+		frappe.clear_document_cache("Buildiary Cloud Settings")
+		try:
+			curs = lambda c: [b.currency for b in common.bank_accounts(c)]
+			self.assertEqual(curs("Saudi Arabia"), ["SAR"])
+			self.assertEqual(curs("Pakistan"), ["PKR"])
+			self.assertEqual(curs("United Arab Emirates"), ["AED"])
+			self.assertEqual(curs("Qatar"), ["USD", "SAR"])  # no QAR account: USD first
+			self.assertEqual(curs("Germany"), ["USD"])  # everyone else pays in USD
+			self.assertEqual(common.price_in("Owner", "Monthly", "USD"), 15)
+			self.assertEqual(common.price_in("Owner", "Monthly", "SAR"), common.plan_price("Owner", "Monthly", "Saudi Arabia")["amount"])
+			self.assertEqual(common.entity("Germany", "ar"), "شركة إس إم إتش جلوبال سيرفيسز")
+			self.assertEqual(common.entity("Pakistan"), "SMH Global Services (Private) Limited")
+		finally:
+			s.reload()
+			s.bank_accounts = []
+			for r in keep:
+				r.pop("name", None)
+				s.append("bank_accounts", r)
+			s.save()
+
+	def test_emails_in_each_language(self):
+		from buildiary.saas import mail
+
+		for lang, country in (("en", "Pakistan"), ("ur", "Pakistan"), ("ar", "Saudi Arabia"), ("en", "Germany")):
+			t = self._tenant(country, lang)
+			sent, p = self._capture()
+			with p:
+				mail.welcome(t)
+				mail.tips(t)
+				mail.ask_feedback(t)
+				mail.trial_ending(t)
+				mail.ended(t)
+				mail.ended(t, paused=True)
+				pay = frappe._dict(name="MP-1", plan="Owner", billing_period="Yearly", periods=2, currency="SAR", amount=1100, reference="TX1", paid_to="SAB",
+					paid_on=nowdate(), period_from=nowdate(), period_to=add_days(nowdate(), 700), reject_reason="Not found")
+				mail.payment_received(t, pay)
+				mail.payment_confirmed(t, pay)
+				mail.payment_rejected(t, pay)
+			self.assertEqual(len(sent), 9)
+			for to, subject, html, kw in sent:
+				self.assertEqual(to, t.email)
+				self.assertNotIn("{{", html)
+				self.assertNotIn("<b>\"", html)
+				self.assertNotIn("Sara <b>", html)  # escaped
+				self.assertIn(mail.W[lang]["brand"] if lang != "en" else "Buildiary", html)
+				self.assertIn('dir="rtl"' if lang in ("ur", "ar") else 'dir="ltr"', html)
+			welcome = sent[0][2]
+			self.assertIn(common.entity(country, lang), welcome)
+			self.assertIn(f"{t.name}.", welcome)  # the workspace address
+			self.assertIn("feedback?lang=" + lang, welcome)
+			self.assertIn("Syed Mazhar Hasan", sent[0][3].get("sender_name") or "")
+
+	def test_follow_up_schedule(self):
+		from unittest.mock import patch
+
+		from buildiary.saas import mail
+
+		t = self._tenant("Pakistan", "en", signed_up_on=nowdate(), trial_ends=add_days(nowdate(), 14))
+		calls = []
+		names = ("tips", "ask_feedback", "trial_ending", "ended", "plan_ending")
+		patches = [patch.object(mail, n, side_effect=(lambda n: lambda *a, **k: calls.append((n, k)) or True)(n)) for n in names]
+		for p in patches:
+			p.start()
+		try:
+			got = lambda day: mail.follow_up(t, today=add_days(nowdate(), day))
+			self.assertIsNone(got(1))
+			self.assertEqual(got(2), "tips")
+			self.assertIsNone(got(3))  # sent once
+			self.assertEqual(got(7), "feedback")
+			self.assertTrue(got(11).startswith("trial-3"))
+			self.assertIsNone(got(12))  # not every day
+			self.assertTrue(got(14).startswith("trial-0"))
+			t.status = "Payment due"
+			self.assertTrue(got(15).startswith("due"))
+			t.status = "Suspended"
+			self.assertTrue(got(20).startswith("stop"))
+			self.assertEqual([c[0] for c in calls], ["tips", "ask_feedback", "trial_ending", "trial_ending", "ended", "ended"])
+			self.assertEqual(calls[3][1], {"today": True})
+			self.assertEqual(calls[5][1], {"paused": True})
+		finally:
+			for p in patches:
+				p.stop()
+
+	def test_signup_survives_email_failure(self):
+		from unittest.mock import patch
+
+		from buildiary.saas import mail
+
+		s = frappe.get_single("Buildiary Cloud Settings")
+		keep = (s.require_email_verification, s.signups_open)
+		frappe.db.set_single_value("Buildiary Cloud Settings", {"require_email_verification": 1, "signups_open": 1})
+		frappe.clear_document_cache("Buildiary Cloud Settings")
+		sub = "s" + frappe.generate_hash(length=8).lower()
+		try:
+			with patch.object(mail, "send_code", return_value=False), patch.object(frappe, "enqueue"):
+				out = signup.start({"contact_name": "A", "phone": "+923001234567", "email": f"{sub}@example.com", "company_name": "X", "subdomain": sub,
+					"password": "abc12345", "country": "Pakistan", "mode": "Owner", "agree": 1})
+			self.assertFalse(out["verify"])
+			self.assertEqual(frappe.db.get_value("Buildiary Tenant", sub, "status"), "Waiting")
+			# an abandoned sign-up (code never entered, expired) frees its name
+			frappe.db.set_value("Buildiary Tenant", sub, {"status": "Verifying email", "verify_expires": add_days(nowdate(), -1)})
+			self.assertIsNone(signup._name_problem(sub))
+		finally:
+			frappe.db.set_single_value("Buildiary Cloud Settings", {"require_email_verification": keep[0], "signups_open": keep[1]})
+			frappe.clear_document_cache("Buildiary Cloud Settings")
+
+	def test_feedback(self):
+		from unittest.mock import patch
+
+		from buildiary.saas import feedback, mail
+
+		t = self._tenant("Pakistan", "ur")
+		with patch.object(mail, "deliver", return_value=True) as d:
+			out = feedback.submit({"kind": "Feature request", "rating": 9, "message": "Please add tiles", "name": "Sara", "email": t.email.upper(), "language": "ur"})
+		fb = frappe.get_doc("Buildiary Feedback", out["name"])
+		self.assertEqual((fb.tenant, fb.rating, fb.language, fb.kind), (t.name, 5, "ur", "Feature request"))
+		self.assertTrue(d.called)
+		with self.assertRaises(frappe.ValidationError):
+			feedback.submit({"message": "hi there", "email": "nope"})
+
+	def test_mail_config(self):
+		import json
+		import os
+
+		from buildiary.saas import mail
+
+		path = os.path.join(frappe.local.sites_path, "common_site_config.json")
+		before = open(path).read()
+		s = frappe.get_single("Buildiary Cloud Settings")
+		try:
+			s.update({"mail_enabled": 1, "mail_from": "buildiary@example.com", "mail_server": "smtp-relay.gmail.com", "mail_port": 587, "mail_use_tls": 1, "mail_login": ""})
+			mail.apply_config(s)
+			conf = json.load(open(path))
+			self.assertEqual((conf["mail_server"], conf["auto_email_id"], conf["disable_mail_smtp_authentication"]), ("smtp-relay.gmail.com", "buildiary@example.com", 1))
+			self.assertNotIn("mail_login", conf)
+			self.assertNotEqual(frappe.local.conf.get("mail_login"), "None")
+			s.mail_enabled = 0
+			mail.apply_config(s)
+			self.assertNotIn("mail_server", json.load(open(path)))
+		finally:
+			open(path, "w").write(before)
+			mail._reload_conf()
