@@ -1334,3 +1334,50 @@ This project already has stages.,لهذا المشروع مراحل بالفعل
 A product of,منتج من
 This is not a Buildiary project data file.,هذا ليس ملف بيانات مشروع بلدائري.
 The project data has been brought in.,تم إدخال بيانات المشروع.
+"Allow the camera and location when the app asks. Photos, site cards and attendance need them.",اسمح بالكاميرا والموقع عندما يطلبها التطبيق؛ فالصور وبطاقات الموقع والحضور تحتاج إليهما.
+Android app,تطبيق أندرويد
+Check your email,تحقّق من بريدك
+Continue,متابعة
+Email,البريد الإلكتروني
+Copied,تم النسخ
+Copy the message,نسخ الرسالة
+Download the Android app,تنزيل تطبيق أندرويد
+Forgot your password?,نسيت كلمة المرور؟
+"Get the Buildiary app for this phone: the camera, GPS and site card scanner work best in it.",حمّل تطبيق بلدائري لهذا الهاتف؛ فالكاميرا وتحديد الموقع وماسح بطاقات الموقع تعمل فيه بأفضل شكل.
+Get the app,احصل على التطبيق
+"Hello, {0}",مرحباً، {0}
+How to install,طريقة التثبيت
+How to read the card,طريقة قراءة البطاقة
+"If the phone says apps from this source are blocked, tap Settings, turn on “Allow from this source”, and go back.",إذا ظهر أن التطبيقات من هذا المصدر محظورة، فاضغط الإعدادات وفعّل «السماح من هذا المصدر» ثم ارجع.
+"If {0} has a sign-in here, a link to choose a new password is on its way. It works for {1} minutes. Look in spam too.",إذا كان للبريد {0} حساب هنا، فرابط اختيار كلمة مرور جديدة في طريقه إليك، ويعمل لمدة {1} دقيقة. تحقّق من مجلد الرسائل غير المرغوبة أيضاً.
+Install Buildiary on your Android phone: {0} Then open the app and type the workspace name: {1},ثبّت بلدائري على هاتف أندرويد: {0} ثم افتح التطبيق واكتب اسم مساحة العمل: {1}
+Not now,ليس الآن
+Number on the site card (or the ID card),رقم بطاقة الموقع (أو بطاقة الهوية)
+"On the Android phone, scan this code with the camera, or open this page on the phone and tap Download.",امسح هذا الرمز بكاميرا هاتف أندرويد، أو افتح هذه الصفحة على الهاتف واضغط تنزيل.
+Open the camera on any phone and point it at this code.,افتح الكاميرا في أي هاتف ووجّهها نحو هذا الرمز.
+"Open the downloaded file, Buildiary.apk (from the notification or the Downloads folder).",افتح الملف الذي نزّلته Buildiary.apk (من الإشعار أو من مجلد التنزيلات).
+"Open {0} in Safari, tap Share, then “Add to Home Screen”. Buildiary then opens from the home screen like an app.",افتح {0} في Safari، واضغط مشاركة ثم «إضافة إلى الشاشة الرئيسية». بعدها يفتح بلدائري من الشاشة الرئيسية مثل التطبيق.
+Pair another phone,ربط هاتف آخر
+Phone app,تطبيق الهاتف
+Phone connected,الهاتف متصل
+Point the phone at the site card. The card shows here as soon as the phone reads it.,وجّه الهاتف نحو بطاقة الموقع. تظهر البطاقة هنا فور قراءتها.
+Point the phone at the site card. The card shows here.,وجّه الهاتف نحو بطاقة الموقع، وستظهر البطاقة هنا.
+QR code of the download link,رمز QR لرابط التنزيل
+Scan this code with your phone,امسح هذا الرمز بهاتفك
+Scan with my phone,المسح بالهاتف
+Send it to your team,أرسله إلى فريقك
+Send the link,أرسل الرابط
+Sending…,جارٍ الإرسال…
+Share on WhatsApp,مشاركة عبر واتساب
+Site staff who sign in with a site card: ask the owner to set a new PIN.,لمن يسجّل الدخول ببطاقة الموقع: اطلب من المالك تعيين رمز PIN جديد.
+"Tap Install, then Open.",اضغط تثبيت ثم فتح.
+Tap the link that appears. The phone becomes the scanner; no app or sign-in needed.,اضغط الرابط الذي يظهر، فيصبح الهاتف ماسحاً دون تطبيق أو تسجيل دخول.
+"The Buildiary app opens this workspace with the phone's camera, GPS and site card scanner built in.",يفتح تطبيق بلدائري مساحة العمل هذه مع كاميرا الهاتف وتحديد الموقع وماسح بطاقات الموقع.
+The screens inside the app update on their own. Download it again only when we tell you about a new version.,تتحدّث شاشات التطبيق تلقائياً. لا تنزّله مجدداً إلا عندما نخبرك بإصدار جديد.
+This camera,هذه الكاميرا
+"This device's camera can't be opened here. Use “Scan with my phone”, or allow the camera for this site.",تعذّر فتح كاميرا هذا الجهاز هنا. استخدم «المسح بالهاتف» أو اسمح بالكاميرا لهذا الموقع.
+Type the email you sign in with. We'll email you a link to choose a new password.,اكتب البريد الذي تسجّل الدخول به، وسنرسل إليك رابطاً لاختيار كلمة مرور جديدة.
+Type the number,اكتب الرقم
+"Type the workspace name {0} and tap Open. Sign in with your email and password, or with your site card.",اكتب اسم مساحة العمل {0} واضغط فتح، ثم سجّل الدخول ببريدك وكلمة المرور أو ببطاقة الموقع.
+Waiting for the phone…,بانتظار الهاتف…
+iPhone and iPad,آيفون وآيباد

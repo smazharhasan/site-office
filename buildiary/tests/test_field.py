@@ -46,4 +46,4 @@ class TestField(IntegrationTestCase):
 		self.assertNotIn("</script", ctx.boot_json + ctx.ur_json)
 		ur = frappe.parse_json(ctx.ur_json)
 		self.assertEqual(ur.get("Receive goods"), "سامان وصول کریں")
-		self.assertEqual(ur.get("Salaam, {0}"), "السلام علیکم، {0}")
+		self.assertEqual(ur.get("Hello, {0}"), "السلام علیکم، {0}")

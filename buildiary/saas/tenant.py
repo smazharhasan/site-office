@@ -71,6 +71,7 @@ OPEN_PATHS = (
 	"/api/method/login", "/api/method/logout", "/api/method/ping", "/api/method/buildiary.saas.tenant.", "/api/method/frappe.auth.get_logged_user",
 	"/api/method/frappe.www.login.", "/api/method/frappe.core.doctype.user.user.reset_password", "/api/method/frappe.core.doctype.user.user.update_password",
 	"/api/method/frappe.core.doctype.user.user.test_password_strength", "/api/method/buildiary.field.set_language", "/manifest.json", "/sw.js",
+	"/api/method/buildiary.field.forgot_password", "/api/method/buildiary.field.qr", "/scan", "/api/method/buildiary.scan.",
 )
 
 

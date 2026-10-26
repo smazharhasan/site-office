@@ -10,7 +10,7 @@ import os
 import frappe
 from frappe.utils import add_days, cint, date_diff, escape_html, flt, getdate, nowdate
 
-from buildiary.saas.common import ENTITIES, bank_accounts, entity, plan_price, price_in, settings
+from buildiary.saas.common import ENTITIES, bank_accounts, entity, is_control, plan_price, price_in, settings
 from buildiary.saas.mail_words import PEOPLE, W
 
 LANGS = ("en", "ur", "ar")
@@ -56,6 +56,18 @@ def _reload_conf():
 
 	frappe.local.conf = frappe._dict(get_site_config())
 	frappe.local.outgoing_email_account = {}
+
+
+def _s():
+	"""Buildiary Cloud Settings on the console; on a customer's workspace (password emails), what its site_config says."""
+	if is_control():
+		return settings()
+	m = frappe.conf.get("buildiary") or {}
+	console = m.get("console") or ""
+	base = console.split(".", 1)[1] if console.count(".") >= 2 else ""
+	return frappe._dict(control_host=console, base_domain=base, website_url=f"https://{base}" if base else "", privacy_url=None, terms_url=None,
+		support_email=m.get("support_email"), support_whatsapp=m.get("support_whatsapp"), grace_days=m.get("grace_days"),
+		mail_from=frappe.conf.get("auto_email_id"), mail_sender_name=frappe.conf.get("email_sender_name") or "Buildiary")
 
 
 # ---------------------------------------------------------------- small pieces
@@ -130,7 +142,7 @@ def plan_label(plan_name, lang):
 
 
 def urls(t=None, lang="en"):
-	s = settings()
+	s = _s()
 	console = f"https://{s.control_host}" if s.control_host else ""
 	site = (s.website_url or (f"https://{s.base_domain}" if s.base_domain else "")).rstrip("/")
 	feedback = f"{console}/feedback?lang={lang}"
@@ -208,12 +220,12 @@ def box(inner, bg=SKY):
 	return f'<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:8px 0 18px"><tr><td style="background:{bg};border-radius:14px;padding:18px 20px">{inner}</td></tr></table>'
 
 
-def layout(lang, title, body, preheader="", to=""):
+def layout(lang, title, body, preheader="", to="", why="foot_why"):
 	"""The whole email: logo, title, body, and the footer with the companies and links."""
 	rtl = lang in ("ur", "ar")
 	start = "right" if rtl else "left"
 	font, lh = _font(lang)
-	s = settings()
+	s = _s()
 	u = urls(None, lang)
 	logo = f'{u["console"]}/assets/buildiary/images/email-logo.png' if u["console"] else ""
 	ents = "".join(
@@ -222,7 +234,7 @@ def layout(lang, title, body, preheader="", to=""):
 	links = " &nbsp;&middot;&nbsp; ".join(
 		f'<a href="{url}" style="color:{MUTED};text-decoration:underline">{w(lang, k)}</a>'
 		for k, url in (("l_site", u["site"]), ("l_feedback", u["feedback"]), ("l_privacy", u["privacy"]), ("l_terms", u["terms"])) if url)
-	why = w(lang, "foot_why", email=ltr(esc(to))) if to else ""
+	why = w(lang, why, email=ltr(esc(to))) if to else ""
 	pre = f'<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">{esc(preheader)}</div>' if preheader else ""
 	html = f"""<!DOCTYPE html>
 <html lang="{lang}" dir="{'rtl' if rtl else 'ltr'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>{esc(title)}</title></head>
@@ -248,7 +260,7 @@ def layout(lang, title, body, preheader="", to=""):
 
 # ---------------------------------------------------------------- sending
 def _sender(name=None):
-	s = settings()
+	s = _s()
 	addr = (s.get("mail_from") or frappe.conf.get("auto_email_id") or "").strip()
 	if not addr:
 		return None
@@ -262,7 +274,7 @@ def deliver(to, subject, html, sender_name=None, now=False, ref=None):
 		return False
 	try:
 		frappe.sendmail(recipients=[to], sender=_sender(sender_name), subject=subject, message=html, raw_html=True, add_css=False,
-			add_unsubscribe_link=0, delayed=not now, now=now, reply_to=(settings().get("mail_from") or None),
+			add_unsubscribe_link=0, delayed=not now, now=now, reply_to=(_s().get("mail_from") or None),
 			reference_doctype=ref.doctype if ref else None, reference_name=ref.name if ref else None)
 		return True
 	except Exception:
@@ -462,9 +474,21 @@ def feedback_thanks(fb):
 
 
 def test(to, lang="en"):
-	s = settings()
+	s = _s()
 	b = p(w(lang, "test_intro", host=esc(s.control_host or frappe.local.site)), lang)
 	return deliver(to, w(lang, "test_subject"), layout(lang, w(lang, "test_title"), b, to=to), now=True)
+
+
+def password_reset(user, link, lang="en", minutes=20, host=None):
+	"""From a workspace's sign-in screen: the link to choose a new password."""
+	lang = lang if lang in LANGS else "en"
+	host = host or frappe.local.site
+	b = p(w(lang, "hello", name=esc(user.full_name or "")), lang)
+	b += p(w(lang, "pw_intro", email=ltr(esc(user.email or user.name)), host=ltr(esc(host))), lang)
+	b += button(link, w(lang, "pw_button"), lang)
+	b += p(w(lang, "pw_expires", minutes=minutes), lang, MUTED, 14) + p(w(lang, "pw_ignore"), lang, MUTED, 14)
+	html = layout(lang, w(lang, "pw_title"), b, preheader=w(lang, "pw_title"), to=user.email or user.name, why="foot_why_pw")
+	return deliver(user.email or user.name, w(lang, "pw_subject"), html, now=True) or deliver(user.email or user.name, w(lang, "pw_subject"), html)
 
 
 # ---------------------------------------------------------------- follow-ups (from the daily check)

@@ -178,29 +178,128 @@ function liveCamera(title, { facing = "environment", face = false } = {}) {
     start();
   });
 }
-/** Reads a QR code with the camera in a browser (BarcodeDetector). Resolves the text. */
+/* ---------- reading QR codes in a browser: this device's camera, or a phone paired as the scanner ---------- */
+function loadScript(src) { return new Promise((ok, no) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = () => no(new UserError(t("No connection to Buildiary. Check the internet (or Wi-Fi) and try again."))); document.head.appendChild(s); }); }
+/** A reader of QR codes from a playing video: the browser's own (BarcodeDetector) where there is one, otherwise jsQR (Safari, Firefox, iPad, Windows). */
+async function qrDecoder(video) {
+  if ("BarcodeDetector" in window) {
+    try { const d = new window.BarcodeDetector({ formats: ["qr_code"] }); return async () => { const c = await d.detect(video); return c && c.length ? c[0].rawValue || "" : ""; }; } catch (e) { /* use jsQR */ }
+  }
+  if (!window.jsQR) await loadScript("/assets/buildiary/js/jsqr.min.js");
+  const canvas = document.createElement("canvas"), g = canvas.getContext("2d", { willReadFrequently: true });
+  return async () => {
+    const w = video.videoWidth, h = video.videoHeight; if (!w) return "";
+    const k = Math.min(1, 800 / Math.max(w, h)); canvas.width = Math.round(w * k); canvas.height = Math.round(h * k);
+    g.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const img = g.getImageData(0, 0, canvas.width, canvas.height);
+    const r = window.jsQR(img.data, img.width, img.height, { inversionAttempts: "attemptBoth" });
+    return r ? r.data : "";
+  };
+}
+async function hasCamera() {
+  if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) return false;
+  try { const d = await navigator.mediaDevices.enumerateDevices(); return d.some((x) => x.kind === "videoinput"); } catch (e) { return true; }
+}
+/** Reads a QR code with this device's camera. Resolves the text. */
 function qrReader(box, flipBtn) {
   let stream = null, stopped = false, mode = "environment";
-  const video = box.querySelector("video"), note = box.querySelector(".note");
+  const video = box.querySelector("video");
   const stop = () => { stopped = true; if (stream) stream.getTracks().forEach((x) => x.stop()); stream = null; };
   const result = new Promise(async (resolve, reject) => {
-    if (!("BarcodeDetector" in window)) { reject(new UserError(t("This browser can't read QR codes. Use the Buildiary app on the phone, or Chrome."))); return; }
-    const det = new window.BarcodeDetector({ formats: ["qr_code"] });
+    let read;
+    try { read = await qrDecoder(video); } catch (e) { reject(e); return; }
     const open = async () => {
       if (stream) stream.getTracks().forEach((x) => x.stop());
-      try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: mode }, audio: false }); video.srcObject = stream; await video.play().catch(() => {}); }
-      catch (e) { reject(new UserError(t("The camera can't be opened here. Allow the camera for this site, or use the Buildiary app."))); }
+      try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: mode, width: { ideal: 1280 } }, audio: false }); if (stopped) { stop(); return; } video.srcObject = stream; await video.play().catch(() => {}); }
+      catch (e) { reject(new UserError(t("This device's camera can't be opened here. Use “Scan with my phone”, or allow the camera for this site."))); }
     };
     if (flipBtn) flipBtn.onclick = () => { mode = mode === "user" ? "environment" : "user"; open(); };
     await open();
     const tick = async () => {
       if (stopped) return;
-      try { if (video.readyState >= 2) { const c = await det.detect(video); if (c && c.length && c[0].rawValue) { stop(); resolve(c[0].rawValue); return; } } } catch (e) { /* keep trying */ }
-      setTimeout(tick, 250);
+      try { if (video.readyState >= 2) { const v = (await read()).trim(); if (v) { stop(); resolve(v); return; } } } catch (e) { /* keep trying */ }
+      setTimeout(tick, 220);
     };
     tick();
   });
   return { result, stop };
+}
+/** The phone paired as this computer's scanner: one pairing serves every scan for the working day. */
+const PAIR_KEY = "buildiary.pair";
+function pairGet() { try { const p = JSON.parse(localStorage.getItem(PAIR_KEY) || "null"); return p && p.key && Date.now() - (p.at || 0) < 9 * 3600e3 ? p : null; } catch (e) { return null; } }
+function pairSet(p) { try { if (p) localStorage.setItem(PAIR_KEY, JSON.stringify(Object.assign(p, { at: p.at || Date.now() }))); else localStorage.removeItem(PAIR_KEY); } catch (e) { /* */ } }
+/** Waits for a code from the paired phone; shows the pairing QR until the phone is there. */
+function phoneReader(box) {
+  let stopped = false, timer = null, p = null, showQr = true;
+  const stop = () => { stopped = true; clearTimeout(timer); };
+  const paint = (connected) => {
+    const qr = showQr || !connected;
+    box.innerHTML = `<div class="pairbox">${qr ? `<img src="${esc(p.qr)}" alt="" class="pairqr">` : `<span class="qa-i" style="--tc:var(--k1);width:76px;height:76px">${icon("phone")}</span>`}
+      <div class="stack" style="gap:8px">${connected ? `<b class="good-t">${esc(t("Phone connected"))}</b><span>${esc(t("Point the phone at the site card. The card shows here as soon as the phone reads it."))}</span>`
+        : `<b>${esc(t("Scan this code with your phone"))}</b><ol class="pairsteps"><li>${esc(t("Open the camera on any phone and point it at this code."))}</li><li>${esc(t("Tap the link that appears. The phone becomes the scanner; no app or sign-in needed."))}</li><li>${esc(t("Point the phone at the site card. The card shows here."))}</li></ol>
+          <span class="small muted">${esc(t("Waiting for the phone…"))}</span>`}
+        ${connected && !qr ? `<button class="btn sm" data-showqr="1">${icon("qr")}${esc(t("Pair another phone"))}</button>` : ""}</div></div>`;
+    const b = box.querySelector("[data-showqr]"); if (b) b.onclick = () => { showQr = true; paint(true); };
+  };
+  const result = new Promise(async (resolve, reject) => {
+    let was = null;
+    const fresh = async () => { const r = await api("buildiary.scan.pair", { lang: S.lang }); p = { key: r.key, qr: r.qr }; pairSet(p); was = null; };
+    try {
+      p = pairGet();
+      if (p) { const r = await api("buildiary.scan.take", { key: p.key, clear: 1 }); if (!r.alive) p = null; else { showQr = !(r.phone != null && r.phone < 30); } }
+      if (!p) await fresh();
+    } catch (e) { reject(e); return; }
+    if (stopped) return;
+    const poll = async () => {
+      if (stopped) return;
+      try {
+        const r = await api("buildiary.scan.take", { key: p.key });
+        if (stopped) return;
+        if (!r.alive) { await fresh(); showQr = true; }
+        else {
+          const on = r.phone != null && r.phone < 30;
+          if (on && was === false) showQr = false;
+          if (on !== was) paint(on);
+          was = on;
+          if (r.text) { stop(); if (navigator.vibrate) navigator.vibrate(60); resolve(r.text); return; }
+        }
+      } catch (e) { /* keep trying */ }
+      timer = setTimeout(poll, 1200);
+    };
+    paint(false); was = false;
+    poll();
+  });
+  return { result, stop };
+}
+/** Reading a site card: this device's camera, a paired phone, or typing the number. Calls onCode once; returns stop(). */
+function cardScanner(box, onCode) {
+  let cur = null, done = false;
+  box.innerHTML = `<div class="seg scanhow" role="group" aria-label="${esc(t("How to read the card"))}"><button data-how="cam">${icon("cam")}<span>${esc(t("This camera"))}</span></button><button data-how="phone">${icon("phone")}<span>${esc(t("Scan with my phone"))}</span></button><button data-how="type">${icon("pencil")}<span>${esc(t("Type the number"))}</span></button></div><div data-scanbody style="margin-top:12px"></div>`;
+  const body = box.querySelector("[data-scanbody]");
+  const finish = (v) => { v = (v || "").trim(); if (done || !v) return; done = true; if (cur) cur.stop(); onCode(v); };
+  function show(how) {
+    if (done) return;
+    if (cur) { cur.stop(); cur = null; }
+    $$("[data-how]", box).forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.how === how)));
+    if (how === "cam") {
+      body.innerHTML = `<div class="cam"><video playsinline muted autoplay></video><div class="frame"></div><div class="note">${esc(t("Waiting for a site card… hold the card's QR inside the frame"))}</div></div>
+        <div class="row" style="margin-top:10px;justify-content:center"><button class="btn sm" data-flip="1">${icon("refresh")}${esc(t("Switch camera"))}</button></div>`;
+      const r = qrReader(body.querySelector(".cam"), body.querySelector("[data-flip]")); cur = r;
+      r.result.then(finish).catch((e) => { const n = body.querySelector(".note"); if (n) { n.textContent = e.message; n.classList.add("bad"); } });
+    } else if (how === "phone") {
+      body.innerHTML = `<div class="spin"></div>`;
+      const r = phoneReader(body); cur = r;
+      r.result.then(finish).catch((e) => { body.innerHTML = `<div class="banner bad">${esc(e.message)}</div>`; });
+    } else {
+      body.innerHTML = `<div class="form"><div class="fld"><label>${esc(t("Number on the site card (or the ID card)"))}</label><input name="code" class="ltr" autocomplete="off" autocapitalize="characters" spellcheck="false"></div><button class="btn pri wide" data-use="1">${esc(t("Continue"))}</button></div>`;
+      const inp = body.querySelector("[name=code]"); setTimeout(() => inp.focus(), 200);
+      const go = () => finish(inp.value);
+      body.querySelector("[data-use]").onclick = go; inp.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); });
+    }
+  }
+  box.querySelector(".scanhow").onclick = (e) => { const b = e.target.closest("[data-how]"); if (b) show(b.dataset.how); };
+  (async () => { const how = pairGet() ? "phone" : (await hasCamera()) ? "cam" : "phone"; show(how); })();
+  return () => { done = true; if (cur) cur.stop(); };
 }
 async function getLocation() {
   if (NATIVE) { const r = await native("location", { lang: S.lang }); return r && r.lat ? `${(+r.lat).toFixed(6)}, ${(+r.lng).toFixed(6)} (±${Math.round(r.accuracy || 0)} m)` : ""; }
@@ -209,14 +308,11 @@ async function getLocation() {
 }
 async function scanCode(title) {
   if (NATIVE) { const r = await native("scan", { title: t(title), lang: S.lang }); return r && r.text ? r.text : ""; }
-  if (!("BarcodeDetector" in window)) return ask(title, t("Type the number on the site card (or the CNIC)."), "");
   return new Promise((resolve) => {
     let done = false;
-    const sh = sheet(title, `<div class="cam"><video playsinline muted autoplay></video><div class="frame"></div><div class="note">${esc(t("Waiting for a site card… hold the card's QR inside the frame"))}</div></div>`,
-      { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn" data-flip="1">${icon("refresh")}${esc(t("Switch camera"))}</button>` });
-    const r = qrReader(sh.querySelector(".cam"), sh.querySelector("[data-flip]"));
-    r.result.then((v) => { done = true; closeSheet(sh); resolve(v); }).catch((e) => { sh.querySelector(".note").textContent = e.message; });
-    const obs = new MutationObserver(() => { if (!document.body.contains(sh) || sh.parentElement.classList.contains("closing")) { obs.disconnect(); r.stop(); if (!done) { done = true; resolve(""); } } });
+    const sh = sheet(title, `<div data-scanner></div>`, { full: true, footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button>` });
+    const stopIt = cardScanner(sh.querySelector("[data-scanner]"), (v) => { done = true; closeSheet(sh); resolve(v); });
+    const obs = new MutationObserver(() => { if (!document.body.contains(sh) || sh.parentElement.classList.contains("closing")) { obs.disconnect(); stopIt(); if (!done) { done = true; resolve(""); } } });
     obs.observe($("#sheetRoot"), { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
   });
 }
@@ -475,6 +571,12 @@ const GLOBAL = {
 };
 
 /* ================================================================== dashboard */
+/** On an Android phone's browser: a hint to install the app (until it is put away). */
+function appBanner() {
+  if (NATIVE || !/Android/i.test(navigator.userAgent)) return "";
+  try { if (localStorage.getItem("buildiary.appHint") === "no") return ""; } catch (e) { /* */ }
+  return `<div class="banner info plan-line" data-apphint><span>${esc(t("Get the Buildiary app for this phone: the camera, GPS and site card scanner work best in it."))}</span><span class="row" style="gap:6px"><button class="btn sm pri" data-go="app">${esc(t("Get the app"))}</button><button class="btn sm" data-act="apphint" aria-label="${esc(t("Not now"))}">${icon("x")}</button></span></div>`;
+}
 /** Buildiary Cloud: the trial or plan line on the home screen (only on a Buildiary workspace). */
 function planBanner() {
   const p = S.b.plan;
@@ -542,7 +644,8 @@ VIEWS.dash = async (el) => {
     parts.push(fold("released", t("Material released, last 14 days"), `<div class="body"><div class="wbars">${P.released.days.map((day, i) => `<div class="wb"><div class="wbb"><span class="u" style="width:70%;height:${(P.released.count[i] / max) * 100}%"></span></div><em>${new Date(day + "T00:00:00").getDate()}</em></div>`).join("")}</div>
       <div class="legend"><span><i class="u"></i>${esc(t("Releases from the store"))}</span></div></div>`));
   }
-  el.innerHTML = `${planBanner()}<div class="hero"><span class="muted small">${esc(fdate(b.today))}</span><b>${esc(t("Salaam, {0}", (b.full_name || "").split(" ")[0]))}</b><span class="small muted">${esc(b.project_name || "")}</span></div>
+  S.acts.apphint = () => { try { localStorage.setItem("buildiary.appHint", "no"); } catch (e) { /* */ } const x = $("[data-apphint]"); if (x) x.remove(); };
+  el.innerHTML = `${planBanner()}${appBanner()}<div class="hero"><span class="muted small">${esc(fdate(b.today))}</span><b>${esc(t("Hello, {0}", (b.full_name || "").split(" ")[0]))}</b><span class="small muted">${esc(b.project_name || "")}</span></div>
     ${tiles.length ? `<div class="ctiles">${tiles.join("")}</div>` : ""}
     ${A.length ? panel(t("Quick actions"), `<div class="body"><div class="qa-grid">${A.slice(0, 12).join("")}</div></div>`) : ""}
     ${panel(t("Needs your attention"), `<div class="body stack" style="gap:6px">${att}</div>`, d.acts.length ? `<span class="cnt">${d.acts.length}</span>` : "")}
@@ -1391,6 +1494,7 @@ VIEWS.more = async (el) => {
   if (S.b.ai) T.push(["Ask the project", "sparkle", "ask", "k5"]);
   if (c.owner || PROJECTS().length > 1) T.push(["Projects", "house", "projects", "k2"]);
   T.push(["My settings", "gear", "settings", "k8"]);
+  if (!NATIVE) T.push(["Phone app", "phone", "app", "k7"]);
   if (c.owner && S.b.plan) T.push(["Plan & billing", "pay", "@billing", "k6"]);
   if (c.owner && !NATIVE && !S.b.plan) T.push(["Connect a phone", "globe", "connect", "k2"]);
   el.innerHTML = `<button class="mo-me" data-go="settings"><span class="av">${b.image ? `<img src="${esc(b.image)}" alt="">` : esc((b.full_name || "?").charAt(0))}</span><span><b>${esc(b.full_name)}</b><span class="small muted">${esc(b.project_name || "")}</span></span>${icon("chev", "lch")}</button>
@@ -1486,18 +1590,16 @@ function cardFlow({ title, action, step3, needCard = 1 }) {
     obs.observe($("#sheetRoot"), { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
     async function step1(err) {
       mark(0); next.hidden = true; sheetError(sh, err || "");
-      if (NATIVE || !("BarcodeDetector" in window)) {
+      if (NATIVE) {
         body.innerHTML = `<div class="stack" style="align-items:center;text-align:center;padding:10px 0"><span class="qa-i" style="--tc:var(--k2);width:76px;height:76px">${icon("card")}</span>
           <p style="margin:0">${esc(t("Hold the person's site card in front of the camera."))}</p><button class="btn pri big wide" data-scan="1">${icon("qr")}${esc(t("Scan site card"))}</button></div>`;
         const scan = async () => { const code = await scanCode(t("Scan the site card")); if (code) gotCode(code); };
         body.querySelector("[data-scan]").onclick = scan;
-        if (NATIVE && !err) scan();
+        if (!err) scan();
       } else {
-        body.innerHTML = `<div class="cam"><video playsinline muted autoplay></video><div class="frame"></div><div class="note">${esc(t("Waiting for a site card… hold the card's QR inside the frame"))}</div></div>
-          <div class="row" style="margin-top:10px;justify-content:center"><button class="btn sm" data-flip="1">${icon("refresh")}${esc(t("Switch camera"))}</button></div>`;
-        const r = qrReader(body.querySelector(".cam"), body.querySelector("[data-flip]"));
-        stopScan = r.stop;
-        r.result.then((c) => { stopScan = null; if (c) gotCode(c); }).catch((e) => { const n = body.querySelector(".note"); if (n) n.textContent = e.message; });
+        // a computer or tablet: its own camera, a phone paired as the scanner, or typing the number
+        body.innerHTML = `<div data-scanner></div>`;
+        stopScan = cardScanner(body.querySelector("[data-scanner]"), (c) => { stopScan = null; gotCode(c); });
       }
     }
     async function gotCode(code) {
@@ -2111,6 +2213,35 @@ VIEWS.connect = async (el) => {
       : `<span>${esc(t("Double-click 'Connect a phone' in the Buildiary folder on this laptop. It shows the address and QR code for the phone."))}</span>`}</div>`);
 };
 
+/* ---------------- the phone app: download and install ---------------- */
+VIEWS.app = async (el) => {
+  setTop(t("Phone app"), true); setTab("more");
+  const a = (S.b && S.b.app) || { android: "https://buildiary.app/android", host: location.host, name: location.host };
+  let img = ""; try { img = await api("qr", { text: a.android }); } catch (e) { /* the link still works */ }
+  const share = t("Install Buildiary on your Android phone: {0} Then open the app and type the workspace name: {1}", a.android, a.name);
+  const steps = [
+    t("On the Android phone, scan this code with the camera, or open this page on the phone and tap Download."),
+    t("Open the downloaded file, Buildiary.apk (from the notification or the Downloads folder)."),
+    t("If the phone says apps from this source are blocked, tap Settings, turn on “Allow from this source”, and go back."),
+    t("Tap Install, then Open."),
+    t("Type the workspace name {0} and tap Open. Sign in with your email and password, or with your site card.", a.name),
+    t("Allow the camera and location when the app asks. Photos, site cards and attendance need them."),
+  ];
+  el.innerHTML = `${panel(t("Android app"), `<div class="body"><div class="pairbox">${img ? `<img src="${esc(img)}" alt="${esc(t("QR code of the download link"))}" class="pairqr">` : ""}
+      <div class="stack" style="gap:10px"><p style="margin:0">${esc(t("The Buildiary app opens this workspace with the phone's camera, GPS and site card scanner built in."))}</p>
+      <a class="btn pri big" href="${esc(a.android)}" rel="noopener">${icon("download")}${esc(t("Download the Android app"))}</a>
+      <span class="small muted ltr" style="overflow-wrap:anywhere">${esc(a.android)}</span></div></div></div>`)}
+    ${panel(t("How to install"), `<div class="body"><ol class="pairsteps" style="gap:10px">${steps.map((x, i) => `<li>${i === 4 ? esc(x).replace(esc(a.name), `<b class="ltr">${esc(a.name)}</b>`) : esc(x)}</li>`).join("")}</ol>
+      <p class="small muted" style="margin:12px 0 0">${esc(t("The screens inside the app update on their own. Download it again only when we tell you about a new version."))}</p></div>`)}
+    ${panel(t("iPhone and iPad"), `<div class="body"><p style="margin:0">${esc(t("Open {0} in Safari, tap Share, then “Add to Home Screen”. Buildiary then opens from the home screen like an app.", a.host))}</p></div>`)}
+    ${panel(t("Send it to your team"), `<div class="body stack"><p style="margin:0" class="small muted">${esc(share)}</p>
+      <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" data-act="wa">${icon("chat")}${esc(t("Share on WhatsApp"))}</button><button class="btn" data-act="copy">${icon("file")}${esc(t("Copy the message"))}</button></div></div>`)}`;
+  Object.assign(S.acts, {
+    wa() { openOut(`https://wa.me/?text=${encodeURIComponent(share)}`); },
+    async copy() { try { await navigator.clipboard.writeText(share); toast(t("Copied"), "good"); } catch (e) { toast(share); } },
+  });
+};
+
 /* ---------------- my settings: look, language, PIN ---------------- */
 const SKINS = [["buildiary", "Buildiary blue", "Blueprint blue with amber, the Buildiary look", ["#1e3a5f", "#f2b01e", "#eef1f4"]], ["site", "Site green", "Calm green, the original look", ["#0f6f5c", "#dcefe9", "#f3f2ef"]], ["slate", "Slate & copper", "Cool grey with a copper accent", ["#1b2430", "#52627a", "#b4642d"]],
   ["sand", "Desert sand", "Warm sand with indigo", ["#2a241b", "#b07a1e", "#3b4fa0"]], ["colour", "Colourful", "Bright colours on every menu and panel", ["#8b5cf6", "#ec4899", "#f59e0b"]],
@@ -2194,7 +2325,8 @@ function loginScreen() {
     ${BOOT.card_sign_in ? `<button class="btn pri big wide" data-card="1">${icon("card")}${esc(t("Sign in with site card"))}</button><p class="small muted" style="text-align:center;margin:0">${esc(t("Scan your site card, type your PIN and take a photo of your face."))}</p>
       <div class="small muted" style="text-align:center">— ${esc(t("or"))} —</div>` : ""}
     <div class="form"><div class="fld"><label>${esc(t("Email or user name"))}</label><input name="usr" autocomplete="username" autocapitalize="none" class="ltr"></div><div class="fld"><label>${esc(t("Password"))}</label><input name="pwd" type="password" autocomplete="current-password" class="ltr"></div>
-    <div data-err></div><button class="btn ${BOOT.card_sign_in ? "" : "pri"} big wide" data-login="1">${esc(t("Sign in"))}</button></div>${MAKER()}</div>`;
+    <div data-err></div><button class="btn ${BOOT.card_sign_in ? "" : "pri"} big wide" data-login="1">${esc(t("Sign in"))}</button>
+    <button type="button" class="linkbtn" data-forgot="1">${esc(t("Forgot your password?"))}</button></div>${MAKER()}</div>`;
   $$("[data-l]").forEach((b) => { b.onclick = () => {
     S.lang = b.dataset.l; try { localStorage.setItem("buildiary.lang", S.lang); } catch (e) { /* */ }
     // the page carries one language's words: switching between Urdu and Arabic reloads them
@@ -2210,6 +2342,27 @@ function loginScreen() {
   $("[data-login]").onclick = go_;
   $("[name=pwd]").addEventListener("keydown", (e) => { if (e.key === "Enter") go_(); });
   const c = $("[data-card]"); if (c) c.onclick = cardSignIn;
+  $("[data-forgot]").onclick = () => forgotPassword($("[name=usr]").value.trim());
+}
+/** Forgot password: the link to choose a new one goes to the person's email. */
+function forgotPassword(usr) {
+  const sh = sheet(t("Forgot your password?"), `<div class="form"><p style="margin:0">${esc(t("Type the email you sign in with. We'll email you a link to choose a new password."))}</p>
+    <div class="fld"><label>${esc(t("Email"))}</label><input name="em" type="email" autocomplete="username" autocapitalize="none" class="ltr" value="${esc(usr && usr.includes("@") ? usr : "")}"></div>
+    <div data-ferr></div><p class="small muted" style="margin:0">${esc(t("Site staff who sign in with a site card: ask the owner to set a new PIN."))}</p></div>`,
+    { footer: `<button class="btn" data-x="1">${esc(t("Cancel"))}</button><button class="btn pri" data-send="1">${esc(t("Send the link"))}</button>` });
+  const inp = sh.querySelector("[name=em]"); setTimeout(() => inp.focus(), 250);
+  const send = async () => {
+    const em = inp.value.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { sh.querySelector("[data-ferr]").innerHTML = `<div class="banner bad">${esc(t("Enter a valid email address."))}</div>`; return; }
+    try {
+      const r = await busy(api("forgot_password", { email: em, lang: S.lang }), t("Sending…"));
+      sh.querySelector(".form").innerHTML = `<div class="stack" style="align-items:center;text-align:center"><span class="qa-i" style="--tc:var(--k1);width:64px;height:64px">${icon("check")}</span>
+        <b>${esc(t("Check your email"))}</b><span>${esc(t("If {0} has a sign-in here, a link to choose a new password is on its way. It works for {1} minutes. Look in spam too.", em, r.minutes || 20))}</span></div>`;
+      const f = sh.querySelector("[data-send]"); if (f) f.remove();
+    } catch (e) { sh.querySelector("[data-ferr]").innerHTML = `<div class="banner bad">${esc(e.message)}</div>`; }
+  };
+  sh.querySelector("[data-send]").onclick = send;
+  inp.addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
 }
 /** Sign in with the site card: scan the card, type the PIN, take a photo of the face. */
 async function cardSignIn() {

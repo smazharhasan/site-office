@@ -125,7 +125,18 @@ def boot():
 		"plan": _plan(),
 		"ui": _ui(),
 		"person": _me(),
+		"app": _app_links(),
 	}
+
+
+def _app_links():
+	"""Where the Android app is downloaded, and the name typed in the app to open this workspace."""
+	m = frappe.conf.get("buildiary") or {}
+	console = m.get("console") or ""
+	base = console.split(".", 1)[1] if console.count(".") >= 2 else "buildiary.app"
+	host = (frappe.conf.get("host_name") or frappe.local.site).replace("https://", "").replace("http://", "").rstrip("/")
+	name = host[: -len(base) - 1] if host.endswith("." + base) else host
+	return {"android": f"https://{base}/android", "host": host, "name": name}
 
 
 def _plan():
@@ -1141,3 +1152,34 @@ def qr(text):
 	if len(text or "") > 300:
 		frappe.throw("Too long")
 	return qr_code(text)
+
+
+# ---------------------------------------------------------------- forgot password (the sign-in screen)
+from frappe.rate_limiter import rate_limit  # noqa: E402
+
+
+@frappe.whitelist(allow_guest=True, methods=["POST"])
+@rate_limit(limit=6, seconds=3600)
+def forgot_password(email=None, lang=None):
+	"""Emails a link to choose a new password. The answer is the same whether or not the address has a
+	sign-in here, so the screen never tells a stranger who uses this workspace."""
+	from frappe.utils import validate_email_address
+
+	who = (email or "").strip()
+	lang = lang if lang in LANGS else "en"
+	minutes = max(1, (cint(frappe.get_system_settings("reset_password_link_expiry_duration")) or 1200) // 60)
+	if who:
+		name = frappe.db.get_value("User", {"name": who.lower()}) or frappe.db.get_value("User", {"username": who}) or (
+			frappe.db.get_value("User", {"email": who.lower()}) if validate_email_address(who) else None)
+		u = frappe.db.get_value("User", name, ["name", "email", "full_name", "language", "enabled", "user_type"], as_dict=True) if name else None
+		if u and u.enabled and u.user_type == "System User" and u.name not in ("Administrator", "Guest") and validate_email_address(u.email or ""):
+			try:
+				link = frappe.get_doc("User", u.name)._reset_password(send_email=False)
+				frappe.db.commit()
+				from buildiary.saas import mail
+
+				host = (frappe.conf.get("host_name") or frappe.local.site).replace("https://", "").replace("http://", "").rstrip("/")
+				mail.password_reset(u, link, lang=u.language if u.language in LANGS else lang, minutes=minutes, host=host)
+			except Exception:
+				frappe.log_error("Buildiary: the password email could not be sent")
+	return {"minutes": minutes}

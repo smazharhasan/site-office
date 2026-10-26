@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="{{ lang }}" dir="{{ dir }}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0F2238">
+<title>Buildiary scanner</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/buildiary/images/buildiary-logo.svg">
+<script>window.frappe = window.frappe || {};</script>
+<!-- csrf_token -->
+<style>
+/* A phone held up to site cards: the camera fills the screen, a frame to aim at, and a clear
+   green "sent" each time a card goes to the computer. */
+:root{--navy:#0F2238;--amber:#F2B01E;--ok:#1C9E5C;--bad:#E0674F;--on:#E9F0F8;--muted:#AFC0D3;
+  --body:"IBM Plex Sans","Segoe UI",Roboto,Arial,sans-serif;--ur:"Noto Nastaliq Urdu","Jameel Noori Nastaleeq",serif;--ar:"Noto Kufi Arabic","Geeza Pro",Tahoma,sans-serif}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%;background:var(--navy);color:var(--on)}
+body{font:400 16px/1.5 var(--body);display:flex;flex-direction:column;min-height:100dvh}
+html[lang=ur] body{font-family:var(--ur);line-height:2}
+html[lang=ar] body{font-family:var(--ar)}
+header{display:flex;align-items:center;gap:10px;padding:max(14px,env(safe-area-inset-top,0px)) 16px 10px}
+header img{width:34px;height:34px;flex:none;border-radius:8px}
+header b{font-size:1.05rem}
+.lead{margin:0 16px 12px;color:var(--muted);font-size:.95rem}
+.cam{position:relative;flex:1;min-height:320px;margin:0 12px;border-radius:18px;overflow:hidden;background:#000}
+video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.frame{position:absolute;left:50%;top:50%;width:min(68vw,300px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:18px;box-shadow:0 0 0 2000px rgba(0,0,0,.35);border:3px solid var(--amber);transition:border-color .2s}
+.cam.hit .frame{border-color:var(--ok);box-shadow:0 0 0 2000px rgba(28,158,92,.35)}
+.state{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(15,34,56,.86);border-radius:12px;padding:10px 14px;text-align:center;font-weight:500}
+.state.ok{background:var(--ok);color:#fff}
+.state.bad{background:var(--bad);color:#fff}
+.bar{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:12px 16px max(16px,env(safe-area-inset-bottom,0px));flex-wrap:wrap}
+.count{color:var(--muted);font-size:.9rem}
+button{font:inherit;border:0;border-radius:999px;padding:12px 18px;background:#fff;color:var(--navy);font-weight:600;cursor:pointer}
+button.pri{background:var(--amber);color:#1B1405}
+button:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.msg{margin:40px 20px;padding:20px;border-radius:16px;background:rgba(255,255,255,.08);font-size:1.05rem}
+.note{color:var(--muted);font-size:.85rem;margin:0 16px 8px}
+</style>
+</head>
+<body>
+<header><img src="/assets/buildiary/images/buildiary-logo.svg" alt="" width="34" height="34"><b id="title"></b></header>
+<p class="lead" id="lead"></p>
+<div class="cam" id="cam"><video id="video" playsinline muted autoplay></video><canvas id="canvas" hidden></canvas><div class="frame"></div><div class="state" id="state" aria-live="polite"></div></div>
+<div class="bar"><span class="count" id="count"></span><span style="display:flex;gap:8px"><button type="button" id="flip"></button><button type="button" class="pri" id="start" hidden></button></span></div>
+<p class="note" id="keep"></p>
+<div class="msg" id="expired" hidden></div>
+<script>
+const CFG = {{ cfg }};
+const I18N = {
+  en: { title: "Phone scanner", lead: "Point this phone at a site card's QR code. Each card you scan goes straight to the computer.", waiting: "Hold the card's QR inside the frame",
+    sent: "Sent to the computer: {code}", nocam: "The camera can't be opened. Allow the camera for this page in the browser, then reload.",
+    expired: "This link has expired. On the computer, tap “Scan with my phone” again and scan the new code.", start: "Start camera", flip: "Switch camera",
+    count: "Cards sent: {n}", keep: "Keep this page open while you scan. Close it when you're done.", fail: "Not sent. Check the internet and scan again." },
+  ur: { title: "فون اسکینر", lead: "یہ فون سائٹ کارڈ کے QR کوڈ کی طرف کریں۔ ہر اسکین کیا گیا کارڈ سیدھا کمپیوٹر پر پہنچ جائے گا۔", waiting: "کارڈ کا QR فریم کے اندر رکھیں",
+    sent: "کمپیوٹر کو بھیج دیا: {code}", nocam: "کیمرا نہیں کھل سکا۔ براؤزر میں اس صفحے کے لیے کیمرے کی اجازت دیں، پھر صفحہ دوبارہ کھولیں۔",
+    expired: "یہ لنک ختم ہو چکا ہے۔ کمپیوٹر پر دوبارہ «فون سے اسکین کریں» دبائیں اور نیا کوڈ اسکین کریں۔", start: "کیمرا شروع کریں", flip: "کیمرا بدلیں",
+    count: "بھیجے گئے کارڈ: {n}", keep: "اسکین کرتے وقت یہ صفحہ کھلا رکھیں۔ کام ختم ہونے پر بند کر دیں۔", fail: "نہیں بھیجا جا سکا۔ انٹرنیٹ چیک کر کے دوبارہ اسکین کریں۔" },
+  ar: { title: "ماسح الهاتف", lead: "وجّه هذا الهاتف نحو رمز QR في بطاقة الموقع. كل بطاقة تمسحها تصل مباشرة إلى الكمبيوتر.", waiting: "ضع رمز QR الخاص بالبطاقة داخل الإطار",
+    sent: "أُرسلت إلى الكمبيوتر: {code}", nocam: "تعذّر فتح الكاميرا. اسمح باستخدام الكاميرا لهذه الصفحة في المتصفح ثم أعد تحميلها.",
+    expired: "انتهت صلاحية هذا الرابط. على الكمبيوتر، اضغط «المسح بالهاتف» مرة أخرى وامسح الرمز الجديد.", start: "تشغيل الكاميرا", flip: "تبديل الكاميرا",
+    count: "عدد البطاقات المرسلة: {n}", keep: "أبقِ هذه الصفحة مفتوحة أثناء المسح، وأغلقها عند الانتهاء.", fail: "لم تُرسل. تحقق من الإنترنت وامسح مرة أخرى." },
+};
+const L = I18N[CFG.lang] || I18N.en;
+const $ = (id) => document.getElementById(id);
+const t = (k, v = {}) => (L[k] || I18N.en[k]).replace(/\{(\w+)\}/g, (_, x) => v[x] ?? "");
+for (const k of ["title", "lead", "keep"]) $(k).textContent = t(k);
+$("flip").textContent = t("flip"); $("start").textContent = t("start");
+const state = (cls, text) => { const s = $("state"); s.className = "state " + cls; s.textContent = text; };
+
+async function api(method, data) {
+  const r = await fetch("/api/method/buildiary.scan." + method, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json", "X-Frappe-CSRF-Token": (window.frappe && frappe.csrf_token) || "" }, body: JSON.stringify(data || {}) });
+  if (!r.ok) throw new Error(String(r.status));
+  return (await r.json()).message || {};
+}
+function expired() {
+  stop(); $("cam").hidden = true; document.querySelector(".bar").hidden = true; $("lead").hidden = true; $("keep").hidden = true;
+  const e = $("expired"); e.textContent = t("expired"); e.hidden = false;
+}
+if (!CFG.key) expired();
+
+let stream = null, mode = "environment", sent = 0, last = "", lastAt = 0, pause = 0, detect = null;
+const video = $("video"), canvas = $("canvas");
+function stop() { if (stream) stream.getTracks().forEach((x) => x.stop()); stream = null; }
+async function decoder() {
+  if ("BarcodeDetector" in window) {
+    try { const d = new window.BarcodeDetector({ formats: ["qr_code"] }); return async () => { const c = await d.detect(video); return c && c[0] ? c[0].rawValue : ""; }; } catch (e) { /* use jsQR */ }
+  }
+  await new Promise((ok, no) => { const s = document.createElement("script"); s.src = "/assets/buildiary/js/jsqr.min.js"; s.onload = ok; s.onerror = no; document.head.appendChild(s); });
+  const g = canvas.getContext("2d", { willReadFrequently: true });
+  return async () => {
+    const w = video.videoWidth, h = video.videoHeight; if (!w) return "";
+    const k = Math.min(1, 720 / Math.max(w, h)); canvas.width = Math.round(w * k); canvas.height = Math.round(h * k);
+    g.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const img = g.getImageData(0, 0, canvas.width, canvas.height);
+    const r = window.jsQR(img.data, img.width, img.height, { inversionAttempts: "dontInvert" });
+    return r ? r.data : "";
+  };
+}
+async function open() {
+  stop();
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: mode, width: { ideal: 1280 } }, audio: false });
+    video.srcObject = stream; await video.play(); $("start").hidden = true; state("", t("waiting"));
+  } catch (e) { $("start").hidden = false; state("bad", t("nocam")); }
+}
+async function send(code) {
+  try {
+    const r = await api("push", { key: CFG.key, text: code });
+    if (!r.alive) { expired(); return; }
+    sent += 1; $("count").textContent = t("count", { n: sent });
+    $("cam").classList.add("hit"); state("ok", t("sent", { code }));
+    if (navigator.vibrate) navigator.vibrate(120);
+    setTimeout(() => { $("cam").classList.remove("hit"); if (stream) state("", t("waiting")); }, 1800);
+  } catch (e) { state("bad", t("fail")); last = ""; }
+}
+async function loop() {
+  if (!CFG.key) return;
+  try {
+    if (stream && video.readyState >= 2 && Date.now() > pause) {
+      const code = (await detect()).trim();
+      if (code && !(code === last && Date.now() - lastAt < 8000)) { last = code; lastAt = Date.now(); pause = Date.now() + 1500; send(code); }
+    }
+  } catch (e) { /* keep trying */ }
+  setTimeout(loop, 220);
+}
+async function hello() {
+  if (!CFG.key) return;
+  try { const r = await api("hello", { key: CFG.key }); if (!r.alive) { expired(); return; } } catch (e) { /* try again */ }
+  setTimeout(hello, 8000);
+}
+$("flip").onclick = () => { mode = mode === "user" ? "environment" : "user"; video.style.transform = mode === "user" ? "scaleX(-1)" : ""; open(); };
+$("start").onclick = open;
+document.addEventListener("visibilitychange", () => { if (document.hidden) stop(); else if (CFG.key) open(); });
+if (CFG.key) { (async () => { detect = await decoder(); await open(); hello(); loop(); })(); }
+</script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 {
  "app": "buildiary",
  "charts": [],
- "content": "[{\"id\": \"buildiaryhdr0\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Buildiary</b></span>\", \"col\": 12}}, {\"id\": \"buildiarysc00\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Quotations\", \"col\": 3}}, {\"id\": \"buildiarysc01\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Purchase orders\", \"col\": 3}}, {\"id\": \"buildiarysc02\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Receive goods\", \"col\": 3}}, {\"id\": \"buildiarysc03\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Supplier invoices\", \"col\": 3}}, {\"id\": \"buildiarysc04\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Payments\", \"col\": 3}}, {\"id\": \"buildiarysc05\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Release to work\", \"col\": 3}}, {\"id\": \"buildiarysc06\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Schedule\", \"col\": 3}}, {\"id\": \"buildiarysc07\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Site diary\", \"col\": 3}}, {\"id\": \"buildiarysc08\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Inspections\", \"col\": 3}}, {\"id\": \"buildiarysc09\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Snags\", \"col\": 3}}, {\"id\": \"buildiarysc10\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Attendance\", \"col\": 3}}, {\"id\": \"buildiarysc11\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Workers\", \"col\": 3}}, {\"id\": \"buildiarycard\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 4}}]",
+ "content": "[{\"id\": \"buildiaryhdr0\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Buildiary</b></span>\", \"col\": 12}}, {\"id\": \"buildiarysc00\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Quotations\", \"col\": 3}}, {\"id\": \"buildiarysc01\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Purchase orders\", \"col\": 3}}, {\"id\": \"buildiarysc02\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Receive goods\", \"col\": 3}}, {\"id\": \"buildiarysc03\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Supplier invoices\", \"col\": 3}}, {\"id\": \"buildiarysc04\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Payments\", \"col\": 3}}, {\"id\": \"buildiarysc05\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Release to work\", \"col\": 3}}, {\"id\": \"buildiarysc06\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Schedule\", \"col\": 3}}, {\"id\": \"buildiarysc07\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Site diary\", \"col\": 3}}, {\"id\": \"buildiarysc08\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Inspections\", \"col\": 3}}, {\"id\": \"buildiarysc09\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Snags\", \"col\": 3}}, {\"id\": \"buildiarysc10\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Attendance\", \"col\": 3}}, {\"id\": \"buildiarysc11\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Workers\", \"col\": 3}}, {\"id\": \"buildiarysc12\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Phone app\", \"col\": 3}}, {\"id\": \"buildiarycard\", \"type\": \"card\", \"data\": {\"card_name\": \"Reports\", \"col\": 4}}]",
  "creation": "2026-10-22 18:00:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
@@ -12,7 +12,7 @@
  "idx": 0,
  "is_hidden": 0,
  "label": "Buildiary",
- "modified": "2026-10-25 21:00:00.000000",
+ "modified": "2026-10-26 16:30:00.000000",
  "modified_by": "Administrator",
  "module": "Buildiary",
  "name": "Buildiary",
@@ -111,6 +111,13 @@
    "label": "Workers",
    "link_to": "Site Worker",
    "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "label": "Phone app",
+   "type": "URL",
+   "url": "/field#app"
   }
  ],
  "links": [
